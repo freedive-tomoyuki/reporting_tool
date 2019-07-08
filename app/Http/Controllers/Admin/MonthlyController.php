@@ -147,7 +147,7 @@ class MonthlyController extends Controller
         $user = Auth::user();
 		$id = ($request->product != null)? $request->product : 3 ;
         $month =($request->month != null)? $request->month : date("Y-m", strtotime('-1 day'));
-
+        $ratio = (date("d")/date("t"));
         //検索日時
         //今月の場合　Dateが昨日付け
         //先月以前の場合　Dateが末日付け
@@ -204,7 +204,7 @@ class MonthlyController extends Controller
             /**
                 当月の着地想定
             */
-            $productsEstimates = Dailyestimate::select([ 'asps.name','products.id','dailyestimates.asp_id','estimate_imp', 'estimate_click','estimate_cv','dailyestimates.created_at','estimate_cvr','estimate_ctr','estimate_cost','estimate_price','estimate_cpa','date'])
+/*            $productsEstimates = Dailyestimate::select([ 'asps.name','products.id','dailyestimates.asp_id','estimate_imp', 'estimate_click','estimate_cv','dailyestimates.created_at','estimate_cvr','estimate_ctr','estimate_cost','estimate_price','estimate_cpa','date'])
                     ->join('products','dailyestimates.product_id','=','products.id')
                     ->join('asps','products.asp_id','=','asps.id');
 
@@ -214,12 +214,52 @@ class MonthlyController extends Controller
                     if(!empty($searchdate)){
                         $productsEstimates->where('dailyestimates.date', 'LIKE' , "%".$searchdate."%");
                     }
-                    $productsEstimates = $productsEstimates->get();//->toArray();
+                    $productsEstimates = $productsEstimates->get();
+*/
+        $productsEstimates = Monthlydata::select(DB::raw("
+            asps.name,
+            (imp/". $ratio .") as estimate_imp,
+            (click/". $ratio .") as estimate_click,
+            (cv/". $ratio .") as estimate_cv,
+            ((cv/". $ratio .")/(click/". $ratio .")*100) as estimate_cvr, 
+            ((click/". $ratio .")/(imp/". $ratio .")*100) as estimate_ctr, 
+            (cost/". $ratio .") as estimate_cost,
+            products.product,
+            products.id"))
+                    ->join('products','monthlydatas.product_id','=','products.id')
+                    ->join('asps','products.asp_id','=','asps.id');
+                    if(!empty($id)){
+                        $productsEstimates->where('products.product_base_id', $id);
+                    }
+                    if(!empty($searchdate)){
+                        $productsEstimates->where('monthlydatas.date', 'LIKE' , "%".$searchdate."%");
+                    }
+                    $productsEstimates=$productsEstimates->get();
+                    //->toArray();
             /**
                 当月の着地想定トータル
             */
-
-                $productsEstimateTotals = Dailyestimate::select(DB::raw("date, product_id,
+        $productsEstimateTotals = DB::table(
+                                DB::raw("
+                                    (select (imp/". $ratio .") as estimate_imp,
+                                    (click/". $ratio .") as estimate_click,
+                                    (cv/". $ratio .") as estimate_cv,
+                                    ((cv/". $ratio .")/(click/". $ratio .")*100) as estimate_cvr, 
+                                    ((click/". $ratio .")/(imp/". $ratio .")*100) as estimate_ctr,
+                                    (cost/". $ratio .") as estimate_cost,
+                                    products.product,
+                                    products.id as product_id ,date from monthlydatas
+                                    inner join products on monthlydatas.product_id = products.id
+                                    where products.product_base_id = ".$id."
+                                    and monthlydatas.date LIKE '%".$searchdate."%') as estimate_table")
+                          )
+                        ->select(DB::raw("date, product_id,
+                        sum(estimate_imp) as total_estimate_imp,
+                        sum(estimate_click) as total_estimate_click,
+                        sum(estimate_cv) as total_estimate_cv,
+                        sum(estimate_cost) as total_estimate_cost"))->get();
+                    $productsEstimateTotals = json_decode(json_encode($productsEstimateTotals), true);
+/*                $productsEstimateTotals = Dailyestimate::select(DB::raw("date, product_id,
                         sum(estimate_imp) as total_estimate_imp,
                         sum(estimate_click) as total_estimate_click,
                         sum(estimate_cv) as total_estimate_cv,
@@ -233,7 +273,7 @@ class MonthlyController extends Controller
                         $productsEstimateTotals->where('dailyestimates.date', 'LIKE' , "%".date("Y-m-d", strtotime('-1 day'))."%");
                     }
                         $productsEstimateTotals=$productsEstimateTotals->get();
-
+*/
                 //var_dump($productsEstimateTotals->toArray());
 
         }else{
@@ -257,11 +297,11 @@ class MonthlyController extends Controller
 
                 $chart_data = $chart_data->get();
 
-/*        if( $products->isEmpty() ){
+        if( $products->isEmpty() ){
         	return view('admin.daily_error',compact('product_bases','asps','user'));
         }else{
         	return view('admin.monthly',compact('products','product_bases','asps','productsEstimates','productsEstimateTotals','productsTotals','user','chart_data'));
-        }*/
+        }
     }
     /**
     *サイト別デイリーレポートのデフォルトページを表示。

@@ -292,7 +292,12 @@
                         <td>{{ number_format($productsEstimate->estimate_cv) }}</td>
                         <td>{{ number_format($productsEstimate->estimate_cost) }}</td>
                         <!-- <td>{{ number_format($productsEstimate->estimate_approval_price) }}</td> -->
-                        <td>{{ number_format($productsEstimate->estimate_cost/$productsEstimate->estimate_cv) }}</td>
+                        <?php
+                          $t_cpa = (($productsEstimate->estimate_cost != 0 )&&($productsEstimate->estimate_cv != 0 ))? ($productsEstimate->estimate_cost/$productsEstimate->estimate_cv) * 100 : 0 ;
+                        
+
+                        ?>
+                        <td>{{ number_format($t_cpa) }}</td>
                       <?php $i++; ?>
                     </tr>
                     @endforeach
