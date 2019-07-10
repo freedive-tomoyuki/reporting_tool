@@ -70,6 +70,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth:admin'], function() {
 
     //イヤーリーレポート一覧
     Route::get( 'yearly_result','Admin\YearlyController@yearly_result')->name('admin.yearly_result');
+    Route::post( 'yearly_result','Admin\YearlyController@yearly_result_search');
 
     //ASP一覧・詳細
     Route::get('asp_list','Admin\AspController@list')->name('admin.asp_list');
@@ -91,8 +92,12 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth:admin'], function() {
     Route::post('product_base/edit/{id}','Admin\ProductController@update_product_base');
     Route::get('product_delete/{product_base_id}/{asp_id}','Admin\ProductController@delete');
 
-    //CSVインポート
+    //インポート
     Route::get('csv/import','Admin\CsvImportController@index')->name('admin.csv.import');
+    //エクスポート
+    Route::get('export','Admin\ExportController@index')->name('admin.csv.export');
+    Route::post('export','Admin\ExportController@selected');
+    
     //月次
     Route::post('csv/month/import','Admin\CsvImportController@store_month');
     Route::post('csv_site/import','Admin\CsvImportController@store_month_site');
@@ -116,6 +121,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth:admin'], function() {
         $csvHeader = ['日付','案件ID','ASPID','Imp', 'Click','CV','SiteID','Site名','発生金額','承認件数','承認金額'];
         return CSV::download($data, $csvHeader, 'template_monthly_site.csv');
     });
+    Route::get('excel_test','Admin\ExportController@excel');
 });
 Route::group(['middleware' => 'auth:user'], function() {
 

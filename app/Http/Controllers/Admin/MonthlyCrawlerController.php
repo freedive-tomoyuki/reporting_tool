@@ -256,7 +256,7 @@ class MonthlyCrawlerController extends Controller
             $run->{$functionName}($request->product);
         }
         //推定値　
-        app()->call( 'App\Http\Controllers\Admin\EstimateController@dailyCal', ['product_id'=> $request->product] );
+        //app()->call( 'App\Http\Controllers\Admin\EstimateController@dailyCal', ['product_id'=> $request->product] );
 
     }
 
@@ -278,7 +278,7 @@ class MonthlyCrawlerController extends Controller
             $run->{$functionName}($product["product_base_id"]);
           }
 
-          app()->call( 'App\Http\Controllers\Admin\EstimateController@dailyCal', ['product_id'=> $product["product_base_id"]] );
+          //app()->call( 'App\Http\Controllers\Admin\EstimateController@dailyCal', ['product_id'=> $product["product_base_id"]] );
       }
     }
 }

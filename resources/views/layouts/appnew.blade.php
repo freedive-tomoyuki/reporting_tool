@@ -83,13 +83,19 @@
 				<em class="fa fa-list">&nbsp;</em> レポート<span data-toggle="collapse" href="#sub-item-1" class="icon pull-right"><em class="fa fa-plus"></em></span>
 				</a>
 				<ul class="children collapse in" id="sub-item-1">
+					<li
+					@if( Request::path() ==  "admin/yearly_result" )
+						class="active"
+					@endif><a class="" href="/admin/yearly_result">
+						<span class="fa fa-arrow-right">&nbsp;</span> 年間
+					</a></li>
 					<li 
 					@if( Request::path() ==  "admin/daily_result" )
 						class="active"
 					@endif><a class="" href="/admin/daily_result">
 						<span class="fa fa-arrow-right">&nbsp;</span> 日次（案件別）
 					</a></li>
-					<li
+					<li 
 					@if( Request::path() ==  "admin/daily_result_site" )
 						class="active"
 					@endif><a class="" href="/admin/daily_result_site">
@@ -107,6 +113,7 @@
 					@endif><a class="" href="/admin/monthly_result_site">
 						<span class="fa fa-arrow-right">&nbsp;</span> 月次（サイト）
 					</a></li>
+
 				</ul>
 			</li>
 			<li 
@@ -123,7 +130,12 @@
 			@if( strpos( Request::path() ,'admin/csv') !== false)
 				class="active"
 			@endif
-			><a href="{{ route('admin.csv.import') }}"><em class="fa fa-folder">&nbsp;</em> CSVインポート</a></li>
+			><a href="{{ route('admin.csv.import') }}"><em class="fa fa-folder">&nbsp;</em> インポート</a></li>
+			<li 
+			@if( strpos( Request::path() ,'admin/csv') !== false)
+				class="active"
+			@endif
+			><a href="{{ route('admin.csv.export') }}"><em class="fa fa-folder">&nbsp;</em> エクスポート</a></li>
 			<li
 			@if( Request::path() == "admin/register" )
 				class="active"
