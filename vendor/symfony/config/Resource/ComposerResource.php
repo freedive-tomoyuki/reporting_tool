@@ -15,10 +15,8 @@ namespace Symfony\Component\Config\Resource;
  * ComposerResource tracks the PHP version and Composer dependencies.
  *
  * @author Nicolas Grekas <p@tchwork.com>
- *
- * @final since Symfony 4.3
  */
-class ComposerResource implements SelfCheckingResourceInterface
+class ComposerResource implements SelfCheckingResourceInterface, \Serializable
 {
     private $vendors;
 
@@ -51,6 +49,22 @@ class ComposerResource implements SelfCheckingResourceInterface
         self::refresh();
 
         return self::$runtimeVendors === $this->vendors;
+    }
+
+    /**
+     * @internal
+     */
+    public function serialize()
+    {
+        return serialize($this->vendors);
+    }
+
+    /**
+     * @internal
+     */
+    public function unserialize($serialized)
+    {
+        $this->vendors = unserialize($serialized);
     }
 
     private static function refresh()

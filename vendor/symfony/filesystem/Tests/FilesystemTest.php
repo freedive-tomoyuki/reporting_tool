@@ -1332,50 +1332,44 @@ class FilesystemTest extends FilesystemTestCase
         $this->assertFileNotExists($targetPath.'target');
     }
 
-    public function testMirrorAvoidCopyingTargetDirectoryIfInSourceDirectory()
+    public function testMirrorWithCustomIterator()
     {
         $sourcePath = $this->workspace.\DIRECTORY_SEPARATOR.'source'.\DIRECTORY_SEPARATOR;
-        $directory = $sourcePath.'directory'.\DIRECTORY_SEPARATOR;
-        $file1 = $directory.'file1';
-        $file2 = $sourcePath.'file2';
-
         mkdir($sourcePath);
-        mkdir($directory);
-        file_put_contents($file1, 'FILE1');
-        file_put_contents($file2, 'FILE2');
 
-        $targetPath = $sourcePath.'target'.\DIRECTORY_SEPARATOR;
+        $file = $sourcePath.\DIRECTORY_SEPARATOR.'file';
+        file_put_contents($file, 'FILE');
 
-        if ('\\' !== \DIRECTORY_SEPARATOR) {
-            $this->filesystem->symlink($targetPath, $sourcePath.'target_simlink');
-        }
+        $targetPath = $this->workspace.\DIRECTORY_SEPARATOR.'target'.\DIRECTORY_SEPARATOR;
 
-        $this->filesystem->mirror($sourcePath, $targetPath, null, ['delete' => true]);
+        $splFile = new \SplFileInfo($file);
+        $iterator = new \ArrayObject([$splFile]);
 
-        $this->assertTrue($this->filesystem->exists($targetPath));
-        $this->assertTrue($this->filesystem->exists($targetPath.'directory'));
+        $this->filesystem->mirror($sourcePath, $targetPath, $iterator);
 
-        $this->assertFileEquals($file1, $targetPath.'directory'.\DIRECTORY_SEPARATOR.'file1');
-        $this->assertFileEquals($file2, $targetPath.'file2');
-
-        $this->assertFalse($this->filesystem->exists($targetPath.'target_simlink'));
-        $this->assertFalse($this->filesystem->exists($targetPath.'target'));
+        $this->assertTrue(is_dir($targetPath));
+        $this->assertFileEquals($file, $targetPath.\DIRECTORY_SEPARATOR.'file');
     }
 
-    public function testMirrorFromSubdirectoryInToParentDirectory()
+    /**
+     * @expectedException \Symfony\Component\Filesystem\Exception\IOException
+     * @expectedExceptionMessageRegExp /Unable to mirror "(.*)" directory/
+     */
+    public function testMirrorWithCustomIteratorWithRelativePath()
     {
-        $targetPath = $this->workspace.\DIRECTORY_SEPARATOR.'foo'.\DIRECTORY_SEPARATOR;
-        $sourcePath = $targetPath.'bar'.\DIRECTORY_SEPARATOR;
-        $file1 = $sourcePath.'file1';
-        $file2 = $sourcePath.'file2';
+        $sourcePath = $this->workspace.\DIRECTORY_SEPARATOR.'source'.\DIRECTORY_SEPARATOR.'..'.\DIRECTORY_SEPARATOR.'source'.\DIRECTORY_SEPARATOR;
+        $realSourcePath = $this->workspace.\DIRECTORY_SEPARATOR.'source'.\DIRECTORY_SEPARATOR;
+        mkdir($realSourcePath);
 
-        $this->filesystem->mkdir($sourcePath);
-        file_put_contents($file1, 'FILE1');
-        file_put_contents($file2, 'FILE2');
+        $file = $realSourcePath.'file';
+        file_put_contents($file, 'FILE');
 
-        $this->filesystem->mirror($sourcePath, $targetPath);
+        $targetPath = $this->workspace.\DIRECTORY_SEPARATOR.'target'.\DIRECTORY_SEPARATOR.'..'.\DIRECTORY_SEPARATOR.'target'.\DIRECTORY_SEPARATOR;
 
-        $this->assertFileEquals($file1, $targetPath.'file1');
+        $splFile = new \SplFileInfo($file);
+        $iterator = new \ArrayObject([$splFile]);
+
+        $this->filesystem->mirror($sourcePath, $targetPath, $iterator);
     }
 
     /**
@@ -1524,10 +1518,6 @@ class FilesystemTest extends FilesystemTestCase
         }
     }
 
-    /**
-     * @group legacy
-     * @expectedDeprecation Calling "Symfony\Component\Filesystem\Filesystem::dumpFile()" with an array in the $content argument is deprecated since Symfony 4.3.
-     */
     public function testDumpFileWithArray()
     {
         $filename = $this->workspace.\DIRECTORY_SEPARATOR.'foo'.\DIRECTORY_SEPARATOR.'baz.txt';
@@ -1599,60 +1589,6 @@ class FilesystemTest extends FilesystemTestCase
         $this->filesystem->dumpFile($filename, 'foo');
 
         $this->filesystem->appendToFile($filename, 'bar');
-
-        $this->assertFileExists($filename);
-        $this->assertStringEqualsFile($filename, 'foobar');
-
-        // skip mode check on Windows
-        if ('\\' !== \DIRECTORY_SEPARATOR) {
-            $this->assertFilePermissions(664, $filename);
-            umask($oldMask);
-        }
-    }
-
-    /**
-     * @group legacy
-     * @expectedDeprecation Calling "Symfony\Component\Filesystem\Filesystem::appendToFile()" with an array in the $content argument is deprecated since Symfony 4.3.
-     */
-    public function testAppendToFileWithArray()
-    {
-        $filename = $this->workspace.\DIRECTORY_SEPARATOR.'foo'.\DIRECTORY_SEPARATOR.'bar.txt';
-
-        // skip mode check on Windows
-        if ('\\' !== \DIRECTORY_SEPARATOR) {
-            $oldMask = umask(0002);
-        }
-
-        $this->filesystem->dumpFile($filename, 'foo');
-
-        $this->filesystem->appendToFile($filename, ['bar']);
-
-        $this->assertFileExists($filename);
-        $this->assertStringEqualsFile($filename, 'foobar');
-
-        // skip mode check on Windows
-        if ('\\' !== \DIRECTORY_SEPARATOR) {
-            $this->assertFilePermissions(664, $filename);
-            umask($oldMask);
-        }
-    }
-
-    public function testAppendToFileWithResource()
-    {
-        $filename = $this->workspace.\DIRECTORY_SEPARATOR.'foo'.\DIRECTORY_SEPARATOR.'bar.txt';
-
-        // skip mode check on Windows
-        if ('\\' !== \DIRECTORY_SEPARATOR) {
-            $oldMask = umask(0002);
-        }
-
-        $this->filesystem->dumpFile($filename, 'foo');
-
-        $resource = fopen('php://memory', 'rw');
-        fwrite($resource, 'bar');
-        fseek($resource, 0);
-
-        $this->filesystem->appendToFile($filename, $resource);
 
         $this->assertFileExists($filename);
         $this->assertStringEqualsFile($filename, 'foobar');

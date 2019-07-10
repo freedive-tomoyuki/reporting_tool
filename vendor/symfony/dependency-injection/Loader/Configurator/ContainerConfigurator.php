@@ -116,17 +116,9 @@ function iterator(array $values): IteratorArgument
 /**
  * Creates a lazy iterator by tag name.
  */
-function tagged(string $tag, string $indexAttribute = null, string $defaultIndexMethod = null): TaggedIteratorArgument
+function tagged(string $tag): TaggedIteratorArgument
 {
-    return new TaggedIteratorArgument($tag, $indexAttribute, $defaultIndexMethod);
-}
-
-/**
- * Creates a service locator by tag name.
- */
-function tagged_locator(string $tag, string $indexAttribute, string $defaultIndexMethod = null): ServiceLocatorArgument
-{
-    return new ServiceLocatorArgument(new TaggedIteratorArgument($tag, $indexAttribute, $defaultIndexMethod, true));
+    return new TaggedIteratorArgument($tag);
 }
 
 /**

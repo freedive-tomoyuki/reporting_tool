@@ -46,7 +46,7 @@ class Chrome implements Driver
             DesiredCapabilities::chrome()->setCapability(
                 ChromeOptions::CAPABILITY,
                 $options
-            )
+            ), 90000, 90000
         );
     }
 

@@ -16,7 +16,6 @@ use Symfony\Component\DependencyInjection\Argument\BoundArgument;
 use Symfony\Component\DependencyInjection\Compiler\AutowireRequiredMethodsPass;
 use Symfony\Component\DependencyInjection\Compiler\ResolveBindingsPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\DependencyInjection\Tests\Fixtures\CaseSensitiveClass;
 use Symfony\Component\DependencyInjection\Tests\Fixtures\NamedArgumentsDummy;
@@ -50,7 +49,7 @@ class ResolveBindingsPassTest extends TestCase
 
     /**
      * @expectedException \Symfony\Component\DependencyInjection\Exception\InvalidArgumentException
-     * @expectedExceptionMessage A binding is configured for an argument named "$quz" for service "Symfony\Component\DependencyInjection\Tests\Fixtures\NamedArgumentsDummy", but no corresponding argument has been found. It may be unused and should be removed, or it may have a typo.
+     * @expectedExceptionMessage Unused binding "$quz" in service "Symfony\Component\DependencyInjection\Tests\Fixtures\NamedArgumentsDummy".
      */
     public function testUnusedBinding()
     {
@@ -113,23 +112,27 @@ class ResolveBindingsPassTest extends TestCase
         $this->assertEquals([['setDefaultLocale', ['fr']]], $definition->getMethodCalls());
     }
 
-    /**
-     * @expectedException \Symfony\Component\DependencyInjection\Exception\RuntimeException
-     * @exceptedExceptionMessage Invalid service "Symfony\Component\DependencyInjection\Tests\Fixtures\NamedArgumentsDummy": method "setLogger()" does not exist.
-     */
-    public function testWithNonExistingSetterAndBinding()
+    public function testTupleBinding()
     {
         $container = new ContainerBuilder();
 
         $bindings = [
-            '$c' => (new Definition('logger'))->setFactory('logger'),
+            '$c' => new BoundArgument(new Reference('bar')),
+            CaseSensitiveClass::class.'$c' => new BoundArgument(new Reference('foo')),
         ];
 
         $definition = $container->register(NamedArgumentsDummy::class, NamedArgumentsDummy::class);
-        $definition->addMethodCall('setLogger');
+        $definition->addMethodCall('setSensitiveClass');
+        $definition->addMethodCall('setAnotherC');
         $definition->setBindings($bindings);
 
         $pass = new ResolveBindingsPass();
         $pass->process($container);
+
+        $expected = [
+            ['setSensitiveClass', [new Reference('foo')]],
+            ['setAnotherC', [new Reference('bar')]],
+        ];
+        $this->assertEquals($expected, $definition->getMethodCalls());
     }
 }

@@ -56,7 +56,7 @@ class AnnotationFileLoaderTest extends AbstractAnnotationLoaderTest
         $route = new Route(['path' => '/path/to/{id}']);
         $this->reader->expects($this->once())->method('getClassAnnotation');
         $this->reader->expects($this->once())->method('getMethodAnnotations')
-            ->willReturn([$route]);
+            ->will($this->returnValue([$route]));
 
         $this->loader->load(__DIR__.'/../Fixtures/OtherAnnotatedClasses/VariadicClass.php');
     }
@@ -70,14 +70,6 @@ class AnnotationFileLoaderTest extends AbstractAnnotationLoaderTest
         $this->reader->expects($this->never())->method('getMethodAnnotations');
 
         $this->loader->load(__DIR__.'/../Fixtures/OtherAnnotatedClasses/AnonymousClassInTrait.php');
-    }
-
-    public function testLoadAbstractClass()
-    {
-        $this->reader->expects($this->never())->method('getClassAnnotation');
-        $this->reader->expects($this->never())->method('getMethodAnnotations');
-
-        $this->loader->load(__DIR__.'/../Fixtures/AnnotatedClasses/AbstractClass.php');
     }
 
     public function testSupports()

@@ -175,15 +175,9 @@ class XmlFileLoader extends FileLoader
         if (null === $defaultsNode = $xpath->query('//container:services/container:defaults')->item(0)) {
             return [];
         }
-
-        $bindings = [];
-        foreach ($this->getArgumentsAsPhp($defaultsNode, 'bind', $file) as $argument => $value) {
-            $bindings[$argument] = new BoundArgument($value, true, BoundArgument::DEFAULTS_BINDING, $file);
-        }
-
         $defaults = [
             'tags' => $this->getChildren($defaultsNode, 'tag'),
-            'bind' => $bindings,
+            'bind' => array_map(function ($v) { return new BoundArgument($v); }, $this->getArgumentsAsPhp($defaultsNode, 'bind', $file)),
         ];
 
         foreach ($defaults['tags'] as $tag) {
@@ -224,10 +218,6 @@ class XmlFileLoader extends FileLoader
                 $alias->setPublic(XmlUtils::phpize($publicAttr));
             } elseif (isset($defaults['public'])) {
                 $alias->setPublic($defaults['public']);
-            }
-
-            if ($deprecated = $this->getChildren($service, 'deprecated')) {
-                $alias->setDeprecated(true, $deprecated[0]->nodeValue ?: null);
             }
 
             return;
@@ -323,7 +313,7 @@ class XmlFileLoader extends FileLoader
                     $class = $factory->hasAttribute('class') ? $factory->getAttribute('class') : null;
                 }
 
-                $definition->setFactory([$class, $factory->getAttribute('method') ?: '__invoke']);
+                $definition->setFactory([$class, $factory->getAttribute('method')]);
             }
         }
 
@@ -338,12 +328,12 @@ class XmlFileLoader extends FileLoader
                     $class = $configurator->getAttribute('class');
                 }
 
-                $definition->setConfigurator([$class, $configurator->getAttribute('method') ?: '__invoke']);
+                $definition->setConfigurator([$class, $configurator->getAttribute('method')]);
             }
         }
 
         foreach ($this->getChildren($service, 'call') as $call) {
-            $definition->addMethodCall($call->getAttribute('method'), $this->getArgumentsAsPhp($call, 'argument', $file), XmlUtils::phpize($call->getAttribute('returns-clone')));
+            $definition->addMethodCall($call->getAttribute('method'), $this->getArgumentsAsPhp($call, 'argument', $file));
         }
 
         $tags = $this->getChildren($service, 'tag');
@@ -374,11 +364,6 @@ class XmlFileLoader extends FileLoader
         }
 
         $bindings = $this->getArgumentsAsPhp($service, 'bind', $file);
-        $bindingType = $this->isLoadingInstanceof ? BoundArgument::INSTANCEOF_BINDING : BoundArgument::SERVICE_BINDING;
-        foreach ($bindings as $argument => $value) {
-            $bindings[$argument] = new BoundArgument($value, true, $bindingType, $file);
-        }
-
         if (isset($defaults['bind'])) {
             // deep clone, to avoid multiple process of the same instance in the passes
             $bindings = array_merge(unserialize(serialize($defaults['bind'])), $bindings);
@@ -545,19 +530,10 @@ class XmlFileLoader extends FileLoader
                     }
                     break;
                 case 'tagged':
-                case 'tagged_locator':
-                    $type = $arg->getAttribute('type');
-                    $forLocator = 'tagged_locator' === $type;
-
                     if (!$arg->getAttribute('tag')) {
-                        throw new InvalidArgumentException(sprintf('Tag "<%s>" with type="%s" has no or empty "tag" attribute in "%s".', $name, $type, $file));
+                        throw new InvalidArgumentException(sprintf('Tag "<%s>" with type="tagged" has no or empty "tag" attribute in "%s".', $name, $file));
                     }
-
-                    $arguments[$key] = new TaggedIteratorArgument($arg->getAttribute('tag'), $arg->getAttribute('index-by') ?: null, $arg->getAttribute('default-index-method') ?: null, $forLocator);
-
-                    if ($forLocator) {
-                        $arguments[$key] = new ServiceLocatorArgument($arguments[$key]);
-                    }
+                    $arguments[$key] = new TaggedIteratorArgument($arg->getAttribute('tag'));
                     break;
                 case 'binary':
                     if (false === $value = base64_decode($arg->nodeValue)) {
@@ -620,8 +596,7 @@ class XmlFileLoader extends FileLoader
                 }
 
                 if (($extension = $this->container->getExtension($items[$i])) && false !== $extension->getXsdValidationBasePath()) {
-                    $ns = $extension->getNamespace();
-                    $path = str_replace([$ns, str_replace('http://', 'https://', $ns)], str_replace('\\', '/', $extension->getXsdValidationBasePath()).'/', $items[$i + 1]);
+                    $path = str_replace($extension->getNamespace(), str_replace('\\', '/', $extension->getXsdValidationBasePath()).'/', $items[$i + 1]);
 
                     if (!is_file($path)) {
                         throw new RuntimeException(sprintf('Extension "%s" references a non-existent XSD file "%s"', \get_class($extension), $path));
@@ -693,10 +668,7 @@ EOF
         }
 
         foreach ($alias->childNodes as $child) {
-            if (!$child instanceof \DOMElement || self::NS !== $child->namespaceURI) {
-                continue;
-            }
-            if (!\in_array($child->localName, ['deprecated'], true)) {
+            if ($child instanceof \DOMElement && self::NS === $child->namespaceURI) {
                 throw new InvalidArgumentException(sprintf('Invalid child element "%s" defined for alias "%s" in "%s".', $child->localName, $alias->getAttribute('id'), $file));
             }
         }

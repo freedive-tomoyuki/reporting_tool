@@ -196,7 +196,7 @@ abstract class AnnotationClassLoader implements LoaderInterface
                 continue;
             }
             foreach ($paths as $locale => $path) {
-                if (preg_match(sprintf('/\{%s(?:<.*?>)?\}/', preg_quote($param->name)), $path)) {
+                if (false !== strpos($path, sprintf('{%s}', $param->name))) {
                     $defaults[$param->name] = $param->getDefaultValue();
                     break;
                 }
@@ -248,8 +248,7 @@ abstract class AnnotationClassLoader implements LoaderInterface
      */
     protected function getDefaultRouteName(\ReflectionClass $class, \ReflectionMethod $method)
     {
-        $name = str_replace('\\', '_', $class->name).'_'.$method->name;
-        $name = \function_exists('mb_strtolower') && preg_match('//u', $name) ? mb_strtolower($name, 'UTF-8') : strtolower($name);
+        $name = strtolower(str_replace('\\', '_', $class->name).'_'.$method->name);
         if ($this->defaultRouteIndex > 0) {
             $name .= '_'.$this->defaultRouteIndex;
         }

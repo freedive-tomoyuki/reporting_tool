@@ -158,7 +158,7 @@ class ResourceCheckerConfigCache implements ConfigCacheInterface
         $meta = false;
         $content = file_get_contents($file);
         $signalingException = new \UnexpectedValueException();
-        $prevUnserializeHandler = ini_set('unserialize_callback_func', self::class.'::handleUnserializeCallback');
+        $prevUnserializeHandler = ini_set('unserialize_callback_func', '');
         $prevErrorHandler = set_error_handler(function ($type, $msg, $file, $line, $context = []) use (&$prevErrorHandler, $signalingException) {
             if (__FILE__ === $file) {
                 throw $signalingException;
@@ -179,13 +179,5 @@ class ResourceCheckerConfigCache implements ConfigCacheInterface
         }
 
         return $meta;
-    }
-
-    /**
-     * @internal
-     */
-    public static function handleUnserializeCallback($class)
-    {
-        trigger_error('Class not found: '.$class);
     }
 }

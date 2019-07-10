@@ -139,11 +139,7 @@ class Worker
         // We will register a signal handler for the alarm signal so that we can kill this
         // process if it is running too long because it has frozen. This uses the async
         // signals supported in recent versions of PHP to accomplish it conveniently.
-        pcntl_signal(SIGALRM, function () use ($job, $options) {
-            $this->markJobAsFailedIfWillExceedMaxAttempts(
-                $job->getConnectionName(), $job, (int) $options->maxTries, $this->maxAttemptsExceededException($job)
-            );
-
+        pcntl_signal(SIGALRM, function () {
             $this->kill(1);
         });
 
@@ -371,11 +367,7 @@ class Worker
             // so it is not lost entirely. This'll let the job be retried at a later time by
             // another listener (or this same one). We will re-throw this exception after.
             if (! $job->isDeleted() && ! $job->isReleased() && ! $job->hasFailed()) {
-                $job->release(
-                    method_exists($job, 'delaySeconds') && ! is_null($job->delaySeconds())
-                                ? $job->delaySeconds()
-                                : $options->delay
-                );
+                $job->release($options->delay);
             }
         }
 
@@ -406,7 +398,9 @@ class Worker
             return;
         }
 
-        $this->failJob($job, $e = $this->maxAttemptsExceededException($job));
+        $this->failJob($job, $e = new MaxAttemptsExceededException(
+            $job->resolveName().' has been attempted too many times or run too long. The job may have previously timed out.'
+        ));
 
         throw $e;
     }
@@ -582,19 +576,6 @@ class Worker
         }
 
         exit($status);
-    }
-
-    /**
-     * Create an instance of MaxAttemptsExceededException.
-     *
-     * @param  \Illuminate\Contracts\Queue\Job|null  $job
-     * @return \Illuminate\Queue\MaxAttemptsExceededException
-     */
-    protected function maxAttemptsExceededException($job)
-    {
-        return new MaxAttemptsExceededException(
-            $job->resolveName().' has been attempted too many times or run too long. The job may have previously timed out.'
-        );
     }
 
     /**

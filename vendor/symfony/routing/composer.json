@@ -24,7 +24,7 @@
         "symfony/yaml": "~3.4|~4.0",
         "symfony/expression-language": "~3.4|~4.0",
         "symfony/dependency-injection": "~3.4|~4.0",
-        "doctrine/annotations": "~1.2",
+        "doctrine/annotations": "~1.0",
         "psr/log": "~1.0"
     },
     "conflict": {
@@ -37,7 +37,8 @@
         "symfony/config": "For using the all-in-one router or any loader",
         "symfony/yaml": "For using the YAML loader",
         "symfony/expression-language": "For using expression matching",
-        "doctrine/annotations": "For using the annotation loader"
+        "doctrine/annotations": "For using the annotation loader",
+        "symfony/dependency-injection": "For loading routes from a service"
     },
     "autoload": {
         "psr-4": { "Symfony\\Component\\Routing\\": "" },
@@ -48,7 +49,7 @@
     "minimum-stability": "dev",
     "extra": {
         "branch-alias": {
-            "dev-master": "4.3-dev"
+            "dev-master": "4.2-dev"
         }
     }
 }

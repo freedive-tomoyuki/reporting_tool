@@ -119,11 +119,7 @@ class Frame implements Serializable
                 return null;
             }
 
-            try {
-                $this->fileContentsCache = file_get_contents($filePath);
-            } catch (ErrorException $exception) {
-                // Internal file paths of PHP extensions cannot be opened
-            }
+            $this->fileContentsCache = file_get_contents($filePath);
         }
 
         return $this->fileContentsCache;

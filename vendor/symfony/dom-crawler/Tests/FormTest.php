@@ -862,13 +862,13 @@ class FormTest extends TestCase
         $field
             ->expects($this->any())
             ->method('getName')
-            ->willReturn($name)
+            ->will($this->returnValue($name))
         ;
 
         $field
             ->expects($this->any())
             ->method('getValue')
-            ->willReturn($value)
+            ->will($this->returnValue($value))
         ;
 
         return $field;

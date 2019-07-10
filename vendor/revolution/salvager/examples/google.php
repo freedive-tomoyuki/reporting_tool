@@ -22,7 +22,7 @@ $options = [
     '--disable-gpu',
     '--headless',
     '--window-size=1280,720',
-
+    '--lang=ja_JP',
     // Docker
     '--no-sandbox',
 ];

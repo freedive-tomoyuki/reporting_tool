@@ -27,18 +27,11 @@ use Symfony\Component\DependencyInjection\ServiceLocator;
  */
 final class ServiceLocatorTagPass extends AbstractRecursivePass
 {
-    use PriorityTaggedServiceTrait;
-
     protected function processValue($value, $isRoot = false)
     {
         if ($value instanceof ServiceLocatorArgument) {
-            if ($value->getTaggedIteratorArgument()) {
-                $value->setValues($this->findAndSortTaggedServices($value->getTaggedIteratorArgument(), $this->container));
-            }
-
             return self::register($this->container, $value->getValues());
         }
-
         if (!$value instanceof Definition || !$value->hasTag('container.service_locator')) {
             return parent::processValue($value, $isRoot);
         }
@@ -108,11 +101,7 @@ final class ServiceLocatorTagPass extends AbstractRecursivePass
             ->setPublic(false)
             ->addTag('container.service_locator');
 
-        if (null !== $callerId && $container->hasDefinition($callerId)) {
-            $locator->setBindings($container->getDefinition($callerId)->getBindings());
-        }
-
-        if (!$container->hasDefinition($id = '.service_locator.'.ContainerBuilder::hash($locator))) {
+        if (!$container->has($id = '.service_locator.'.ContainerBuilder::hash($locator))) {
             $container->setDefinition($id, $locator);
         }
 

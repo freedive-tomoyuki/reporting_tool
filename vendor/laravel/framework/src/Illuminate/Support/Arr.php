@@ -55,10 +55,10 @@ class Arr
                 continue;
             }
 
-            $results[] = $values;
+            $results = array_merge($results, $values);
         }
 
-        return array_merge([], ...$results);
+        return $results;
     }
 
     /**
@@ -213,14 +213,10 @@ class Arr
 
             if (! is_array($item)) {
                 $result[] = $item;
+            } elseif ($depth === 1) {
+                $result = array_merge($result, array_values($item));
             } else {
-                $values = $depth === 1
-                    ? array_values($item)
-                    : static::flatten($item, $depth - 1);
-
-                foreach ($values as $value) {
-                    $result[] = $value;
-                }
+                $result = array_merge($result, static::flatten($item, $depth - 1));
             }
         }
 
@@ -275,7 +271,7 @@ class Arr
      * Get an item from an array using "dot" notation.
      *
      * @param  \ArrayAccess|array  $array
-     * @param  string|int  $key
+     * @param  string  $key
      * @param  mixed   $default
      * @return mixed
      */

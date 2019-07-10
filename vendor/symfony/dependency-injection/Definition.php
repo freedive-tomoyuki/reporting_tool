@@ -47,7 +47,7 @@ class Definition
 
     protected $arguments = [];
 
-    private static $defaultDeprecationTemplate = 'The "%service_id%" service is deprecated. You should stop using it, as it will be removed in the future.';
+    private static $defaultDeprecationTemplate = 'The "%service_id%" service is deprecated. You should stop using it, as it will soon be removed.';
 
     /**
      * @internal
@@ -95,7 +95,7 @@ class Definition
     /**
      * Sets a factory.
      *
-     * @param string|array|Reference $factory A PHP function, reference or an array containing a class/Reference and a method to call
+     * @param string|array $factory A PHP function or an array containing a class/Reference and a method to call
      *
      * @return $this
      */
@@ -105,8 +105,6 @@ class Definition
 
         if (\is_string($factory) && false !== strpos($factory, '::')) {
             $factory = explode('::', $factory, 2);
-        } elseif ($factory instanceof Reference) {
-            $factory = [$factory, '__invoke'];
         }
 
         $this->factory = $factory;
@@ -332,7 +330,7 @@ class Definition
     {
         $this->calls = [];
         foreach ($calls as $call) {
-            $this->addMethodCall($call[0], $call[1], $call[2] ?? false);
+            $this->addMethodCall($call[0], $call[1]);
         }
 
         return $this;
@@ -341,20 +339,19 @@ class Definition
     /**
      * Adds a method to call after service initialization.
      *
-     * @param string $method       The method name to call
-     * @param array  $arguments    An array of arguments to pass to the method call
-     * @param bool   $returnsClone Whether the call returns the service instance or not
+     * @param string $method    The method name to call
+     * @param array  $arguments An array of arguments to pass to the method call
      *
      * @return $this
      *
      * @throws InvalidArgumentException on empty $method param
      */
-    public function addMethodCall($method, array $arguments = []/*, bool $returnsClone = false*/)
+    public function addMethodCall($method, array $arguments = [])
     {
         if (empty($method)) {
             throw new InvalidArgumentException('Method name cannot be empty.');
         }
-        $this->calls[] = 2 < \func_num_args() && func_get_arg(2) ? [$method, $arguments, true] : [$method, $arguments];
+        $this->calls[] = [$method, $arguments];
 
         return $this;
     }
@@ -785,7 +782,7 @@ class Definition
     /**
      * Sets a configurator to call after the service is fully initialized.
      *
-     * @param string|array|Reference $configurator A PHP function, reference or an array containing a class/Reference and a method to call
+     * @param string|array $configurator A PHP callable
      *
      * @return $this
      */
@@ -795,8 +792,6 @@ class Definition
 
         if (\is_string($configurator) && false !== strpos($configurator, '::')) {
             $configurator = explode('::', $configurator, 2);
-        } elseif ($configurator instanceof Reference) {
-            $configurator = [$configurator, '__invoke'];
         }
 
         $this->configurator = $configurator;
@@ -881,17 +876,13 @@ class Definition
     /**
      * Add an error that occurred when building this Definition.
      *
-     * @param string|\Closure|self $error
+     * @param string $error
      *
      * @return $this
      */
     public function addError($error)
     {
-        if ($error instanceof self) {
-            $this->errors = array_merge($this->errors, $error->errors);
-        } else {
-            $this->errors[] = $error;
-        }
+        $this->errors[] = $error;
 
         return $this;
     }
@@ -903,19 +894,6 @@ class Definition
      */
     public function getErrors()
     {
-        foreach ($this->errors as $i => $error) {
-            if ($error instanceof \Closure) {
-                $this->errors[$i] = (string) $error();
-            } elseif (!\is_string($error)) {
-                $this->errors[$i] = (string) $error;
-            }
-        }
-
         return $this->errors;
-    }
-
-    public function hasErrors(): bool
-    {
-        return (bool) $this->errors;
     }
 }

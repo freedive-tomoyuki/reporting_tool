@@ -278,39 +278,6 @@ class SetterInjection extends SetterInjectionParent
     }
 }
 
-class Wither
-{
-    public $foo;
-
-    /**
-     * @required
-     */
-    public function setFoo(Foo $foo)
-    {
-    }
-
-    /**
-     * @required
-     * @return static
-     */
-    public function withFoo1(Foo $foo)
-    {
-        return $this->withFoo2($foo);
-    }
-
-    /**
-     * @required
-     * @return static
-     */
-    public function withFoo2(Foo $foo)
-    {
-        $new = clone $this;
-        $new->foo = $foo;
-
-        return $new;
-    }
-}
-
 class SetterInjectionParent
 {
     /** @required*/
@@ -416,13 +383,6 @@ class DecoratedDecorator implements DecoratorInterface
 class NonAutowirableDecorator implements DecoratorInterface
 {
     public function __construct(LoggerInterface $logger, DecoratorInterface $decorated1, DecoratorInterface $decorated2)
-    {
-    }
-}
-
-final class ElsaAction
-{
-    public function __construct(NotExisting $notExisting)
     {
     }
 }

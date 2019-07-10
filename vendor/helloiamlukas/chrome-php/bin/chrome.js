@@ -65,7 +65,7 @@ const runChrome = async () => {
                 // Pass the Languages Test.
                 // Overwrite the `plugins` property to use a custom getter.
                 Object.defineProperty(navigator, 'languages', {
-                    get: () => ['en-US', 'en'],
+                    get: () => ['en-US', 'en','ja'],
                 });
             });
             /* */

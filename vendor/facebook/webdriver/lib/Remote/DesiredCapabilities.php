@@ -156,7 +156,6 @@ class DesiredCapabilities implements WebDriverCapabilities
     }
 
     /**
-     * @todo Remove side-effects - not change ie. ChromeOptions::CAPABILITY from instance of ChromeOptions to an array
      * @return array
      */
     public function toArray()

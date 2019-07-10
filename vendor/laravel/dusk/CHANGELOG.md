@@ -1,18 +1,6 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/dusk/compare/v5.2.0...5.0)
-
-
-## [v5.2.0 (2019-06-25)](https://github.com/laravel/dusk/compare/v5.1.1...v5.2.0)
-
-### Added
-- Add option to fullsize the browser ([#655](https://github.com/laravel/dusk/pull/655))
-
-
-## [v5.1.1 (2019-06-14)](https://github.com/laravel/dusk/compare/v5.1.0...v5.1.1)
-
-### Fixed
-- Add latest version of Facebook Webdriver ([#654](https://github.com/laravel/dusk/pull/654))
+## [Unreleased](https://github.com/laravel/dusk/compare/v5.1.0...5.0)
 
 
 ## [v5.1.0 (2019-05-02)](https://github.com/laravel/dusk/compare/v5.0.3...v5.1.0)
