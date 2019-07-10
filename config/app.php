@@ -26,7 +26,7 @@ return [
     |
     */
 
-    'env' => env('APP_ENV', 'production'),
+    'env' => env('APP_ENV', 'development'),
 
     /*
     |--------------------------------------------------------------------------
@@ -237,7 +237,7 @@ return [
         'PhantomJs' => Josh\Component\PhantomJs\Facade\PhantomJs::class,
         'FastExcel' => Rap2hpoutre\FastExcel\Facades\FastExcel::class,
         'CSV'        => App\Facades\CSV::class,
-        //'Excel' => Maatwebsite\Excel\Facades\Excel::class,
+        'Excel' => Maatwebsite\Excel\Facades\Excel::class,
     ],
 
 ];

@@ -10,15 +10,14 @@ use App\Dailyestimate;
 //use App\DailyTotal;
 use App\DailyEstimateTotal;
 use App\ProductBase;
+use App\Product;
 use App\Asp;
 use App\Monthlydata;
 use App\Monthlysite;
-use App\Http\Requests\SearchMonthlyRequest;
-use App\Http\Requests\SearchMonthlySiteRequest;
-//use App\MonthlyTotal;
+use App\Http\Requests\SearchYearlyRequest;
 use DB;
 
-class MonthlyController extends Controller
+class YearlyController extends Controller
 {
     /**
     　認証確認
@@ -32,75 +31,107 @@ class MonthlyController extends Controller
     /**
         月次の基本データ表示（デフォルト）
     */
-    public function monthly_result() {
+    public function yearly_result() {
         $user = Auth::user();
 
-        $products = Monthlydata::select(['name', 'imp', 'click','cv', 'cvr', 'ctr', 'active', 'partnership','monthlydatas.created_at','products.product','products.id','price','cpa','cost','approval','approval_price','approval_rate','last_cv'])
-                    ->join('products','monthlydatas.product_id','=','products.id')
-                    ->join('asps','products.asp_id','=','asps.id')
-                    ->leftjoin(DB::raw("(select `cv` as last_cv, `product_id` from `monthlydatas` inner join `products` on `monthlydatas`.`product_id` = `products`.`id` where `product_base_id` = 3 and `monthlydatas`.`date` like '".date('Y-m-t', strtotime('-1 month'))."') AS last_month"), 'monthlydatas.product_id','=','last_month.product_id')
-                    ->where('products.product_base_id', 3)
-                    ->where('monthlydatas.date', 'LIKE' , "%".date("Y-m-d", strtotime('-1 day'))."%")
-                    ->get();//->toArray();
+         
+        $this_month = date("Ym"); 
+        $select = ''; 
+//成果発生数
+        for( $i=1 ; $i <= 12 ; $i++ ){
+            $last_date = date("Y-m-t", strtotime('-'.$i.' month'));
+            $month = date("Y年m月", strtotime('-'.$i.' month'));
+            $select .= "sum(case when date='".$last_date."' then cv else 0 end) as '".$i."'";
+            if($i != 12){
+                $select .= ',';
+            }
+        }
+        $yearly_cvs =Monthlydata::select(DB::raw($select));
+        $yearly_cvs->join('products','monthlydatas.product_id','=','products.id');
+        $yearly_cvs->where('product_base_id',3);
+        $yearly_cvs->groupBy('product_base_id');
+        $yearly_cvs = $yearly_cvs->get()->toArray();
+        $yearly_cvs = array_reverse(array_values($yearly_cvs[0]));
 
-        $productsTotals = Monthlydata::select(DB::raw("date, product_id,sum(imp) as total_imp,sum(click) as total_click,sum(cv) as total_cv,sum(active) as total_active,sum(partnership) as total_partnership,sum(price) as total_price,sum(cost) as total_cost ,sum(approval) as total_approval, sum(approval_price) as total_approval_price, sum(last_cv) as total_last_cv"))
-                    ->join('products','monthlydatas.product_id','=','products.id')
-                    ->leftjoin(DB::raw("(select `cv` as last_cv, `product_id` as pid from `monthlydatas` inner join `products` on `monthlydatas`.`product_id` = `products`.`id` where `product_base_id` = 3 and `monthlydatas`.`date` like '".date('Y-m-t', strtotime('-1 month'))."') AS last_month"), 'monthlydatas.product_id','=','last_month.pid')
-                    ->where('product_base_id', 3)
-                    ->where('monthlydatas.date', 'LIKE' , "%".date("Y-m-d",strtotime('-1 day'))."%")
-                    ->get();
+//クリック数
+        $select = '';
+        for( $i=1 ; $i <= 12 ; $i++ ){
+            $last_date = date("Y-m-t", strtotime('-'.$i.' month'));
+            $month = date("Y年m月", strtotime('-'.$i.' month'));
+            $select .= "sum(case when date='".$last_date."' then click else 0 end) as '".$i."'";
+            if($i != 12){
+                $select .= ',';
+            }
+        }
+        $yearly_clicks =Monthlydata::select(DB::raw($select));
+        $yearly_clicks->join('products','monthlydatas.product_id','=','products.id');
+        $yearly_clicks->where('product_base_id',3);
+        $yearly_clicks->groupBy('product_base_id');
+        $yearly_clicks = $yearly_clicks->get()->toArray();
+        $yearly_clicks = array_reverse(array_values($yearly_clicks[0]));
+//Imp数
+        $select = '';
+        for( $i=1 ; $i <= 12 ; $i++ ){
+            $last_date = date("Y-m-t", strtotime('-'.$i.' month'));
+            $month = date("Y年m月", strtotime('-'.$i.' month'));
+            $select .= "sum(case when date='".$last_date."' then imp else 0 end) as '".$i."'";
+            if($i != 12){
+                $select .= ',';
+            }
+        }
+        $yearly_imps =Monthlydata::select(DB::raw($select));
+        $yearly_imps->join('products','monthlydatas.product_id','=','products.id');
+        $yearly_imps->where('product_base_id',3);
+        $yearly_imps->groupBy('product_base_id');
+        $yearly_imps = $yearly_imps->get()->toArray();
+        $yearly_imps = array_reverse(array_values($yearly_imps[0]));
+//承認数
+        $select = '';
+        for( $i=1 ; $i <= 12 ; $i++ ){
+            $last_date = date("Y-m-t", strtotime('-'.$i.' month'));
+            $month = date("Y年m月", strtotime('-'.$i.' month'));
+            $select .= "sum(case when date='".$last_date."' then approval else 0 end) as '".$i."'";
+            if($i != 12){
+                $select .= ',';
+            }
+        }
+        $yearly_approvals =Monthlydata::select(DB::raw($select));
+        $yearly_approvals->join('products','monthlydatas.product_id','=','products.id');
+        $yearly_approvals->where('product_base_id',3);
+        $yearly_approvals->groupBy('product_base_id');
+        $yearly_approvals = $yearly_approvals->get()->toArray();
+        $yearly_approvals = array_reverse(array_values($yearly_approvals[0]));
+//承認率
+        $select = '';
+        for( $i=1 ; $i <= 12 ; $i++ ){
+            $last_date = date("Y-m-t", strtotime('-'.$i.' month'));
+            $month = date("Y年m月", strtotime('-'.$i.' month'));
+            $select .= "sum(case when date='".$last_date."' then approval_rate else 0 end) as '".$i."'";
+            if($i != 12){
+                $select .= ',';
+            }
+        }
+        $yearly_approval_rates =Monthlydata::select(DB::raw($select));
+        $yearly_approval_rates->join('products','monthlydatas.product_id','=','products.id');
+        $yearly_approval_rates->where('product_base_id',3);
+        $yearly_approval_rates->groupBy('product_base_id');
+        $yearly_approval_rates = $yearly_approval_rates->get()->toArray();
+        $yearly_approval_rates = array_reverse(array_values($yearly_approval_rates[0]));
 
-        $ratio = (date("d")/date("t"));
+//CTR
+        foreach ($yearly_imps as $key => $value) {
 
-        /*
-           - 今月分のみ取得
-        */
-        $productsEstimates = Monthlydata::select(DB::raw("
-            asps.name,
-            (imp/". $ratio .") as estimate_imp,
-            (click/". $ratio .") as estimate_click,
-            (cv/". $ratio .") as estimate_cv,
-            ((cv/". $ratio .")/(click/". $ratio .")*100) as estimate_cvr, 
-            ((click/". $ratio .")/(imp/". $ratio .")*100) as estimate_ctr, 
-            (cost/". $ratio .") as estimate_cost,
-            products.product,
-            products.id"))
-                    ->join('products','monthlydatas.product_id','=','products.id')
-                    ->join('asps','products.asp_id','=','asps.id')
-                    ->where('products.product_base_id', 3)
-                    ->where('monthlydatas.date', 'LIKE' , "%".date("Y-m-d", strtotime('-1 day'))."%")
-                    ->get();
-                    /*echo '<pre>';
-                    var_dump($productsEstimates->toArray());
-                    echo '</pre>';*/
-                    
-        $productsEstimateTotals = DB::table(
-                                DB::raw("
-                                    (select (imp/". $ratio .") as estimate_imp,
-                                    (click/". $ratio .") as estimate_click,
-                                    (cv/". $ratio .") as estimate_cv,
-                                    ((cv/". $ratio .")/(click/". $ratio .")*100) as estimate_cvr, 
-                                    ((click/". $ratio .")/(imp/". $ratio .")*100) as estimate_ctr,
-                                    (cost/". $ratio .") as estimate_cost,
-                                    products.product,
-                                    products.id as product_id ,date from monthlydatas
-                                    inner join products on monthlydatas.product_id = products.id
-                                    where products.product_base_id = 3 
-                                    and monthlydatas.date LIKE '%".date("Y-m-d", strtotime('-1 day'))."%') as estimate_table")
-                          )
-                        ->select(DB::raw("date, product_id,
-                        sum(estimate_imp) as total_estimate_imp,
-                        sum(estimate_click) as total_estimate_click,
-                        sum(estimate_cv) as total_estimate_cv,
-                        sum(estimate_cost) as total_estimate_cost"))
-                    ->get();
-                    $productsEstimateTotals = json_decode(json_encode($productsEstimateTotals), true);
-                    var_dump($productsEstimateTotals);
+            $yearly_ctrs[$key] = ($yearly_clicks[$key]!=0 || $value!=0)? $yearly_clicks[$key] / $value * 100 : 0 ; 
+        
+        }
+//CVR
+        foreach ($yearly_clicks as $key => $value) {
 
+            $yearly_cvrs[$key] = ($yearly_cvs[$key]!=0 || $value!=0)? $yearly_cvs[$key] / $value * 100 : 0 ; 
+        
+        }
         $product_bases = ProductBase::all();
         $asps = Asp::all();
-
-        //var_dump($products);
 
         //グラフ数値
         $chart_data = Monthlydata::select(['name', 'imp', 'click','cv','date'])
@@ -109,298 +140,353 @@ class MonthlyController extends Controller
                 ->where('products.product_base_id', 3)
                 ->where('monthlydatas.date', 'LIKE' , "%".date("Y-m-d", strtotime('-1 day'))."%")
                 ->get();
+        //各ASP毎の年間数値
+        $asps = Product::Select('asp_id','name')->join('asps','products.asp_id','=','asps.id')->where('product_base_id', 3)->where('products.killed_flag',0)->get()->toArray();
 
-        //var_dump($chart_data);
-        //echo $chart_sql;
+        foreach ($asps as $asp) {
+            echo $asp["asp_id"];
+        //成果発生数
+            $key = $asp["asp_id"];
+                $select = '';
+                for( $i=1 ; $i <= 12 ; $i++ ){
+                    $last_date = date("Y-m-t", strtotime('-'.$i.' month'));
+                    $month = date("Y年m月", strtotime('-'.$i.' month'));
+                    $select .= "sum(case when date='".$last_date."' then cv else 0 end) as '".$i."'";
+                    if($i != 12){
+                        $select .= ',';
+                    }
+                }
+                $yearly_cvs_asp[$key] =Monthlydata::select(DB::raw($select));
+                $yearly_cvs_asp[$key]->join('products','monthlydatas.product_id','=','products.id');
+                $yearly_cvs_asp[$key]->where('product_base_id',3);
+                $yearly_cvs_asp[$key]->where('monthlydatas.asp_id',$asp["asp_id"]);
+                $yearly_cvs_asp[$key]->groupBy('product_base_id');
+                $yearly_cvs_asp[$key] = $yearly_cvs_asp[$key]->get()->toArray();
+                $yearly_cvs_asp[$key] = array_reverse(array_values($yearly_cvs_asp[$key][0]));
 
-        if( $products->isEmpty() ){
-        	return view('admin.daily_error',compact('product_bases','asps','user'));
-        }else{
-        	return view('admin.monthly',compact('products','product_bases','asps','productsEstimates','productsEstimateTotals','productsTotals','user','chart_data'));
+        //クリック数
+                $select = '';
+                for( $i=1 ; $i <= 12 ; $i++ ){
+                    $last_date = date("Y-m-t", strtotime('-'.$i.' month'));
+                    $month = date("Y年m月", strtotime('-'.$i.' month'));
+                    $select .= "sum(case when date='".$last_date."' then click else 0 end) as '".$i."'";
+                    if($i != 12){
+                        $select .= ',';
+                    }
+                }
+                $yearly_clicks_asp[$key] =Monthlydata::select(DB::raw($select));
+                $yearly_clicks_asp[$key]->join('products','monthlydatas.product_id','=','products.id');
+                $yearly_clicks_asp[$key]->where('product_base_id',3);
+                $yearly_clicks_asp[$key]->where('monthlydatas.asp_id',$asp["asp_id"]);
+                $yearly_clicks_asp[$key]->groupBy('product_base_id');
+                $yearly_clicks_asp[$key] = $yearly_clicks_asp[$key]->get()->toArray();
+                $yearly_clicks_asp[$key] = array_reverse(array_values($yearly_clicks_asp[$key][0]));
+
+        //Imp数
+                $select = '';
+                for( $i=1 ; $i <= 12 ; $i++ ){
+                    $last_date = date("Y-m-t", strtotime('-'.$i.' month'));
+                    $month = date("Y年m月", strtotime('-'.$i.' month'));
+                    $select .= "sum(case when date='".$last_date."' then imp else 0 end) as '".$i."'";
+                    if($i != 12){
+                        $select .= ',';
+                    }
+                }
+                $yearly_imps_asp[$key] =Monthlydata::select(DB::raw($select));
+                $yearly_imps_asp[$key]->join('products','monthlydatas.product_id','=','products.id');
+                $yearly_imps_asp[$key]->where('product_base_id',3);
+                $yearly_imps_asp[$key]->where('monthlydatas.asp_id',$asp["asp_id"]);
+                $yearly_imps_asp[$key]->groupBy('product_base_id');
+                $yearly_imps_asp[$key] = $yearly_imps_asp[$key]->get()->toArray();
+                $yearly_imps_asp[$key] = array_reverse(array_values($yearly_imps_asp[$key][0]));
+        //承認数
+                $select = '';
+                for( $i=1 ; $i <= 12 ; $i++ ){
+                    $last_date = date("Y-m-t", strtotime('-'.$i.' month'));
+                    $month = date("Y年m月", strtotime('-'.$i.' month'));
+                    $select .= "sum(case when date='".$last_date."' then approval else 0 end) as '".$i."'";
+                    if($i != 12){
+                        $select .= ',';
+                    }
+                }
+                $yearly_approvals_asp[$key] =Monthlydata::select(DB::raw($select));
+                $yearly_approvals_asp[$key]->join('products','monthlydatas.product_id','=','products.id');
+                $yearly_approvals_asp[$key]->where('product_base_id',3);
+                $yearly_approvals_asp[$key]->where('monthlydatas.asp_id',$asp["asp_id"]);
+                $yearly_approvals_asp[$key]->groupBy('product_base_id');
+                $yearly_approvals_asp[$key] = $yearly_approvals_asp[$key]->get()->toArray();
+                $yearly_approvals_asp[$key] = array_reverse(array_values($yearly_approvals_asp[$key][0]));
+        //承認率
+                $select = '';
+                for( $i=1 ; $i <= 12 ; $i++ ){
+                    $last_date = date("Y-m-t", strtotime('-'.$i.' month'));
+                    $month = date("Y年m月", strtotime('-'.$i.' month'));
+                    $select .= "sum(case when date='".$last_date."' then approval_rate else 0 end) as '".$i."'";
+                    if($i != 12){
+                        $select .= ',';
+                    }
+                }
+                $yearly_approval_rates_asp[$key] =Monthlydata::select(DB::raw($select));
+                $yearly_approval_rates_asp[$key]->join('products','monthlydatas.product_id','=','products.id');
+                $yearly_approval_rates_asp[$key]->where('product_base_id',3);
+                $yearly_approval_rates_asp[$key]->where('monthlydatas.asp_id',$asp["asp_id"]);
+                $yearly_approval_rates_asp[$key]->groupBy('product_base_id');
+                $yearly_approval_rates_asp[$key] = $yearly_approval_rates_asp[$key]->get()->toArray();
+                $yearly_approval_rates_asp[$key] = array_reverse(array_values($yearly_approval_rates_asp[$key][0]));
+
+                foreach ($yearly_imps_asp[$key] as $k => $val) {
+                    //var_dump($val);
+                    $val1 = (integer)$yearly_clicks_asp[$key][$k];
+                    $val2 = (integer)$val;
+                    $yearly_ctrs_asp[$key][$k] = ($val1 == 0 || $val2 ==0 )? 0 : $val1 / $val2 * 100; 
+                
+                }
+        //CVR
+                foreach ($yearly_clicks_asp[$key] as $k => $val) {
+                    //var_dump($val);
+                    $val1 = (integer)$yearly_cvs_asp[$key][$k];
+                    $val2 = (integer)$val;
+                    $yearly_cvrs_asp[$key][$k] = ($val1 == 0 || $val2 == 0 )? 0 : $val1 / $val2 * 100;
+                
+                }
+
         }
+        
+        return view('admin.yearly',compact('user','product_bases','asps','yearly_cvs','yearly_clicks','yearly_imps','yearly_approvals','yearly_cvrs','yearly_ctrs',
+                'yearly_cvs_asp','yearly_clicks_asp','yearly_imps_asp','yearly_ctrs_asp','yearly_cvrs_asp'));
     }
     /**
         月次の基本データ表示（検索後）
     */
-	public function monthly_result_search(SearchMonthlyRequest $request) {
-
+	public function yearly_result_search(SearchYearlyRequest $request) {
+        $request->flash();
         $user = Auth::user();
 		$id = ($request->product != null)? $request->product : 3 ;
-        $month =($request->month != null)? $request->month : date("Y-m", strtotime('-1 day'));
-
-        //検索日時
-        //今月の場合　Dateが昨日付け
-        //先月以前の場合　Dateが末日付け
-        if( $month == date("Y-m")){
-            $searchdate = date("Y-m-d", strtotime('-1 day'));
-            $search_last_date = date("Y-m-t", strtotime('-1 month'));
-
-        }else{
-            $searchdate = date('Y-m-d', strtotime('last day of ' . $month));
-            $month = date('Y-m',strtotime('-1 month'));
-            $search_last_date = date('Y-m-t', strtotime('last day of ' . $month));
+         
+        $this_month = date("Ym"); 
+        $select = ''; 
+//成果発生数
+        for( $i=1 ; $i <= 12 ; $i++ ){
+            $last_date = date("Y-m-t", strtotime('-'.$i.' month'));
+            $month = date("Y年m月", strtotime('-'.$i.' month'));
+            $select .= "sum(case when date='".$last_date."' then cv else 0 end) as '".$i."'";
+            if($i != 12){
+                $select .= ',';
+            }
         }
+        $yearly_cvs =Monthlydata::select(DB::raw($select));
+        $yearly_cvs->join('products','monthlydatas.product_id','=','products.id');
+        $yearly_cvs->where('product_base_id',$id);
+        $yearly_cvs->groupBy('product_base_id');
+        $yearly_cvs = $yearly_cvs->get()->toArray();
+        $yearly_cvs = array_reverse(array_values($yearly_cvs[0]));
 
-        $request->flash();
-        /**
-            当月の実績値
-        */
-        $products = Monthlydata::select(['name', 'imp', 'click','cv', 'cvr', 'ctr', 'active', 'partnership','monthlydatas.created_at','products.product','products.id','price','cpa','cost','approval','approval_price','approval_rate'])
-                    ->join('products','monthlydatas.product_id','=','products.id')
-                    ->join('asps','products.asp_id','=','asps.id')
-                    ->leftjoin(DB::raw("(select `cv` as last_cv, `product_id` from `monthlydatas` inner join `products` on `monthlydatas`.`product_id` = `products`.`id` where `product_base_id` = ".$id." and `monthlydatas`.`date` like '".$search_last_date."') AS last_month"), 'monthlydatas.product_id','=','last_month.product_id');
-
-                    //->where('product_base_id', 1)
-                    //->where('dailydatas.created_at', 'LIKE' , "%".date("Y-m")."%")
-
-                    if(!empty($id)){
-                        $products->where('products.product_base_id', $id);
-                    }
-                    if(!empty($searchdate)){
-                        $products->where('monthlydatas.date', 'LIKE' , "%".$searchdate."%");
-                    }
-
-                    $products = $products->get();//->toArray();
-
-                    //echo '<pre>';
-                    //var_dump($products->toArray());
-                    //echo '</pre>';
-
-         /**
-            当月の実績値トータル
-        */
-
-        $productsTotals = Monthlydata::select(DB::raw("date, product_id,sum(imp) as total_imp,sum(click) as total_click,sum(cv) as total_cv,sum(active) as total_active,sum(partnership) as total_partnership,sum(price) as total_price ,sum(cost) as total_cost,sum(approval) as total_approval, sum(approval_price) as total_approval_price"))
-                   ->join('products','monthlydatas.product_id','=','products.id');
-                    if(!empty($id)){
-                        $productsTotals->where('products.product_base_id', $id);
-                    }
-                    if(!empty($searchdate)){
-                        $productsTotals->where('monthlydatas.date', 'LIKE' , "%".$searchdate."%");
-                    }
-                    $productsTotals = $productsTotals->get();
-
-        if( $month == date("Y-m", strtotime('-1 day'))){
-            /**
-                当月の着地想定
-            */
-            $productsEstimates = Dailyestimate::select([ 'asps.name','products.id','dailyestimates.asp_id','estimate_imp', 'estimate_click','estimate_cv','dailyestimates.created_at','estimate_cvr','estimate_ctr','estimate_cost','estimate_price','estimate_cpa','date'])
-                    ->join('products','dailyestimates.product_id','=','products.id')
-                    ->join('asps','products.asp_id','=','asps.id');
-
-                    if(!empty($id)){
-                        $productsEstimates->where('products.product_base_id', $id);
-                    }
-                    if(!empty($searchdate)){
-                        $productsEstimates->where('dailyestimates.date', 'LIKE' , "%".$searchdate."%");
-                    }
-                    $productsEstimates = $productsEstimates->get();//->toArray();
-            /**
-                当月の着地想定トータル
-            */
-
-                $productsEstimateTotals = Dailyestimate::select(DB::raw("date, product_id,
-                        sum(estimate_imp) as total_estimate_imp,
-                        sum(estimate_click) as total_estimate_click,
-                        sum(estimate_cv) as total_estimate_cv,
-                        sum(estimate_price) as total_estimate_price,
-                        sum(estimate_cost) as total_estimate_cost "))
-                        ->join('products','dailyestimates.product_id','=','products.id');
-                    if(!empty($id)){
-                        $productsEstimateTotals->where('products.product_base_id',$id);
-                    }
-                    if(!empty($searchdate)){
-                        $productsEstimateTotals->where('dailyestimates.date', 'LIKE' , "%".date("Y-m-d", strtotime('-1 day'))."%");
-                    }
-                        $productsEstimateTotals=$productsEstimateTotals->get();
-
-                //var_dump($productsEstimateTotals->toArray());
-
-        }else{
-            $productsEstimates = 'Empty';
-            $productsEstimateTotals = 'Empty';
+//クリック数
+        $select = '';
+        for( $i=1 ; $i <= 12 ; $i++ ){
+            $last_date = date("Y-m-t", strtotime('-'.$i.' month'));
+            $month = date("Y年m月", strtotime('-'.$i.' month'));
+            $select .= "sum(case when date='".$last_date."' then click else 0 end) as '".$i."'";
+            if($i != 12){
+                $select .= ',';
+            }
         }
-                $product_bases = ProductBase::all();
-                $asps = Asp::all();
+        $yearly_clicks =Monthlydata::select(DB::raw($select));
+        $yearly_clicks->join('products','monthlydatas.product_id','=','products.id');
+        $yearly_clicks->where('product_base_id',$id);
+        $yearly_clicks->groupBy('product_base_id');
+        $yearly_clicks = $yearly_clicks->get()->toArray();
+        $yearly_clicks = array_reverse(array_values($yearly_clicks[0]));
+
+//Imp数
+        $select = '';
+        for( $i=1 ; $i <= 12 ; $i++ ){
+            $last_date = date("Y-m-t", strtotime('-'.$i.' month'));
+            $month = date("Y年m月", strtotime('-'.$i.' month'));
+            $select .= "sum(case when date='".$last_date."' then imp else 0 end) as '".$i."'";
+            if($i != 12){
+                $select .= ',';
+            }
+        }
+        $yearly_imps =Monthlydata::select(DB::raw($select));
+        $yearly_imps->join('products','monthlydatas.product_id','=','products.id');
+        $yearly_imps->where('product_base_id',$id);
+        $yearly_imps->groupBy('product_base_id');
+        $yearly_imps = $yearly_imps->get()->toArray();
+        $yearly_imps = array_reverse(array_values($yearly_imps[0]));
+//承認数
+        $select = '';
+        for( $i=1 ; $i <= 12 ; $i++ ){
+            $last_date = date("Y-m-t", strtotime('-'.$i.' month'));
+            $month = date("Y年m月", strtotime('-'.$i.' month'));
+            $select .= "sum(case when date='".$last_date."' then approval else 0 end) as '".$i."'";
+            if($i != 12){
+                $select .= ',';
+            }
+        }
+        $yearly_approvals =Monthlydata::select(DB::raw($select));
+        $yearly_approvals->join('products','monthlydatas.product_id','=','products.id');
+        $yearly_approvals->where('product_base_id',$id);
+        $yearly_approvals->groupBy('product_base_id');
+        $yearly_approvals = $yearly_approvals->get()->toArray();
+        $yearly_approvals = array_reverse(array_values($yearly_approvals[0]));
+//承認率
+        $select = '';
+        for( $i=1 ; $i <= 12 ; $i++ ){
+            $last_date = date("Y-m-t", strtotime('-'.$i.' month'));
+            $month = date("Y年m月", strtotime('-'.$i.' month'));
+            $select .= "sum(case when date='".$last_date."' then approval_rate else 0 end) as '".$i."'";
+            if($i != 12){
+                $select .= ',';
+            }
+        }
+        $yearly_approval_rates =Monthlydata::select(DB::raw($select));
+        $yearly_approval_rates->join('products','monthlydatas.product_id','=','products.id');
+        $yearly_approval_rates->where('product_base_id',$id);
+        $yearly_approval_rates->groupBy('product_base_id');
+        $yearly_approval_rates = $yearly_approval_rates->get()->toArray();
+        $yearly_approval_rates = array_reverse(array_values($yearly_approval_rates[0]));
+
+//CTR
+        foreach ($yearly_imps as $key => $value) {
+
+            $yearly_ctrs[$key] = ($yearly_clicks[$key]!=0 || $value!=0)? $yearly_clicks[$key] / $value * 100 : 0 ; 
+        
+        }
+//CVR
+        foreach ($yearly_clicks as $key => $value) {
+
+            $yearly_cvrs[$key] = ($yearly_cvs[$key]!=0 || $value!=0)? $yearly_cvs[$key] / $value * 100 : 0 ; 
+        
+        }
+        $product_bases = ProductBase::all();
 
         //グラフ数値
-                $chart_data = Monthlydata::select(['name', 'imp', 'click','cv'])
-                ->join('products','monthlydatas.product_id','=','products.id')
-                ->join('asps','products.asp_id','=','asps.id');
+        $chart_data = Monthlydata::select(['name', 'imp', 'click','cv'])
+        ->join('products','monthlydatas.product_id','=','products.id')
+        ->join('asps','products.asp_id','=','asps.id');
 
-                if(!empty($id)){
-                    $chart_data->where('products.product_base_id', $id);
+        if(!empty($id)){
+            $chart_data->where('products.product_base_id', $id);
+        }
+        if(!empty($searchdate)){
+            $chart_data->where('monthlydatas.date', 'LIKE' , "%".$searchdate."%");
+        }
+        $chart_data = $chart_data->get();
+        //var_dump($asps);
+        //各ASP毎の年間数値
+        $asps = Product::Select('asp_id','name')->join('asps','products.asp_id','=','asps.id')->where('product_base_id', $id)->where('products.killed_flag',0)->get()->toArray();
+
+        foreach ($asps as $asp) {
+            echo $asp["asp_id"];
+        //成果発生数
+            $key = $asp["asp_id"];
+                $select = '';
+                for( $i=1 ; $i <= 12 ; $i++ ){
+                    $last_date = date("Y-m-t", strtotime('-'.$i.' month'));
+                    $month = date("Y年m月", strtotime('-'.$i.' month'));
+                    $select .= "sum(case when date='".$last_date."' then cv else 0 end) as '".$i."'";
+                    if($i != 12){
+                        $select .= ',';
+                    }
                 }
-                if(!empty($searchdate)){
-                    $chart_data->where('monthlydatas.date', 'LIKE' , "%".$searchdate."%");
+                $yearly_cvs_asp[$key] =Monthlydata::select(DB::raw($select));
+                $yearly_cvs_asp[$key]->join('products','monthlydatas.product_id','=','products.id');
+                $yearly_cvs_asp[$key]->where('product_base_id',$id);
+                $yearly_cvs_asp[$key]->where('monthlydatas.asp_id',$asp["asp_id"]);
+                $yearly_cvs_asp[$key]->groupBy('product_base_id');
+                $yearly_cvs_asp[$key] = $yearly_cvs_asp[$key]->get()->toArray();
+                $yearly_cvs_asp[$key] = array_reverse(array_values($yearly_cvs_asp[$key][0]));
+
+        //クリック数
+                $select = '';
+                for( $i=1 ; $i <= 12 ; $i++ ){
+                    $last_date = date("Y-m-t", strtotime('-'.$i.' month'));
+                    $month = date("Y年m月", strtotime('-'.$i.' month'));
+                    $select .= "sum(case when date='".$last_date."' then click else 0 end) as '".$i."'";
+                    if($i != 12){
+                        $select .= ',';
+                    }
                 }
+                $yearly_clicks_asp[$key] =Monthlydata::select(DB::raw($select));
+                $yearly_clicks_asp[$key]->join('products','monthlydatas.product_id','=','products.id');
+                $yearly_clicks_asp[$key]->where('product_base_id',$id);
+                $yearly_clicks_asp[$key]->where('monthlydatas.asp_id',$asp["asp_id"]);
+                $yearly_clicks_asp[$key]->groupBy('product_base_id');
+                $yearly_clicks_asp[$key] = $yearly_clicks_asp[$key]->get()->toArray();
+                $yearly_clicks_asp[$key] = array_reverse(array_values($yearly_clicks_asp[$key][0]));
 
-                $chart_data = $chart_data->get();
-
-    }
-    /**
-    *サイト別デイリーレポートのデフォルトページを表示。
-    *表示データがない場合、エラーページを表示する。
-    *
-    *@return view
-    *
-    */
-
-    public function monthly_result_site() {
-
-        $user = Auth::user();
-        
-        $month = date('Ym',strtotime('-1 day'));
-        $monthly_sites_table = $month.'_monthlysites';
-
-        $products = DB::table($monthly_sites_table)
-                    ->select(['name', 'imp', 'click','cv', 'cvr', 'ctr', 'media_id','site_name','products.product','products.id','price','cpa','cost','estimate_cv','date','approval','approval_price','approval_rate'])
-                    ->join('products',DB::raw($monthly_sites_table.'.product_id'),'=','products.id')
-                    ->join('asps','products.asp_id','=','asps.id')
-                    ->where('product_base_id', 3)
-                    ->where('date', 'LIKE' , "%".date("Y-m-d", strtotime('-1 day'))."%")
-                    ->get();
-        /**
-        * プロダクト一覧を全て取得
-        */
-        $product_bases = ProductBase::all();
-        /**
-        * ASP一覧を全て取得
-        */  
-        $asps = Asp::all();
-        //var_dump($products);
-        /**
-        * 日次のグラフ用データの一覧を取得する。
-        */
-        $site_ranking = $this->monthly_ranking_site(3,date("Y-m-d", strtotime('-1 day')));
-
-        /**
-        * VIEWを表示する。
-        */
-        if( $products->isEmpty() ){
-            return view('admin.daily_error',compact('product_bases','asps','user'));
-        }else{
-            return view('admin.monthly_site',compact('products','product_bases','asps','site_ranking','user'));
-        }
-    }
-    /**
-    *サイト別デイリーレポートの検索結果ページを表示。
-    *表示データがない場合、エラーページを表示する。
-    *@param request $request 検索データ（ASPID、日時（はじめ、おわり）案件ID）
-    *@return view
-    *
-    */
-
-    public function monthly_result_site_search(SearchMonthlySiteRequest $request) {
-        $user = Auth::user();
-        $id = ($request->product != null)? $request->product : 3 ;
-        $month =($request->month != null)? $request->month : date("Y-m-d", strtotime('-1 day'));
-        //当月の場合
-        if( $month == date("Y-m", strtotime('-1 day'))|| $month == date("Y-m-d", strtotime('-1 day'))) {
-            $searchdate = date("Y-m-d", strtotime('-1 day'));
-        //当月以外の場合
-        }else{
-            $searchdate = date('Y-m-d', strtotime('last day of ' . $month));
-        }
-        //echo $searchdate;
-        $asp_id = ($request->asp_id != null)? $request->asp_id : "" ;
-        
-        $request->flash();
-
-        $month = date('Ym',strtotime($searchdate));
-        $monthly_sites_table = $month.'_monthlysites';
-
-        $products = DB::table($monthly_sites_table)
-                    ->select(['name', 'imp', 'click','cv', 'cvr', 'ctr', 'media_id','site_name','products.product','products.id','price','cpa','cost','estimate_cv','date','approval','approval_price','approval_rate'])
-                    ->join('products',DB::raw($monthly_sites_table.'.product_id'),'=','products.id')
-                    ->join('asps','products.asp_id','=','asps.id');
-                    
-                    if(!empty($id)){
-                        $products->where('products.product_base_id', $id);
+        //Imp数
+                $select = '';
+                for( $i=1 ; $i <= 12 ; $i++ ){
+                    $last_date = date("Y-m-t", strtotime('-'.$i.' month'));
+                    $month = date("Y年m月", strtotime('-'.$i.' month'));
+                    $select .= "sum(case when date='".$last_date."' then imp else 0 end) as '".$i."'";
+                    if($i != 12){
+                        $select .= ',';
                     }
-                    if(!empty($asp_id)){
-                        $products->where('products.asp_id', $asp_id);
+                }
+                $yearly_imps_asp[$key] =Monthlydata::select(DB::raw($select));
+                $yearly_imps_asp[$key]->join('products','monthlydatas.product_id','=','products.id');
+                $yearly_imps_asp[$key]->where('product_base_id',$id);
+                $yearly_imps_asp[$key]->where('monthlydatas.asp_id',$asp["asp_id"]);
+                $yearly_imps_asp[$key]->groupBy('product_base_id');
+                $yearly_imps_asp[$key] = $yearly_imps_asp[$key]->get()->toArray();
+                $yearly_imps_asp[$key] = array_reverse(array_values($yearly_imps_asp[$key][0]));
+        //承認数
+                $select = '';
+                for( $i=1 ; $i <= 12 ; $i++ ){
+                    $last_date = date("Y-m-t", strtotime('-'.$i.' month'));
+                    $month = date("Y年m月", strtotime('-'.$i.' month'));
+                    $select .= "sum(case when date='".$last_date."' then approval else 0 end) as '".$i."'";
+                    if($i != 12){
+                        $select .= ',';
                     }
-                    if(!empty($searchdate)){
-                        $products->where('date', 'LIKE' , "%".$searchdate."%");
+                }
+                $yearly_approvals_asp[$key] =Monthlydata::select(DB::raw($select));
+                $yearly_approvals_asp[$key]->join('products','monthlydatas.product_id','=','products.id');
+                $yearly_approvals_asp[$key]->where('product_base_id',$id);
+                $yearly_approvals_asp[$key]->where('monthlydatas.asp_id',$asp["asp_id"]);
+                $yearly_approvals_asp[$key]->groupBy('product_base_id');
+                $yearly_approvals_asp[$key] = $yearly_approvals_asp[$key]->get()->toArray();
+                $yearly_approvals_asp[$key] = array_reverse(array_values($yearly_approvals_asp[$key][0]));
+        //承認率
+                $select = '';
+                for( $i=1 ; $i <= 12 ; $i++ ){
+                    $last_date = date("Y-m-t", strtotime('-'.$i.' month'));
+                    $month = date("Y年m月", strtotime('-'.$i.' month'));
+                    $select .= "sum(case when date='".$last_date."' then approval_rate else 0 end) as '".$i."'";
+                    if($i != 12){
+                        $select .= ',';
                     }
-                    //->where('product_base_id', $id)
-                    //->where('monthlysites.created_at', 'LIKE' , "%".$searchdate."%")
-                    $products = $products->get();
-                    //->toArray();
-                    //->toSql();
-                    //var_dump($products);
-        /**
-        * プロダクト一覧を全て取得
-        */
-        $product_bases = ProductBase::all();
-        /**
-        * ASP一覧を全て取得
-        */  
-        $asps = Asp::all();
-        //var_dump($products);
+                }
+                $yearly_approval_rates_asp[$key] =Monthlydata::select(DB::raw($select));
+                $yearly_approval_rates_asp[$key]->join('products','monthlydatas.product_id','=','products.id');
+                $yearly_approval_rates_asp[$key]->where('product_base_id',$id);
+                $yearly_approval_rates_asp[$key]->where('monthlydatas.asp_id',$asp["asp_id"]);
+                $yearly_approval_rates_asp[$key]->groupBy('product_base_id');
+                $yearly_approval_rates_asp[$key] = $yearly_approval_rates_asp[$key]->get()->toArray();
+                $yearly_approval_rates_asp[$key] = array_reverse(array_values($yearly_approval_rates_asp[$key][0]));
 
-        
-        //echo $products->isEmpty();
-
-        //echo $product_bases->isEmpty();
-        /**
-        * 日次のグラフ用データの一覧を取得する。
-        */
-        $site_ranking = $this->monthly_ranking_site($id,$searchdate,$asp_id);
-        /**
-        * VIEWを表示する。
-        */
-        if( $products->isEmpty() ){
-            return view('admin.daily_error',compact('product_bases','asps','user'));
-        }else{
-            return view('admin.monthly_site',compact('products','product_bases','asps','site_ranking','user'));
+        //CTR
+                foreach ($yearly_imps_asp[$key] as $k => $val) {
+                    //var_dump($val);
+                    $val1 = (integer)$yearly_clicks_asp[$key][$k];
+                    $val2 = (integer)$val;
+                    $yearly_ctrs_asp[$key][$k] = ($val1 == 0 || $val2 ==0 )? 0 : $val1 / $val2 * 100; 
+                
+                }
+        //CVR
+                foreach ($yearly_clicks_asp[$key] as $k => $val) {
+                    //var_dump($val);
+                    $val1 = (integer)$yearly_cvs_asp[$key][$k];
+                    $val2 = (integer)$val;
+                    $yearly_cvrs_asp[$key][$k] = ($val1 == 0 || $val2 == 0 )? 0 : $val1 / $val2 * 100;
+                
+                }
         }
 
-
-    }
-    /**
-　    月別ランキング一覧取得
-    */
-    public function monthly_ranking_site($id ,$searchdate = null,$asp_id=null) {
-
-                /*
-                    案件ｘ対象期間からCVがTOP10のサイトを抽出
-                */
-                $month = date('Ym',strtotime($searchdate));
-                $monthly_sites_table = $month.'_monthlysites';
-
-                $products = DB::table($monthly_sites_table)
-                //$products = Monthlysite::
-                    ->select(DB::raw("cv , media_id, site_name"))
-                    
-                    ->join('products',DB::raw($monthly_sites_table.'.product_id'),'=','products.id')
-                    ->join('asps','products.asp_id','=','asps.id')
-                    
-                    ->where('cv', '!=' , 0 );
-
-                    if(!empty($id)){
-                        $products->where('product_base_id', $id);
-                    }
-                    if(!empty($asp_id)){
-                        $products->where('products.asp_id', $asp_id);
-                    }                    
-                    if(!empty($searchdate)){
-                        //今月の場合
-                        if(strpos($searchdate,date("Y-m", strtotime('-1 day'))) === false ){
-                            $searchdate= date("Y-m-t",strtotime($searchdate));
-                        }
-                        $products->where('date' , $searchdate );
-                    }
-                    //echo $searchdate;
-                    $products->groupBy("media_id");
-                    $products->orderByRaw('CAST(cv AS DECIMAL(10,2)) DESC');
-
-                    $products->limit(10);
-                    //echo $products->toSql();
-                    $products = $products->get();
-
-                    return json_encode($products);
+        return view('admin.yearly',compact('user','asps','product_bases','yearly_cvs','yearly_clicks','yearly_imps','yearly_approvals','yearly_cvrs','yearly_ctrs','yearly_cvs_asp','yearly_clicks_asp','yearly_imps_asp','yearly_ctrs_asp','yearly_cvrs_asp'));
 
     }
 
