@@ -68,6 +68,7 @@ class DailyController extends Controller
         * ASP一覧を全て取得
         */
         $asps = Asp::all();
+        $data = array();
         /**
         * Eloquentを利用して、dailydatasテーブルから案件ID＝１の昨日データ取得する。
         * 

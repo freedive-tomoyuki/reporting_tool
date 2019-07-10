@@ -7,6 +7,7 @@
     "require": {
         "php": "^7.2.10",
         "barryvdh/laravel-debugbar": "^3.2",
+        "barryvdh/laravel-dompdf": "^0.8.4",
         "doctrine/dbal": "^2.9",
         "fideloper/proxy": "^4.0",
         "guzzlehttp/guzzle": "^6.3",
@@ -16,6 +17,7 @@
         "maatwebsite/excel": "^2.1.0",
         "rap2hpoutre/fast-excel": "^1.2",
         "revolution/salvager": "^1.1",
+        "thinreports-php/thinreports-php": "^0.8.1",
         "weidner/goutte": "^1.1"
     },
     "require-dev": {

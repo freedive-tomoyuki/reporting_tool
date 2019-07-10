@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<phpunit bootstrap="vendor/autoload.php" colors="true">
+  <testsuites>
+    <testsuite name="Thinreports Unit Tests">
+      <directory suffix="Test.php">test/unit/Thinreports</directory>
+    </testsuite>
+    <testsuite name="Thinreports Feature Tests">
+      <directory suffix="Feature.php">test/feature/</directory>
+    </testsuite>
+  </testsuites>
+
+  <filter>
+    <whitelist>
+      <directory suffix=".php">src/Thinreports/</directory>
+    </whitelist>
+  </filter>
+</phpunit>
