@@ -147,7 +147,7 @@
     </div>
 </div>
 </div>
-<script src="/js/jquery-1.11.1.min.js"></script>
+<!-- <script src="/js/jquery-1.11.1.min.js"></script>
 <script src="/js/bootstrap.min.js"></script>
 <script src="/js/chart.min.js"></script>
 <script src="/js/chart-data.js"></script>
@@ -155,7 +155,7 @@
 <script src="/js/easypiechart-data.js"></script>
 <script src="/js/bootstrap-datepicker.js"></script>
 <script src="/js/custom.js"></script>
-<script src="/js/addons/datatables.min.js"></script>
+<script src="/js/addons/datatables.min.js"></script> -->
 <script>
     function init() {
       google.load("visualization", "1", {
