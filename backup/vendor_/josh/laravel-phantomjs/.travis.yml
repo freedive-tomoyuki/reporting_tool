@@ -1,0 +1,21 @@
+language: php
+php:
+  - 7.1
+
+cache:
+  directories:
+    - vendor
+    - $HOME/.composer/cache
+
+before_install:
+  - sh .travis/install.sh
+
+install:
+  - travis_retry composer self-update
+  - travis_retry composer install
+
+before_script:
+  - export PHANTOMJS_BINARY_PATH=$(which phantomjs)
+
+script:
+  - vendor/bin/phpunit

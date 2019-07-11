@@ -38,6 +38,7 @@ class AfbController extends DailyCrawlerController
                 '--window-size=1920,3000',
                 '--start-maximized',
                 '--headless',
+                '--lang=ja_JP',
                 '--disable-gpu',
                 //'--no-sandbox',
         ];

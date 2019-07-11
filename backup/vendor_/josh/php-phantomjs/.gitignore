@@ -1,0 +1,8 @@
+.DS_Store
+composer.phar
+composer.lock
+vendor/
+bin/phpunit
+bin/phantomjs
+.idea
+test.php

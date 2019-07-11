@@ -122,15 +122,20 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth:admin'], function() {
         return CSV::download($data, $csvHeader, 'template_monthly_site.csv');
     });
     Route::get('excel_test','Admin\ExportController@excel');
+    //PDF出力
+    Route::get('pdf/{id?}','Admin\ExportController@pdf' );
+    Route::get('pdf/yearly/{id?}','Admin\ExportController@pdf' );
+    Route::get('pdf/yearly/asp/{id?}','Admin\ExportController@pdf' );
 
-    Route::get('pdf', function () {
-        $pdf = app('dompdf.wrapper');
-        $pdf->loadView('pdf.sample', ['foo' => 'bar']);
-        
-        //return $pdf->stream('sample.pdf');
-        // PDFをダウンロードさせたい場合は下記を return します。
-        return $pdf->download('sample.pdf'); 
-    });
+    Route::get('pdf/three_month/{id?}','Admin\ExportController@pdf' );
+    Route::get('pdf/three_month/asp/{id?}','Admin\ExportController@pdf' );
+    
+    Route::get('pdf/monthly/{id?}','Admin\ExportController@pdf' );
+    Route::get('pdf/monthly/site/{id?}','Admin\ExportController@pdf' );
+    
+    Route::get('pdf/last_monthly/{id?}','Admin\ExportController@pdf' );
+    Route::get('pdf/last_monthly/site/{id?}','Admin\ExportController@pdf' );
+   
 });
 Route::group(['middleware' => 'auth:user'], function() {
 

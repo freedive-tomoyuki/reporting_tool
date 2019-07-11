@@ -31,6 +31,7 @@ class Chrome implements Driver
                 '--disable-gpu',
                 '--headless',
                 '--window-size=1920,1080',
+                '--lang=ja_JP',
             ];
     }
 

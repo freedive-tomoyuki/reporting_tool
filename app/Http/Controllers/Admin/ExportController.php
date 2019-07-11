@@ -14,6 +14,7 @@ use App\DailyDiff;
 use App\DailySiteDiff;
 use Illuminate\Support\Facades\Auth;
 use Excel;
+use PDF;
 use DB;
 /*
 　デイリーデータ用　クラス
@@ -31,6 +32,26 @@ class ExportController extends Controller
         $product_bases = ProductBase::Where('killed_flag',0)->get();
         return view('admin.export',compact('product_bases','user'));
     }
+    public function filterAsp( $product_id ){
+      $target_asp = Product::select('asp_id','name')
+                  ->join('asps','products.asp_id','=','asps.id')
+                  ->where('product_base_id', $product_id )
+                  ->where('products.killed_flag', 0 )
+                  ->get();
+
+      return json_encode($target_asp);
+    }
+    /**
+    * 親案件から案件一覧を取得する。
+    * @param number $baseproduct
+    * @return array $converter 
+    */
+    public function convertProduct($baseproduct){
+        $converter = Product::select();
+        $converter->where('product_base_id', $baseproduct);
+        $converter = $converter->get()->toArray();
+        return $converter;
+    }
     public function selected(Request $request)
     {
         $request->flash();
@@ -38,6 +59,56 @@ class ExportController extends Controller
         $products = Product::all();
         $product_bases = ProductBase::Where('killed_flag',0)->get();
         return view('admin.export',compact('product_bases','user'));
+    }
+    public function pdf(){
+        
+        //$pdf = app('dompdf.wrapper');
+        $data = array();
+
+        $products = DailyDiff::select(['name', 'imp', 'click','cv', 'cvr', 'ctr', 'active', 'partnership','date','daily_diffs.created_at','products.product','products.id','price','cpa','cost','estimate_cv'])
+                    ->join('products','daily_diffs.product_id','=','products.id')
+                    ->join('asps','products.asp_id','=','asps.id')
+                    ->where('product_base_id', 3)
+                    //->where('daily_diffs.date', 'LIKE' , "%".date("Y-m-d",strtotime('-1 day'))."%")
+                    ->where('daily_diffs.date', '>=' , date("Y-m-1",strtotime('-1 day')))
+                    ->where('daily_diffs.date', '<=' , date("Y-m-d",strtotime('-1 day')))
+                    ->get();
+                    
+        $total = DailyDiff::select(DB::raw("date,products.id, sum(imp) as total_imp,sum(click) as total_click,sum(cv) as total_cv,sum(estimate_cv) as total_estimate_cv,sum(active) as total_active,sum(partnership) as total_partnership,sum(price) as total_price "))
+                    ->join('products','daily_diffs.product_id','=','products.id')
+                    ->join('asps','products.asp_id','=','asps.id')
+                    ->where('product_base_id', 3)
+                    //->where('daily_diffs.date', 'LIKE' , "%".date("Y-m-d",strtotime('-1 day'))."%")
+                    ->where('daily_diffs.date', '>=' , date("Y-m-1",strtotime('-1 day')))
+                    ->where('daily_diffs.date', '<=' , date("Y-m-d",strtotime('-1 day')))
+                    ->get();
+        $total_chart = DailyDiff::select(DB::raw("date, sum(imp) as total_imp,sum(click) as total_click,sum(cv) as total_cv"))
+                    ->join('products','daily_diffs.product_id','=','products.id')
+                    ->join('asps','products.asp_id','=','asps.id')
+                    ->where('product_base_id', 3)
+                    //->where('daily_diffs.date', 'LIKE' , "%".date("Y-m-d",strtotime('-1 day'))."%")
+                    ->where('daily_diffs.date', '>=' , date("Y-m-1",strtotime('-1 day')))
+                    ->where('daily_diffs.date', '<=' , date("Y-m-d",strtotime('-1 day')));
+        $i = 0;
+        $total_chart = $total_chart->groupby('date')->get()->toArray();
+        //$total_chart = $total_chart->toArray();
+        foreach ($total_chart as $chart) {
+            $data[$i]['date'] = $chart['date'];
+            $data[$i]['total_imp'] = intval($chart['total_imp']);
+            $data[$i]['total_click'] = intval($chart['total_click']);
+            $data[$i]['total_cv'] = intval($chart['total_cv']);
+            $data[$i] = array_values($data[$i]);
+            $i++;
+        }
+        $total_chart = json_encode($data);
+        /**
+        * 日次のグラフ用データの一覧を取得する。
+        */
+        $daily_ranking = $this->daily_ranking_asp(3,date("Y-m-1",strtotime('-1 day')),date("Y-m-d",strtotime('-1 day')));
+
+        $pdf= PDF::loadView('pdf.pdf', compact('products','product_bases','total','total_chart','daily_ranking'));
+        
+        return $pdf->download('sample.pdf'); 
     }
     public function excel()
     {
@@ -177,5 +248,73 @@ class ExportController extends Controller
                     //var_dump($csvData);
                     //echo gettype($csvHeader);
                     return CSV::download($csvData, $csvHeader, $product[0]['product_name'].'_'.$s_data.'_'.$e_data.'_daily_site.csv');
+    }
+    /*
+        案件期間内のASPの別CV数の計算関数
+    */
+    public function daily_ranking_asp($id = 3,$searchdate_start = null,$searchdate_end = null ,$asp_id=null) {
+        /*
+            案件ｘ対象期間から対象案件のCV件数
+        */
+            $sql = 'Select DATE_FORMAT(date,"%Y/%m/%d") as date';
+            $sql_select_asp = "";
+            $asp_data = $this->filterAsp($id);
+
+            $asp_array = (json_decode($asp_data,true));
+            //echo gettype($asp_id);
+            foreach ($asp_array as $asp){
+                    $sql_select_asp.=",max( case when asp_id=".$asp['asp_id']." then cv end ) as ".str_replace(' ', '' ,$asp["name"]);
+            }
+            $sql = $sql.$sql_select_asp;
+            $sql .= ' From daily_diffs ';
+            if($id != '' ){
+                $where = " where ";
+
+                $product_list = $this->convertProduct($id);
+                //var_dump($product_list);
+
+                $where .= " product_id in (";
+                foreach ($product_list as $product) {
+                    $where .= $product['id'];
+
+                    if($product !== end($product_list)){
+                        $where .= ",";
+                    }
+                }
+                $where .= " )";
+                
+            }
+            if($searchdate_start != '' ){
+                if($where !== ''){
+                    $where .= " and ";
+                }else{
+                    $where = " where ";
+                }
+                $where .= " date >= '". $searchdate_start ."'";
+            }
+            if($searchdate_end != '' ){
+                if($where !== ''){
+                    $where .= " and ";
+                }else{
+                    $where = " where ";
+                }
+                $where .= " date <= '". $searchdate_end ."'";
+            }
+            if($asp_id != '' ){
+                if($where !== ''){
+                    $where .= " and ";
+                }else{
+                    $where = " where ";
+                }
+                $where .= " asp_id = ". $asp_id ;
+            }
+            //echo $where;
+            if($where !== '') $sql.= $where ;
+            $sql .=' Group By  DATE_FORMAT(date,"%Y/%m/%d")';
+
+            $products = DB::select($sql);
+
+            return json_encode($products);
+
     }
 }

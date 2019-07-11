@@ -36,6 +36,7 @@ class AccesstradeController extends DailyCrawlerController
         '--start-maximized',
         '--headless',
         '--disable-gpu',
+        '--lang=ja_JP',
         '--no-sandbox'
         
         ];
