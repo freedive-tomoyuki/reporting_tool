@@ -465,7 +465,7 @@ class DailyController extends Controller
         /*
             案件ｘ対象期間から対象案件のCV件数
         */
-            $sql = 'Select DATE_FORMAT(date,"%Y/%m\/%d") as date';
+            $sql = 'Select DATE_FORMAT(date,"%Y/%m/%d") as date';
             $sql_select_asp = "";
             $asp_data = $this->filterAsp($id);
 

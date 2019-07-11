@@ -122,6 +122,15 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth:admin'], function() {
         return CSV::download($data, $csvHeader, 'template_monthly_site.csv');
     });
     Route::get('excel_test','Admin\ExportController@excel');
+
+    Route::get('pdf', function () {
+        $pdf = app('dompdf.wrapper');
+        $pdf->loadView('pdf.sample', ['foo' => 'bar']);
+        
+        //return $pdf->stream('sample.pdf');
+        // PDFをダウンロードさせたい場合は下記を return します。
+        return $pdf->download('sample.pdf'); 
+    });
 });
 Route::group(['middleware' => 'auth:user'], function() {
 

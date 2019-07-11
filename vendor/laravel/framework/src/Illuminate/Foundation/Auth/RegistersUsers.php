@@ -17,8 +17,7 @@ trait RegistersUsers
      */
     public function showRegistrationForm()
     {
-        $user = Auth::user();
-        return view('auth.register',compact('user'));
+        return view('auth.register');
     }
 
     /**

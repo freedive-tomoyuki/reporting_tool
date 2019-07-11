@@ -1,0 +1,36 @@
+{
+  "name": "thinreports-php/thinreports-php",
+  "description": "An implementation of Thinreports Generator in PHP. It provides easy and simple way for generating a PDF on pure PHP",
+  "homepage": "https://github.com/thinreports-php",
+  "type": "library",
+  "keywords": ["PDF", "Reporting"],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Thinreports PHP Community",
+      "homepage": "https://gitter.im/thinreports-php/thinreports-php/dev"
+    },
+    {
+      "name": "Katsuya HIDAKA",
+      "email": "hidakatsuya@gmail.com"
+    }
+  ],
+  "require": {
+    "php": ">=5.3.0",
+    "tecnickcom/tcpdf": "~6.2"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "~4.6",
+    "symfony/Yaml": "~2.7",
+    "smalot/pdfparser": "~0.9"
+  },
+  "autoload": {
+    "psr-4": { "Thinreports\\": "src/Thinreports" }
+  },
+  "autoload-dev": {
+    "psr-4": { "Thinreports\\": "test/unit/Thinreports" }
+  },
+  "scripts": {
+    "test": "phpunit"
+  }
+}
