@@ -2,18 +2,11 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <link href="/css/bootstrap.min.css" rel="stylesheet">
-    <!-- <link href="css/font-awesome.min.css" rel="stylesheet"> -->
-    <link href="/css/datepicker3.css" rel="stylesheet">
-    <link href="/css/styles.css" rel="stylesheet">
-    <!-- CSRF Token -->
-    <meta name="csrf-token" content="{{ csrf_token() }}">
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
     <link href="https://fonts.googleapis.com/css?family=Montserrat:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
-    <link href="/css/addons/datatables.min.css" rel="stylesheet">
     <style type="text/css">
         @font-face {
             font-family: ipag;
