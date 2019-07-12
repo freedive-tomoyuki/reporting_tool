@@ -91,7 +91,9 @@ class ExportController extends Controller
                     ->where('daily_diffs.date', '<=' , date("Y-m-d",strtotime('-1 day')));
         $i = 0;
         $total_chart = $total_chart->groupby('date')->get()->toArray();
+
         //$total_chart = $total_chart->toArray();
+
         foreach ($total_chart as $chart) {
             $data[$i]['date'] = $chart['date'];
             $data[$i]['total_imp'] = intval($chart['total_imp']);
@@ -100,13 +102,18 @@ class ExportController extends Controller
             $data[$i] = array_values($data[$i]);
             $i++;
         }
+
         $total_chart = json_encode($data);
         /**
         * 日次のグラフ用データの一覧を取得する。
         */
         $daily_ranking = $this->daily_ranking_asp(3,date("Y-m-1",strtotime('-1 day')),date("Y-m-d",strtotime('-1 day')));
 
-        $pdf= PDF::loadView('pdf.pdf', compact('products','product_bases','total','total_chart','daily_ranking'));
+        $pdf = PDF::loadView('pdf.pdf', compact('products','product_bases','total','total_chart','daily_ranking'));
+        $pdf->setOption('enable-javascript', true);
+        $pdf->setOption('javascript-delay', 5000);
+        $pdf->setOption('enable-smart-shrinking', true);
+        $pdf->setOption('no-stop-slow-scripts', true);
         
         return $pdf->download('sample.pdf'); 
     }
