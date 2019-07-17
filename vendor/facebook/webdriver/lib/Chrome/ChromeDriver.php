@@ -69,7 +69,7 @@ class ChromeDriver extends RemoteWebDriver
      * @return RemoteWebDriver
      */
     public static function create(
-        $selenium_server_url = 'http://localhost:4444/wd/hub',
+        $selenium_server_url = 'http://localhost:9515/wd/hub',
         $desired_capabilities = null,
         $connection_timeout_in_ms = null,
         $request_timeout_in_ms = null,
@@ -92,7 +92,7 @@ class ChromeDriver extends RemoteWebDriver
      */
     public static function createBySessionID(
         $session_id,
-        $selenium_server_url = 'http://localhost:4444/wd/hub',
+        $selenium_server_url = 'http://localhost:9515/wd/hub',
         $connection_timeout_in_ms = null,
         $request_timeout_in_ms = null
     ) {

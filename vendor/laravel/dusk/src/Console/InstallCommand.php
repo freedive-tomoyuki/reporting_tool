@@ -21,6 +21,16 @@ class InstallCommand extends Command
     protected $description = 'Install Dusk into the application';
 
     /**
+     * Create a new command instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        parent::__construct();
+    }
+
+    /**
      * Execute the console command.
      *
      * @return mixed
@@ -57,10 +67,6 @@ class InstallCommand extends Command
         }
 
         $this->info('Dusk scaffolding installed successfully.');
-
-        $this->comment('Downloading ChromeDriver binaries...');
-
-        $this->call('dusk:chrome-driver', ['--all' => true]);
     }
 
     /**

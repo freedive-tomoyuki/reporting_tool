@@ -123,18 +123,15 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth:admin'], function() {
     });
     Route::get('excel_test','Admin\ExportController@excel');
     //PDF出力
-    Route::get('pdf/{id?}','Admin\ExportController@pdf' );
-    Route::get('pdf/yearly/{id?}','Admin\ExportController@pdf' );
-    Route::get('pdf/yearly/asp/{id?}','Admin\ExportController@pdf' );
+    //今月・昨月分 済
+    Route::get('pdf/{id?}/{month?}','Admin\ExportController@pdf' );
+    //年間＋ASP別 済
+    Route::get('pdf/yearly/{id?}','Admin\ExportController@pdf_yearly' );
 
     Route::get('pdf/three_month/{id?}','Admin\ExportController@pdf' );
-    Route::get('pdf/three_month/asp/{id?}','Admin\ExportController@pdf' );
     
-    Route::get('pdf/monthly/{id?}','Admin\ExportController@pdf' );
-    Route::get('pdf/monthly/site/{id?}','Admin\ExportController@pdf' );
+    Route::get('pdf/monthly/site/{id?}/{month?}','Admin\ExportController@pdf' );
     
-    Route::get('pdf/last_monthly/{id?}','Admin\ExportController@pdf' );
-    Route::get('pdf/last_monthly/site/{id?}','Admin\ExportController@pdf' );
    
 });
 Route::group(['middleware' => 'auth:user'], function() {

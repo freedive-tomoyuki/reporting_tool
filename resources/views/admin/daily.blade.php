@@ -107,7 +107,7 @@
                   }
                   
                 ?>
-                <a href='/admin/csv/{{ $product_base }}/{{ urlencode($s_date) }}/{{  urlencode($e_date) }}' class='d-block text-info'>
+                <a href='/admin/csv/{{ $product_base }}/{{ urlencode($s_date) }}/{{  urlencode($e_date) }}' class='d-block'>
                   ＣＳＶ
                 </a>
               </button>
@@ -173,7 +173,7 @@
 		<div class="row">
 			<div class="col-lg-12">
           <div class="panel panel-default">
-            <div class="panel-heading">ASP別　日次CV推移</div>
+            <div class="panel-heading sp-small">ASP別　日次CV推移</div>
             <div class="panel-body">
             		<div id="line_top_x" style="width: 100%;" ></div>
             </div>
@@ -183,7 +183,7 @@
     <div class="row">
       <div class="col-lg-12">
           <div class="panel panel-default">
-            <div class="panel-heading">CV数xクリック数xインプレッション数</div>
+            <div class="panel-heading sp-small">CV数xクリック数xインプレッション数</div>
             <div class="panel-body">
                 <div id="line_top_y" ></div>
             </div>
@@ -192,9 +192,9 @@
     </div> 
 		<!--/.row-->
 
-    <div class="col-md-12">
+    <div class="col-md-12 ">
         <div class="table-responsive">
-                <table id="dtBasicExample" class="table table-striped table-bordered table-hover table-sm" cellspacing="0" width="100%">
+                <table id="dtBasicExample" class="table table-striped table-bordered table-hover table-sm sp-wide-tabel" cellspacing="0" width="100%">
                   <thead>
                         <tr>
                             <th class="th-sm">No</th>

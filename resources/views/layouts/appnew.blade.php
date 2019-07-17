@@ -24,6 +24,17 @@
 	<!-- MDBootstrap Datatables  -->
 	<link href="/css/addons/datatables.min.css" rel="stylesheet">
 
+	<style type="text/css">
+	@media screen and (max-width: 768px) {
+	  .sp-small{
+		font-size: 85%;
+	  }
+	  .sp-wide-tabel{
+	  	min-width: 1500px;
+	  }
+	}
+	</style>
+
 </head>
 <body>
 	<nav class="navbar navbar-custom navbar-fixed-top" role="navigation">

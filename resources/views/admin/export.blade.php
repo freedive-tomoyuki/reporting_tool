@@ -71,7 +71,7 @@
                     <div class="form-group form-inline ">
                         <label>
                             昨月の全体成果
-                            <button class="btn btn-default"><a href='/admin/pdf/{{ old('product') }}'>PDF</a></button> 
+                            <button class="btn btn-default"><a href='/admin/pdf/{{ old('product') }}/one_month'>PDF</a></button> 
                             <button class="btn btn-success"><a href='/admin/excel/{{ old('product') }}'>Excel</a></button>
                         </label>
                     </div>
@@ -85,7 +85,7 @@
                     <div class="form-group form-inline ">
                         <label>
                             昨月のメディア別成果
-                            <button class="btn btn-default"><a href='/admin/pdf/{{ old('product') }}'>PDF</a></button> 
+                            <button class="btn btn-default"><a href='/admin/pdf/{{ old('product') }}/one_month'>PDF</a></button> 
                             <button class="btn btn-success"><a href='/admin/excel/{{ old('product') }}'>Excel</a></button>
                         </label>
                     </div>

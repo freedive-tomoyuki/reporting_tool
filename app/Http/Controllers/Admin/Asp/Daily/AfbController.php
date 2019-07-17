@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\DailyCrawlerController;
 use Symfony\Component\DomCrawler\Crawler;
 use Revolution\Salvager\Client;
 use Revolution\Salvager\Drivers\Chrome;
+use Revolution\Salvager\Facades\Salvager;
 
 use App\Dailydata;
 use App\Product;
@@ -19,7 +20,7 @@ use App\Monthlysite;
 use App\Schedule;
 use App\DailyDiff;
 use App\DailySiteDiff;
-//header('Content-Type: text/html; charset=utf-8');
+
 
 class AfbController extends DailyCrawlerController
 {
@@ -38,21 +39,27 @@ class AfbController extends DailyCrawlerController
                 '--window-size=1920,3000',
                 '--start-maximized',
                 '--headless',
-                '--lang=ja_JP',
                 '--disable-gpu',
-                //'--no-sandbox',
+                '--lang=ja_JP.utf-8',
+                '--no-sandbox',
         ];
+
         
+    
         //案件の大本IDからASP別のプロダクトIDを取得
         $product_id = $this->BasetoProduct( 4, $product_base_id );
         
         // Chromeドライバーのインスタンス呼び出し
+        //$client = new Client( new Chrome( $options ) );
         $client = new Client( new Chrome( $options ) );
-        
+
         //Chromeドライバー実行
-        $client->browse( function( Browser $browser ) use (&$crawler, $product_id)
+        $client->browse( function( Browser $browser ) use (&$crawler,$product_id)
         {
-            
+            echo '<pre>';
+            //var_dump($browser->visit( 'https://www.afi-b.com' )->crawler()->html());
+            echo '</pre>';
+
             $product_infos = \App\Product::all()->where( 'id', $product_id );
             
             //クロール実行が1日のとき
@@ -68,12 +75,15 @@ class AfbController extends DailyCrawlerController
             foreach ( $product_infos as $product_info ) {
                 
                 //クロール：ログイン→レポートより検索
-                $crawler = $browser->visit( $product_info->asp->login_url )
-                    ->type( $product_info->asp->login_key, $product_info->login_value )
-                    ->type( $product_info->asp->password_key, $product_info->password_value )
-                    ->click( $product_info->asp->login_selector );
-
-                    $crawler
+                $crawler = new Crawler();
+                $crawler = $browser->visit( 'https://www.afi-b.com' )
+                    //->type( $product_info->asp->login_key, $product_info->login_value )
+                    //->type( $product_info->asp->password_key, $product_info->password_value )
+                    //->click( $product_info->asp->login_selector );
+                    ->type( '#pageTitle > aside.m-grid__itemOrder--03.m-gheader__loginForm > g-header-loginform > div.m-form__wrap > form > div > div:nth-child(1) > input', 'broadwimax' )
+                    ->type( '#pageTitle > aside.m-grid__itemOrder--03.m-gheader__loginForm > g-header-loginform > div.m-form__wrap > form > div > div:nth-child(2) > input', '0hS6gmTN5RHGYn1MSHhf')
+                    ->click( '#pageTitle > aside.m-grid__itemOrder--03.m-gheader__loginForm > g-header-loginform > div.m-form__wrap > form > div > div.m-gLoginGlid__btn > m-btn > div > input' )
+                    
                     ->visit( 'https://client.afi-b.com/client/b/cl/report/?r=daily' )
                     ->click('#adv_id_daily_chzn > a')
                     ->click('#adv_id_daily_chzn_o_1')
@@ -83,9 +93,12 @@ class AfbController extends DailyCrawlerController
                     ->click('#report_form_2 > div > table > tbody > tr:nth-child(5) > td > p > label:nth-child(2)')
                     ->click('#report_form_2 > div > table > tbody > tr:nth-child(5) > td > p > label:nth-child(3)')
                     ->click('#report_form_2 > div > div.btn_area.mt20 > ul.btn_list_01 > li > input');
-                    $crawler = $crawler->crawler();
-                    echo $crawler->html();
+                    //var_dump();
+                    echo $replace = str_replace('charset=euc-jp', 'charset=utf-8', $crawler->crawler()->html());
 
+                    //var_dump($crawler1->crawler()->html());
+                    //echo $crawler->html();
+/*
                 $crawler2 = $browser->visit( 'https://client.afi-b.com/client/b/cl/main' )->crawler();
                 
                 $crawler3 = 
@@ -209,9 +222,9 @@ class AfbController extends DailyCrawlerController
                 
                 $this->save_daily( json_encode( $afbdata ) );
                 $this->save_site( json_encode( $afbsite ) );
-                
-            } //$product_infos as $product_info
-        } );
+                */
+            }//$product_infos as $product_info
+        } ); 
     }
     
 }

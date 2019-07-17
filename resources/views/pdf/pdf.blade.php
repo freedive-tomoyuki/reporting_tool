@@ -22,29 +22,24 @@
             font-weight: bold;
             src: url('{{ storage_path('fonts/ipag.ttf') }}') format('truetype');
         }
-
-        table{
-            margin:100px auto;
-        }
-        tr:nth-child(even){
-            background:#F2F2F2;
-        }
-        th{
-            background:#222222;
-            color:white;
-        }
-        th:nth-child(odd){
-            background:#444444;
-        }
-        th,td{
-            padding:5px;
-            font-size:small;
+        body{
+            background:#ffffff;
         }
         .pie-chart {
-            width: 900px;
-            height: 500px;
+            width: 1700px;
+            height: 700px;
             margin: 0 auto;
         }
+        h3.chart {
+            /*page-break-after: always;*/
+            page-break-before: always;
+        }
+        h3 {
+          border-bottom: solid 3px #000000;
+          bottom: -3px;
+          position: relative;
+        }
+
     </style>
     <script>
         function init() {
@@ -55,6 +50,18 @@
             google.load("visualization", "1.1", {
                 packages: ["corechart"],
                 callback: 'drawChart_total'
+            });
+            google.load("visualization", "1.1", {
+                packages: ["corechart"],
+                callback: 'drawChartImp'
+            });
+            google.load("visualization", "1.1", {
+                packages: ["corechart"],
+                callback: 'drawChartClick'
+            });
+            google.load("visualization", "1.1", {
+                packages: ["corechart"],
+                callback: 'drawChartCv'
             });
         }
         function drawCharts() {
@@ -195,22 +202,216 @@
             //var chart_total = new google.charts.Line(document.getElementById('line_top_y'));
             //chart_total.draw(data, google.charts.Line.convertOptions(options));
         }
+        //インプレッショングラフ（円）
+        function drawChartImp() {
+          var ranking = JSON.parse(escapeHtml('{{ $monthlyCharts }}'));
+          console.log(ranking);
+          i = 0;
+          imp_array = [['ASP', 'imp']];
+          click_array = [['ASP', 'click']];
+          cv_array = [['ASP', 'cv']];
 
+          ranking.forEach(function(element){
+                imp_array.push([ element["name"], parseInt(element["imp"], 10) ]);
+                click_array.push([ element["name"], parseInt(element["click"], 10) ]);
+                cv_array.push([ element["name"], parseInt(element["cv"], 10) ]);
+          });
+          var data = google.visualization.arrayToDataTable(imp_array);
+          var options = {
+            legend: { position: 'bottom'} 
+          };
+
+          var chart = new google.visualization.PieChart(document.getElementById('chart_imp'));
+          chart.draw(data, options);
+        }
+
+        google.charts.load("current", {packages:["corechart"]});
+        google.charts.setOnLoadCallback(drawChartClick);
+
+        //クリックグラフ（円）
+        function drawChartClick() {
+          //[ASP名,]
+          var data = google.visualization.arrayToDataTable(click_array);
+
+          var options = {
+            legend: { position: 'bottom'} 
+          };
+
+          var chart = new google.visualization.PieChart(document.getElementById('chart_click'));
+          chart.draw(data, options);
+        }
+        google.charts.load("current", {packages:["corechart"]});
+        google.charts.setOnLoadCallback(drawChartCv);
+
+        //CVグラフ（円）
+        function drawChartCv() {
+          var data = google.visualization.arrayToDataTable(cv_array);
+
+          var options = {
+            legend: { position: 'bottom'} 
+          };
+
+          var chart = new google.visualization.PieChart(document.getElementById('chart_cv'));
+          chart.draw(data, options);
+        }
       </script>
 
 </head>
 <body onload="init()">
+<h3>実績値データ</h3>
+        <table class="table table-striped table-bordered table-hover" cellspacing="0" width="100%">
+                  <thead>
+                        <tr>
+                            <th class="th-sm">No</th>
+                            <th class="th-sm">ASP</th>
+                            <th class="th-sm">Imp</th>
+                            <th class="th-sm">CTR [ % ]</th>
+                            <th class="th-sm">Click</th>
+                            <th class="th-sm">CVR [ % ]</th>
+                            <th class="th-sm">CV</th>
+                            <th class="th-sm">アクティブ数</th>
+                            <th class="th-sm">提携数</th>
+                            <th class="th-sm">FDグロス</th>
+                            <th class="th-sm">CPA</th>
+                            <th class="th-sm">承認件数</th>
+                            <th class="th-sm">承認金額</th>
+                            <th class="th-sm">承認率</th>
+                            <th class="th-sm">前月CV（前月比）</th>
+                        </tr>
+                  </thead>
+                <tbody>
+                    <?php $i = 1; ?>
+                    
+                    @foreach($monthlyDatas as $monthlyData)
+                    <tr>
+                        <td><?php echo $i; ?></td>
+                        <td>{{ $monthlyData->name }}</td>
+                        <td>{{ number_format($monthlyData->imp) }}</td>
+                        <td>{{ $monthlyData->ctr }}</td>
+                        <td>{{ number_format($monthlyData->click) }}</td>
+                        <td>{{ $monthlyData->cvr }}</td>
+                        <td>{{ number_format($monthlyData->cv) }}</td>
+                        <td>{{ number_format($monthlyData->active) }}</td>
+                        <td>{{ number_format($monthlyData->partnership) }}</td>
+                        <td>{{ number_format($monthlyData->cost) }}</td>
+                        <td>{{ number_format($monthlyData->cpa) }}</td>
+                        <td>{{ number_format($monthlyData->approval) }}</td>
+                        <td>{{ number_format($monthlyData->approval_price) }}</td>
+                        <td>{{ number_format($monthlyData->approval_rate) }}%</td>
+                        <td>{{ number_format($monthlyData->last_cv) }}</td>
+                        <?php $i++; ?>
+                    </tr>
+                    @endforeach
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td></td>
+                        <td>合計</td>
+                        
+                        <td>{{ number_format($monthlyDataTotals[0]['total_imp']) }}</td>
+                        <?php 
+                          $CtrTotal = (($monthlyDataTotals[0]['total_imp'] != 0 )&&($monthlyDataTotals[0]['total_click'] != 0 ))? 
+                          ($monthlyDataTotals[0]['total_click']/$monthlyDataTotals[0]['total_imp'])*100 : 0 ; 
+                        ?>
+                        <td>{{ number_format($CtrTotal,2) }}</td>
+                        <td>{{ number_format($monthlyDataTotals[0]['total_click']) }}</td>
+                        <?php 
+                          $CvrTotal = (($monthlyDataTotals[0]['total_click'] != 0 )&&($monthlyDataTotals[0]['total_cv'] != 0 ))? 
+                          ($monthlyDataTotals[0]['total_cv']/$monthlyDataTotals[0]['total_click'])*100 : 0 ; 
+                        ?>
+                        <td>{{ number_format($CvrTotal,2) }}</td>
+                        <td>{{ number_format($monthlyDataTotals[0]['total_cv']) }}</td>
+                        <td>{{ number_format($monthlyDataTotals[0]['total_active'])}}</td>
+                        <td>{{ number_format($monthlyDataTotals[0]['total_partnership'])}}</td>
+                        <td>{{ number_format($monthlyDataTotals[0]['total_cost'])}}</td>
+                        <?php 
+                          $CpaTotal = (($monthlyDataTotals[0]['total_cost'] != 0 )&&($monthlyDataTotals[0]['total_cv'] != 0 ))? 
+                          ($monthlyDataTotals[0]['total_cost']/$monthlyDataTotals[0]['total_cv']) : 0 ; 
+                        ?>
+                        <td>{{ number_format($CpaTotal) }}</td>
+                        <td>{{ number_format($monthlyDataTotals[0]['total_approval'])}}</td>
+                        <td>{{ number_format($monthlyDataTotals[0]['total_approval_price'])}}</td>
+                        <?php 
+                          $ApprovalRate = (($monthlyDataTotals[0]['total_approval'] != 0 )&&($monthlyDataTotals[0]['total_cv'] != 0 ))? 
+                          ($monthlyDataTotals[0]['total_approval']/$monthlyDataTotals[0]['total_cv'])*100 : 0 ; 
+                        ?>
+                        <td>{{ number_format($ApprovalRate,2) }}</td>
+                        <td>{{ number_format($monthlyDataTotals[0]['total_last_cv']) }}</td>
+                    </tr>
+                </tfoot>
+          </table>
+@if($monthlyDataEstimates != 'Empty' )
+<h3>着地想定値データ</h3>
+          <table class="table table-striped table-bordered table-hover " cellspacing="0" width="100%">
+                  <thead>
+                        <tr>
+                            <th class="th-sm">No</th>
+                            <th class="th-sm">ASP</th>
+                            <th class="th-sm">Imp</th>
+                            <th class="th-sm">CTR [ % ]</th>
+                            <th class="th-sm">Click</th>
+                            <th class="th-sm">CVR [ % ]</th>
+                            <th class="th-sm">CV</th>
+                            <th class="th-sm">FDグロス</th>
+                            <th class="th-sm">CPA</th>
+                        </tr>
+                  </thead>
+                <tbody>
+                  <?php $i = 1; ?>
+                    @foreach($monthlyDataEstimates as $monthlyDataEstimate)
+                    <tr>
+                        <td><?php echo $i; ?></td>
+                        <td>{{ $monthlyDataEstimate->name }}</td>
+                        <td>{{ number_format($monthlyDataEstimate->estimate_imp) }}</td>
+                        <td>{{ number_format($monthlyDataEstimate->estimate_ctr,2) }}</td>
+                        <td>{{ number_format($monthlyDataEstimate->estimate_click) }}</td>
+                        <td>{{ number_format($monthlyDataEstimate->estimate_cvr,2) }}</td>
+                        <td>{{ number_format($monthlyDataEstimate->estimate_cv) }}</td>
+                        <td>{{ number_format($monthlyDataEstimate->estimate_cost) }}</td>
+                        <?php
+                          $t_cpa = (($monthlyDataEstimate->estimate_cost != 0 )&&($monthlyDataEstimate->estimate_cv != 0 ))? 
+                          ($monthlyDataEstimate->estimate_cost/$monthlyDataEstimate->estimate_cv) * 100 : 0 ;
+                        ?>
+                        <td>{{ number_format($t_cpa) }}</td>
+                      <?php $i++; ?>
+                    </tr>
+                    @endforeach
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td>着地想定</td>
+                        <td>合計</td>
+                        <td>{{ number_format($monthlyDataEstimateTotals[0]['total_estimate_imp']) }}</td>
+                        <?php 
+                          $t_imp = $monthlyDataEstimateTotals[0]['total_estimate_imp'];
+                          $t_click = $monthlyDataEstimateTotals[0]['total_estimate_click'];
+                          $t_cv = $monthlyDataEstimateTotals[0]['total_estimate_cv'];
+                          $t_cost = $monthlyDataEstimateTotals[0]['total_estimate_cost'];
+                          
+                          $t_cvr = (($t_click != 0 )&&($t_cv != 0 ))? ($t_cv/$t_click) * 100 : 0 ;
+                          $t_ctr = (($t_click != 0 )&&($t_imp != 0 ))? ($t_click/$t_imp) * 100 : 0 ;
+                          $t_cpa = (($t_cv != 0 )&&($t_cost != 0 ))? ($t_cost/$t_cv) : 0 ;
+                        ?>
+                        <td>{{ number_format($t_cvr,2) }}</td>
+                        <td>{{ number_format($monthlyDataEstimateTotals[0]['total_estimate_click']) }}</td>
 
-<div class="col-sm-9 col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
+                        <td>{{ number_format($t_ctr,2) }}</td>
+                        <td>{{ number_format($monthlyDataEstimateTotals[0]['total_estimate_cv']) }}</td>
+                        <td>{{ number_format($monthlyDataEstimateTotals[0]['total_estimate_cost'])}}</td>
+                        <td>{{ number_format($t_cpa,2) }}</td>
+                    </tr>
+                </tfoot>
+          </table>
+  @endif
 <!--グラフ-->
-    <div class="panel-heading">ASP別　日次CV推移</div>
-    <div id="line_top_x" class="pie-chart"></div>
-    <div class="panel-heading">CV数xクリック数xインプレッション数</div>
-    <div id="line_top_y" class="pie-chart"></div>
-
-<div class="row">
-    <div class="col-md-12">
-                <table cellspacing="0" width="100%">
+    <h3 class='chart'>インプレッション比</h3>
+    <div id="chart_imp" class="pie-chart"></div>
+    <h3 class='chart'>クリック比</h3>
+    <div id="chart_click" class="pie-chart"></div>
+    <h3 class='chart'>CV比</h3>
+    <div id="chart_cv" class="pie-chart"></div>
+<h3>日次データ</h3>
+    <table class="table table-striped table-bordered" width="100%">
                       <thead>
                             <tr>
                                 <th class="th-sm">No</th>
@@ -260,17 +461,17 @@
                             <td>合計</td>
                             <td> -- </td>
                             <td>{{ $t->total_imp }}</td>
-                            <td>{{
-
-                            sprintf('%.2f',( $t->total_click / $t->total_imp ) *100)
-
-                            }}</td>
+                            <td>
+                            <?php
+                             echo ($t->total_click != 0 ||$t->total_imp != 0 )? sprintf('%.2f',( $t->total_click / $t->total_imp ) *100): 0; 
+                            ?>
+                            </td>
                             <td>{{ $t->total_click }}</td>
-                            <td>{{
-
-                            sprintf('%.2f',( $t->total_cv / $t->total_click ) *100)
-
-                            }}</td>
+                            <td>
+                            <?php
+                             echo ($t->total_click != 0 ||$t->total_cv != 0 )? sprintf('%.2f',( $t->total_cv / $t->total_click ) *100): 0; 
+                            ?>
+                            </td>
                             <td>{{ $t->total_cv }}</td>
                             <td>{{ $t->total_estimate_cv }}</td>
                             <td>{{ $t->total_active }}</td>
@@ -281,10 +482,10 @@
                       @endforeach
                     </tfoot>
                 </table>
-
-        </div>
-    </div>
-</div>
-</div>
+<!--グラフ-->
+    <h3 class='chart'>ASP別　日次CV推移</h3>
+    <div id="line_top_x" class="pie-chart"></div>
+    <h3 class='chart'>CV数xクリック数xインプレッション数</h3>
+    <div id="line_top_y" class="pie-chart"></div>
 
 </body>

@@ -312,7 +312,6 @@ trait MakesUrlAssertions
 
         if (! array_key_exists('query', $parsedUrl)) {
             PHPUnit::assertTrue(true);
-
             return $this;
         }
 
@@ -320,7 +319,7 @@ trait MakesUrlAssertions
 
         PHPUnit::assertArrayNotHasKey(
             $name, $output,
-            "Found unexpected query string parameter [{$name}] in [".$this->driver->getCurrentURL().'].'
+            "Found unexpected query string parameter [{$name}] in [".$this->driver->getCurrentURL()."]."
         );
 
         return $this;
@@ -338,14 +337,14 @@ trait MakesUrlAssertions
 
         PHPUnit::assertArrayHasKey(
             'query', $parsedUrl,
-            'Did not see expected query string in ['.$this->driver->getCurrentURL().'].'
+            "Did not see expected query string in [".$this->driver->getCurrentURL()."]."
         );
 
         parse_str($parsedUrl['query'], $output);
 
         PHPUnit::assertArrayHasKey(
             $name, $output,
-            "Did not see expected query string parameter [{$name}] in [".$this->driver->getCurrentURL().'].'
+            "Did not see expected query string parameter [{$name}] in [".$this->driver->getCurrentURL()."]."
         );
 
         return $output;

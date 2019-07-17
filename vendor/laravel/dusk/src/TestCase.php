@@ -41,7 +41,7 @@ abstract class TestCase extends FoundationTestCase
     protected function driver()
     {
         return RemoteWebDriver::create(
-            'http://localhost:9515', DesiredCapabilities::chrome()
+            'http://localhost:9515', DesiredCapabilities::chrome(), 60000, 60000
         );
     }
 
@@ -63,6 +63,6 @@ abstract class TestCase extends FoundationTestCase
      */
     protected function user()
     {
-        throw new Exception('User resolver has not been set.');
+        throw new Exception("User resolver has not been set.");
     }
 }

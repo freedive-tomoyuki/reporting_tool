@@ -31,7 +31,6 @@ class Chrome implements Driver
                 '--disable-gpu',
                 '--headless',
                 '--window-size=1920,1080',
-                '--lang=ja_JP',
             ];
     }
 
@@ -47,7 +46,7 @@ class Chrome implements Driver
             DesiredCapabilities::chrome()->setCapability(
                 ChromeOptions::CAPABILITY,
                 $options
-            ), 90000, 90000
+            )
         );
     }
 

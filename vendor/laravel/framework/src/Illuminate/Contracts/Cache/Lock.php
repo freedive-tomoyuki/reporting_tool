@@ -8,7 +8,7 @@ interface Lock
      * Attempt to acquire the lock.
      *
      * @param  callable|null  $callback
-     * @return mixed
+     * @return bool
      */
     public function get($callback = null);
 

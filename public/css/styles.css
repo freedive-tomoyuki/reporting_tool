@@ -8,8 +8,10 @@ body {
 p {
   color: #777; }
 
+/*a, a:hover, a:focus {
+  color: #30a5ff; }*/
 a, a:hover, a:focus {
-  color: #30a5ff; }
+  color: inherit; }
 
 h1, h2, h3, h4, h5, h6 {
   color: #444444; }
@@ -216,8 +218,10 @@ a.btn:active, button:active {
   background-color: #f9243f;
   border-color: #f9243f; }
 
+/*.btn-link, .page-link, .text-primary {
+  color: #30a5ff !important; }*/
 .btn-link, .page-link, .text-primary {
-  color: #30a5ff !important; }
+  color: #30a5ff ; }
 
 .btn-link:focus, .btn-link:hover, .page-link:focus, .page-link:hover, a.text-primary:focus, a.text-primary:hover {
   color: #50b3ff !important; }

@@ -800,12 +800,11 @@ if (! function_exists('retry')) {
      * @param  int  $times
      * @param  callable  $callback
      * @param  int  $sleep
-     * @param  callable  $when
      * @return mixed
      *
      * @throws \Exception
      */
-    function retry($times, callable $callback, $sleep = 0, $when = null)
+    function retry($times, callable $callback, $sleep = 0)
     {
         $attempts = 0;
         $times--;
@@ -816,7 +815,7 @@ if (! function_exists('retry')) {
         try {
             return $callback($attempts);
         } catch (Exception $e) {
-            if (! $times || ($when && ! $when($e))) {
+            if (! $times) {
                 throw $e;
             }
 

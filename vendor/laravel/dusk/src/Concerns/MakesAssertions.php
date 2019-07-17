@@ -469,7 +469,7 @@ JS;
 
         PHPUnit::assertCount(
             count($values), $options,
-            'Expected options ['.implode(',', $values)."] for selection field [{$field}] to be available."
+            "Expected options [".implode(',', $values)."] for selection field [{$field}] to be available."
         );
 
         return $this;
@@ -486,7 +486,7 @@ JS;
     {
         PHPUnit::assertCount(
             0, $this->resolver->resolveSelectOptions($field, $values),
-            'Unexpected options ['.implode(',', $values)."] for selection field [{$field}]."
+            "Unexpected options [".implode(',', $values)."] for selection field [{$field}]."
         );
 
         return $this;
@@ -737,10 +737,9 @@ JS;
      */
     public function assertVueContains($key, $value, $componentSelector = null)
     {
-        $attribute = $this->vueAttribute($componentSelector, $key);
-
-        PHPUnit::assertIsArray($attribute, "The attribute for key [$key] is not an array.");
-        PHPUnit::assertContains($value, $attribute);
+        PHPUnit::assertTrue(
+            Str::contains($this->vueAttribute($componentSelector, $key), $value)
+        );
 
         return $this;
     }
@@ -756,10 +755,9 @@ JS;
      */
     public function assertVueDoesNotContain($key, $value, $componentSelector = null)
     {
-        $attribute = $this->vueAttribute($componentSelector, $key);
-
-        PHPUnit::assertIsArray($attribute, "The attribute for key [$key] is not an array.");
-        PHPUnit::assertNotContains($value, $attribute);
+        PHPUnit::assertFalse(
+            Str::contains($this->vueAttribute($componentSelector, $key), $value)
+        );
 
         return $this;
     }
@@ -776,7 +774,7 @@ JS;
         $fullSelector = $this->resolver->format($componentSelector);
 
         return $this->driver->executeScript(
-            "return document.querySelector('".$fullSelector."').__vue__.".$key
+            "return document.querySelector('" . $fullSelector . "').__vue__." . $key
         );
     }
 }
