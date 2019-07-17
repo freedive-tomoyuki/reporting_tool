@@ -28,9 +28,11 @@ class Chrome implements Driver
     public function __construct(array $options = null)
     {
         $this->options = $options ?? [
-                '--disable-gpu',
+                '--window-size=1920,3000',
+                '--start-maximized',
                 '--headless',
-                '--window-size=1920,1080',
+                '--disable-gpu',
+                '--no-sandbox',
             ];
     }
 
@@ -44,9 +46,8 @@ class Chrome implements Driver
         return RemoteWebDriver::create(
             'http://localhost:9515',
             DesiredCapabilities::chrome()->setCapability(
-                ChromeOptions::CAPABILITY,
-                $options
-            )
+            ChromeOptions::CAPABILITY, $options
+        )->setCapability('acceptInsecureCerts', TRUE)
         );
     }
 
