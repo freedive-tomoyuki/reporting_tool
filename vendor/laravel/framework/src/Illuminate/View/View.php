@@ -147,7 +147,7 @@ class View implements ArrayAccess, ViewContract
      *
      * @return array
      */
-    public function gatherData()
+    protected function gatherData()
     {
         $data = array_merge($this->factory->getShared(), $this->data);
 

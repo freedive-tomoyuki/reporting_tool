@@ -132,7 +132,7 @@ class BroadcastManager implements FactoryContract
     /**
      * Get a driver instance.
      *
-     * @param  string|null  $driver
+     * @param  string  $driver
      * @return mixed
      */
     public function connection($driver = null)
@@ -165,7 +165,7 @@ class BroadcastManager implements FactoryContract
     }
 
     /**
-     * Resolve the given broadcaster.
+     * Resolve the given store.
      *
      * @param  string  $name
      * @return \Illuminate\Contracts\Broadcasting\Broadcaster

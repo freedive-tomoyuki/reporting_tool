@@ -29,7 +29,7 @@ class Application extends Container implements ApplicationContract, HttpKernelIn
      *
      * @var string
      */
-    const VERSION = '5.8.28';
+    const VERSION = '5.8.8';
 
     /**
      * The base path for the Laravel installation.
@@ -520,16 +520,6 @@ class Application extends Container implements ApplicationContract, HttpKernelIn
     }
 
     /**
-     * Determine if application is in production environment.
-     *
-     * @return bool
-     */
-    public function isProduction()
-    {
-        return $this['env'] === 'production';
-    }
-
-    /**
      * Detect the application's current environment.
      *
      * @param  \Closure  $callback
@@ -947,26 +937,6 @@ class Application extends Container implements ApplicationContract, HttpKernelIn
     }
 
     /**
-     * Determine if the application events are cached.
-     *
-     * @return bool
-     */
-    public function eventsAreCached()
-    {
-        return $this['files']->exists($this->getCachedEventsPath());
-    }
-
-    /**
-     * Get the path to the events cache file.
-     *
-     * @return string
-     */
-    public function getCachedEventsPath()
-    {
-        return $_ENV['APP_EVENTS_CACHE'] ?? $this->bootstrapPath().'/cache/events.php';
-    }
-
-    /**
      * Determine if the application is currently down for maintenance.
      *
      * @return bool
@@ -1128,7 +1098,7 @@ class Application extends Container implements ApplicationContract, HttpKernelIn
     public function registerCoreContainerAliases()
     {
         foreach ([
-            'app'                  => [self::class, \Illuminate\Contracts\Container\Container::class, \Illuminate\Contracts\Foundation\Application::class,  \Psr\Container\ContainerInterface::class],
+            'app'                  => [\Illuminate\Foundation\Application::class, \Illuminate\Contracts\Container\Container::class, \Illuminate\Contracts\Foundation\Application::class,  \Psr\Container\ContainerInterface::class],
             'auth'                 => [\Illuminate\Auth\AuthManager::class, \Illuminate\Contracts\Auth\Factory::class],
             'auth.driver'          => [\Illuminate\Contracts\Auth\Guard::class],
             'blade.compiler'       => [\Illuminate\View\Compilers\BladeCompiler::class],
