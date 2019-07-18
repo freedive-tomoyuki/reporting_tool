@@ -5,6 +5,7 @@ namespace Laravel\Dusk;
 use Closure;
 use BadMethodCallException;
 use Illuminate\Support\Str;
+use Facebook\WebDriver\WebDriverBy;
 use Facebook\WebDriver\WebDriverPoint;
 use Illuminate\Support\Traits\Macroable;
 use Facebook\WebDriver\WebDriverDimension;
@@ -247,6 +248,22 @@ class Browser
     }
 
     /**
+     * Make the browser window as large as the content.
+     *
+     * @return $this
+     */
+    public function fitContent()
+    {
+        $body = $this->driver->findElement(WebDriverBy::tagName('body'));
+
+        if (! empty($body)) {
+            $this->resize($body->getSize()->getWidth(), $body->getSize()->getHeight());
+        }
+
+        return $this;
+    }
+
+    /**
      * Move the browser window.
      *
      * @param  int  $x
@@ -288,10 +305,9 @@ class Browser
         if (in_array($this->driver->getCapabilities()->getBrowserName(), static::$supportsRemoteLogs)) {
             $console = $this->driver->manage()->getLog('browser');
 
-            if (!empty($console)) {
+            if (! empty($console)) {
                 file_put_contents(
-                    sprintf('%s/%s.log', rtrim(static::$storeConsoleLogAt, '/'), $name)
-                    , json_encode($console, JSON_PRETTY_PRINT)
+                    sprintf('%s/%s.log', rtrim(static::$storeConsoleLogAt, '/'), $name), json_encode($console, JSON_PRETTY_PRINT)
                 );
             }
         }
@@ -387,7 +403,7 @@ class Browser
      */
     public function ensurejQueryIsAvailable()
     {
-        if ($this->driver->executeScript("return window.jQuery == null")) {
+        if ($this->driver->executeScript('return window.jQuery == null')) {
             $this->driver->executeScript(file_get_contents(__DIR__.'/../bin/jquery.js'));
         }
     }

@@ -41,9 +41,8 @@ class AfbController extends DailyCrawlerController
                 '--headless',
                 '--disable-gpu',
                 '--disable-setuid-sandbox',
-                '--lang=ja_JP.utf-8',
+                '--lang=ja',
                 '--no-sandbox',
-                '--dump-dom',
         ];
 
         
