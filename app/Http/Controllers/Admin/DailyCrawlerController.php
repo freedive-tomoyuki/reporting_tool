@@ -347,31 +347,55 @@ class DailyCrawlerController extends Controller
 
         /* 前日比でなくなっているASPを考慮 */
         if(date("Y-m-d",strtotime("-2 day")) != date("Y-m-t",strtotime("-2 day"))){
-        //if($daily_diff_1){
-          foreach ( $daily_diff as $diff ){
-              foreach ( $daily_diff_1 as $diff_1 ) {
-                  if($diff["asp_id"] == $diff_1["asp_id"]){
-                    //$asp_id = $diff["asp_id"];
-                    $diff_[$i]["imp"] = $diff["imp"] - $diff_1["imp"];
-                    $diff_[$i]["click"] = $diff["click"] - $diff_1["click"];
-                    $diff_[$i]["cv"] = $diff["cv"] - $diff_1["cv"];
-                    $diff_[$i]["ctr"] = 
-                    ($diff_[$i]["imp"] > 0 && $diff_[$i]["click"] > 0 ) ? intval($diff_[$i]["imp"])/intval($diff_[$i]["click"]): 0 ;
-                    $diff_[$i]["cvr"] = 
-                    ($diff_[$i]["click"] > 0 && $diff_[$i]["cv"] > 0 )? intval($diff_[$i]["click"])/intval($diff_[$i]["cv"]): 0 ;
+          if(!empty($daily_diff_1)){
+              foreach ( $daily_diff as $diff ){
+                  foreach ( $daily_diff_1 as $diff_1 ) {
+                      if($diff["asp_id"] == $diff_1["asp_id"]){
+                        //$asp_id = $diff["asp_id"];
+                        $diff_[$i]["imp"] = $diff["imp"] - $diff_1["imp"];
+                        $diff_[$i]["click"] = $diff["click"] - $diff_1["click"];
+                        $diff_[$i]["cv"] = $diff["cv"] - $diff_1["cv"];
+                        $diff_[$i]["ctr"] = 
+                        ($diff_[$i]["imp"] > 0 && $diff_[$i]["click"] > 0 ) ? intval($diff_[$i]["imp"])/intval($diff_[$i]["click"]): 0 ;
+                        $diff_[$i]["cvr"] = 
+                        ($diff_[$i]["click"] > 0 && $diff_[$i]["cv"] > 0 )? intval($diff_[$i]["click"])/intval($diff_[$i]["cv"]): 0 ;
 
-                    $diff_[$i]["active"] = $diff["active"];
-                    $diff_[$i]["estimate_cv"] = $diff["estimate_cv"];
-                    $diff_[$i]["partnership"] = $diff["partnership"];
-                    $diff_[$i]["price"] = $diff["price"] - $diff_1["price"];
-                    $diff_[$i]["cpa"] = $diff["cpa"];
-                    $diff_[$i]["cost"] = $diff["cost"] - $diff_1["cost"];
-                    $diff_[$i]["asp_id"] = $diff["asp_id"];
-                    $diff_[$i]["date"] = $diff["date"];
-                    $diff_[$i]["product_id"] = $diff["product_id"];
-                    //$diff_[$i]["killed_flag"] = 0;
-                    $i++;
+                        $diff_[$i]["active"] = $diff["active"];
+                        $diff_[$i]["estimate_cv"] = $diff["estimate_cv"];
+                        $diff_[$i]["partnership"] = $diff["partnership"];
+                        $diff_[$i]["price"] = $diff["price"] - $diff_1["price"];
+                        $diff_[$i]["cpa"] = $diff["cpa"];
+                        $diff_[$i]["cost"] = $diff["cost"] - $diff_1["cost"];
+                        $diff_[$i]["asp_id"] = $diff["asp_id"];
+                        $diff_[$i]["date"] = $diff["date"];
+                        $diff_[$i]["product_id"] = $diff["product_id"];
+                        //$diff_[$i]["killed_flag"] = 0;
+                        $i++;
+                      }
                   }
+              }
+          }else{
+              foreach ( $daily_diff as $diff ){
+                        //$asp_id = $diff["asp_id"];
+                        $diff_[$i]["imp"] = $diff["imp"];
+                        $diff_[$i]["click"] = $diff["click"];
+                        $diff_[$i]["cv"] = $diff["cv"];
+                        $diff_[$i]["ctr"] = 
+                        ($diff_[$i]["imp"] > 0 && $diff_[$i]["click"] > 0 ) ? intval($diff_[$i]["imp"])/intval($diff_[$i]["click"]): 0 ;
+                        $diff_[$i]["cvr"] = 
+                        ($diff_[$i]["click"] > 0 && $diff_[$i]["cv"] > 0 )? intval($diff_[$i]["click"])/intval($diff_[$i]["cv"]): 0 ;
+
+                        $diff_[$i]["active"] = $diff["active"];
+                        $diff_[$i]["estimate_cv"] = $diff["estimate_cv"];
+                        $diff_[$i]["partnership"] = $diff["partnership"];
+                        $diff_[$i]["price"] = $diff["price"] ;
+                        $diff_[$i]["cpa"] = $diff["cpa"];
+                        $diff_[$i]["cost"] = $diff["cost"];
+                        $diff_[$i]["asp_id"] = $diff["asp_id"];
+                        $diff_[$i]["date"] = $diff["date"];
+                        $diff_[$i]["product_id"] = $diff["product_id"];
+                        //$diff_[$i]["killed_flag"] = 0;
+                        $i++;
               }
           }
         }else{
