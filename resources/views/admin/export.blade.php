@@ -44,67 +44,69 @@
                             </select>
                             <button type="submit" class="btn btn-default">更新</button> 
                     
-                            </div>
+                        </div>
                     </form> 
                     @if(old('product'))
                     <hr>
-
-                    <div class="form-group form-inline ">
-                        <label>
-                            <button class="btn btn-default"><a href='/admin/pdf'>テンプレート</a></button>
-                        </label>
-                    </div>
-                    <div class="form-group form-inline ">
-                        <label>
-                            年間
-                            <button class="btn btn-default"><a href='/admin/pdf/{{ old('product') }}'>PDF</a></button> 
-                            <button class="btn btn-success"><a href='/admin/excel/{{ old('product') }}'>Excel</a></button>
-                        </label>
-                    </div>
-                    <div class="form-group form-inline ">
-                        <label>
-                            直近３ヶ月
-                            <button class="btn btn-default"><a href='/admin/pdf/{{ old('product') }}'>PDF</a></button> 
-                            <button class="btn btn-success"><a href='/admin/excel/{{ old('product') }}'>Excel</a></button>
-                        </label>
-                    </div>
-                    <div class="form-group form-inline ">
-                        <label>
-                            昨月の全体成果
-                            <button class="btn btn-default"><a href='/admin/pdf/{{ old('product') }}/one_month'>PDF</a></button> 
-                            <button class="btn btn-success"><a href='/admin/excel/{{ old('product') }}'>Excel</a></button>
-                        </label>
-                    </div>
-                    <div class="form-group form-inline ">
-                        <label>
-                            今月の全体成果
-                            <button class="btn btn-default"><a href='/admin/pdf/{{ old('product') }}'>PDF</a></button> 
-                            <button class="btn btn-success"><a href='/admin/excel/{{ old('product') }}'>Excel</a></button>
-                        </label>
-                    </div>
-                    <div class="form-group form-inline ">
-                        <label>
-                            昨月のメディア別成果
-                            <button class="btn btn-default"><a href='/admin/pdf/{{ old('product') }}/one_month'>PDF</a></button> 
-                            <button class="btn btn-success"><a href='/admin/excel/{{ old('product') }}'>Excel</a></button>
-                        </label>
-                    </div>
-                    <div class="form-group form-inline ">
-                        <label>
-                            今月のメディア別成果 
-                            <button class="btn btn-default"><a href='/admin/pdf/{{ old('product') }}'>PDF</a></button> 
-                            <button class="btn btn-success"><a href='/admin/excel/{{ old('product') }}'>Excel</a></button>
-                        </label>
-                    </div>
+                        <div class="form-group form-inline ">
+                            <label>
+                                <button class="btn btn-success"><a href='/admin/pdf'>テンプレート</a></button>
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">年間</label>
+                                <div class="col-sm-10">
+                                    <div class="text-left form-control-static">
+                                        <a href='/admin/pdf/yearly/{{ old('product') }}' class="btn btn-success btn-sm" role="button">PDF</a>
+                                    </div>
+                                </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">直近３ヶ月</label>
+                                <div class="col-sm-10">
+                                    <div class="text-left form-control-static">
+                                        <a href='/admin/pdf/three_month/{{ old('product') }}' class="btn btn-success btn-sm" role="button">PDF</a>
+                                    </div>
+                                </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">昨月の全体成果</label>
+                                <div class="col-sm-10">
+                                    <div class="text-left form-control-static">
+                                        <a href='/admin/pdf/monthly/{{ old('product') }}/one_month' class="btn btn-success btn-sm" role="button">PDF</a>
+                                    </div>
+                                </div>
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">今月の全体成果</label>
+                                <div class="col-sm-10">
+                                    <div class="text-left form-control-static">
+                                        <a href='/admin/pdf/monthly/{{ old('product') }}' class="btn btn-success btn-sm" role="button">PDF</a>
+                                    </div>
+                                </div>
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">昨月のメディア別成果</label>
+                                <div class="col-sm-10">
+                                    <div class="text-left form-control-static">
+                                        <a href='/admin/pdf/media/{{ old('product') }}/one_month' class="btn btn-success btn-sm" role="button">PDF</a>
+                                    </div>
+                                </div>
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">今月のメディア別成果</label>
+                                <div class="col-sm-10">
+                                    <div class="text-left form-control-static">
+                                        <a href='/admin/pdf/media/{{ old('product') }}' class="btn btn-success btn-sm" role="button">PDF</a>
+                                    </div>
+                                </div>
+                            </label>
+                        </div>
                     @endif
-                    
 
-                <div>
-                <hr>
-                    <a href='/admin/DownloadTemplateCsv'>CSVフォーマットをダウンロードする</a></br>
-                    ※【ASP】×【日別】✕【案件】の件数をご記載してください。</br>
-                    ※ASPIDは、ASP管理をご参照ください。</br>
-                    ※案件IDは、広告主管理をご参照ください。</br>
                 </div>
 
             </div>

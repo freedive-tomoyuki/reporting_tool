@@ -475,7 +475,102 @@ class ExportController extends Controller
         //return $pdf->download('sample.pdf'); 
 
     }
+    /**
+        年間
+    */
+    function pdf_media($id,$month = null ){
+        
+        //$pdf = app('dompdf.wrapper');
+        $data = array();
+        //$date = date('Y-m' ,strtotime(''));
+        $ratio = (date("d")/date("t"));
+        //*毎月一日の場合は、先月データと先々月データを参照
 
+        if($month == 'one_month' ){//先月分
+            $month = date('Ym',strtotime('-1 month'));
+            $searchdate = date('Y-m-t', strtotime('-1 month'));
+
+        }else{
+            $month = date('Ym',strtotime('-1 day'));
+            $searchdate = date("Y-m-d", strtotime('-1 day'));
+
+        }
+
+        $monthlysites_table = $month.'_monthlysites';
+
+        $products = DB::table($monthlysites_table)
+                    ->select(['name', 'imp', 'click','cv', 'cvr', 'ctr', 'media_id','site_name','products.product','products.id','price','cpa','cost','estimate_cv','date','approval','approval_price','approval_rate'])
+                    ->join('products',DB::raw($monthlysites_table.'.product_id'),'=','products.id')
+                    ->join('asps','products.asp_id','=','asps.id');
+                    
+                    if(!empty($id)){
+                        $products->where('products.product_base_id', $id);
+                    }
+                    if(!empty($searchdate)){
+                        $products->where('date', 'LIKE' , "%".$searchdate."%");
+                    }
+                    $products->groupBy("media_id");
+                    $products->orderByRaw('CAST(cv AS DECIMAL(10,2)) DESC');
+                    
+                    $products->limit(50);
+                    $products = $products->get();
+
+                    //var_dump($products);
+        /**
+        * 日次のグラフ用データの一覧を取得する。
+        */
+        $site_ranking = $this->monthly_ranking_site($id,$searchdate);
+        //var_dump($site_ranking);
+        //return view('pdf.media',compact('products','site_ranking'));
+
+        $pdf = PDF::loadView('pdf.media',compact('products','site_ranking'));
+        $pdf->setOption('enable-javascript', true);
+        $pdf->setOption('javascript-delay', 5000);
+        $pdf->setOption('enable-smart-shrinking', true);
+        $pdf->setOption('no-stop-slow-scripts', true);
+        $pdf->setOption('orientation', 'Landscape');
+        return $pdf->inline();
+
+    }
+    /**
+　    月別ランキング一覧取得
+    */
+    public function monthly_ranking_site($id ,$searchdate = null) {
+                /*
+                    案件ｘ対象期間からCVがTOP10のサイトを抽出
+                */
+                $month = date('Ym',strtotime($searchdate));
+                $monthly_sites_table = $month.'_monthlysites';
+
+                $products = DB::table($monthly_sites_table)
+                //$products = Monthlysite::
+                    ->select(DB::raw("cv , media_id, site_name"))
+                    
+                    ->join('products',DB::raw($monthly_sites_table.'.product_id'),'=','products.id')
+                    ->join('asps','products.asp_id','=','asps.id')
+                    
+                    ->where('cv', '!=' , 0 );
+
+                    if(!empty($id)){
+                        $products->where('product_base_id', $id);
+                    }
+                    if(!empty($searchdate)){
+                        //今月の場合
+                        if(strpos($searchdate,date("Y-m", strtotime('-1 day'))) === false ){
+                            $searchdate= date("Y-m-t",strtotime($searchdate));
+                        }
+                        $products->where('date' , $searchdate );
+                    }
+                    //echo $searchdate;
+                    $products->groupBy("media_id");
+                    $products->orderByRaw('CAST(cv AS DECIMAL(10,2)) DESC');
+
+                    $products->limit(10);
+                    //echo $products->toSql();
+                    $products = $products->get();
+                    return json_encode($products);
+
+    }
     public function excel()
     {
         $id = 3 ;

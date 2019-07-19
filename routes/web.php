@@ -124,13 +124,13 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth:admin'], function() {
     Route::get('excel_test','Admin\ExportController@excel');
     //PDF出力
     //今月・昨月分 済
-    Route::get('pdf/{id?}/{month?}','Admin\ExportController@pdf' );
+    Route::get('pdf/monthly/{id?}/{month?}','Admin\ExportController@pdf' );
     //年間＋ASP別 済
     Route::get('pdf/yearly/{id?}','Admin\ExportController@pdf_yearly' );
 
     Route::get('pdf/three_month/{id?}','Admin\ExportController@pdf' );
     
-    Route::get('pdf/monthly/site/{id?}/{month?}','Admin\ExportController@pdf' );
+    Route::get('pdf/media/{id?}/{month?}','Admin\ExportController@pdf_media' );
     
    
 });
