@@ -190,31 +190,8 @@ class Crawler implements \Countable, \IteratorAggregate
      */
     public function addHtmlContent($content, $charset = 'UTF-8')
     {
-        $internalErrors = libxml_use_internal_errors(true);
-        $disableEntities = libxml_disable_entity_loader(true);
-
-        $content =mb_convert_encoding($content, 'HTML-ENTITIES', ' ASCII, JIS, UTF-8, EUC-JP, SJIS');
-        
-        $dom = new \DOMDocument('1.0', $charset);
-        $dom->validateOnParse = true;
-
-        set_error_handler(function () { throw new \Exception(); });
-
-        try {
-            // Convert charset to HTML-entities to work around bugs in DOMDocument::loadHTML()
-            $content = mb_convert_encoding($content, 'HTML-ENTITIES', $charset);
-        } catch (\Exception $e) {
-        }
-
-        restore_error_handler();
-
-        if ('' !== trim($content)) {
-            @$dom->loadHTML($content);
-        }
-
-        libxml_use_internal_errors($internalErrors);
-        libxml_disable_entity_loader($disableEntities);
-
+        // Use HTML5 parser if the content is HTML5 and the library is available
+        $dom = null !== $this->html5Parser && strspn($content, " \t\r\n") === stripos($content, '<!doctype html>') ? $this->parseHtml5($content, $charset) : $this->parseXhtml($content, $charset);
         $this->addDocument($dom);
 
         $base = $this->filterRelativeXPath('descendant-or-self::base')->extract(['href']);

@@ -47,7 +47,7 @@ class Chrome implements Driver
             'http://localhost:9515',
             DesiredCapabilities::chrome()->setCapability(
             ChromeOptions::CAPABILITY, $options
-        )->setCapability('acceptInsecureCerts', TRUE)
+        )
         );
     }
 
