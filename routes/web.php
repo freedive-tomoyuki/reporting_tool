@@ -205,6 +205,7 @@ Route::get('test2','MonthlyCrawlerController@monthlytimer');
 Route::get('check','CheckController@check');
 Route::get('diff','DailyCrawlerController@diff');
 Route::get('diff_site','DailyCrawlerController@diff_site');
+Route::get('calChart/{id?}','Admin\YearlyController@calChart' );
 
 /*成功例
 Route::get('/demo', function() {

@@ -17,7 +17,7 @@ class RedirectIfAuthenticated
      */
     public function handle($request, Closure $next, $guard = null)
     {
-        $redir = '/daily_result';
+        //$redir = '/daily_result';
         switch ($guard) {
         case "admin":
             $redir = '/admin/daily_result';

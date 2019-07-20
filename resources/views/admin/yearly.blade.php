@@ -108,6 +108,17 @@
         </div>
     </div>
 		<!--/.row-->
+<!--グラフ-->
+    <div class="row">
+      <div class="col-lg-12">
+          <div class="panel panel-default">
+            <div class="panel-heading sp-small">年次CV推移</div>
+            <div class="panel-body">
+                <div id="line_top_x" style="width: 100%;" ></div>
+            </div>
+          </div>
+      </div>
+    </div> 
 
     <div class="col-md-12">
         <div class="panel panel-primary ">
@@ -232,7 +243,7 @@
                               <td>CVR</td>
                           @foreach($yearly_cvrs_asp[$key] as $cvr)
                               <td>{{ number_format($cvr,2) }}</td>
-                          @endforeach
+                          @endforeach 
                               <td> - </td>
                           </tr>
 
@@ -242,6 +253,105 @@
         </div>
       @endforeach
     </div>
+<script type="text/javascript">
+        //google.charts.load('current', {'packages':['line']});
+    google.load("visualization", "1", {
+                packages: ["line"]
+            });
+    google.charts.setOnLoadCallback(drawChart);
 
+    function drawChart() {
+      
+      var ranking = JSON.parse(escapeHtml('{{ $yearly_chart }}'));
+
+        i = 0;
+
+      
+      AspArray = Object.keys(ranking).map(function (key,val) {return key })
+      NumArray = Object.keys(ranking).map(function (key) {return ranking[key] })
+      
+      console.log(AspArray);
+      console.log(NumArray);
+      var array = [];
+      var array_asp = new Array();
+          
+      var data = new google.visualization.DataTable();
+          data.addColumn('string', 'months');
+
+          data.addRows(12);
+
+
+        ranking.forEach(function(element,i) {
+          //console.log(element);
+          array[i] = new Array();
+
+          for ( var key in element ) {
+
+            var data = element[key];
+
+            if(key == 'date'){
+
+              var date = new Date(data);
+              var year = date.getFullYear();
+              var month = date.getMonth() + 1;
+              //var day = date.getDate();
+
+              array[i][key] = year +'-'+ month ;//+'-'+ day;
+              
+            }else{
+              array[i][key] = parseInt(data, 10);
+
+              if(array_asp.indexOf(key) < 0){
+                array_asp.push(key);
+              }
+              
+            }
+            
+          }
+          i = i+1;
+          //console.log(array_ranking1[i]);
+        });
+        console.log(array_asp);
+
+        array_ranking2 = new Array();
+        element_data = new Array();
+
+        array.forEach(function(element){
+          //console.log(element);
+          var valuesOf = function(obj) {
+            return Object.keys(obj).map(function (key) { return obj[key]; })
+          }
+          console.log(valuesOf(element));
+          array_ranking2.push(valuesOf(element));
+
+        });
+        data.addColumn('string', '');
+
+        array_asp.forEach(function(element){
+          data.addColumn('number', element );
+          console.log(element);
+        });
+
+      var options = {
+
+        height: 300,
+        legend: 'bottom',
+        
+      };
+
+      var chart = new google.charts.Line(document.getElementById('line_top_x'));
+
+      chart.draw(data, google.charts.Line.convertOptions(options));
+    }
+    function escapeHtml(str){
+        str = str.replace(/&amp;/g, '&');
+        str = str.replace(/&gt;/g, '>');
+        str = str.replace(/&lt;/g, '<');
+        str = str.replace(/&quot;/g, '"');
+        str = str.replace(/&#x27;/g, "'");
+        str = str.replace(/&#x60;/g, '`');
+        return str;
+      }
+</script>
 
 @endsection
