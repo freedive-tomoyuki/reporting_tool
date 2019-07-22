@@ -2,8 +2,10 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <link href="{{ public_path('css/bootstrap.min.css')}}" rel="stylesheet">
+    <link href="{{ public_path('css/datepicker3.css')}}" rel="stylesheet">
     <link href="{{ public_path('css/styles.css')}}" rel="stylesheet">
+    <link href="{{ public_path('css/addons/datatables.min.css')}}" rel="stylesheet">
+    <script type="text/javascript" src="http://www.google.com/jsapi"></script>
     <style type="text/css">
         @font-face {
             font-family: ipag;
@@ -21,10 +23,108 @@
         body{
             background:#ffffff;
         }
-    </style>
+        .pie-chart {
+            width: 1700px;
+            height: 700px;
+            margin: 0 auto;
+        }
+        h3.top {
+            /*page-break-after: always;*/
+            page-break-before: always;
+        }
+        h3 {
+          border-bottom: solid 3px #000000;
+          bottom: -3px;
+          position: relative;
+        }
 
+    </style>
+    <script>
+        function init() {
+            google.load("visualization", "1.1", {
+                packages: ["corechart"],
+                callback: 'drawChart'
+            });
+        }
+        function drawChart() {
+
+            var ranking = JSON.parse(escapeHtml('{{ $yearly_chart }}'));
+
+            var array = [];
+            var array_asp = new Array();
+            i = 0;
+
+              ranking.forEach(function(element,i) {
+                //console.log(element);
+                array[i] = new Array();
+
+                for ( var key in element ) {
+
+                  var data = element[key];
+
+                  if(key == 'date'){
+                      var date = new Date(data);
+                      var year = date.getFullYear();
+                      var month = date.getMonth() + 1;
+                      array[i][key] = year +'年'+ month +'月' ;//+'-'+ day;
+        
+                  }else{
+                    array[i][key] = parseInt(data, 10);
+
+                    if(array_asp.indexOf(key) < 0){
+                      array_asp.push(key);
+                    }
+                    
+                  }
+                  
+                }
+                i = i+1;
+                //console.log(array_ranking1[i]);
+              });
+              console.log(array_asp);
+              console.log(array);
+
+              array_ranking2 = new Array();
+              element_data = new Array();
+              array.forEach(function(element){
+                //console.log(element);
+                var valuesOf = function(obj) {
+                  return Object.keys(obj).map(function (key) { return obj[key]; })
+                }
+                //console.log(valuesOf(element));
+                array_ranking2.push(valuesOf(element));
+
+              });
+              console.log(array_ranking2);
+            
+              var data = new google.visualization.DataTable();
+                  data.addColumn('string', 'months');
+
+              array_asp.forEach(function(element){
+                data.addColumn('number', element );
+              });
+              data.addRows(array_ranking2);
+
+              var options = {
+                width: '100%',
+              };
+
+              var chart = new google.visualization.LineChart(document.getElementById('line_top_x'));
+
+              chart.draw(data, options);
+          }
+          function escapeHtml(str){
+              str = str.replace(/&amp;/g, '&');
+              str = str.replace(/&gt;/g, '>');
+              str = str.replace(/&lt;/g, '<');
+              str = str.replace(/&quot;/g, '"');
+              str = str.replace(/&#x27;/g, "'");
+              str = str.replace(/&#x60;/g, '`');
+              return str;
+          }
+    </script>
 </head>
-<body>
+<body onload="init()">
         <h3>年間総合</h3> 
                 <table class="table table-striped table-bordered" width="100%">
                         <thead>
@@ -144,5 +244,7 @@
                       </tbody>
                     </table>
       @endforeach
-
+<!--グラフ-->
+    <h3 class='top'>ASP別　年間CV推移</h3>
+    <div id="line_top_x" class="pie-chart"></div>
 </body>

@@ -3,7 +3,6 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link href="{{ public_path('css/bootstrap.min.css')}}" rel="stylesheet">
-    <link href="{{ public_path('css/datepicker3.css')}}" rel="stylesheet">
     <link href="{{ public_path('css/styles.css')}}" rel="stylesheet">
     <link href="{{ public_path('css/addons/datatables.min.css')}}" rel="stylesheet">
     <script type="text/javascript" src="http://www.google.com/jsapi"></script>
@@ -30,7 +29,7 @@
             height: 700px;
             margin: 0 auto;
         }
-        h3.chart {
+        h3.top {
             /*page-break-after: always;*/
             page-break-before: always;
         }
@@ -64,7 +63,7 @@
                 callback: 'drawChartCv'
             });
         }
-        function drawCharts() {
+/*        function drawCharts() {
 
             var data = google.visualization.arrayToDataTable([
                 ['Task', 'Hours per Day'],
@@ -79,7 +78,7 @@
             };
             var chart = new google.visualization.PieChart(document.getElementById('charts'));
             chart.draw(data, options);
-        }
+        }*/
         function escapeHtml(str){
             str = str.replace(/&amp;/g, '&');
             str = str.replace(/&gt;/g, '>');
@@ -404,14 +403,14 @@
           </table>
   @endif
 <!--グラフ-->
-    <h3 class='chart'>インプレッション比</h3>
+    <h3 class='top'>インプレッション比</h3>
     <div id="chart_imp" class="pie-chart"></div>
-    <h3 class='chart'>クリック比</h3>
+    <h3 class='top'>クリック比</h3>
     <div id="chart_click" class="pie-chart"></div>
-    <h3 class='chart'>CV比</h3>
+    <h3 class='top'>CV比</h3>
     <div id="chart_cv" class="pie-chart"></div>
-<h3>日次データ</h3>
-    <table class="table table-striped table-bordered" width="100%">
+<h3 class='top'>日次データ</h3>
+    <table class="table table-striped table-bordered " width="100%">
                       <thead>
                             <tr>
                                 <th class="th-sm">No</th>
@@ -483,9 +482,9 @@
                     </tfoot>
                 </table>
 <!--グラフ-->
-    <h3 class='chart'>ASP別　日次CV推移</h3>
+    <h3 class='top'>ASP別　日次CV推移</h3>
     <div id="line_top_x" class="pie-chart"></div>
-    <h3 class='chart'>CV数xクリック数xインプレッション数</h3>
+    <h3 class='top'>CV数xクリック数xインプレッション数</h3>
     <div id="line_top_y" class="pie-chart"></div>
 
 </body>

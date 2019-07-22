@@ -267,19 +267,13 @@
         i = 0;
 
       
-      AspArray = Object.keys(ranking).map(function (key,val) {return key })
-      NumArray = Object.keys(ranking).map(function (key) {return ranking[key] })
+      //AspArray = Object.keys(ranking).map(function (key,val) {return key })
+      //NumArray = Object.keys(ranking).map(function (key) {return ranking[key] })
       
-      console.log(AspArray);
-      console.log(NumArray);
+      console.log(ranking);
+      //console.log(NumArray);
       var array = [];
       var array_asp = new Array();
-          
-      var data = new google.visualization.DataTable();
-          data.addColumn('string', 'months');
-
-          data.addRows(12);
-
 
         ranking.forEach(function(element,i) {
           //console.log(element);
@@ -290,14 +284,11 @@
             var data = element[key];
 
             if(key == 'date'){
-
-              var date = new Date(data);
-              var year = date.getFullYear();
-              var month = date.getMonth() + 1;
-              //var day = date.getDate();
-
-              array[i][key] = year +'-'+ month ;//+'-'+ day;
-              
+                var date = new Date(data);
+                var year = date.getFullYear();
+                var month = date.getMonth() + 1;
+                array[i][key] = year +'年'+ month +'月' ;//+'-'+ day;
+  
             }else{
               array[i][key] = parseInt(data, 10);
 
@@ -312,6 +303,7 @@
           //console.log(array_ranking1[i]);
         });
         console.log(array_asp);
+        console.log(array);
 
         array_ranking2 = new Array();
         element_data = new Array();
@@ -321,16 +313,21 @@
           var valuesOf = function(obj) {
             return Object.keys(obj).map(function (key) { return obj[key]; })
           }
-          console.log(valuesOf(element));
+          //console.log(valuesOf(element));
           array_ranking2.push(valuesOf(element));
 
         });
-        data.addColumn('string', '');
+        console.log(array_ranking2);
+      
+        var data = new google.visualization.DataTable();
+            data.addColumn('string', 'months');
 
+            //data.addColumn('string', '');
         array_asp.forEach(function(element){
           data.addColumn('number', element );
-          console.log(element);
+          //console.log(element);
         });
+        data.addRows(array_ranking2);
 
       var options = {
 

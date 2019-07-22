@@ -463,9 +463,10 @@ class ExportController extends Controller
                 
                 }
         }//foreach
-
+        $yearly_chart= $this->calChart(3);
+        //return view('pdf.yearly', compact('asps','yearly_cvs','yearly_clicks','yearly_imps','yearly_approvals','yearly_cvrs','yearly_ctrs','yearly_cvs_asp','yearly_clicks_asp','yearly_imps_asp','yearly_ctrs_asp','yearly_cvrs_asp','yearly_chart'));
         $pdf = PDF::loadView('pdf.yearly', compact('asps','yearly_cvs','yearly_clicks','yearly_imps','yearly_approvals','yearly_cvrs','yearly_ctrs',
-                'yearly_cvs_asp','yearly_clicks_asp','yearly_imps_asp','yearly_ctrs_asp','yearly_cvrs_asp'));
+                'yearly_cvs_asp','yearly_clicks_asp','yearly_imps_asp','yearly_ctrs_asp','yearly_cvrs_asp','yearly_chart'));
         $pdf->setOption('enable-javascript', true);
         $pdf->setOption('javascript-delay', 5000);
         $pdf->setOption('enable-smart-shrinking', true);
@@ -475,8 +476,42 @@ class ExportController extends Controller
         //return $pdf->download('sample.pdf'); 
 
     }
+    public function calChart($product){
+
+        $date = array();
+        
+        $aspinfo = Product::Select('asp_id','asps.name')->join('asps','products.asp_id','=','asps.id')->where('product_base_id',$product)->get()->toArray();
+        //var_dump($aspinfo);
+        for ($i = 1 ; $i <= 12 ; $i++ ) {
+            array_push($date, date('Y-m-t',strtotime('-'.$i.' month')) ); 
+        }
+        $select = 'date ,';
+        foreach( $aspinfo as $val){
+            $select .= "sum(case when monthlydatas.asp_id='".$val['asp_id']."' then cv else 0 end) as '".$val['name']."'";
+            if($val !== end($aspinfo)) {
+                $select .= ', ';
+            }else{
+                $select .= ',SUM(cv) as "合計"';
+                
+            }
+        }
+
+        //var_dump($select);
+        $yearly_chart =Monthlydata::select(DB::raw($select));
+        $yearly_chart->join('products','monthlydatas.product_id','=','products.id');
+        $yearly_chart->where('product_base_id',$product);
+        $yearly_chart->whereIn('date',$date);
+        $yearly_chart->groupBy('date');
+        $sql = $yearly_chart->toSql();
+        //var_dump($sql);
+        $yearly_chart = $yearly_chart->get()->toArray();
+        $i = 0;
+        
+        return json_encode($yearly_chart);
+
+    }
     /**
-        年間
+        メディア
     */
     function pdf_media($id,$month = null ){
         

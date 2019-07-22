@@ -252,18 +252,8 @@ class YearlyController extends Controller
 
         }
 
-        /*
-        foreach ($yearly_cvs_asp as $key => $value) {
-            if($key > 0){
-                $aspInfo = Asp::Select('name')->where('id',$key)->get()->toArray();
-                //var_dump($aspInfo);
-                $yearly_chart[$aspInfo[0]['name']]=$value;
-            }
-        }*/
-        //$yearly_chart['total'] = $yearly_cvs;
-        //$yearly_chart = json_encode($yearly_chart);
         $yearly_chart= $this->calChart(3);
-        var_dump($yearly_chart);
+        //var_dump($yearly_chart);
         return view('admin.yearly',compact('user','product_bases','asps','yearly_cvs','yearly_clicks','yearly_imps','yearly_approvals','yearly_cvrs','yearly_ctrs','yearly_cvs_asp','yearly_clicks_asp','yearly_imps_asp','yearly_ctrs_asp','yearly_cvrs_asp','yearly_chart'));
     }
     public function calChart($product){
@@ -281,7 +271,10 @@ class YearlyController extends Controller
         foreach( $aspinfo as $val){
             $select .= "sum(case when monthlydatas.asp_id='".$val['asp_id']."' then cv else 0 end) as '".$val['name']."'";
             if($val !== end($aspinfo)) {
-                $select .= ',';
+                $select .= ', ';
+            }else{
+                $select .= ',SUM(cv) as "合計"';
+                
             }
         }
 
@@ -291,12 +284,13 @@ class YearlyController extends Controller
         $yearly_chart->where('product_base_id',$product);
         $yearly_chart->whereIn('date',$date);
         $yearly_chart->groupBy('date');
+        $sql = $yearly_chart->toSql();
+        //var_dump($sql);
         $yearly_chart = $yearly_chart->get()->toArray();
+        $i = 0;
+        
         return json_encode($yearly_chart);
-        //$yearly_chart = array_reverse(array_values($yearly_chart[0]));
-/*        echo "<pre>";
-        var_dump($yearly_chart);
-        echo "</pre>";*/
+
 /*
         SELECT date ,
 date ,sum(case when monthlydatas.asp_id='3' then cv else 0 end) as 'Value commerce',sum(case when monthlydatas.asp_id='1' then cv else 0 end) as 'A8',sum(case when monthlydatas.asp_id='5' then cv else 0 end) as 'Rentracks',sum(case when monthlydatas.asp_id='7' then cv else 0 end) as 'AffiTown',sum(case when monthlydatas.asp_id='8' then cv else 0 end) as 'TrafficGate',sum(case when monthlydatas.asp_id='9' then cv else 0 end) as 'SCAN',sum(case when monthlydatas.asp_id='4' then cv else 0 end) as 'Afb'
