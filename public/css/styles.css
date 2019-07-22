@@ -1041,4 +1041,8 @@ p.back-link {
   font-size: 12px;
   text-transform: uppercase; }
 
-
+@media (max-width: 768px) {
+  .linechart{
+    width: 768px;
+  }
+}
