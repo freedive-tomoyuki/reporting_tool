@@ -114,7 +114,7 @@
           <div class="panel panel-default">
             <div class="panel-heading sp-small">年次CV推移</div>
             <div class="panel-body">
-                <div id="line_top_x" style="width: 100%;" ></div>
+                <div id="line_top_x" style="width: 100%; overflow-x: scroll;" ></div>
             </div>
           </div>
       </div>
@@ -140,12 +140,14 @@
                       <tbody>
                           <?php 
                             $i = 1; 
-                            
+                            $total_imp = 0;
+                            $total_click = 0;
+                            $total_cv = 0;
                           ?>
                           <tr>
                               <td>表示回数</td>
                           @foreach($yearly_imps as $imp)
-                             <?php $total_imp =+ $imp; ?> 
+                             <?php $total_imp += $imp; ?> 
                               <td>{{ $imp }}</td>
                           @endforeach
                               <td>{{ $total_imp }}</td>
@@ -153,7 +155,7 @@
                           <tr>
                               <td>クリック数</td>
                           @foreach($yearly_clicks as $click)
-                              <?php $total_click =+ $click; ?>
+                              <?php $total_click += $click; ?>
                               <td>{{ $click }}</td>
                           @endforeach
                               <td>{{ $total_click }}</td>
@@ -168,7 +170,7 @@
                           <tr>
                               <td>発生成果数</td>
                           @foreach($yearly_cvs as $cv)
-                              <?php $total_cv =+ $cv; ?>
+                              <?php $total_cv += $cv; ?>
                               <td>{{ $cv }}</td>
                           @endforeach
                               <td>{{ $total_cv }}</td>
@@ -206,12 +208,14 @@
                       <tbody>
                           <?php 
                             $i = 1; 
-                            
+                            $total_imp_asp = 0;
+                            $total_click_asp = 0;
+                            $total_cv_asp = 0;
                           ?>
                           <tr>
                               <td>表示回数</td>
                           @foreach($yearly_imps_asp[$key] as $imp)
-                             <?php $total_imp_asp =+ $imp; ?> 
+                             <?php $total_imp_asp += $imp; ?> 
                               <td>{{ $imp }}</td>
                           @endforeach
                               <td>{{ $total_imp_asp }}</td>
@@ -219,7 +223,7 @@
                           <tr>
                               <td>クリック数</td>
                           @foreach($yearly_clicks_asp[$key] as $click)
-                              <?php $total_click_asp =+ $click; ?>
+                              <?php $total_click_asp += $click; ?>
                               <td>{{ $click }}</td>
                           @endforeach
                               <td>{{ $total_click_asp }}</td>
@@ -234,7 +238,7 @@
                           <tr>
                               <td>発生成果数</td>
                           @foreach($yearly_cvs_asp[$key] as $cv)
-                              <?php $total_cv_asp =+ $cv; ?>
+                              <?php $total_cv_asp += $cv; ?>
                               <td>{{ $cv }}</td>
                           @endforeach
                               <td>{{ $total_cv_asp }}</td>
@@ -333,6 +337,7 @@
 
         height: 300,
         legend: 'bottom',
+
         
       };
 
