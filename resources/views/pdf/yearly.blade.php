@@ -50,7 +50,7 @@
 
             var ranking = JSON.parse(escapeHtml('{{ $yearly_chart }}'));
 
-            var array = [];
+            var array = new Array();
             var array_asp = new Array();
             i = 0;
 
@@ -63,11 +63,14 @@
                   var data = element[key];
 
                   if(key == 'date'){
-                      var date = new Date(data);
-                      var year = date.getFullYear();
-                      var month = date.getMonth() + 1;
-                      array[i][key] = year +'年'+ month +'月' ;//+'-'+ day;
-        
+                      //var date = new Date(data);
+
+                      //var year = date.getFullYear();
+                      //var month = date.getMonth() + 1;
+                      //var day = date.getDate();
+                      data = data.substr( 0 , 7 );
+                      array[i][key] = data;
+          
                   }else{
                     array[i][key] = parseInt(data, 10);
 
@@ -107,7 +110,7 @@
 
               var options = {
                 width: '100%',
-                
+
               };
 
               var chart = new google.visualization.LineChart(document.getElementById('line_top_x'));

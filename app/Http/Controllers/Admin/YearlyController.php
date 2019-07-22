@@ -529,8 +529,10 @@ date ,sum(case when monthlydatas.asp_id='3' then cv else 0 end) as 'Value commer
                 
                 }
         }
+        
+        $yearly_chart = $this->calChart($id);
 
-        return view('admin.yearly',compact('user','asps','product_bases','yearly_cvs','yearly_clicks','yearly_imps','yearly_approvals','yearly_cvrs','yearly_ctrs','yearly_cvs_asp','yearly_clicks_asp','yearly_imps_asp','yearly_ctrs_asp','yearly_cvrs_asp'));
+        return view('admin.yearly',compact('user','asps','product_bases','yearly_cvs','yearly_clicks','yearly_imps','yearly_approvals','yearly_cvrs','yearly_ctrs','yearly_cvs_asp','yearly_clicks_asp','yearly_imps_asp','yearly_ctrs_asp','yearly_cvrs_asp','yearly_chart'));
 
     }
 

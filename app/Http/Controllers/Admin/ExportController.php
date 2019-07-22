@@ -463,7 +463,7 @@ class ExportController extends Controller
                 
                 }
         }//foreach
-        $yearly_chart= $this->calChart(3);
+        $yearly_chart= $this->calChart($id);
         //return view('pdf.yearly', compact('asps','yearly_cvs','yearly_clicks','yearly_imps','yearly_approvals','yearly_cvrs','yearly_ctrs','yearly_cvs_asp','yearly_clicks_asp','yearly_imps_asp','yearly_ctrs_asp','yearly_cvrs_asp','yearly_chart'));
         $pdf = PDF::loadView('pdf.yearly', compact('asps','yearly_cvs','yearly_clicks','yearly_imps','yearly_approvals','yearly_cvrs','yearly_ctrs',
                 'yearly_cvs_asp','yearly_clicks_asp','yearly_imps_asp','yearly_ctrs_asp','yearly_cvrs_asp','yearly_chart'));
