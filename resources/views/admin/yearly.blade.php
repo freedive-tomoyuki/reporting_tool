@@ -113,8 +113,8 @@
       <div class="col-lg-12">
           <div class="panel panel-default">
             <div class="panel-heading sp-small">年次CV推移</div>
-            <div class="panel-body ">
-                <div id="line_top_x" class='linechart' ></div>
+            <div class="panel-body table-responsive">
+                <div id="line_top_x" class='linechart table-responsive' ></div>
             </div>
           </div>
       </div>
