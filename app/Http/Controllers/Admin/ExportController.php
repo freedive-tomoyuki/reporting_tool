@@ -234,7 +234,10 @@ class ExportController extends Controller
     /**
         年間
     */
-    function pdf_yearly($id){
+    function pdf_yearly($id,$term = null){
+
+        $bladeFile = ( $term == null )? 'pdf.yearly' : 'pdf.three_month'; 
+        $term = ( $term == null )? 12 : 3 ; 
 
         $this_month = date("Ym"); 
         $select = ''; 
@@ -244,11 +247,11 @@ class ExportController extends Controller
         $this_month = date("Ym"); 
         $select = ''; 
 //成果発生数
-        for( $i=1 ; $i <= 12 ; $i++ ){
+        for( $i=1 ; $i <= $term ; $i++ ){
             $last_date = date("Y-m-t", strtotime('-'.$i.' month'));
             $month = date("Y年m月", strtotime('-'.$i.' month'));
             $select .= "sum(case when date='".$last_date."' then cv else 0 end) as '".$i."'";
-            if($i != 12){
+            if($i != $term){
                 $select .= ',';
             }
         }
@@ -261,11 +264,11 @@ class ExportController extends Controller
 
 //クリック数
         $select = '';
-        for( $i=1 ; $i <= 12 ; $i++ ){
+        for( $i=1 ; $i <= $term ; $i++ ){
             $last_date = date("Y-m-t", strtotime('-'.$i.' month'));
             $month = date("Y年m月", strtotime('-'.$i.' month'));
             $select .= "sum(case when date='".$last_date."' then click else 0 end) as '".$i."'";
-            if($i != 12){
+            if($i != $term){
                 $select .= ',';
             }
         }
@@ -278,11 +281,11 @@ class ExportController extends Controller
 
 //Imp数
         $select = '';
-        for( $i=1 ; $i <= 12 ; $i++ ){
+        for( $i=1 ; $i <= $term ; $i++ ){
             $last_date = date("Y-m-t", strtotime('-'.$i.' month'));
             $month = date("Y年m月", strtotime('-'.$i.' month'));
             $select .= "sum(case when date='".$last_date."' then imp else 0 end) as '".$i."'";
-            if($i != 12){
+            if($i != $term){
                 $select .= ',';
             }
         }
@@ -294,11 +297,11 @@ class ExportController extends Controller
         $yearly_imps = array_reverse(array_values($yearly_imps[0]));
 //承認数
         $select = '';
-        for( $i=1 ; $i <= 12 ; $i++ ){
+        for( $i=1 ; $i <= $term ; $i++ ){
             $last_date = date("Y-m-t", strtotime('-'.$i.' month'));
             $month = date("Y年m月", strtotime('-'.$i.' month'));
             $select .= "sum(case when date='".$last_date."' then approval else 0 end) as '".$i."'";
-            if($i != 12){
+            if($i != $term){
                 $select .= ',';
             }
         }
@@ -310,11 +313,11 @@ class ExportController extends Controller
         $yearly_approvals = array_reverse(array_values($yearly_approvals[0]));
 //承認率
         $select = '';
-        for( $i=1 ; $i <= 12 ; $i++ ){
+        for( $i=1 ; $i <= $term ; $i++ ){
             $last_date = date("Y-m-t", strtotime('-'.$i.' month'));
             $month = date("Y年m月", strtotime('-'.$i.' month'));
             $select .= "sum(case when date='".$last_date."' then approval_rate else 0 end) as '".$i."'";
-            if($i != 12){
+            if($i != $term){
                 $select .= ',';
             }
         }
@@ -360,11 +363,11 @@ class ExportController extends Controller
         //成果発生数
             $key = $asp["asp_id"];
                 $select = '';
-                for( $i=1 ; $i <= 12 ; $i++ ){
+                for( $i=1 ; $i <= $term ; $i++ ){
                     $last_date = date("Y-m-t", strtotime('-'.$i.' month'));
                     $month = date("Y年m月", strtotime('-'.$i.' month'));
                     $select .= "sum(case when date='".$last_date."' then cv else 0 end) as '".$i."'";
-                    if($i != 12){
+                    if($i != $term){
                         $select .= ',';
                     }
                 }
@@ -378,11 +381,11 @@ class ExportController extends Controller
 
         //クリック数
                 $select = '';
-                for( $i=1 ; $i <= 12 ; $i++ ){
+                for( $i=1 ; $i <= $term ; $i++ ){
                     $last_date = date("Y-m-t", strtotime('-'.$i.' month'));
                     $month = date("Y年m月", strtotime('-'.$i.' month'));
                     $select .= "sum(case when date='".$last_date."' then click else 0 end) as '".$i."'";
-                    if($i != 12){
+                    if($i != $term){
                         $select .= ',';
                     }
                 }
@@ -396,11 +399,11 @@ class ExportController extends Controller
 
         //Imp数
                 $select = '';
-                for( $i=1 ; $i <= 12 ; $i++ ){
+                for( $i=1 ; $i <= $term ; $i++ ){
                     $last_date = date("Y-m-t", strtotime('-'.$i.' month'));
                     $month = date("Y年m月", strtotime('-'.$i.' month'));
                     $select .= "sum(case when date='".$last_date."' then imp else 0 end) as '".$i."'";
-                    if($i != 12){
+                    if($i != $term){
                         $select .= ',';
                     }
                 }
@@ -413,11 +416,11 @@ class ExportController extends Controller
                 $yearly_imps_asp[$key] = array_reverse(array_values($yearly_imps_asp[$key][0]));
         //承認数
                 $select = '';
-                for( $i=1 ; $i <= 12 ; $i++ ){
+                for( $i=1 ; $i <= $term ; $i++ ){
                     $last_date = date("Y-m-t", strtotime('-'.$i.' month'));
                     $month = date("Y年m月", strtotime('-'.$i.' month'));
                     $select .= "sum(case when date='".$last_date."' then approval else 0 end) as '".$i."'";
-                    if($i != 12){
+                    if($i != $term){
                         $select .= ',';
                     }
                 }
@@ -430,11 +433,11 @@ class ExportController extends Controller
                 $yearly_approvals_asp[$key] = array_reverse(array_values($yearly_approvals_asp[$key][0]));
         //承認率
                 $select = '';
-                for( $i=1 ; $i <= 12 ; $i++ ){
+                for( $i=1 ; $i <= $term ; $i++ ){
                     $last_date = date("Y-m-t", strtotime('-'.$i.' month'));
                     $month = date("Y年m月", strtotime('-'.$i.' month'));
                     $select .= "sum(case when date='".$last_date."' then approval_rate else 0 end) as '".$i."'";
-                    if($i != 12){
+                    if($i != $term){
                         $select .= ',';
                     }
                 }
@@ -463,10 +466,12 @@ class ExportController extends Controller
                 
                 }
         }//foreach
-        $yearly_chart= $this->calChart($id);
+        $yearly_chart= $this->calChart($id,$term);
         //return view('pdf.yearly', compact('asps','yearly_cvs','yearly_clicks','yearly_imps','yearly_approvals','yearly_cvrs','yearly_ctrs','yearly_cvs_asp','yearly_clicks_asp','yearly_imps_asp','yearly_ctrs_asp','yearly_cvrs_asp','yearly_chart'));
-        $pdf = PDF::loadView('pdf.yearly', compact('asps','yearly_cvs','yearly_clicks','yearly_imps','yearly_approvals','yearly_cvrs','yearly_ctrs',
+        
+        $pdf = PDF::loadView($bladeFile, compact('asps','yearly_cvs','yearly_clicks','yearly_imps','yearly_approvals','yearly_cvrs','yearly_ctrs',
                 'yearly_cvs_asp','yearly_clicks_asp','yearly_imps_asp','yearly_ctrs_asp','yearly_cvrs_asp','yearly_chart'));
+
         $pdf->setOption('enable-javascript', true);
         $pdf->setOption('javascript-delay', 5000);
         $pdf->setOption('enable-smart-shrinking', true);
@@ -476,13 +481,13 @@ class ExportController extends Controller
         //return $pdf->download('sample.pdf'); 
 
     }
-    public function calChart($product){
+    public function calChart($product,$term){
 
         $date = array();
         
         $aspinfo = Product::Select('asp_id','asps.name')->join('asps','products.asp_id','=','asps.id')->where('product_base_id',$product)->get()->toArray();
         //var_dump($aspinfo);
-        for ($i = 1 ; $i <= 12 ; $i++ ) {
+        for ($i = 1 ; $i <= $term ; $i++ ) {
             array_push($date, date('Y-m-t',strtotime('-'.$i.' month')) ); 
         }
         $select = 'date ,';

@@ -1023,6 +1023,10 @@ h1.page-header {
   vertical-align: middle;
   height: 50px;
   background-color: #8cdc81bf;
+  min-width: 100px;
+}
+.table > thead > tr > th > div {
+  font-size: 0.8em;
 }
 tfoot {
   background-color: #cceac8;

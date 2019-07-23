@@ -65,7 +65,7 @@
                             <label class="col-sm-2 control-label">直近３ヶ月</label>
                                 <div class="col-sm-10">
                                     <div class="text-left form-control-static">
-                                        <a href='/admin/pdf/three_month/{{ old('product') }}' class="btn btn-success btn-sm" role="button">PDF</a>
+                                        <a href='/admin/pdf/three_month/{{ old('product') }}/term' class="btn btn-success btn-sm" role="button">PDF</a>
                                     </div>
                                 </div>
                         </div>

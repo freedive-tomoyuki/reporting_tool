@@ -63,10 +63,7 @@
             <div class="panel panel-default">
               <div class="panel-heading">検索条件
               
-                <a href='/csv/{{ $products[0]->id }}/{{ $products[0]->date }}'>
-                <button class="btn btn-default btn-md pull-right">
-                  ＣＳＶ
-                </button>
+
                 </a>
               </div>
                   <div class="panel-body">
@@ -163,6 +160,13 @@
           <div class="panel panel-default ">
             <div class="panel-heading">
               実績値
+                <a href="/admin/csv_monthly/@if( old('product')){{ old('product') }}@else{{ 3 }}@endif/@if( old('month')){{ old('month') }}
+                  @else{{ date('Y-m',strtotime('-1 day'))}}
+                  @endif">
+                  <button class="btn btn-success btn-md pull-right">
+                    CSV
+                  </button>
+                </a>
             </div>
             <div class="panel-body table-responsive">
                 <table class="table table-striped table-bordered table-hover" cellspacing="0" width="100%">
@@ -172,9 +176,9 @@
                             <th class="th-sm">ASP</th>
                             <!-- <th class="th-sm">Date</th> -->
                             <th class="th-sm">Imp</th>
-                            <th class="th-sm">CTR [ % ]</th>
+                            <th class="th-sm">CTR <div>[ % ]</div></th>
                             <th class="th-sm">Click</th>
-                            <th class="th-sm">CVR [ % ]</th>
+                            <th class="th-sm">CVR <div>[ % ]</div></th>
                             <th class="th-sm">CV</th>
                             <th class="th-sm">アクティブ数</th>
                             <th class="th-sm">提携数</th>
@@ -184,7 +188,7 @@
                             <th class="th-sm">承認件数</th>
                             <th class="th-sm">承認金額</th>
                             <th class="th-sm">承認率</th>
-                            <th class="th-sm">前月CV（前月比）</th>
+                            <th class="th-sm">前月CV<div>（前月比）</div></th>
                         </tr>
                   </thead>
                 <tbody>
@@ -257,6 +261,11 @@
           <div class="panel panel-default">
             <div class="panel-heading">
               想定値
+                <a href="/admin/csv_monthly_estimate/@if( old('product')){{ old('product') }}@else{{ 3 }}@endif">
+                  <button class="btn btn-success btn-md pull-right">
+                    CSV
+                  </button>
+                </a>
             </div>
           <div class="panel-body table-responsive">
           <table class="table table-striped table-bordered table-hover " cellspacing="0" width="100%">
@@ -266,9 +275,9 @@
                             <th class="th-sm">ASP</th>
                             <!-- <th class="th-sm">Date</th> -->
                             <th class="th-sm">Imp</th>
-                            <th class="th-sm">CTR [ % ]</th>
+                            <th class="th-sm">CTR <div>[ % ]</div></th>
                             <th class="th-sm">Click</th>
-                            <th class="th-sm">CVR [ % ]</th>
+                            <th class="th-sm">CVR <div>[ % ]</div></th>
                             <th class="th-sm">CV</th>
                             <th class="th-sm">FDグロス</th>
                             <!-- <th class="th-sm">予想承認金額</th> -->

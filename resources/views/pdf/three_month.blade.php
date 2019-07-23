@@ -129,16 +129,16 @@
     </script>
 </head>
 <body onload="init()">
-        <h3>年間総合</h3> 
+        <h3>直近３ヶ月</h3> 
                 <table class="table table-striped table-bordered" width="100%">
-                        <thead>
+                        <thead class="text-center" >
                               <tr>
-                                  <th class="th-sm">No</th>
-                                  @for( $i=12 ; $i > 0  ; $i-- )
+                                  <th class="th-sm text-left">No</th>
+                                  @for( $i=3 ; $i > 0  ; $i-- )
                                     <?php $month = date("Y年m月", strtotime('-'.$i.' month'));?>
                                     <th class="th-sm">{{ $month }}</th>
                                   @endfor
-                                  <th>合計</th>
+                                  <th class="">合計</th>
                               </tr>
                         </thead>
                       <tbody>
@@ -196,7 +196,7 @@
                         <thead>
                               <tr>
                                   <th class="th-sm">No</th>
-                                  @for( $i=12 ; $i > 0  ; $i-- )
+                                  @for( $i=3 ; $i > 0  ; $i-- )
                                     <?php $month = date("Y年m月", strtotime('-'.$i.' month'));?>
                                     <th class="th-sm">{{ $month }}</th>
                                   @endfor

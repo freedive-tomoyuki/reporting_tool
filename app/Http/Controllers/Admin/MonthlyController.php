@@ -97,25 +97,6 @@ class MonthlyController extends Controller
                     $productsEstimateTotals = json_decode(json_encode($productsEstimateTotals), true);
                     var_dump($productsEstimateTotals);
 
-/*        $productsEstimates = Dailyestimate::select([ 'asps.name','products.id','dailyestimates.asp_id','estimate_imp', 'estimate_click','estimate_cv','dailyestimates.created_at','estimate_cvr','estimate_ctr','estimate_cost','estimate_price','estimate_cpa','date'])
-                    ->join('products','dailyestimates.product_id','=','products.id')
-                    ->join('asps','products.asp_id','=','asps.id')
-                    ->where('products.product_base_id', 3)
-                    ->where('dailyestimates.date', 'LIKE' , "%".date("Y-m-d", strtotime('-1 day'))."%")
-                    ->get();//->toArray();
-*/
-/*        $productsEstimateTotals = Dailyestimate::select(DB::raw("date, product_id,
-                        sum(estimate_imp) as total_estimate_imp,
-                        sum(estimate_click) as total_estimate_click,
-                        sum(estimate_cv) as total_estimate_cv,
-                        sum(estimate_price) as total_estimate_price,
-                        sum(estimate_cost) as total_estimate_cost "))
-                    ->join('products','dailyestimates.product_id','=','products.id')
-                    ->where('products.product_base_id', 3)
-                    ->where('dailyestimates.date', 'LIKE' , "%".date("Y-m-d", strtotime('-1 day'))."%")
-                    ->get();*/
-
-        //->toArray();
 
         $product_bases = ProductBase::all();
         $asps = Asp::all();
@@ -165,7 +146,7 @@ class MonthlyController extends Controller
         /**
             当月の実績値
         */
-        $products = Monthlydata::select(['name', 'imp', 'click','cv', 'cvr', 'ctr', 'active', 'partnership','monthlydatas.created_at','products.product','products.id','price','cpa','cost','approval','approval_price','approval_rate'])
+        $products = Monthlydata::select(['name', 'imp', 'click','cv', 'cvr', 'ctr', 'active', 'partnership','monthlydatas.created_at','products.product','products.id','price','cpa','cost','approval','approval_price','approval_rate','last_cv'])
                     ->join('products','monthlydatas.product_id','=','products.id')
                     ->join('asps','products.asp_id','=','asps.id')
                     ->leftjoin(DB::raw("(select `cv` as last_cv, `product_id` from `monthlydatas` inner join `products` on `monthlydatas`.`product_id` = `products`.`id` where `product_base_id` = ".$id." and `monthlydatas`.`date` like '".$search_last_date."') AS last_month"), 'monthlydatas.product_id','=','last_month.product_id');
@@ -204,18 +185,7 @@ class MonthlyController extends Controller
             /**
                 当月の着地想定
             */
-/*            $productsEstimates = Dailyestimate::select([ 'asps.name','products.id','dailyestimates.asp_id','estimate_imp', 'estimate_click','estimate_cv','dailyestimates.created_at','estimate_cvr','estimate_ctr','estimate_cost','estimate_price','estimate_cpa','date'])
-                    ->join('products','dailyestimates.product_id','=','products.id')
-                    ->join('asps','products.asp_id','=','asps.id');
 
-                    if(!empty($id)){
-                        $productsEstimates->where('products.product_base_id', $id);
-                    }
-                    if(!empty($searchdate)){
-                        $productsEstimates->where('dailyestimates.date', 'LIKE' , "%".$searchdate."%");
-                    }
-                    $productsEstimates = $productsEstimates->get();
-*/
         $productsEstimates = Monthlydata::select(DB::raw("
             asps.name,
             (imp/". $ratio .") as estimate_imp,
@@ -259,21 +229,7 @@ class MonthlyController extends Controller
                         sum(estimate_cv) as total_estimate_cv,
                         sum(estimate_cost) as total_estimate_cost"))->get();
                     $productsEstimateTotals = json_decode(json_encode($productsEstimateTotals), true);
-/*                $productsEstimateTotals = Dailyestimate::select(DB::raw("date, product_id,
-                        sum(estimate_imp) as total_estimate_imp,
-                        sum(estimate_click) as total_estimate_click,
-                        sum(estimate_cv) as total_estimate_cv,
-                        sum(estimate_price) as total_estimate_price,
-                        sum(estimate_cost) as total_estimate_cost "))
-                        ->join('products','dailyestimates.product_id','=','products.id');
-                    if(!empty($id)){
-                        $productsEstimateTotals->where('products.product_base_id',$id);
-                    }
-                    if(!empty($searchdate)){
-                        $productsEstimateTotals->where('dailyestimates.date', 'LIKE' , "%".date("Y-m-d", strtotime('-1 day'))."%");
-                    }
-                        $productsEstimateTotals=$productsEstimateTotals->get();
-*/
+
                 //var_dump($productsEstimateTotals->toArray());
 
         }else{

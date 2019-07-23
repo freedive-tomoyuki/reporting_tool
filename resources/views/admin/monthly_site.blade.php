@@ -172,7 +172,7 @@
                           <th class="th-sm">FDグロス</th>
                           <th class="th-sm">承認件数</th>
                           <th class="th-sm">承認成果報酬</th>
-                          <th class="th-sm">承認率</br>(直近3ヶ月から算出)</th>
+                          <th class="th-sm">承認率</br><div>(直近3ヶ月から算出)</div></th>
                           <th class="th-sm">CPA</th>
                       </tr>
                 </thead>

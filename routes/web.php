@@ -106,9 +106,13 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth:admin'], function() {
     Route::post('csv_site/daily/import','Admin\CsvImportController@store_daily_site');
     Route::get('showApproval','Admin\MonthlyCrawlerController@calc_approval_rate');
     Route::get('showApprovalSite','Admin\MonthlyCrawlerController@calc_approval_rate_site');
-
+    //CSVエクスポート
     Route::get('csv/{id}/{s_date?}/{e_date?}','Admin\CsvExportController@downloadDaily');
     Route::get('csv_site/{id}/{s_date?}/{e_date?}','Admin\CsvExportController@downloadSiteDaily');
+    Route::get('csv_monthly/{id}/{month?}','Admin\CsvExportController@downloadMonthly');
+    Route::get('csv_monthly_estimate/{id}','Admin\CsvExportController@downloadMonthlyEstimate');
+    Route::get('csv_monthly_site/{id}/{month?}','Admin\CsvExportController@downloadSiteMonthly');
+
     Route::get('DownloadTemplateCsvSite',
     function() {
         $data = array();
@@ -128,7 +132,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth:admin'], function() {
     //年間＋ASP別 済
     Route::get('pdf/yearly/{id?}','Admin\ExportController@pdf_yearly' );
 
-    Route::get('pdf/three_month/{id?}','Admin\ExportController@pdf' );
+    Route::get('pdf/three_month/{id?}/{term?}','Admin\ExportController@pdf_yearly' );
     
     Route::get('pdf/media/{id?}/{month?}','Admin\ExportController@pdf_media' );
     

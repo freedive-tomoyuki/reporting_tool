@@ -98,7 +98,7 @@
               <div class="panel-heading">検索条件
               <button class="btn btn-success btn-md pull-right">
                 <?php
-                  $s_date = (old("searchdate_start"))? old("searchdate_start"): date("Y-m-d",strtotime('-1 day'));
+                  $s_date = (old("searchdate_start"))? old("searchdate_start"): date("Y-m-01",strtotime('-1 day'));
                   $e_date = (old("searchdate_end"))? old("searchdate_end"):date("Y-m-d",strtotime('-1 day'));
                   if( old('product')){
                       $product_base = old('product') ;
@@ -108,7 +108,7 @@
                   
                 ?>
                 <a href='/admin/csv/{{ $product_base }}/{{ urlencode($s_date) }}/{{  urlencode($e_date) }}' class='d-block'>
-                  ＣＳＶ
+                  CSV
                 </a>
               </button>
                 
