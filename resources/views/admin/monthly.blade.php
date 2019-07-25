@@ -49,7 +49,6 @@
                   </div>
               </div>
          </div>
-         </form>
          @if (count($errors) > 0)
          <div class="alert alert-danger">
             <ul>
@@ -59,6 +58,8 @@
             </ul>
          </div>
          @endif
+         </form>
+
       </div>
    </div>
 </div>
