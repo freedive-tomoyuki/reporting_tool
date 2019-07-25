@@ -106,7 +106,7 @@
                             <label for="asp_sponsor_id" class="col-md-4 col-form-label text-md-right">ASP:広告主ID</label>
 
                             <div class="col-md-6">
-                                <input id="asp_sponsor_id" type="text" class="form-control" name="asp_sponsor_id" >
+                                <input id="asp_sponsor_id" type="text" class="form-control" name="asp_sponsor_id" value="{{ $products[0]['asp_sponsor_id'] }}" >
                             </div>
                         </div>
                         <div class="form-group row">

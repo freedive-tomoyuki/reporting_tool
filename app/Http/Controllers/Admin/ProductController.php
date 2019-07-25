@@ -66,6 +66,7 @@ class ProductController extends Controller
         $product->login_value = $request->loginid;
         $product->password_value = $request->password;
         $product->asp_product_id = $request->asp_product_id;
+        $product->asp_sponsor_id = $request->asp_sponsor_id;
         $product->save();
  
         return redirect('/admin/product_list');
@@ -92,7 +93,7 @@ class ProductController extends Controller
     public function edit_product_base($id) {
         $product_bases = ProductBase::where('id',$id)->get()->toArray();
         $user = Auth::user();
-        return view('product_base_edit',compact('product_bases','user'));
+        return view('admin.product_base_edit',compact('product_bases','user'));
     }
     //各親案件の編集実装
     public function update_product_base($id,StoreProduct $request) {
@@ -129,6 +130,8 @@ class ProductController extends Controller
             'login_value' => $request->loginid,
             'password_value' => $request->password,
             'asp_product_id' => $request->asp_product_id,
+            'asp_sponsor_id' => $request->asp_sponsor_id,
+            
             'killed_flag' => '0',
         ]);
         return redirect('/admin/product_list');

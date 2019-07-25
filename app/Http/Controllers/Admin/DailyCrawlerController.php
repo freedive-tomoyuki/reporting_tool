@@ -269,9 +269,9 @@ class DailyCrawlerController extends Controller
 
             //array_push($aspRow,str_replace(' ', '' ,mb_strtolower($name["name"])));
             $functionName = str_replace(' ', '' ,mb_strtolower($name["name"]));
-            $className = __NAMESPACE__ . '\\' . 'Asp\Daily'. '\\'.str_replace(' ', '' ,$name["name"]).'Controller';
+            echo $className = 'App\Http\Controllers\Admin\Asp\Daily'. '\\'.str_replace(' ', '' ,$name["name"]).'Controller';
             $run = new $className();
-
+            //echo __NAMESPACE__;
             $run->{$functionName}($request->product);
 
           }

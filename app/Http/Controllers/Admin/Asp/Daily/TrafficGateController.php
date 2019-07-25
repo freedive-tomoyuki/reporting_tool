@@ -149,7 +149,7 @@ class TrafficGateController extends DailyCrawlerController
                         $trafficgate_site[ $active_count ][ 'imp' ]     = 0;
 
                         $selector_for_site = array(
-                             'media_id' => '#container-big2 > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(3)',
+                            'media_id' => '#container-big2 > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(3)',
                             'site_name' => '#container-big2 > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(4)',
                             'imp' => '#container-big2 > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(8)',
                             'click' => '#container-big2 > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(9)',

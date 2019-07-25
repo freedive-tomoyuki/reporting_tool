@@ -1,7 +1,69 @@
 @extends('layouts.appnew')
 
 @section('content')
-    <div class="row">
+<div class="row">
+   <ol class="breadcrumb">
+      <li>結果一覧</li>
+      <li class="active">月次レポート（案件別）</li>
+   </ol>
+   <div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">
+      <h3>月次レポート（案件別）</h3>
+      <div class="panel panel-default">
+         <div class="panel-heading text-center">検索する</div>
+         <form role="form" action="/admin/monthly_result" method="post" >
+            @csrf
+            <div class="panel-body ">
+              <div class="col-md-7 col-md-offset-2">
+                  <div class="form-group col-md-12">
+                      <label class="control-label">Month</label>
+                      <div>
+                         <input id="month" type="month" name="month" class="form-control" value=@if( old('month')) 
+                        {{ old('month') }}
+                      @else
+                        {{ date('Y-m',strtotime('-1 day')) }}
+                      @endif>
+                      </div>
+                  </div>
+                  <div class="form-group col-md-12">
+                    <label class="control-label">Product</label>
+                       <select class="form-control" name="product" >
+                                <option value=""> -- </option>
+                                @foreach($product_bases as $product_base)
+                                  <option value="{{ $product_base->id }}"
+                                    @if( old('product'))
+                                      @if( old('product') == $product_base->id )
+                                        selected
+                                      @endif
+                                    @else
+                                      @if( $product_base->id == 3 )
+                                        selected
+                                      @endif
+                                    @endif
+
+                                    >{{ $product_base->product_name }}</option>
+                                @endforeach
+                      </select>
+                  </div>
+                  <div class="form-group col-md-12 col-sm-12 col-xs-12 col-lg-12">
+                   <button type="submit" class="btn btn-primary col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1 col-xs-10 col-xs-offset-1"><i class='fas fa-search'></i> 検索</button>
+                  </div>
+              </div>
+         </div>
+         </form>
+         @if (count($errors) > 0)
+         <div class="alert alert-danger">
+            <ul>
+               @foreach ($errors->all() as $error)
+               <li>{{ $error }}</li>
+               @endforeach
+            </ul>
+         </div>
+         @endif
+      </div>
+   </div>
+</div>
+
+<!--     <div class="row">
       <ol class="breadcrumb">
         <li>結果一覧</li>
         <li class="active">月次レポート（案件別）</li>
@@ -55,11 +117,62 @@
 
       </div>
     </div>
+ -->
 
 
-
-    <div class="row">
-        <div class="col-md-12">
+<div class="row">
+   <div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">
+      <h3>月次レポート（案件別）</h3>
+      <div class="panel panel-default">
+         <div class="panel-heading text-center">検索する</div>
+         <form role="form" action="/admin/monthly_result" method="post" >
+            @csrf
+            <div class="panel-body ">
+              <div class="col-md-7 col-md-offset-2">
+                  <div class="col-md-12">
+                     <div class="form-group col-md-6">
+                        <label class="control-label">Month</label>
+                                <p class="form-control-static">
+                                @if(old('month'))
+                                {{ old('month') }}
+                                @else
+                                 {{ date("Y-m",strtotime('-1 day')) }}　
+                                @endif
+                                @if(old('month') == date("Y-m",strtotime('-1 day'))|| !old('month') )
+                                {{"前日分までのデータ"}}
+                                @endif
+                                </p>
+                     </div>
+                     <div class="form-group col-md-6 ">
+                      <label class="control-label">Product</label>
+                                <p class="form-control-static">
+                                  @if( old('product'))
+                                    @foreach($product_bases as $product_base)
+                                        @if( old('product') == $product_base->id  )
+                                            {{ $product_base -> product_name }}
+                                        @endif
+                                    @endforeach
+                                @else
+                                 案件の指定がございません
+                                @endif
+                                </p>
+                     </div>
+                     <div class="form-group col-md-6 ">
+                      <label class="control-label">消化率</label>
+                              <p class="form-control-static">
+                              <?php
+                                   echo ceil((date("d",strtotime('-1 day'))/date("t"))*100)." %";
+                              ?>
+                              </p>
+                     </div>
+                  </div>
+              </div>
+         </div>
+         </form>
+      </div>
+   </div>
+</div>
+ <!--        <div class="col-md-12">
             <div class="panel panel-default">
               <div class="panel-heading">検索条件
               
@@ -120,7 +233,7 @@
                             <div class="col-sm-10">
                               <p class="form-control-static">
                               <?php
-                                   echo ceil((date("d",strtotime('-1 day'))/date("t"))*100)." %";
+                                   //echo ceil((date("d",strtotime('-1 day'))/date("t"))*100)." %";
                               ?>
                               </p>
                             </div>
@@ -128,7 +241,7 @@
                       </div>
             </div>
         </div>
-    </div>
+    </div> -->
 
 <!--グラフ-->
     <div class="row">

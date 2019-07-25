@@ -32,7 +32,12 @@
 	  .sp-wide-tabel{
 	  	min-width: 1500px;
 	  }
+
 	}
+	  .date-style{
+	  	width: 49%;
+	  	display: inline-block;
+	  }
 	</style>
 
 </head>

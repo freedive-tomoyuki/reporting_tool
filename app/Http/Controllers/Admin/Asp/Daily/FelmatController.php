@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\Asp;
+namespace App\Http\Controllers\Admin\Asp\Daily;
 
 use Illuminate\Http\Request;
 use Laravel\Dusk\Browser;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Admin\DailyCrawlerController;
 use Symfony\Component\DomCrawler\Crawler;
 use Revolution\Salvager\Client;
 use Revolution\Salvager\Drivers\Chrome;
@@ -20,13 +21,30 @@ use App\DailyDiff;
 use App\DailySiteDiff;
 //header('Content-Type: text/html; charset=utf-8');
 
-class FelmatController extends Controller
+class FelmatController extends DailyCrawlerController
 {
 
+
+/**
+　再現性のある数値を生成 サイトIDとして適用
+*/
+    public function siteCreate($siteName,$seed){
+      $siteId='';
+      echo $siteName;
+      mt_srand($seed, MT_RAND_MT19937);
+      foreach(str_split($siteName) as $char) {
+            $char_array[] = ord($char) + mt_rand(0, 255) ;
+      }
+      var_dump($char_array);
+      $siteId = mb_substr(implode($char_array),0,100);
+      //echo $siteId;
+
+      return $siteId;
+    }
 /**
  Felmat
 */
-    public function felmat(){//OK
+    public function felmat($product_base_id  ){//OK
 
     /*
      昨日の日付　取得
@@ -43,7 +61,7 @@ class FelmatController extends Controller
             $options = [
                 '--window-size=1920,1080',
                 '--start-maximized',
-                '--headless',
+                //'--headless',
                 '--disable-gpu',
                 '--no-sandbox'
                 
@@ -51,7 +69,7 @@ class FelmatController extends Controller
     /*
       案件の大本IDからASP別のプロダクトIDを取得
     */
-            //$product_id = $this->BasetoProduct(5, $product_base_id);
+            $product_id = $this->BasetoProduct(6, $product_base_id);
 
     /*
       Chromeドライバーのインスタンス呼び出し
@@ -112,8 +130,8 @@ class FelmatController extends Controller
                                   ->crawler();
                                   echo $crawler3->html();
 
-                  $crawler4 = $browser->visit("https://www.felmat.net/advertiser/report/partnersite")
-                                  ->click('#view > div > button.btn.btn-warning.btn-sm.hidden-xs');
+                  //$crawler4 = $browser->visit("https://www.felmat.net/advertiser/report/partnersite")
+                                  //->click('#view > div > button.btn.btn-warning.btn-sm.hidden-xs');
                                   //->crawler();
                                   //echo $crawler3->html();
 
@@ -135,7 +153,7 @@ class FelmatController extends Controller
                                       //$product_info->asp->daily_partnership_selector,
                                 );
                                 $selector3 = array (
-                                      'active' => 'body > div.wrapper > div.page-content.no-left-sidebar > div > div:nth-child(4) > div > div:nth-child(2) > div.row > div:nth-child(3) > div' ,
+                                      'partnership' => 'body > div.wrapper > div.page-content.no-left-sidebar > div > div:nth-child(4) > div > div:nth-child(2) > div.row > div:nth-child(3) > div' ,
                                 );
 
 
@@ -213,59 +231,93 @@ class FelmatController extends Controller
                 /*
                   サイト抽出　
                 */
-                                $crawler_for_site = $browser
-                                            ->visit("https://manage.rentracks.jp/sponsor/detail_partner")
-                                            ->select('#idDropdownlist1',$product_info->asp_product_id)
-                                            ->select('#idDoneDay', $yesterday)
-                                            ->select('#idPageSize','300')
-                                            ->click('#idButton1')
-                                            ->crawler();
+                              
 
-                                            var_dump($crawler_for_site->html());
                                             //アクティブ件数を取得
-                                            $active_partner = trim(preg_replace('/[^0-9]/', '', $crawler_for_site->filter('#main > div.hitbox > em')->text()));
+                                          /*  $active_partner = trim( $crawler_for_site->filter('body > div.wrapper > div.page-content.no-left-sidebar > div > div:nth-child(5) > div > div:nth-child(2) > div:nth-child(1) > div:nth-child(3) > div')->text());
+                                            echo "アクティブ数";
                                             echo $active_partner;
-                                        for( $i = 1 ; $active_partner >= $i ; $i++ ){
-                                            $rtsite[$i]['product'] = $product_info->id;
 
-                                            $iPlus = $i+1;
-                                            echo 'iPlus'.$iPlus;
+                                          //$data[ $key ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
+                                          $partnership = array( );
+                                          preg_match( '/全(\d+)件/', $active_partner, $partnership );
+                                          var_dump($partnership);
+                                          echo $data[ $key ] = $partnership[ 1 ];
+                                          */
+                                          //echo "アクティブ数:".$felmat_data3[0]['active'];
+                                          //echo "パートナー数:".$felmat_data2[0]['partnership'];
+                                          $page = ceil($felmat_data2[0]['active'] / 20 );
+                                          $count_last_page = $felmat_data2[0]['active'] % 20;
+                                          $count      = 0;
+
+                                        for( $i = 1 ; $page >= $i ; $i++ ){
+                                          echo "ページ数page:".$page ;
+                                          echo "ページ数i:".$i ;
+                                          $crawlCountPerOne = ( $page == $i )? $count_last_page : 20 ;
+
+                                          $crawler_for_site = $browser
+                                            ->visit("https://www.felmat.net/advertiser/report/partnersite")
+                                            ->type('#search > div > div:nth-child(2) > div.col-sm-4.form-inline > div > input:nth-child(3)',$yesterday)
+                                            ->click('#sel_promotion_id_chosen')
+                                            ->click('#sel_promotion_id_chosen > div > ul > li:nth-child(2)')
+                                            ->click('#view > div > button.btn.btn-primary.btn-sm');
+                                            //最後のページ
+                                            if( $i > 1 ){
+                                              $p = $i+1;
+
+                                              $crawler_for_site->click('div.wrapper > div.page-content.no-left-sidebar > div > div:nth-child(5) > div > div:nth-child(2) > div:nth-child(1) > div:nth-child(2) > div > ul > li:nth-child('.$p.') > a');
+                                            }
                                             
-                                            $selector_for_site = array(
-                                              'media_id'=>'#main > table > tbody > tr:nth-child('.$iPlus.') > td.c03',
-                                              'site_name'=>'#main > table > tbody > tr:nth-child('.$iPlus.') > td.c04 > a',
-                                              'imp'=>'#main > table > tbody > tr:nth-child('.$iPlus.') > td.c05',
-                                              'click'=>'#main > table > tbody > tr:nth-child('.$iPlus.') > td.c06',
-                                              'cv'=>'#main > table > tbody > tr:nth-child('.$iPlus.') > td.c10',
-                                              'price'=>'#main > table > tbody > tr:nth-child('.$iPlus.') > td.c15',
-                                            );
+                                            $crawler_for_site = $crawler_for_site->crawler();
 
-                                          foreach($selector_for_site as $key => $value){
-                                              if( $key == 'site_name' ){
-                                        
-                                                $rtsite[$i][$key] = trim($crawler_for_site->filter($value)->text());
+                                            //var_dump($crawler_for_site->html());
+
+
+                                          for($x = 1 ; $crawlCountPerOne > $x ; $x++ ){
+                                                $felmat_site[$count]['product'] = $product_info->id;
+                                                echo "CountX:".$x;
+                                                $iPlus = $x+1;
+
+                                                //echo 'iPlus'.$iPlus;
+                                                
+                                                $selector_for_site = array(
+                                                  //'media_id'=>'#main > table > tbody > tr:nth-child('.$iPlus.') > td.c03',
+                                                  'site_name'=>'#report > div > table > tbody > tr:nth-child('.$iPlus.') > td.left',
+                                                  'imp'=>'#report > div > table > tbody > tr:nth-child('.$iPlus.') > td:nth-child(2)',
+                                                  'click'=>'#report > div > table > tbody > tr:nth-child('.$iPlus.') > td:nth-child(3)',
+                                                  'cv'=>'#report > div > table > tbody > tr:nth-child('.$iPlus.') > td:nth-child(5)',
+                                                  'price'=>'#report > div > table > tbody > tr:nth-child('.$iPlus.') > td:nth-child(6)',
+                                                );
+
+                                                foreach($selector_for_site as $key => $value){
+                                                    if( $key == 'site_name' ){
                                               
-                                              }else{
-                                              
-                                                $rtsite[$i][$key] = trim(preg_replace('/[^0-9]/', '', $crawler_for_site->filter($value)->text()));
-                                              }
+                                                      $felmat_site[$count][$key] = trim($crawler_for_site->filter($value)->text());
+                                                      $felmat_site[$count]['media_id'] = $this->siteCreate(trim($crawler_for_site->filter($value)->text()),20);
+                                                    }else{
+                                                    
+                                                      $felmat_site[$count][$key] = trim(preg_replace('/[^0-9]/', '', $crawler_for_site->filter($value)->text()));
+                                                    }
+
+                                                }
+                                                $calData = json_decode(
+                                                            json_encode(
+                                                              json_decode($this->cpa($felmat_site[$count]['cv'] ,$felmat_site[$count]['price'] , 5))
+                                                            ), True
+                                                          );
+                                                $felmat_site[$count]['cpa']= $calData['cpa']; //CPA
+                                                $felmat_site[$count]['cost']= $calData['cost'];
+                                                $felmat_site[$count]['date'] = date('Y-m-d', strtotime('-1 day'));
+                                                $count++;
 
                                           }
-                                          $calData = json_decode(
-                                                      json_encode(
-                                                        json_decode($this->cpa($felmat_site[$i]['cv'] ,$felmat_site[$i]['price'] , 5))
-                                                      ), True
-                                                    );
-                                          $felmat_site[$i]['cpa']= $calData['cpa']; //CPA
-                                          $felmat_site[$i]['cost']= $calData['cost'];
-                                          $felmat_site[$i]['date'] = date('Y-m-d', strtotime('-1 day'));
                                         }
 
 
-                            $felmat_data[0]['price'] = trim(preg_replace('/[^0-9]/', '', $crawler_for_site->filter('#main > table > tbody > tr.total > td:nth-child(15)')->text()));
+                            //$felmat_data[0]['price'] = trim(preg_replace('/[^0-9]/', '', $crawler_for_site->filter('#main > table > tbody > tr.total > td:nth-child(15)')->text()));
 
-                            $felmat_data[0]['partnership'] = $felmat_data2[0]['partnership'];
-                            $felmat_data[0]['active'] = $felmat_data3[0]['active'];
+                            $felmat_data[0]['active'] = $felmat_data2[0]['active'];
+                            $felmat_data[0]['partnership'] = $felmat_data3[0]['partnership'];
 
                             $calData = json_decode(
                                           json_encode(json_decode($this->cpa($felmat_data[0]['cv'] ,$felmat_data[0]['price'] , 5))), True
@@ -273,16 +325,16 @@ class FelmatController extends Controller
                             $felmat_data[0]['cpa']= $calData['cpa']; //CPA
                             $felmat_data[0]['cost']= $calData['cost'];
                             
-/*                            echo "<pre>";
-                            var_dump($rtdata);
-                            var_dump($rtsite);
+                            echo "<pre>";
+                            var_dump($felmat_data);
+                            var_dump($felmat_site);
                             echo "</pre>";
-*/
+
                 /*
                   サイトデータ・日次データ保存
                 */
-                 //           $this->save_site(json_encode($rtsite));
-                 //           $this->save_daily(json_encode($rtdata));
+                           $this->save_site(json_encode($felmat_site));
+                           $this->save_daily(json_encode($felmat_data));
                 
                             //var_dump($crawler_for_site);
                 }
