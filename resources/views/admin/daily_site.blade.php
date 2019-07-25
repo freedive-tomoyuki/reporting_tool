@@ -1,128 +1,93 @@
 @extends('layouts.appnew')
 
 @section('content')
-    <div class="row">
-      <ol class="breadcrumb">
-        <li>結果一覧</li>
-        <li class="active">月次レポート（案件別）</li>
-      </ol>
-      <div class="col-lg-12">
-        <h3>日次レポート(サイト別) </h3> 
-<!--         <div class="row">
-          <div class="col-lg-12">
-            <a href="/daily_result">
-              <button class="btn btn-md btn-default">日次（案件別）</button>
-            </a>
-            <a href="/daily_result_site">
-              <button class="btn btn-md btn-primary">サイト別</button>
-            </a>
-            <a href="/monthly_result">
-              <button class="btn btn-md btn-default">月次</button>
-            </a>
-          </div>
-        </div> -->
-        <div class="panel panel-default ">
+<div class="row">
+   <ol class="breadcrumb">
+      <li>結果一覧</li>
+      <li class="active">日次レポート(サイト別)</li>
+   </ol>
+   <div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">
+      <h3>日次レポート(サイト別)</h3>
+      <div class="panel panel-default">
+         <div class="panel-heading text-center">検索する</div>
+         <form role="form" action="/admin/daily_result_site" method="post" >
+            @csrf
+            <div class="panel-body ">
+              <div class="col-md-7 col-md-offset-2">
+                <div class="col-md-12">
+                  <div class="form-group col-md-6">
+                      <label class="control-label">ASP</label>
+                      <div>
+                         <select class="form-control" name="asp_id" >
+                          <option value=""> すべてのASP </option>
+                                    @foreach($asps as $asp)
+                                      <option value="{{ $asp -> id }}"
+                                        @if( old('asp_id') == $asp->id  )
+                                          selected
+                                        @endif
+                                        >{{ $asp -> name }}</option>
+                                        
+                                    @endforeach
+                        </select>
+                      </div>
+                  </div>
+                  <div class="form-group col-md-6">
+                    <label class="center-block">Date</label>
+                       <input type="date" name="searchdate_start" class="datepicker form-control date-style" id="datepicker_start" max='{{ date("Y-m-d",strtotime('-1 day')) }}' value=@if( old('searchdate_start')) 
+                         {{ old('searchdate_start') }}
+                         @else
+                         {{ date('Y-m-01',strtotime('-1 day')) }} 
+                         @endif>
 
-          <div class="panel-heading">検索</div>
-          <div class="panel-body">
-            <div class="col-md-6">
-              <form role="form" action="/admin/daily_result_site" method="post" class="form-horizontal">
-                @csrf
-                <div class="form-group">
-                  <label class="col-sm-2 control-label">ASP</label>
-                  <div class="col-sm-10">
-                    <select class="form-control" name="asp_id" >
-                      <option value=""> すべてのASP </option>
-                                @foreach($asps as $asp)
-                                  <option value="{{ $asp -> id }}"
-                                    @if( old('asp_id') == $asp->id  )
-                                      selected
-                                    @endif
-                                    >{{ $asp -> name }}</option>
-                                    
-                                @endforeach
-                    </select>
-                  </div>
+                        <input type="date" name="searchdate_end" class="datepicker form-control date-style" id="datepicker_end" max='{{ date("Y-m-d",strtotime('-1 day')) }}' value=@if( old('searchdate_start')) 
+                         {{ old('searchdate_end') }}
+                         @else
+                         {{ date('Y-m-d',strtotime('-1 day')) }} 
+                         @endif>
+                   </div>
                 </div>
-                <div class="form-group form-inline" >
-                  <label class="col-sm-2 control-label">Date</label>
-                  <div class="col-sm-10">
-                    <input type="date" name="searchdate_start" class="datepicker form-control" id="datepicker_start" max='{{ date("Y-m-d",strtotime('-1 day')) }}' value=@if( old('searchdate_start')) 
-                      {{ old('searchdate_start') }}
-                    @else
-                      {{ date('Y-m-01',strtotime('-1 day')) }} 
-                    @endif>
-                     〜 <input type="date" name="searchdate_end" class="datepicker form-control form-inline" id="datepicker_end" max='{{ date("Y-m-d",strtotime('-1 day')) }}' value=@if( old('searchdate_start')) 
-                      {{ old('searchdate_end') }}
-                    @else
-                      {{ date('Y-m-d',strtotime('-1 day')) }} 
-                    @endif>
-                  </div>
+                <div class="form-group col-md-12">
+                    <label class="control-label col-md-12">Product</label>
+                    <div class="col-md-12">
+                       <select class="form-control" name="product" >
+                          <option value=""> -- </option>
+                          @foreach($product_bases as $product_base)
+                          <option value="{{ $product_base -> id }}"
+                          @if( old('product'))
+                          @if( old('product') == $product_base->id  )
+                          selected
+                          @endif
+                          @else
+                          @if( $product_base->id == 3 )
+                          selected
+                          @endif
+                          @endif
+                          >{{ $product_base -> product_name }}</option>
+                          @endforeach
+                       </select>
+                    </div>
                 </div>
-                <div class="form-group">
-                  <label class="col-sm-2 control-label">Product</label>
-                  <div class="col-sm-10">
-                    <select class="form-control" name="product" >
-                                <option value=""> -- </option>
-                                @foreach($product_bases as $product_base)
-                                  <option value="{{ $product_base -> id }}"
-                                    @if( old('product'))
-                                      @if( old('product') == $product_base->id  )
-                                        selected
-                                      @endif
-                                    @else
-                                      @if( $product_base->id == 3 )
-                                        selected
-                                      @endif
-                                    @endif
-                                    >{{ $product_base -> product_name }}</option>
-                                @endforeach
-                    </select>
-                  </div>
+                <div class="form-group col-md-12 col-sm-12 col-xs-12 col-lg-12">
+                   <button type="submit" class="btn btn-primary col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1 col-xs-10 col-xs-offset-1"><i class='fas fa-search'></i> 検索</button>
                 </div>
-
-                  <button type="submit" class="btn btn-primary">検索</button>
-                  
-                </div>
-              
-            </div>
-          </div>
-          @if (count($errors) > 0)
-              <div class="alert alert-danger">
-                  <ul>
-                      @foreach ($errors->all() as $error)
-                          <li>{{ $error }}</li>
-                      @endforeach
-                  </ul>
               </div>
-          @endif
+         </div>
+         </form>
       </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12">
-            <div class="panel panel-default">
-              <div class="panel-heading">検索条件
-                <button class="btn btn-success btn-md pull-right">
-                <?php
-                  $s_date = (old("searchdate_start"))? old("searchdate_start"): date("Y-m-d",strtotime('-1 day'));
-                  $e_date = (old("searchdate_end"))? old("searchdate_end"):date("Y-m-d",strtotime('-1 day'));
-                  if( old('product')){
-                      $product_base = old('product') ;
-                  }else{
-                      $product_base =  3 ;
-                  }
-                  
-                ?>
-                <a href='csv_site/{{ $product_base }}/{{ urlencode($s_date) }}/{{  urlencode($e_date) }}' class='d-block text-info'>
-                  ＣＳＶ
-                </a>
-                </button>
-                
-              </div>
-                  <div class="panel-body">
-                    <div class="form-group">
-                      <label class="col-sm-2 control-label">ASP</label>
-                      <div class="col-sm-10">
+   </div>
+</div>
+<div class="row">
+
+   <div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">
+      <div class="panel panel-default">
+         <div class="panel-heading text-center">現在の検索結果を表示する</div>
+         <form role="form" action="/admin/daily_result_site" method="post" >
+            @csrf
+            <div class="panel-body ">
+              <div class="col-md-7 col-md-offset-2">
+                <div class="col-md-12">
+                  <div class="form-group col-md-6">
+                      <label class="control-label">ASP</label>
                               <p class="form-control-static">
                               @if( old('asp_id')  )
                                   @foreach($asps as $asp)
@@ -134,11 +99,9 @@
                                すべてのASP
                               @endif
                               </p>
-                      </div>
-                   </div>
-                    <div class="form-group">
-                      <label class="col-sm-2 control-label">Date</label>
-                      <div class="col-sm-10">
+                  </div>
+                  <div class="form-group col-md-6">
+                    <label class="center-block">Date</label>
                               <p class="form-control-static">
                               @if(old('searchdate_start') || old('searchdate_end'))
                               {{ old('searchdate_start') }}
@@ -148,11 +111,11 @@
                                {{ date('Y-m-01',strtotime('-1 day')) }} 〜{{ date('Y/m/d',strtotime('-1 day'))}}
                               @endif
                               </p>
-                      </div>
                    </div>
-                    <div class="form-group">
-                      <label class="col-sm-2 control-label">Product</label>
-                      <div class="col-sm-10">
+                </div>
+                <div class="form-group col-md-12">
+                    <label class="control-label col-md-12">Product</label>
+                    <div class="col-md-12">
                               <p class="form-control-static">
                                 @foreach($product_bases as $product_base)
                                 
@@ -167,10 +130,32 @@
                                   @endif
                                 @endforeach
                               </p>
-                      </div>
-                   </div>
-        </div>
-    </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-12 col-sm-12 col-xs-12 col-lg-12">
+                   <button type="submit" class="btn btn-success col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1 col-xs-10 col-xs-offset-1"><i class='fas fa-file-download'></i>
+                    <?php
+                      $s_date = (old("searchdate_start"))? old("searchdate_start"): date("Y-m-d",strtotime('-1 day'));
+                      $e_date = (old("searchdate_end"))? old("searchdate_end"):date("Y-m-d",strtotime('-1 day'));
+                      if( old('product')){
+                          $product_base = old('product') ;
+                      }else{
+                          $product_base =  3 ;
+                      }
+                      
+                    ?>
+                    <a href='admin/csv_site/{{ $product_base }}/{{ urlencode($s_date) }}/{{  urlencode($e_date) }}' class='d-block'>
+                      CSV
+                    </a>
+                  </button>
+                </div>
+              </div>
+         </div>
+         </form>
+      </div>
+   </div>
+</div>
+
 
 <!--グラフ-->
     <div class="row">
@@ -209,7 +194,7 @@
                 </thead>
                 <tbody>
                     <?php 
-                      $i = 1; 
+                     $i = 1; 
                       
                     ?>
                     

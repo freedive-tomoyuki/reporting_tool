@@ -14,7 +14,7 @@
             @csrf
             <div class="panel-body ">
               <div class="col-md-7 col-md-offset-2">
-                  <div class="form-group col-md-12">
+                  <div class="form-group col-md-6">
                       <label class="control-label">Month</label>
                       <div>
                          <input id="month" type="month" name="month" class="form-control" value=@if( old('month')) 
@@ -24,7 +24,7 @@
                       @endif>
                       </div>
                   </div>
-                  <div class="form-group col-md-12">
+                  <div class="form-group col-md-6">
                     <label class="control-label">Product</label>
                        <select class="form-control" name="product" >
                                 <option value=""> -- </option>
@@ -63,68 +63,10 @@
    </div>
 </div>
 
-<!--     <div class="row">
-      <ol class="breadcrumb">
-        <li>結果一覧</li>
-        <li class="active">月次レポート（案件別）</li>
-      </ol>
-      <div class="col-lg-12">
-        <h3>月次レポート（案件別）</h3> 
-
-        <div class="panel panel-default ">
-
-          <div class="panel-heading">検索</div>
-          <div class="panel-body">
-            <div class="col-md-6">
-              <form role="form" action="/admin/monthly_result" method="post" class="form-horizontal">
-                @csrf
-                  <div class="form-group form-inline " style="padding:10px;">
-                  <label>Month</label>
-                    <input id="month" type="month" name="month" class="form-control" value=@if( old('month')) 
-                      {{ old('month') }}
-                    @else
-                      {{ date('Y-m',strtotime('-1 day')) }}
-                    @endif>
-                  </div>
-                  <div class="form-group form-inline " style="padding:10px;">
-                    <label>Product</label>
-                    <select class="form-control" name="product" >
-                                <option value=""> -- </option>
-                                @foreach($product_bases as $product_base)
-                                  <option value="{{ $product_base->id }}"
-                                    @if( old('product'))
-                                      @if( old('product') == $product_base->id )
-                                        selected
-                                      @endif
-                                    @else
-                                      @if( $product_base->id == 3 )
-                                        selected
-                                      @endif
-                                    @endif
-
-                                    >{{ $product_base->product_name }}</option>
-                                @endforeach
-                    </select>
-                  </div>
-
-                  <button type="submit" class="btn btn-primary">検索</button>
-                  </form>
-                </div>
-              
-            </div>
-          </div>
-
-
-      </div>
-    </div>
- -->
-
-
 <div class="row">
    <div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">
-      <h3>月次レポート（案件別）</h3>
       <div class="panel panel-default">
-         <div class="panel-heading text-center">検索する</div>
+         <div class="panel-heading text-center">現在の検索条件を表示する</div>
          <form role="form" action="/admin/monthly_result" method="post" >
             @csrf
             <div class="panel-body ">
@@ -143,7 +85,8 @@
                                 @endif
                                 </p>
                      </div>
-                     <div class="form-group col-md-6 ">
+
+                     <div class="form-group col-md-6">
                       <label class="control-label">Product</label>
                                 <p class="form-control-static">
                                   @if( old('product'))
@@ -157,7 +100,7 @@
                                 @endif
                                 </p>
                      </div>
-                     <div class="form-group col-md-6 ">
+                     <div class="form-group col-md-12">
                       <label class="control-label">消化率</label>
                               <p class="form-control-static">
                               <?php
@@ -273,13 +216,16 @@
           <div class="panel panel-default ">
             <div class="panel-heading">
               実績値
+                <button class="btn btn-success btn-md pull-right">
+                <i class='fas fa-file-download'></i>
                 <a href="/admin/csv_monthly/@if( old('product')){{ old('product') }}@else{{ 3 }}@endif/@if( old('month')){{ old('month') }}
                   @else{{ date('Y-m',strtotime('-1 day'))}}
                   @endif">
-                  <button class="btn btn-success btn-md pull-right">
+                  
                     CSV
-                  </button>
                 </a>
+                </button>
+
             </div>
             <div class="panel-body table-responsive">
                 <table class="table table-striped table-bordered table-hover" cellspacing="0" width="100%">
@@ -374,11 +320,12 @@
           <div class="panel panel-default">
             <div class="panel-heading">
               想定値
-                <a href="/admin/csv_monthly_estimate/@if( old('product')){{ old('product') }}@else{{ 3 }}@endif">
-                  <button class="btn btn-success btn-md pull-right">
+                <button class="btn btn-success btn-md pull-right">
+                <i class='fas fa-file-download'></i>
+                  <a href="/admin/csv_monthly_estimate/@if( old('product')){{ old('product') }}@else{{ 3 }}@endif">
                     CSV
-                  </button>
-                </a>
+                  </a>
+                </button>
             </div>
           <div class="panel-body table-responsive">
           <table class="table table-striped table-bordered table-hover " cellspacing="0" width="100%">

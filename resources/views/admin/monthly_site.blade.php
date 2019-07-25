@@ -1,51 +1,45 @@
 @extends('layouts.appnew')
 
 @section('content')
-    <div class="row">
-      <ol class="breadcrumb">
-        <li>結果一覧</li>
-        <li class="active">月次レポート(サイト別)</li>
-      </ol>
-      <div class="col-lg-12">
-
-        <h3>月次レポート(サイト別) </h3> 
-
-        <div class="panel panel-default ">
-
-          <div class="panel-heading">検索</div>
-          <div class="panel-body">
-            <div class="col-md-6">
-              <form role="form" action="/admin/monthly_result_site" method="post" class="form-horizontal">
-                @csrf
-                <div class="form-group">
-                  <label class="col-sm-2 control-label">ASP</label>
-                  <div class="col-sm-10">
-                    <select class="form-control" name="asp_id" >
-                      <option value=""> すべてのASP </option>
-                                @foreach($asps as $asp)
-                                  <option value="{{ $asp -> id }}"
-                                    @if( old('asp_id') == $asp->id  )
-                                      selected
-                                    @endif
-                                    >{{ $asp -> name }}</option>
-                                    
-                                @endforeach
-                    </select>
+<div class="row">
+   <ol class="breadcrumb">
+      <li>結果一覧</li>
+      <li class="active">月次レポート(サイト別)</li>
+   </ol>
+   <div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">
+      <h3>月次レポート(サイト別) </h3>
+      <div class="panel panel-default">
+         <div class="panel-heading text-center">検索する</div>
+         <form role="form" action="/admin/monthly_result_site" method="post" >
+            @csrf
+            <div class="panel-body ">
+              <div class="col-md-7 col-md-offset-2">
+                  <div class="form-group col-md-6">
+                      <label class="control-label">ASP</label>
+                      <div>
+                        <select class="form-control" name="asp_id" >
+                          <option value=""> すべてのASP </option>
+                                    @foreach($asps as $asp)
+                                      <option value="{{ $asp -> id }}"
+                                        @if( old('asp_id') == $asp->id  )
+                                          selected
+                                        @endif
+                                        >{{ $asp -> name }}</option>
+                                        
+                                    @endforeach
+                        </select>
+                      </div>
                   </div>
-                </div>
-                <div class="form-group">
-                  <label class="col-sm-2 control-label">Month</label>
-                  <div class="col-sm-10">
-                    <input id="month" type="month" name="month" class="form-control" value=@if( old('month')) 
+                  <div class="form-group col-md-6">
+                    <label class="control-label">Month</label>
+                      <input id="month" type="month" name="month" class="form-control" value=@if( old('month')) 
                       {{ old('month') }}
                     @else
                       {{ date('Y-m',strtotime('-1 day')) }}
                     @endif>
                   </div>
-                </div>
-                <div class="form-group">
-                  <label class="col-sm-2 control-label">Product</label>
-                  <div class="col-sm-10">
+                  <div class="form-group col-md-12">
+                    <label class="control-label">Product</label>
                     <select class="form-control" name="product" >
                                 <option value=""> -- </option>
                                 @foreach($product_bases as $product_base)
@@ -63,33 +57,28 @@
                                 @endforeach
                     </select>
                   </div>
-                </div>
-
-                  <button type="submit" class="btn btn-primary">検索</button>
-                  
-                </div>
-              
-            </div>
-          </div>
-
+                  <div class="form-group col-md-12 col-sm-12 col-xs-12 col-lg-12">
+                   <button type="submit" class="btn btn-primary col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1 col-xs-10 col-xs-offset-1"><i class='fas fa-search'></i> 検索</button>
+                  </div>
+              </div>
+         </div>
+         </form>
 
       </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12">
-            <div class="panel panel-default">
-              <div class="panel-heading">検索条件
-                <button class="btn btn-success btn-md pull-right">
-                <a href='/csv_site/{{ $products[0]->id }}/{{ $products[0]->date }}' class='d-block text-info'>
-                  ＣＳＶ
-                </a>
-                </button>
-                
-              </div>
-                  <div class="panel-body">
-                    <div class="form-group">
-                      <label class="col-sm-2 control-label">ASP</label>
-                      <div class="col-sm-10">
+   </div>
+</div>
+
+<div class="row">
+   <div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">
+      <div class="panel panel-default">
+         <div class="panel-heading text-center">現在の検索条件を表示する</div>
+         <form role="form" action="/admin/monthly_result_site" method="post" >
+            @csrf
+            <div class="panel-body ">
+              <div class="col-md-7 col-md-offset-2">
+                  <div class="form-group col-md-6">
+                      <label class="control-label">ASP</label>
+                      <div>
                               <p class="form-control-static">
                                 @if( old('asps')  )
                                     @foreach($asps as $asp)
@@ -101,11 +90,10 @@
                                  すべてのASP
                                 @endif
                               </p>
-                            </div>
-                          </div>
-                    <div class="form-group">
-                      <label class="col-sm-2 control-label">Month</label>
-                      <div class="col-sm-10">
+                      </div>
+                  </div>
+                  <div class="form-group col-md-6">
+                    <label class="control-label">Month</label>
                               <p class="form-control-static">
                                 @if(old('month'))
                                 {{ old('month') }}
@@ -116,11 +104,9 @@
                                 {{"前日分までのデータ"}}
                                 @endif
                               </p>
-                            </div>
-                          </div>
-                    <div class="form-group">
-                      <label class="col-sm-2 control-label">Product</label>
-                      <div class="col-sm-10">
+                  </div>
+                  <div class="form-group col-md-12">
+                    <label class="control-label">Product</label>
                               <p class="form-control-static">
                                 @foreach($product_bases as $product_base)
                                 
@@ -135,11 +121,24 @@
                                   @endif
                                 @endforeach
                               </p>
-                            </div>
-                          </div>
 
-        </div>
-    </div>
+                  </div>
+                  <div class="form-group col-md-12 col-sm-12 col-xs-12 col-lg-12">
+<!--                   <button type="submit" class="btn btn-primary col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1 col-xs-10 col-xs-offset-1"><i class='fas fa-search'></i> 検索</button>
+ -->                <button class="btn btn-success col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1 col-xs-10 col-xs-offset-1"><i class='fas fa-file-download'></i>
+                    <a href='/admin/csv_site/{{ $products[0]->id }}/{{ $products[0]->date }}' class='d-block'>
+                      ＣＳＶ
+                    </a>
+                  </button>
+                  </div>
+              </div>
+         </div>
+         </form>
+
+      </div>
+   </div>
+</div>
+
 
 
 <!--グラフ-->

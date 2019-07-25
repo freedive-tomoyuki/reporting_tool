@@ -1022,14 +1022,16 @@ h1.page-header {
   border-bottom: 1px solid #e6e7e8;
   vertical-align: middle;
   height: 50px;
-  background-color: #8cdc81bf;
+  background-color: #7b7b7b;
   min-width: 100px;
+  color: white;
 }
 .table > thead > tr > th > div {
   font-size: 0.8em;
 }
 tfoot {
-  background-color: #cceac8;
+  background-color: #c3c3c3;
+  color : white;
 }
 
 .fixed-table-pagination .pagination {
