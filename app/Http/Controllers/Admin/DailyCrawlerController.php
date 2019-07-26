@@ -126,8 +126,9 @@ class DailyCrawlerController extends Controller
       */
       if( $asp == 1 ){
         //$asp_fee = ($price * 1.2 * 1.08) * 1.08 ;
-        $asp_fee = ($price*1.08)+($price*1.08*0.3);//FDグロス
-        $total = $asp_fee * 1.08 * 1.2;
+        //$asp_fee = ($price*1.08)+($price*1.08*0.3);//FDグロス
+        $total = (($price * 1.08)+($price * 1.08 * 0.3) * 1.08 * 1.2);
+        //$total = $asp_fee * 1.08 * 1.2;
       }
       /*
         それ以外のASPの場合の算出
