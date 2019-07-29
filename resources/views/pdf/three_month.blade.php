@@ -33,7 +33,7 @@
             /*page-break-after: always;*/
             page-break-before: always;
         }
-        h3 {
+        h4 {
           border-bottom: solid 3px #000000;
           bottom: -3px;
           position: relative;
@@ -130,7 +130,7 @@
     </script>
 </head>
 <body onload="init()">
-        <h3>直近３ヶ月</h3> 
+        <h3>直近３ヶ月　全体</h3> 
                 <table class="table table-striped table-bordered" width="100%">
                         <thead class="text-center" >
                               <tr>
@@ -190,8 +190,9 @@
 
                       </tbody>
                     </table>
+     <h3 class='top'>直近三ヶ月　ASP別</h3>
      @foreach($asps as $asp)
-        <h3 class='top'>{{ $asp["name"] }}</h3>
+        <h3>{{ $asp["name"] }}</h3>
           <?php $key = $asp["asp_id"];?>
                   <table class="table table-striped table-bordered " width="100%">
                         <thead>
