@@ -292,7 +292,7 @@ class ValuecommerceController extends MonthlyCrawlerController
                     //addtion = $active[1];
                 } //$x = 0; $x < 2; $x++*/
                 echo "<pre>";
-                var_dump( $data );
+                //var_dump( $data );
                 echo "</pre>";
                 
                 $this->save_monthly( json_encode( $vcdata ) );
