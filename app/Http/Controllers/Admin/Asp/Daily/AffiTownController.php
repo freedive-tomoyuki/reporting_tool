@@ -87,8 +87,10 @@ class AffiTownController extends DailyCrawlerController
                 
                 $crawler = $browser->visit( $product_info->asp->login_url )->type( $product_info->asp->login_key, $product_info->login_value )->type( $product_info->asp->password_key, $product_info->password_value )->click( $product_info->asp->login_selector )->visit( "https://affi.town/adserver/merchant/report/dailysales.af" )->visit( "https://affi.town/adserver/merchant/report/dailysales.af?advertiseId=" . $product_info->asp_product_id . "&mediaId=&since=" . $s_date . "&until=" . $e_date )->type( '#all_display > p > input[type=search]', '合計' )->crawler();
                 //echo $crawler->html();
-                
-                
+
+                $crawler2 = $browser->visit( "https://affi.town/adserver/report/mc/impression.af" )->visit( "https://affi.town/adserver/merchant/report/dailysales.af?advertiseId=" . $product_info->asp_product_id . "&mediaId=&fromDate=" . $s_date . "&toDate=" . $e_date )->type( '#all_display > p > input[type=search]', '合計' )->crawler();
+                echo $crawler2->html();
+                //https://affi.town/adserver/report/mc/impression.af?advertiseId=4316&mediaId=&since=2019-07-01&until=2019-07-27
                 /*
                 selector 設定
                 */
@@ -99,6 +101,12 @@ class AffiTownController extends DailyCrawlerController
                     
                 );
                 
+                /*
+                selector Imp 設定
+                */
+                $selector2 = array(
+                     'imp' => '#all_display > table > tbody:nth-child(2) > tr.visible.striped > td:nth-child(4)',
+                );
                 
                 /*
                 $crawler　をフィルタリング
@@ -118,7 +126,21 @@ class AffiTownController extends DailyCrawlerController
                     return $data;
                     
                 } );
-                var_dump( $affitown_data );
+                /*
+                $crawler(Imp)　をフィルタリング
+                */
+                $affitown_data_imp = $crawler2->each( function( Crawler $node ) use ($selector2, $product_info)
+                {
+                    
+                    $data              = array( );
+                    
+                    foreach ( $selector2 as $key => $value ) {
+                        $data[ $key ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
+                    } //$selector1 as $key => $value
+                    return $data;
+                    
+                } );
+                var_dump( $affitown_data_imp );
                 /*
                 サイト抽出　
                 */
@@ -177,14 +199,14 @@ class AffiTownController extends DailyCrawlerController
                 
                 $affitown_data[ 0 ][ 'active' ] = $i;
                 
-                $affitown_data[ 0 ][ 'imp' ] = 0;
+                $affitown_data[ 0 ][ 'imp' ] = $affitown_data_imp[ 0 ][ 'imp' ];
                 
                 $calData                      = json_decode( json_encode( json_decode( $this->cpa( $affitown_data[ 0 ][ 'cv' ], $affitown_data[ 0 ][ 'price' ], 7 ) ) ), True );
                 $affitown_data[ 0 ][ 'cpa' ]  = $calData[ 'cpa' ]; //CPA
                 $affitown_data[ 0 ][ 'cost' ] = $calData[ 'cost' ];
                 
                 //echo "<pre>";
-                //var_dump( $affitown_data );
+                var_dump( $affitown_data );
                 //var_dump( $affitown_site );
                 //echo "</pre>";
                 
@@ -192,8 +214,8 @@ class AffiTownController extends DailyCrawlerController
                 /*
                 サイトデータ・日次データ保存
                 */
-                $this->save_site( json_encode( $affitown_site ) );
-                $this->save_daily( json_encode( $affitown_data ) );
+                //$this->save_site( json_encode( $affitown_site ) );
+                //$this->save_daily( json_encode( $affitown_data ) );
                 
                 //var_dump($crawler_for_site);
             } //$product_infos as $product_info

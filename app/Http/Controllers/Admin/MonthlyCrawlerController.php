@@ -208,8 +208,7 @@ class MonthlyCrawlerController extends Controller
     public function save_site($data){
         
         $data_array = json_decode(json_encode(json_decode($data)), True );
-        $month = date('Ym', strtotime('-1 day'));
-        $monthlysites_table = $month.'_monthlysites';
+
         //var_dump($data);
         
         $product_id = 0;
@@ -221,6 +220,9 @@ class MonthlyCrawlerController extends Controller
             //echo  $data['media_id'];
             //echo  $data['date'];
             
+            $month = date('Ym', strtotime($data['date']));
+            $monthlysites_table = $month.'_monthlysites';
+        
             DB::table($monthlysites_table)
               ->where('product_id', $data['product'])
               ->where('media_id', $data['media_id'])

@@ -82,7 +82,7 @@ class A8Controller extends DailyCrawlerController
                 }
                 //
                 $selector_2 = array(
-                     'imp' => '#ReportList > tbody > tr:nth-child(1) > td:nth-child(2)',
+                    'imp' => '#ReportList > tbody > tr:nth-child(1) > td:nth-child(2)',
                     'click' => '#ReportList > tbody > tr:nth-child(1) > td:nth-child(3)',
                     'price' => '#ReportList > tbody > tr:nth-child(1) > td:nth-child(12)',
                     'cv' => $product_info->asp->daily_cv_selector 

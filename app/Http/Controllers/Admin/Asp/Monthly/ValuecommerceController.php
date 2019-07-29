@@ -150,7 +150,10 @@ class ValuecommerceController extends MonthlyCrawlerController
                 //$x = 0; 
                 //$addtion = 0 ;
                 $count = 0;
-                
+                /**
+                    今月：$x = 0
+                    先月：$x = 1
+                */
                 for ( $x = 0; $x < 2; $x++ ) {
                     
                     //サイト数取得用にクロール
@@ -207,8 +210,10 @@ class ValuecommerceController extends MonthlyCrawlerController
                         $s_Y = date('Y');
                         $s_M = date('n');
                         }*/
-                        
+                        //https://mer.valuecommerce.ne.jp/affiliate_analysis/?condition%5BfromYear%5D=2019&condition%5BfromMonth%5D=7&condition%5BtoYear%5D=2019&condition%5BtoMonth%5D=7&condition%5BactiveFlag%5D=Y&allPage=1&notOmksPage=1&omksPage=1&pageType=all&page=1
                         //今月分クロール
+                        echo 'https://mer.valuecommerce.ne.jp/affiliate_analysis/?condition%5BfromYear%5D=' . $y . '&condition%5BfromMonth%5D=' . $n . '&condition%5BtoYear%5D=' . $y . '&condition%5BtoMonth%5D=' . $n . '&condition%5BactiveFlag%5D=Y&allPage=1&notOmksPage=1&omksPage=1&pageType=all&page=' . $target_page;
+
                         $crawler_for_site = $browser->visit( 'https://mer.valuecommerce.ne.jp/affiliate_analysis/?condition%5BfromYear%5D=' . $y . '&condition%5BfromMonth%5D=' . $n . '&condition%5BtoYear%5D=' . $y . '&condition%5BtoMonth%5D=' . $n . '&condition%5BactiveFlag%5D=Y&allPage=1&notOmksPage=1&omksPage=1&pageType=all&page=' . $target_page )->crawler();
                         //echo 'https://mer.valuecommerce.ne.jp/affiliate_analysis/?condition%5BfromYear%5D='.$s_Y.'&condition%5BfromMonth%5D='.$s_M.'&condition%5BtoYear%5D='.$s_Y.'&condition%5BtoMonth%5D='.$s_M.'&condition%5BactiveFlag%5D=Y&allPage=1&notOmksPage=1&omksPage=1&pageType=all&page='.$target_page;
                         //最終ページのみ件数でカウント
@@ -260,7 +265,7 @@ class ValuecommerceController extends MonthlyCrawlerController
                                 } //$key == 'site_name'
                                 elseif ( $key == 'approval' ) {
                                     
-                                    $approval_array = array( );
+                                    $approval_array = array();
                                     $approval       = trim( $crawler_for_site->filter( $value )->text() );
                                     preg_match( '/(\d+)/', $approval, $approval_array );
                                     $data[ $count ][ $key ] = $approval_array[ 1 ];
