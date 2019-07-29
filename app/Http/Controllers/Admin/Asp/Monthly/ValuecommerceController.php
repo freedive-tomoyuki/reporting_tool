@@ -115,7 +115,7 @@ class ValuecommerceController extends MonthlyCrawlerController
                         }
 
                     } //$selector_this as $key => $value
-                    foreach ( $selector_this as $key => $value ) {
+                    foreach ( $selector_before as $key => $value ) {
                         //$data['last_date'] = date('Y-m-d', strtotime('last day of previous month'));
                         if ( date( 'Y/m/d' ) == date( 'Y/m/01' ) ) {
                             $data[ 'last_date' ] = date( 'Y-m-d', strtotime( '-2 month' ) );
@@ -154,7 +154,7 @@ class ValuecommerceController extends MonthlyCrawlerController
                     今月：$x = 0
                     先月：$x = 1
                 */
-/*                for ( $x = 0; $x < 2; $x++ ) {
+                for ( $x = 0; $x < 2; $x++ ) {
                     
                     //サイト数取得用にクロール
                     //デフォルトでは、今月分のクロールを実行
@@ -192,14 +192,14 @@ class ValuecommerceController extends MonthlyCrawlerController
                     //ページ数を計算　＝　アクティブサイト数 / ４０
                     $count_page = ( $active[ 1 ] > 40 ) ? ceil( $active[ 1 ] / 40 ) : 1;
                     echo "count_page件数→" . $count_page . "←count_page件数";
-*/                    
+                    
                     //var_dump($crawler_for_site);
                     
                     
                     /**
                      *      １ページ　クロール
                      */
-/*                    for ( $page = 0; $page < $count_page; $page++ ) {
+                    for ( $page = 0; $page < $count_page; $page++ ) {
                         
                         $target_page = $page + 1;
                         
@@ -220,11 +220,11 @@ class ValuecommerceController extends MonthlyCrawlerController
                         $crawler_count    = ( $target_page == $count_page ) ? $active[ 1 ] - ( $page * 40 ) : 40;
                         echo $crawler_count;
                         
-                        echo $target_page . "ページ目のcrawler_count＞＞" . $crawler_count . "</br>";*/
+                        echo $target_page . "ページ目のcrawler_count＞＞" . $crawler_count . "</br>";
                         /**
                         １行ごと　クロール
                         */
-/*                        for ( $i = 1; $i <= $crawler_count; $i++ ) {
+                        for ( $i = 1; $i <= $crawler_count; $i++ ) {
                             //while(
                             //      $crawler_for_site
                             //      ->filter('#report_clm > div > div.report_table > table > tbody > tr:nth-child('.$i.') > td:nth-child(2)')
@@ -290,13 +290,13 @@ class ValuecommerceController extends MonthlyCrawlerController
                         
                     } //$page = 0; $page < $count_page; $page++
                     //addtion = $active[1];
-                } //$x = 0; $x < 2; $x++*/
+                } //$x = 0; $x < 2; $x++
                 echo "<pre>";
                 //var_dump( $data );
                 echo "</pre>";
                 
                 $this->save_monthly( json_encode( $vcdata ) );
-                //$this->save_site( json_encode( $data ) );
+                $this->save_site( json_encode( $data ) );
                 
             } //$product_infos as $product_info
         } );
