@@ -108,8 +108,15 @@ class SCANController extends MonthlyCrawlerController
                     
                     } //$selector_this as $key => $value
                     foreach ( $selector_before as $key => $value ) {
-                        $data[ 'last_date' ]    = date( 'Y-m-d', strtotime( 'last day of previous month' ) );
+                        //$data[ 'last_date' ]    = date( 'Y-m-d', strtotime( 'last day of previous month' ) );
                         
+                        if ( date( 'Y/m/d' ) == date( 'Y/m/01' ) ) {
+                            $data[ 'last_date' ] = date( 'Y-m-t', strtotime( '-2 month' ) );
+                        } //date( 'Y/m/d' ) == date( 'Y/m/01' )
+                        else {
+                            $data[ 'last_date' ] = date( 'Y-m-d', strtotime( 'last day of previous month' ) );
+                        }
+
                         if($key == 'approval_price'){
                             $data[ 'last_' . $key ] = $this->calc_approval_price(
                                 trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) ), 9);

@@ -118,7 +118,7 @@ class ValuecommerceController extends MonthlyCrawlerController
                     foreach ( $selector_before as $key => $value ) {
                         //$data['last_date'] = date('Y-m-d', strtotime('last day of previous month'));
                         if ( date( 'Y/m/d' ) == date( 'Y/m/01' ) ) {
-                            $data[ 'last_date' ] = date( 'Y-m-d', strtotime( '-2 month' ) );
+                            $data[ 'last_date' ] = date( 'Y-m-t', strtotime( '-2 month' ) );
                         } //date( 'Y/m/d' ) == date( 'Y/m/01' )
                         else {
                             $data[ 'last_date' ] = date( 'Y-m-d', strtotime( 'last day of previous month' ) );
