@@ -71,13 +71,18 @@ class ExportController extends Controller
         //$date = date('Y-m' ,strtotime(''));
         $ratio = (date("d")/date("t"));
         //*毎月一日の場合は、先月データと先々月データを参照
+        
+        $product = ProductBase::Where('id',$id)->get()->toArray();
+        $today = date("Y年m月d日");
 
         if($month == 'one_month' ){//先月分
             $startdate = date("Y-m-1",strtotime('-1 month'));
             $enddate = date("Y-m-t",strtotime('-1 month'));
+            $header = '先月 ['.date("Y年m月",strtotime("-1 month")) .'] 全体成果レポート' ;
         }else{
             $startdate = date("Y-m-1",strtotime('-1 day'));
             $enddate = date("Y-m-d",strtotime('-1 day'));
+            $header = '今月 ['.date("Y年m月") .'] 全体成果レポート' ;
         }
 
         /**
@@ -225,6 +230,9 @@ class ExportController extends Controller
         $pdf->setOption('javascript-delay', 5000);
         $pdf->setOption('enable-smart-shrinking', true);
         $pdf->setOption('no-stop-slow-scripts', true);
+        $pdf->setOption('header-center', $product[0]['product_name'].' '.$header);
+        $pdf->setOption('header-right', $today);
+        $pdf->setOption('header-font-size', 14);
         $pdf->setOption('orientation', 'Landscape');
         
         //return view('pdf.pdf', compact('products','product_bases','total','total_chart','daily_ranking'));
@@ -236,16 +244,15 @@ class ExportController extends Controller
     */
     function pdf_yearly($id,$term = null){
 
-        $bladeFile = ( $term == null )? 'pdf.yearly' : 'pdf.three_month'; 
+        $bladeFile = ( $term == null )? 'pdf.yearly' : 'pdf.three_month';
+        $header = ( $term == null )? '年間レポート' : '直近３ヶ月レポート';
         $term = ( $term == null )? 12 : 3 ; 
+        $product = ProductBase::Where('id',$id)->get()->toArray();
 
         $this_month = date("Ym"); 
+        $today = date("Y年m月d日"); 
         $select = ''; 
-//成果発生数
-        //$id = ($request->product != null)? $request->product : 3 ;
-         
-        $this_month = date("Ym"); 
-        $select = ''; 
+
 //成果発生数
         for( $i=1 ; $i <= $term ; $i++ ){
             $last_date = date("Y-m-t", strtotime('-'.$i.' month'));
@@ -359,7 +366,7 @@ class ExportController extends Controller
         $asps = Product::Select('asp_id','name')->join('asps','products.asp_id','=','asps.id')->where('product_base_id', $id)->where('products.killed_flag',0)->get()->toArray();
 
         foreach ($asps as $asp) {
-            echo $asp["asp_id"];
+            //echo $asp["asp_id"];
         //成果発生数
             $key = $asp["asp_id"];
                 $select = '';
@@ -476,6 +483,9 @@ class ExportController extends Controller
         $pdf->setOption('javascript-delay', 5000);
         $pdf->setOption('enable-smart-shrinking', true);
         $pdf->setOption('no-stop-slow-scripts', true);
+        $pdf->setOption('header-center', $product[0]['product_name'].' '.$header);
+        $pdf->setOption('header-right', $today);
+        $pdf->setOption('header-font-size', 14);
         $pdf->setOption('orientation', 'Landscape');
         return $pdf->inline();
         //return $pdf->download('sample.pdf'); 
@@ -525,15 +535,17 @@ class ExportController extends Controller
         //$date = date('Y-m' ,strtotime(''));
         $ratio = (date("d")/date("t"));
         //*毎月一日の場合は、先月データと先々月データを参照
+        $product = ProductBase::Where('id',$id)->get()->toArray();
+        $today = date("Y年m月d日");
 
         if($month == 'one_month' ){//先月分
             $month = date('Ym',strtotime('-1 month'));
             $searchdate = date('Y-m-t', strtotime('-1 month'));
-
+            $header = '先月 ['.date("Y年m月",strtotime("-1 month")) .'] メディア別成果レポート' ;
         }else{
             $month = date('Ym',strtotime('-1 day'));
             $searchdate = date("Y-m-d", strtotime('-1 day'));
-
+            $header = '今月 ['.date("Y年m月") .'] メディア別成果レポート' ;
         }
 
         $monthlysites_table = $month.'_monthlysites';
@@ -569,6 +581,9 @@ class ExportController extends Controller
         $pdf->setOption('enable-smart-shrinking', true);
         $pdf->setOption('no-stop-slow-scripts', true);
         $pdf->setOption('orientation', 'Landscape');
+        $pdf->setOption('header-center', $product[0]['product_name'].' '.$header);
+        $pdf->setOption('header-right', $today);
+        $pdf->setOption('header-font-size', 14);
         return $pdf->inline();
 
     }
