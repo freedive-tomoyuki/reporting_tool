@@ -29,6 +29,10 @@
             height: 700px;
             margin: 0 auto;
         }
+        div.next {
+            /*page-break-after: always;*/
+            page-break-before: always;
+        }
         h3.top {
             /*page-break-after: always;*/
             page-break-before: always;
@@ -148,6 +152,7 @@
                             $total_imp = 0;
                             $total_click = 0;
                             $total_cv = 0;
+                            $count = 0;
                           ?>
                           <tr>
                               <td>表示回数</td>
@@ -190,6 +195,7 @@
 
                       </tbody>
                     </table>
+    <div class='next'></div>
      @foreach($asps as $asp)
         <h3>{{ $asp["name"] }}</h3>
           <?php $key = $asp["asp_id"];?>
@@ -252,6 +258,9 @@
 
                       </tbody>
                     </table>
+          @if( $count % 3 == 0 )
+            <div class='next'></div>
+          @endif
       @endforeach
 <!--グラフ-->
     <h3 class='top'>ASP別　年間CV推移</h3>
