@@ -33,6 +33,10 @@
             /*page-break-after: always;*/
             page-break-before: always;
         }
+        .next {
+            /*page-break-after: always;*/
+            page-break-before: always;
+        }
         h3 {
           border-bottom: solid 3px #000000;
           bottom: -3px;
@@ -191,7 +195,7 @@
 
                       </tbody>
                     </table>
-     <span class='top'></span>
+     <hr class='next'>
      @foreach($asps as $asp)
         <h3>{{ $asp["name"] }}</h3>
           <?php $key = $asp["asp_id"];?>
@@ -258,7 +262,7 @@
             $count++;
           ?>
           @if( $count % 3 == 0 )
-            <span class='top'></span>
+            <hr class='next'>
           @endif
       @endforeach
 <!--グラフ-->
