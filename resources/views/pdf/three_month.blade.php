@@ -29,7 +29,7 @@
             height: 700px;
             margin: 0 auto;
         }
-        h3.top {
+        .top {
             /*page-break-after: always;*/
             page-break-before: always;
         }
@@ -258,7 +258,7 @@
             $count++;
           ?>
           @if( $count % 3 == 0 )
-            <h3 class='top'></h3>
+            <span class='top'></span>
           @endif
       @endforeach
 <!--グラフ-->
