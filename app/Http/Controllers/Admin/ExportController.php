@@ -230,6 +230,7 @@ class ExportController extends Controller
         $pdf->setOption('javascript-delay', 5000);
         $pdf->setOption('enable-smart-shrinking', true);
         $pdf->setOption('no-stop-slow-scripts', true);
+        $pdf->setOption('encoding', 'utf-8');
         $pdf->setOption('header-center', $product[0]['product_name'].' '.$header);
         $pdf->setOption('header-right', $today);
         $pdf->setOption('header-font-size', 14);
@@ -483,6 +484,7 @@ class ExportController extends Controller
         $pdf->setOption('javascript-delay', 5000);
         $pdf->setOption('enable-smart-shrinking', true);
         $pdf->setOption('no-stop-slow-scripts', true);
+        $pdf->setOption('encoding', 'utf-8');
         $pdf->setOption('header-center', $product[0]['product_name'].' '.$header);
         $pdf->setOption('header-right', $today);
         $pdf->setOption('header-font-size', 14);
@@ -580,6 +582,7 @@ class ExportController extends Controller
         $pdf->setOption('javascript-delay', 5000);
         $pdf->setOption('enable-smart-shrinking', true);
         $pdf->setOption('no-stop-slow-scripts', true);
+        $pdf->setOption('encoding', 'utf-8');
         $pdf->setOption('orientation', 'Landscape');
         $pdf->setOption('header-center', $product[0]['product_name'].' '.$header);
         $pdf->setOption('header-right', $today);
