@@ -4,6 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link href="{{ public_path('css/bootstrap.min.css')}}" rel="stylesheet">
     <link href="{{ public_path('css/styles.css')}}" rel="stylesheet">
+    <title>月間レポート</title>
     <style type="text/css">
         @font-face {
             font-family: ipag;

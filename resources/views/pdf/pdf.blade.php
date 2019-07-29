@@ -6,7 +6,7 @@
     <link href="{{ public_path('css/styles.css')}}" rel="stylesheet">
     <link href="{{ public_path('css/addons/datatables.min.css')}}" rel="stylesheet">
     <script type="text/javascript" src="http://www.google.com/jsapi"></script>
-
+    <title>全体成果　月間レポート</title>
     <style type="text/css">
         @font-face {
             font-family: ipag;
