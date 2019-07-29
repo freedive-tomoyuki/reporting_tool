@@ -258,6 +258,9 @@
 
                       </tbody>
                     </table>
+          <?php 
+            $count++;
+          ?>
           @if( $count % 3 == 0 )
             <div class='next'></div>
           @endif
