@@ -88,7 +88,7 @@ class AffiTownController extends DailyCrawlerController
                 $crawler = $browser->visit( $product_info->asp->login_url )->type( $product_info->asp->login_key, $product_info->login_value )->type( $product_info->asp->password_key, $product_info->password_value )->click( $product_info->asp->login_selector )->visit( "https://affi.town/adserver/merchant/report/dailysales.af" )->visit( "https://affi.town/adserver/merchant/report/dailysales.af?advertiseId=" . $product_info->asp_product_id . "&mediaId=&since=" . $s_date . "&until=" . $e_date )->type( '#all_display > p > input[type=search]', '合計' )->crawler();
                 //echo $crawler->html();
 
-                $crawler2 = $browser->visit( "https://affi.town/adserver/report/mc/impression.af" )->visit( "https://affi.town/adserver/merchant/report/dailysales.af?advertiseId=" . $product_info->asp_product_id . "&mediaId=&fromDate=" . $s_date . "&toDate=" . $e_date )->type( '#all_display > p > input[type=search]', '合計' )->crawler();
+                $crawler2 = $browser->visit( "https://affi.town/adserver/report/mc/impression.af" )->visit( "https://affi.town/adserver/merchant/report/impression.af?advertiseId=" . $product_info->asp_product_id . "&mediaId=&fromDate=" . $s_date . "&toDate=" . $e_date )->type( '#all_display > p > input[type=search]', '合計' )->crawler();
                 echo $crawler2->html();
                 //https://affi.town/adserver/report/mc/impression.af?advertiseId=4316&mediaId=&since=2019-07-01&until=2019-07-27
                 /*
