@@ -207,7 +207,7 @@ Route::get('/test','ScrapingController@index');
 Route::get('test1','DailyCrawlerController@dailytimer');
 Route::get('test2','MonthlyCrawlerController@monthlytimer');
 Route::get('check','CheckController@check');
-Route::get('diff','DailyCrawlerController@diff');
+Route::get('diff/{id?}','DailyCrawlerController@diff');
 Route::get('diff_site','DailyCrawlerController@diff_site');
 Route::get('calChart/{id?}','Admin\YearlyController@calChart' );
 Route::get('siteCreate/{name?}/{seed}','Admin\Asp\Daily\FelmatController@siteCreate' );

@@ -345,7 +345,10 @@ class DailyCrawlerController extends Controller
         var_dump($daily_diff);
         var_dump($daily_diff_1);
         echo "</pre>";
-
+        $e_asp = array();
+        $l_asp = array();
+        $x = 0;
+           
         /* 前日比でなくなっているASPを考慮 */
         if(date("Y-m-d",strtotime("-2 day")) != date("Y-m-t",strtotime("-2 day"))){
           if(!empty($daily_diff_1)){
@@ -372,8 +375,39 @@ class DailyCrawlerController extends Controller
                         $diff_[$i]["product_id"] = $diff["product_id"];
                         //$diff_[$i]["killed_flag"] = 0;
                         $i++;
-                      }
+                        array_push( $e_asp, $diff["asp_id"]);
+                        array_diff( $l_asp, $e_asp);
+                        //var_dump();
+
+                      }else{
+                        array_push( $l_asp , $diff["asp_id"]);
+                        
+                      } 
                   }
+              }
+              //var_dump($l_asp);
+              foreach ( $daily_diff as $diff ) {
+                        if( in_array($diff["asp_id"], $l_asp )){
+                          echo $diff["asp_id"];
+                            $diff_[$i]["imp"] = $diff["imp"];
+                            $diff_[$i]["click"] = $diff["click"];
+                            $diff_[$i]["cv"] = $diff["cv"];
+                            $diff_[$i]["ctr"] = 
+                            ($diff_[$i]["imp"] > 0 && $diff_[$i]["click"] > 0 ) ? intval($diff_[$i]["imp"])/intval($diff_[$i]["click"]): 0 ;
+                            $diff_[$i]["cvr"] = 
+                            ($diff_[$i]["click"] > 0 && $diff_[$i]["cv"] > 0 )? intval($diff_[$i]["click"])/intval($diff_[$i]["cv"]): 0 ;
+                            $diff_[$i]["active"] = $diff["active"];
+                            $diff_[$i]["estimate_cv"] = $diff["estimate_cv"];
+                            $diff_[$i]["partnership"] = $diff["partnership"];
+                            $diff_[$i]["price"] = $diff["price"] ;
+                            $diff_[$i]["cpa"] = $diff["cpa"];
+                            $diff_[$i]["cost"] = $diff["cost"];
+                            $diff_[$i]["asp_id"] = $diff["asp_id"];
+                            $diff_[$i]["date"] = $diff["date"];
+                            $diff_[$i]["product_id"] = $diff["product_id"];
+                            //$diff_[$i]["killed_flag"] = 0;
+                            $i++;
+                        }
               }
           }else{
               foreach ( $daily_diff as $diff ){
