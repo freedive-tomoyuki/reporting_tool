@@ -235,8 +235,8 @@ class ExportController extends Controller
         $pdf->setOption('header-right', $today);
         $pdf->setOption('header-font-size', 14);
         $pdf->setOption('footer-center', '[page] ページ');
-        $pdf->setOption('header-font-name', 'IPAexMincho');
-        $pdf->setOption('footer-font-name', 'IPAexMincho'); 
+        $pdf->setOption('header-font-name', 'IPAexGothic');
+        $pdf->setOption('footer-font-name', 'IPAexGothic'); 
         $pdf->setOption('orientation', 'Landscape');
         
         //return view('pdf.pdf', compact('products','product_bases','total','total_chart','daily_ranking'));
@@ -492,8 +492,8 @@ class ExportController extends Controller
         $pdf->setOption('header-right', $today);
         $pdf->setOption('header-font-size', 14);
         $pdf->setOption('footer-center', '[page] ページ');
-        $pdf->setOption('header-font-name', 'IPAexMincho');
-        $pdf->setOption('footer-font-name', 'IPAexMincho'); 
+        $pdf->setOption('header-font-name', 'IPAexGothic');
+        $pdf->setOption('footer-font-name', 'IPAexGothic'); 
         $pdf->setOption('orientation', 'Landscape');
         return $pdf->inline();
         //return $pdf->download('sample.pdf'); 
@@ -594,8 +594,8 @@ class ExportController extends Controller
         $pdf->setOption('header-right', $today);
         $pdf->setOption('header-font-size', 14);
         $pdf->setOption('footer-center', '[page] ページ');
-        $pdf->setOption('header-font-name', 'IPAexMincho');
-        $pdf->setOption('footer-font-name', 'IPAexMincho'); 
+        $pdf->setOption('header-font-name', 'IPAexGothic');
+        $pdf->setOption('footer-font-name', 'IPAexGothic'); 
         return $pdf->inline();
 
     }
