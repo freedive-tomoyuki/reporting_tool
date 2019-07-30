@@ -45,12 +45,12 @@
                     <div class="form-group form-inline ">
                         <input type="file" name="csv_file" id="csv_file">
                     </div>
-                    <button type="submit" class="btn btn-primary">登録</button>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-upload">&nbsp;</i>登録</button>
 
                 </form>
                 <div>
                 <hr>
-                    <a href='/admin/DownloadTemplateCsv'>CSVフォーマットをダウンロードする</a></br>
+                    <a href='/admin/DownloadTemplateCsv'><i class="fas fa-download">&nbsp;</i>CSVフォーマットをダウンロードする</a></br>
                     ※【ASP】×【日別】✕【案件】の件数をご記載してください。</br>
                     ※ASPIDは、ASP管理をご参照ください。</br>
                     ※案件IDは、広告主管理をご参照ください。</br>
@@ -67,14 +67,14 @@
                         <label>アップロード月</label>
                         <input type="month" name="month" class="form-control">
                     </div>
-                    <div class="form-group form-inline ">
+                    <div class="form-group">
                         <input type="file" name="csv_file" id="csv_file">
                     </div>
-                    <button type="submit" class="btn btn-primary">登録</button>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-upload">&nbsp;</i>登録</button>
 
                 </form>
                 <hr>
-                    <a href='/admin/DownloadTemplateCsvSite'>CSVフォーマットをダウンロードする</a></br>
+                    <a href='/admin/DownloadTemplateCsvSite'><i class="fas fa-download">&nbsp;</i>CSVフォーマットをダウンロードする</a></br>
                     ※【ASP】✕【サイト】✕【月別】×【案件】の件数をご記載してください。</br>
                     ※ASPIDは、ASP管理をご参照ください。</br>
                     ※案件IDは、広告主管理をご参照ください。</br>

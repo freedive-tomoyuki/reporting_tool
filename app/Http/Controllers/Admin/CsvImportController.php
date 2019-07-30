@@ -543,15 +543,8 @@ class CsvImportController extends Controller
 	    //もし配列の数が500未満なら
 	    if ($array_count < 500){
 
-/*            DB::table($monthlysites_table)
-			->insert(
-	            $array
-            );*/
 			foreach( $array as $d ){
-	            /*echo "<pre>D";
-	            var_dump($d);
-	            echo "</pre>";
-				//CVR*/
+
 				$d['cvr'] = ($d['click'] == 0 || $d['cv'] == 0 )? 0 : ($d['cv'] / $d['click']) * 100 ;
 
 				//CTR
@@ -597,15 +590,7 @@ class CsvImportController extends Controller
 				        ['imp' => $d['imp'],'click' => $d['click'],'cv' => $d['cv'],'cost' => $d['cost'],'price' => $d['price'],'cvr' => $d['cvr'],'ctr' => $d['ctr'],'cpa' => $d['cpa'], 'created_at' =>  \Carbon\Carbon::now(),'updated_at' => \Carbon\Carbon::now()]
 						);
 		        }
-/*	            echo "<pre>";
-	            var_dump($array_partial[$i]);
-	            echo "</pre>";
-			
-            	DB::table($monthlysites_table)
-				->insert(
-	                $array_partial[$i]
-	            );
-*/			
+
 	        }
 	        
 	    }

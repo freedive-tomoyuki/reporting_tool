@@ -50,35 +50,14 @@
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span></button>
 				<a class="navbar-brand" href="#"><span>Report Tool</span></a>
- 				<!--<ul class="nav navbar-top-links navbar-right">
-					<li class="dropdown"><a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
-						<em class="fa fa-bell"></em><span class="label label-info"></span>
-					</a>
-						<ul class="dropdown-menu dropdown-alerts">
-							<li><a href="#">
-								<div><em class="fa fa-envelope"></em> 1 New Message
-									<span class="pull-right text-muted small">3 mins ago</span></div>
-							</a></li>
-							<li class="divider"></li>
-							<li><a href="#">
-								<div><em class="fa fa-heart"></em> 12 New Likes
-									<span class="pull-right text-muted small">4 mins ago</span></div>
-							</a></li>
-							<li class="divider"></li>
-							<li><a href="#">
-								<div><em class="fa fa-user"></em> 5 New Followers
-									<span class="pull-right text-muted small">4 mins ago</span></div>
-							</a></li>
-						</ul>
-					</li>
-				</ul> -->
+
 			</div>
 		</div><!-- /.container-fluid -->
 	</nav>
 	<div id="sidebar-collapse" class="col-sm-3 col-lg-2 sidebar">
 		<div class="profile-sidebar">
 			<div class="profile-userpic">
-				<img src="http://placehold.it/50/30a5ff/fff" class="img-responsive" alt="">
+				<img src="/img/template/FREEDIVE_logo.jpg" class="img-responsive" alt="">
 			</div>
 			<div class="profile-usertitle">
 				<div class="profile-usertitle-name">{{ $user->name }}</div>
@@ -96,38 +75,38 @@
 			><a href="{{ route('admin.crawlerdaily') }}"><em class="fa fa-search">&nbsp;</em> 実装(※手動禁止)</a></li>-->
 
 			<li class="parent "><a href="/admin/daily_result" data-toggle="collapse" >
-				<em class="fa fa-list">&nbsp;</em> レポート<span data-toggle="collapse" href="#sub-item-1" class="icon pull-right"><em class="fa fa-plus"></em></span>
+				<em class="far fa-chart-bar">&nbsp;</em> レポート<span data-toggle="collapse" href="#sub-item-1" class="icon pull-right"><em class="fa fa-plus"></em></span>
 				</a>
 				<ul class="children collapse in" id="sub-item-1">
 					<li
-					@if( Request::path() ==  "admin/yearly_result" )
+					@if(strpos( Request::path() , "yearly_result" ) !== false )
 						class="active"
-					@endif><a class="" href="/admin/yearly_result">
-						<span class="fa fa-arrow-right">&nbsp;</span> 年間
+					@endif><a class="" href="">
+						<span class="fas fa-angle-right">&nbsp;</span> 年間
 					</a></li>
 					<li 
-					@if( Request::path() ==  "admin/daily_result" )
+					@if(strpos( Request::path() , "daily_result" )!== false)
 						class="active"
 					@endif><a class="" href="/admin/daily_result">
-						<span class="fa fa-arrow-right">&nbsp;</span> 日次（案件別）
+						<span class="fas fa-angle-right">&nbsp;</span> 日次（案件別）
 					</a></li>
 					<li 
-					@if( Request::path() ==  "admin/daily_result_site" )
+					@if( strpos( Request::path() ,"daily_result") !== false && strpos( Request::path() ,'site') !== false )
 						class="active"
 					@endif><a class="" href="/admin/daily_result_site">
-						<span class="fa fa-arrow-right">&nbsp;</span> 日次（サイト別）
+						<span class="fas fa-angle-right">&nbsp;</span> 日次（サイト別）
 					</a></li>
 					<li
-					@if( Request::path() ==  "admin/monthly_result" )
+					@if( strpos(Request::path() , "monthly_result" )!== false)
 						class="active"
 					@endif><a class="" href="/admin/monthly_result">
-						<span class="fa fa-arrow-right">&nbsp;</span> 月次（案件別）
+						<span class="fas fa-angle-right">&nbsp;</span> 月次（案件別）
 					</a></li>
 					<li
-					@if( Request::path() ==  "admin/monthly_result_site" )
+					@if(strpos( Request::path() ,"monthly_result") !== false && strpos( Request::path() ,'site') !== false )
 						class="active"
 					@endif><a class="" href="/admin/monthly_result_site">
-						<span class="fa fa-arrow-right">&nbsp;</span> 月次（サイト）
+						<span class="fas fa-angle-right">&nbsp;</span> 月次（サイト）
 					</a></li>
 
 				</ul>
@@ -136,22 +115,22 @@
 			@if( strpos( Request::path() ,'admin/product') !== false)
 				class="active"
 			@endif
-			><a href="{{ route('admin.product_list') }}"><em class="fa fa-folder">&nbsp;</em> 広告主管理</a></li>
+			><a href="{{ route('admin.product_list') }}"><em class="fas fa-users">&nbsp;</em> 広告主管理</a></li>
 			<li 
 			@if( strpos( Request::path() ,'admin/asp') !== false )
 				class="active"
 			@endif
-			><a href="{{ route('admin.asp_list') }}"><em class="fa fa-folder">&nbsp;</em> ASP管理</a></li>
+			><a href="{{ route('admin.asp_list') }}"><em class="fab fa-adn">&nbsp;</em> ASP管理</a></li>
 			<li 
-			@if( strpos( Request::path() ,'admin/csv') !== false)
+			@if( strpos( Request::path() ,'csv/import') !== false)
 				class="active"
 			@endif
-			><a href="{{ route('admin.csv.import') }}"><em class="fa fa-folder">&nbsp;</em> インポート</a></li>
+			><a href="{{ route('admin.csv.import') }}"><em class="fas fa-file-import">&nbsp;</em> インポート</a></li>
 			<li 
-			@if( strpos( Request::path() ,'admin/csv') !== false)
+			@if( strpos( Request::path() ,'export') !== false)
 				class="active"
 			@endif
-			><a href="{{ route('admin.csv.export') }}"><em class="fa fa-folder">&nbsp;</em> エクスポート</a></li>
+			><a href="{{ route('admin.csv.export') }}"><em class="fas fa-file-export">&nbsp;</em> エクスポート</a></li>
 			<li
 			@if( Request::path() == "admin/register" )
 				class="active"
