@@ -116,13 +116,13 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth:admin'], function() {
     Route::get('DownloadTemplateCsvSite',
     function() {
         $data = array();
-        $csvHeader = ['日付','案件ID','ASPID','Imp','Click','CV','アクティブ','提携数','発生金額','承認件数','承認金額'];
+        $csvHeader = ['日付','案件ID','ASPID','Imp', 'Click','CV','SiteID','Site名','発生金額','承認件数','承認金額'];
         return CSV::download($data, $csvHeader, 'template_daily.csv');
     });
     Route::get('DownloadTemplateCsv',
     function() {
         $data = array();
-        $csvHeader = ['日付','案件ID','ASPID','Imp', 'Click','CV','SiteID','Site名','発生金額','承認件数','承認金額'];
+        $csvHeader = ['日付','案件ID','ASPID','Imp','Click','CV','アクティブ','提携数','発生金額','承認件数','承認金額'];
         return CSV::download($data, $csvHeader, 'template_monthly_site.csv');
     });
     Route::get('excel_test','Admin\ExportController@excel');

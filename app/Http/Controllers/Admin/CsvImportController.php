@@ -59,23 +59,7 @@ class CsvImportController extends Controller
 		        "numeric" => "数値で入力してください。",
 		        "date" => "日付の形式で記載してください。"
 		];
-/*	public  $validateSiteRules = [
-					'date' 	=> 'required|date',
-		            'imp' 	=> 'required|numeric',
-		            'click' => 'required|numeric',
-		            'cv' 	=> 'required|numeric',
-		            'cvr' 	=> 'required|numeric',
-		            'ctr' 	=> 'required|numeric',
-		            'site_name' => 'string',
-		            'site_id' => 'string',
-		            //'asp_id' => 'required|numeric',
-		            'product_id' => 'required|numeric',
-		            'price' => 'required|numeric',
-		            'cost' 	=> 'required|numeric',
-		            'cpa' 	=> 'required|numeric',
-		            'approval' 	=> 'required|numeric',
-		            'approval_price' 	=> 'required|numeric',
-	    ];*/
+
 	public function  validateSiteRules($month = null){
 		return [
 					'date' 	=> [
@@ -272,7 +256,6 @@ class CsvImportController extends Controller
 	    	$row_count++;
 	    
 	    }
-	    echo "test";
 		
 		//配列宣言
 	    	foreach ($array_monthly as $data) {
@@ -285,7 +268,6 @@ class CsvImportController extends Controller
 	        	$month_array[$date_array][$product_key]['imp'] = 0;
 	        	$month_array[$date_array][$product_key]['click'] = 0;
 	        	$month_array[$date_array][$product_key]['cv'] = 0;
-	        	$month_array[$date_array][$product_key]['imp'] = 0;
 	        	$month_array[$date_array][$product_key]['active'] = 0;
 	        	$month_array[$date_array][$product_key]['partnership'] = 0;
 	        	$month_array[$date_array][$product_key]['cost'] = 0;
@@ -333,7 +315,7 @@ class CsvImportController extends Controller
 					$month_array[$date_key][$product_key]['approval_price'] += $data['approval_price'];
 
 				//CVR
-					$month_array[$date_key][$product_key]['cvr'] =
+/*					$month_array[$date_key][$product_key]['cvr'] =
 						($month_array[$date_key][$product_key]['click'] == 0 
 							|| $month_array[$date_key][$product_key]['cv'] == 0 )? 0 :
 								($month_array[$date_key][$product_key]['cv'] / $month_array[$date_key][$product_key]['click']) * 100 ;
@@ -349,31 +331,64 @@ class CsvImportController extends Controller
 						($month_array[$date_key][$product_key]['price'] == 0 
 							|| $month_array[$date_key][$product_key]['cv'] == 0 )? 0 :
 								$month_array[$date_key][$product_key]['price'] / $month_array[$date_key][$product_key]['cv'] ;
-
+*/
 				//日次（月末）
 					$month_array[$date_key][$product_key]['date'] = $end_of_date;
 					
 			}
-			
 			//月次データ
-			foreach($month_array as $array_1 ){
-				Monthlydata::insert($array_1);
+			foreach($month_array as $a ){
+				//Monthlydata::insert($array_1);
+				foreach( $a as $d ){
+				//CVR
+					$d['cvr'] = ($d['click'] == 0 || $d['cv'] == 0 )? 0 : ($d['cv'] / $d['click']) * 100 ;
+
+				//CTR
+					$d['ctr'] =($d['click'] == 0 || $d['imp'] == 0 )? 0 : ($d['click'] / $d['imp']) * 100 ;
+
+				//CPA
+					$d['cpa'] = ($d['price'] == 0 || $d['cv'] == 0 )? 0 : $d['price'] / $d['cv'] ;
+
+					DB::table('monthlydatas')
+				    ->updateOrInsert(
+				        ['product_id' => $d['product_id'] , 'date' => $d['date'],'asp_id' => $d['asp_id'] ],
+				        ['imp' => $d['imp'],'click' => $d['click'],'cv' => $d['cv'],'active' => $d['active'],'partnership' => $d['cost'],'cost' => $d['cost'],'price' => $d['price'],'approval' => $d['approval_price'],'approval' => $d['approval_price'],'cvr' => $d['cvr'],'ctr' => $d['ctr'],'cpa' => $d['cpa'], 'created_at' =>  \Carbon\Carbon::now(),'updated_at' => \Carbon\Carbon::now()]
+				    );
+			    }
 			}
+
 
 	    //追加した配列の数を数える
 	    $array_count = count($array);
 	    //もし配列の数が500未満なら
-	    if ($array_count < 500){
+	    if ($array_count < 200){
+	    	//var_dump($array);
+			foreach( $array as $d ){
+			//CVR
+				$d['cvr'] = ($d['click'] == 0 || $d['cv'] == 0 )? 0 : ($d['cv'] / $d['click']) * 100 ;
+
+			//CTR
+				$d['ctr'] =($d['click'] == 0 || $d['imp'] == 0 )? 0 : ($d['click'] / $d['imp']) * 100 ;
+
+			//CPA
+				$d['cpa'] = ($d['price'] == 0 || $d['cv'] == 0 )? 0 : $d['price'] / $d['cv'] ;
+
+				DB::table('daily_diffs')
+				    ->updateOrInsert(
+			        ['product_id' => $d['product_id'] , 'date' => $d['date'] ,'asp_id' => $d['asp_id']],
+			        ['imp' => $d['imp'],'click' => $d['click'],'cv' => $d['cv'],'active' => $d['active'],'partnership' => $d['partnership'],'cost' => $d['cost'],'price' => $d['price'],'cvr' => $d['cvr'],'ctr' => $d['ctr'], 'created_at' =>  \Carbon\Carbon::now(),'updated_at' => \Carbon\Carbon::now()]
+				    );
+			}
 
 			//日次データ
-			DailyDiff::insert(
+			/*DailyDiff::insert(
 	            $array
 	        );
-	        
+	        */
 	    } else {
         
 	        //追加した配列が500以上なら、array_chunkで500ずつ分割する
-	        $array_partial = array_chunk($array, 500); //配列分割
+	        $array_partial = array_chunk($array, 200); //配列分割
 	   
 	        //分割した数を数えて
 	        $array_partial_count = count($array_partial); //配列の数
@@ -382,20 +397,38 @@ class CsvImportController extends Controller
         	//分割した数の分だけインポートを繰り替えす
 	        for ($i = 0; $i <= $array_partial_count - 1; $i++){
 	            //CSVimport::insert($array_partial[$i]);
-	            echo "<pre>";
+	            /*echo "<pre>";
 	            var_dump($array_partial[$i]);
-	            echo "</pre>";
-			
+	            echo "</pre>";*/
+				foreach( $array_partial[$i] as $d ){
+	            /*echo "<pre>D";
+	            var_dump($d);
+	            echo "</pre>";*/
+				//CVR
+					$d['cvr'] = ($d['click'] == 0 || $d['cv'] == 0 )? 0 : ($d['cv'] / $d['click']) * 100 ;
+
+				//CTR
+					$d['ctr'] =($d['click'] == 0 || $d['imp'] == 0 )? 0 : ($d['click'] / $d['imp']) * 100 ;
+
+				//CPA
+					$d['cpa'] = ($d['price'] == 0 || $d['cv'] == 0 )? 0 : $d['price'] / $d['cv'] ;
+
+					DB::table('daily_diffs')
+					    ->updateOrInsert(
+				        ['product_id' => $d['product_id'] , 'date' => $d['date'],'asp_id' => $d['asp_id'] ],
+				        ['imp' => $d['imp'],'click' => $d['click'],'cv' => $d['cv'],'active' => $d['active'],'partnership' => $d['partnership'],'cost' => $d['cost'],'price' => $d['price'],'cvr' => $d['cvr'],'ctr' => $d['ctr'],'cpa' => $d['cpa'], 'created_at' =>  \Carbon\Carbon::now(),'updated_at' => \Carbon\Carbon::now()]
+					    );
+				}
 				//日毎の成果
-				DailyDiff::insert(
+				/*DailyDiff::insert(
 	                $array_partial[$i]
-	            );
+	            );*/
 			
 	        }
 	        
 	    }
 
-        //return redirect('admin/csv/import', 303);
+        return redirect('admin/csv/import', 303);
 	    
 
 	}
@@ -498,10 +531,10 @@ class CsvImportController extends Controller
 	    	$row_count++;
 	    
 	    }
-	    echo "test";
+/*	    echo "test";
 	    echo "<pre>";
 	    var_dump($array);
-	    echo "</pre>";
+	    echo "</pre>";*/
 		
 		$monthlysites_table = $month.'_monthlysites';
 
@@ -510,10 +543,30 @@ class CsvImportController extends Controller
 	    //もし配列の数が500未満なら
 	    if ($array_count < 500){
 
-            DB::table($monthlysites_table)
+/*            DB::table($monthlysites_table)
 			->insert(
 	            $array
-            );
+            );*/
+			foreach( $array as $d ){
+	            /*echo "<pre>D";
+	            var_dump($d);
+	            echo "</pre>";
+				//CVR*/
+				$d['cvr'] = ($d['click'] == 0 || $d['cv'] == 0 )? 0 : ($d['cv'] / $d['click']) * 100 ;
+
+				//CTR
+				$d['ctr'] =($d['click'] == 0 || $d['imp'] == 0 )? 0 : ($d['click'] / $d['imp']) * 100 ;
+
+				//CPA
+				$d['cpa'] = ($d['price'] == 0 || $d['cv'] == 0 )? 0 : $d['price'] / $d['cv'] ;
+
+				DB::table($monthlysites_table)
+				    ->updateOrInsert(
+			        ['product_id' => $d['product_id'] , 'date' => $d['date'],'media_id' => $d['media_id'] ],
+			        ['imp' => $d['imp'],'click' => $d['click'],'cv' => $d['cv'],'cost' => $d['cost'],'price' => $d['price'],'cvr' => $d['cvr'],'ctr' => $d['ctr'],'cpa' => $d['cpa'], 'created_at' =>  \Carbon\Carbon::now(),'updated_at' => \Carbon\Carbon::now()]
+					);
+			}
+
 	    } else {
         
 	        //追加した配列が500以上なら、array_chunkで500ずつ分割する
@@ -526,7 +579,25 @@ class CsvImportController extends Controller
         	//分割した数の分だけインポートを繰り替えす
 	        for ($i = 0; $i <= $array_partial_count - 1; $i++){
 	            //CSVimport::insert($array_partial[$i]);
-	            echo "<pre>";
+				foreach( $array_partial[$i] as $d ){
+		            /*echo "<pre>D";
+		            var_dump($d);
+		            echo "</pre>";*/
+					$d['cvr'] = ($d['click'] == 0 || $d['cv'] == 0 )? 0 : ($d['cv'] / $d['click']) * 100 ;
+
+					//CTR
+					$d['ctr'] =($d['click'] == 0 || $d['imp'] == 0 )? 0 : ($d['click'] / $d['imp']) * 100 ;
+
+					//CPA
+					$d['cpa'] = ($d['price'] == 0 || $d['cv'] == 0 )? 0 : $d['price'] / $d['cv'] ;
+
+					DB::table($monthlysites_table)
+					    ->updateOrInsert(
+				        ['product_id' => $d['product_id'] , 'date' => $d['date'],'media_id' => $d['media_id'] ],
+				        ['imp' => $d['imp'],'click' => $d['click'],'cv' => $d['cv'],'cost' => $d['cost'],'price' => $d['price'],'cvr' => $d['cvr'],'ctr' => $d['ctr'],'cpa' => $d['cpa'], 'created_at' =>  \Carbon\Carbon::now(),'updated_at' => \Carbon\Carbon::now()]
+						);
+		        }
+/*	            echo "<pre>";
 	            var_dump($array_partial[$i]);
 	            echo "</pre>";
 			
@@ -534,12 +605,12 @@ class CsvImportController extends Controller
 				->insert(
 	                $array_partial[$i]
 	            );
-			
+*/			
 	        }
 	        
 	    }
 
-        //return redirect('admin/csv/import', 303);
+        return redirect('admin/csv/import', 303);
 	    
 
 	}

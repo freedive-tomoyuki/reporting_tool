@@ -20,7 +20,7 @@ class CsvImportFormRequest extends FormRequest
                 'mimes:csv,txt', // mimesの都合上text/csvなのでtxtも許可が必要
                 'mimetypes:text/plain',
             ],
-            'month' => 'required'
+           //'month' => 'required'
         ];
     }
 }
