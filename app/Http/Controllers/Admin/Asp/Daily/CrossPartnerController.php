@@ -86,7 +86,9 @@ class CrossPartnerController extends DailyCrawlerController
                 ->click( $product_info->asp->login_selector )
                 ->visit( $product_info->asp->lp1_url )
                 ->visit('http://crosspartners.net/agent/clients/su/2554')
-                ->visit('http://crosspartners.net/master/result_reports/ajax_paging/is_monthly:1/start:201907/end:201907/user_site_id:/ad_id:252?_=1563862637371')
+                //->visit('http://crosspartners.net/master/result_reports/ajax_paging/is_monthly:1/start:201907/end:201907/user_site_id:/ad_id:252?_=1563862637371')
+                ->visit('http://crosspartners.net/master/result_reports/index/is_daily:1')
+                ->visit('http://crosspartners.net/master/result_reports/ajax_paging/page:1/is_daily:1/start:201907/end:201907/ad_id:252/sort:start/direction:asc?_=1563862637371')
                 ->crawler();
 
                 echo $crawler_1->html();
@@ -100,12 +102,7 @@ class CrossPartnerController extends DailyCrawlerController
                 //echo $crawler_3->html();
                 
                 //
-                $selector_1 = array(
-                    'imp' => '.altrow > td:nth-child(2)',
-                    'click' => '.altrow > td:nth-child(3)',
-                    'price' => '.altrow > td:nth-child(9)',
-                    'cv' => '.altrow > td:nth-child(5)'
-                );
+
                 $selector_2 = array(
                     'partnership' => 'div.paging_top > div.paging_counter' 
                 );
@@ -113,21 +110,49 @@ class CrossPartnerController extends DailyCrawlerController
                 /*
                   $crawler　をフィルタリング
                 */
-                $crosspartner_data1 = $crawler_1->each(function (Crawler $node)use ( $selector_1 ,$product_info){
-                                
+                $crosspartner_data1 = $crawler_1->each(function (Crawler $node)use ( $product_info){
                         $data = array();
                         $data['asp'] = $product_info->asp_id;
                         $data['product'] = $product_info->id;
-                                      
+                        $y = 0;
                         $data['date'] = date('Y-m-d', strtotime('-1 day'));
+                        $limit = date('d');
 
-                        foreach($selector_1 as $key => $value){
-                            $data[$key] = trim(preg_replace('/[^0-9]/', '', $node->filter($value)->text()));
+                        for( $d = 1 ; $d <= $limit ; $d++ ){
+                            $selector_1 = array(
+                                'imp' => 'table.highlight > tbody > tr:nth-child('.$d.') > td:nth-child(2)',
+                                'click' => 'table.highlight > tbody > tr:nth-child('.$d.') > td:nth-child(3)',
+                                'cv' => 'table.highlight > tbody > tr:nth-child('.$d.') > td:nth-child(5)',
+                                'price' => 'table.highlight > tbody > tr:nth-child('.$d.') > td:nth-child(9)',
+                            );
+
+                            foreach($selector_1 as $key => $value){
+                                if($y == 0){
+                                    $imp = 0;
+                                    $click = 0;
+                                    $cv = 0;
+                                    $price = 0;
+                                }
+                                if( $key == 'imp' ){
+                                    $imp += trim(preg_replace('/[^0-9]/', '', $node->filter($value)->text()));
+                                    $data['imp'] = $imp;
+                                }elseif( $key == 'click' ){
+                                    $click += trim(preg_replace('/[^0-9]/', '', $node->filter($value)->text()));
+                                    $data['click'] = $click;
+                                }elseif( $key == 'cv' ){
+                                    $cv += trim(preg_replace('/[^0-9]/', '', $node->filter($value)->text()));
+                                    $data['cv'] = $cv;
+                                }else{
+                                    $price += trim(preg_replace('/[^0-9]/', '', $node->filter($value)->text()));
+                                    $data['price'] = $price;
+                                }
+                                $y++ ;
+                            }
                         }
 
                         return $data;
                 });
-                var_dump($crosspartner_data1);
+                //var_dump($crosspartner_data1);
                 /*
                   $crawler　をフィルタリング
                 */
@@ -136,12 +161,14 @@ class CrossPartnerController extends DailyCrawlerController
                         $data = array();
 
                         foreach($selector_2 as $key => $value){
+                            
                             $data[$key] = trim(preg_replace('/[^0-9]/', '', $node->filter($value)->text()));
+                        
                         }
 
                         return $data;
                 });
-                var_dump($crosspartner_data2);
+                //var_dump($crosspartner_data2);
                 /*
                   $crawler サイト用　をフィルタリング
                 */
