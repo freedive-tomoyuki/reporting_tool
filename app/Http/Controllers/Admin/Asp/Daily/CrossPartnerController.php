@@ -154,9 +154,7 @@ class CrossPartnerController extends DailyCrawlerController
                         $data = array();
 
                         foreach($selector_2 as $key => $value){
-                            
-                            $data[$key] = trim(preg_replace('/[^0-9]/', '', $node->filter($value)->text()));
-                        
+                            $data[$key] = intval(trim(preg_replace('/[^0-9]/', '', mb_substr($node->filter($value)->text(), 0, 8))));
                         }
 
                         return $data;
