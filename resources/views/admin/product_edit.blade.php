@@ -22,7 +22,7 @@
                         @csrf
 
                         <div class="form-group row">
-                            <label for="name" class="col-md-4 col-form-label text-md-right">案件名</label>
+                            <label for="name" class="col-md-4 col-form-label text-md-right">案件名<font style="color:red">*</font></label>
 
                             <div class="col-md-6">
                                 <input id="name" type="text" class="form-control{{ $errors->has('name') ? 'is-invalid' : '' }}" name="name" value="{{ $products[0]['product'] }}"  autofocus>
@@ -35,7 +35,7 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="name" class="col-md-4 col-form-label text-md-right">広告主</label>
+                            <label for="name" class="col-md-4 col-form-label text-md-right">広告主<font style="color:red">*</font></label>
 
                             <div class="col-md-6">
                                <select class="form-control" name="product" >
@@ -59,7 +59,7 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="email" class="col-md-4 col-form-label text-md-right">ASP</label>
+                            <label for="email" class="col-md-4 col-form-label text-md-right">ASP<font style="color:red">*</font></label>
 
                             <div class="col-md-6">
                                 <select class="form-control" name="asp_id" >
@@ -82,7 +82,7 @@
                         </div>
 
                         <div class="form-group row">
-                            <label for="loginid" class="col-md-4 col-form-label text-md-right">ログインID</label>
+                            <label for="loginid" class="col-md-4 col-form-label text-md-right">ログインID<font style="color:red">*</font></label>
 
                             <div class="col-md-6">
                                 <input id="loginid" type="text" class="form-control{{ $errors->has('loginid') ? ' is-invalid' : '' }}" name="loginid" value="{{  $products[0]['login_value'] }}">
@@ -96,24 +96,36 @@
                         </div>
 
                         <div class="form-group row">
-                            <label for="password" class="col-md-4 col-form-label text-md-right">パスワード</label>
+                            <label for="password" class="col-md-4 col-form-label text-md-right">パスワード<font style="color:red">*</font></label>
 
                             <div class="col-md-6">
                                 <input id="password" type="password" class="form-control" name="password" value="{{ $products[0]['password_value'] }}" >
                             </div>
-                        </div>
+                        </div> 
+                        
                         <div class="form-group row">
-                            <label for="asp_sponsor_id" class="col-md-4 col-form-label text-md-right">ASP:広告主ID</label>
+                            <label for="asp_sponsor_id" class="col-md-4 col-form-label text-md-right">ASP:広告主ID
+                            @if($products[0]['sponsor_id_require_flag'] == 1 )
+                            <font style="color:red">*</font>
+                            @endif
+                            </label>
 
                             <div class="col-md-6">
-                                <input id="asp_sponsor_id" type="text" class="form-control" name="asp_sponsor_id" value="{{ $products[0]['asp_sponsor_id'] }}" >
+                                <input id="asp_sponsor_id" type="text" class="form-control" name="asp_sponsor_id" value="{{ $products[0]['asp_sponsor_id'] }}"@if($products[0]['product_id_require_flag'] == 1 )
+                            required 
+                            @endif >
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="asp_product_id" class="col-md-4 col-form-label text-md-right">ASP:案件ID</label>
+                            <label for="asp_product_id" class="col-md-4 col-form-label text-md-right">ASP:案件ID
+                            @if($products[0]['product_id_require_flag'] == 1 )
+                            <font style="color:red">*</font>
+                            @endif</label>
 
                             <div class="col-md-6">
-                                <input id="asp_product_id" type="text" class="form-control" name="asp_product_id" value="{{ $products[0]['asp_product_id'] }}" >
+                                <input id="asp_product_id" type="text" class="form-control" name="asp_product_id" value="{{ $products[0]['asp_product_id'] }}" @if($products[0]['product_id_require_flag'] == 1 )
+                            required 
+                            @endif>
                             </div>
                         </div>
                         <input type="hidden" name="id" value="{{ $products[0]['id'] }}">

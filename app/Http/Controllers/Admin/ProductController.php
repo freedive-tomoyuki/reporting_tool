@@ -110,9 +110,11 @@ class ProductController extends Controller
         $user = Auth::user();
 
         if($id != ''){
-            $products = Product::where('id',$id)->get()->toArray();
+            $products = Product::join('asps','products.asp_id','=','asps.id')
+            ->where('products.id',$id)->get()->toArray();
         }else{
-            $products = Product::where('asp_id',$request->asp_id)
+            $products = Product::join('asps','products.asp_id','=','asps.id')
+                ->where('asp_id',$request->asp_id)
                 ->where('product_base_id',$request->product_base_id)
                 ->get()
                 ->toArray();

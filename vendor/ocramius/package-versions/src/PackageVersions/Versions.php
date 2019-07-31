@@ -49,11 +49,13 @@ final class Versions
   'kylekatarnls/update-helper' => '1.1.1@b34a46d7f5ec1795b4a15ac9d46b884377262df9',
   'laravel/dusk' => 'v5.2.0@4339d153abc18c536616beb8b1c674c67c5720ca',
   'laravel/framework' => 'v5.8.28@341fb54bea9693cada2a5b8d398621a57f82862d',
+  'laravel/telescope' => 'v2.0.6@61b415ea2401fe659ee35fa809908628aa08bf07',
   'laravel/tinker' => 'v1.0.8@cafbf598a90acde68985660e79b2b03c5609a405',
   'league/flysystem' => '1.0.53@08e12b7628f035600634a5e76d95b5eb66cea674',
   'maatwebsite/excel' => '2.1.30@f5540c4ba3ac50cebd98b09ca42e61f926ef299f',
   'maximebf/debugbar' => 'v1.15.0@30e7d60937ee5f1320975ca9bc7bcdd44d500f07',
   'monolog/monolog' => '1.24.0@bfc9ebb28f97e7a24c45bdc3f0ff482e47bb0266',
+  'moontoast/math' => '1.1.2@c2792a25df5cad4ff3d760dd37078fc5b6fccc79',
   'nesbot/carbon' => '1.39.0@dd62a58af4e0775a45ea5f99d0363d81b7d9a1e0',
   'nikic/php-parser' => 'v4.2.2@1bd73cc04c3843ad8d6b0bfc0956026a151fc420',
   'opis/closure' => '3.3.1@92927e26d7fc3f271efe1f55bdbb073fbb2f0722',
@@ -157,7 +159,7 @@ final class Versions
   'staudenmeir/dusk-updater' => 'v1.1.1@c639afc8eb7d1dd3ac7b76159ace21e1d3da65ba',
   'theseer/tokenizer' => '1.1.3@11336f6f84e16a720dae9d8e6ed5019efa85a0f9',
   'webmozart/assert' => '1.4.0@83e253c8e0be5b0257b881e1827274667c5c17a9',
-  'laravel/laravel' => 'dev-master@4696a4f6e56eb2bf037746dbe617c6b678db25b8',
+  'laravel/laravel' => 'dev-master@9aa84e6f44c27df463e676cb48174d8f739144ce',
 );
 
     private function __construct()

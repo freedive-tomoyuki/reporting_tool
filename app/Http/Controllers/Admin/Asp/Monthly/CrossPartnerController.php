@@ -163,7 +163,6 @@ class CrossPartnerController extends MonthlyCrawlerController
                     ->visit("http://crosspartners.net/master/result_reports/ajax_paging/is_partners:1/start:".$searchMonth."/end:".$searchMonth."/user_site_id:/ad_id:".$product_info->asp_product_id."?_=1564541544441" )
                     ->crawler();
 
-                    #\/master\/result_reports\/index\/is_ads\:1\#\/start\:201905\/end\:201905\/user_site_id\:\/ad_id\:252\/is_ads\:1\/member_id\:3935 > td:nth-child(8)
                     while ( trim( preg_replace( '/[\n\r\t ]+/', ' ', str_replace( "\xc2\xa0", " ", $crawler_for_site->filter( 'table.highlight > tbody > tr:nth-child('.$iPlus.') > td:nth-child(1)' )->count() ) ) ) ) {
                         $crosspartner_site[$count]['product'] = $product_info->id;
 
