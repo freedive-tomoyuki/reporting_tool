@@ -32,7 +32,7 @@ class CrossPartnerController extends MonthlyCrawlerController
         $options = [
         '--window-size=1920,1080',
         '--start-maximized',
-        //'--headless',
+        '--headless',
         '--disable-gpu',
         '--no-sandbox'
         
@@ -50,18 +50,27 @@ class CrossPartnerController extends MonthlyCrawlerController
             
             $product_infos = \App\Product::all()->where( 'id', $product_id );
 	        //var_dump($product_infos);
-
+    
+            if ( date( 'Y/m/d' ) == date( 'Y/m/01' ) ) { //1日のクロールの場合
+                $start = date( 'Ym', strtotime( 'last day of '. date( 'Y-m', strtotime( '-2 month' ) )) );
+                $end   = date( 'Ym', strtotime( 'last day of previous month' ) );
+            } //date( 'Y/m/d' ) == date( 'Y/m/01' )
+            else {
+                 $start = date( 'Ym', strtotime( 'last day of previous month') );
+                 $end   = date( 'Ym', strtotime( '-1 day' ) );
+            }
+            
             foreach ( $product_infos as $product_info ) {
-                
+
                 $crawler = $browser
                 ->visit( $product_info->asp->login_url )
-                ->keys( '#AgentLoginid', 'imai@surprizz.co.jp' )
-                ->keys( '#AgentPasswd', '938kefs7' )
+                ->keys( $product_info->asp->login_key, $product_info->login_value )
+                ->keys( $product_info->asp->password_key, $product_info->password_value )
                 ->click( $product_info->asp->login_selector )
                 ->visit( $product_info->asp->lp1_url )
-                ->visit('http://crosspartners.net/agent/clients/su/2554')
-                ->visit('http://crosspartners.net/master/result_reports/index/is_daily:1')
-                ->visit('http://crosspartners.net/master/result_reports/ajax_paging/page:1/is_monthly:1/start:201906/end:201907/sort:start/direction:asc?_=1564540874455')
+                ->visit('http://crosspartners.net/agent/clients/su/'.$product_info->asp_sponsor_id)
+                ->visit('http://crosspartners.net/master/result_reports/index/is_monthly:1')
+                ->visit('http://crosspartners.net/master/result_reports/ajax_paging/is_monthly:1/start:'.$start.'/end:'.$end.'/ad_id:'.$product_info->asp_product_id.'/sort:start/direction:asc?_=1564540874455')
                 ->crawler();
 
                 $selector_this   = array(
@@ -151,7 +160,7 @@ class CrossPartnerController extends MonthlyCrawlerController
                     
                     $crawler_for_site = $browser
                     ->visit("http://crosspartners.net/master/result_reports/index/is_partners:1")
-                    ->visit("http://crosspartners.net/master/result_reports/ajax_paging/is_partners:1/start:".$searchMonth."/end:".$searchMonth."/user_site_id:/ad_id:252?_=1564541544441" )
+                    ->visit("http://crosspartners.net/master/result_reports/ajax_paging/is_partners:1/start:".$searchMonth."/end:".$searchMonth."/user_site_id:/ad_id:".$product_info->asp_product_id."?_=1564541544441" )
                     ->crawler();
 
                     #\/master\/result_reports\/index\/is_ads\:1\#\/start\:201905\/end\:201905\/user_site_id\:\/ad_id\:252\/is_ads\:1\/member_id\:3935 > td:nth-child(8)

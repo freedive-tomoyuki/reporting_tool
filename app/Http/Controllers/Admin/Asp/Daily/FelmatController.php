@@ -49,12 +49,6 @@ class FelmatController extends DailyCrawlerController
     {
         
         /*
-        昨日の日付　取得
-        */
-        $yesterday = date('Y-m-d', strtotime('-1 day'));
-        //$yesterday = date('d', strtotime('-1 day'));
-        
-        /*
          ChromeDriverのオプション設定
         */
         Browser::macro('crawler', function () {
@@ -64,7 +58,7 @@ class FelmatController extends DailyCrawlerController
         $options = [
                 '--window-size=1920,1080',
                 '--start-maximized',
-                //'--headless',
+                '--headless',
                 '--disable-gpu',
                 '--no-sandbox'
         ];
@@ -85,29 +79,40 @@ class FelmatController extends DailyCrawlerController
         　　$product_id:案件ID
         　　$yesterday:昨日の日付
         */
-        $client->browse(function(Browser $browser) use (&$crawler, $yesterday)
+        $client->browse(function(Browser $browser) use (&$crawler)
         {
             
             $product_infos = \App\Product::all()->where('id', 15);
             
+            $first = date( 'Y-m-01', strtotime( '-1 day' ) );
+            $end = date( 'Y-m-d', strtotime( '-1 day' ) );
             
             foreach ($product_infos as $product_info) {
                 // /var_dump($product_info->asp);
                 /*
                 クロール：ログイン＝＞パートナー分析より検索
                 */
-                echo $yesterday;
-                $crawler = $browser->visit($product_info->asp->login_url)->type($product_info->asp->login_key, $product_info->login_value)->type($product_info->asp->password_key, $product_info->password_value)->click($product_info->asp->login_selector)->visit("https://www.felmat.net/advertiser/report/daily")->type('#search > div > div:nth-child(2) > div.col-sm-4.form-inline > div > input:nth-child(3)', $yesterday)
-                //->select('#sel_promotion_id', 1050 )
-                    ->click('#sel_promotion_id_chosen')->click('#sel_promotion_id_chosen > div > ul > li:nth-child(2)')->click('#view > div > button.btn.btn-primary.btn-sm')->crawler();
+                $crawler = $browser
+                    ->visit($product_info->asp->login_url)
+                    ->type($product_info->asp->login_key, $product_info->login_value)
+                    ->type($product_info->asp->password_key, $product_info->password_value)
+                    ->click($product_info->asp->login_selector)
+                    ->visit("https://www.felmat.net/advertiser/report/daily")
+                    //->type('#search > div > div:nth-child(2) > div.col-sm-4.form-inline > div > input:nth-child(3)', $yesterday)
+                    ->type('#search > div > div:nth-child(2) > div.col-sm-4.form-inline > div > input:nth-child(1)', $first)
+                    ->type('#search > div > div:nth-child(2) > div.col-sm-4.form-inline > div > input:nth-child(3)', $end)
+                    ->click('#sel_promotion_id_chosen')
+                    ->click('#sel_promotion_id_chosen > div > ul > li:nth-child(2)')
+                    ->click('#view > div > button.btn.btn-primary.btn-sm')->crawler();
                 //echo $crawler->html();
                 /*
                 クロール：
                 */
                 
                 $crawler2 = $browser->visit("https://www.felmat.net/advertiser/report/partnersite") //->crawler();
-                    ->type('#search > div > div:nth-child(2) > div.col-sm-4.form-inline > div > input:nth-child(3)', $yesterday)
-                //->select('#sel_promotion_id', 1050 )
+                    //->type('#search > div > div:nth-child(2) > div.col-sm-4.form-inline > div > input:nth-child(3)', $yesterday)
+                    ->type('#search > div > div:nth-child(2) > div.col-sm-4.form-inline > div > input:nth-child(1)', $first)
+                    ->type('#search > div > div:nth-child(2) > div.col-sm-4.form-inline > div > input:nth-child(3)', $end)
                     ->click('#sel_promotion_id_chosen')->click('#sel_promotion_id_chosen > div > ul > li:nth-child(2)')->click('#view > div > button.btn.btn-primary.btn-sm')->crawler();
                 //echo $crawler2->html();
                 /*

@@ -49,7 +49,7 @@ class CrossPartnerController extends DailyCrawlerController
         $options = [
         '--window-size=1920,1080',
         '--start-maximized',
-        //'--headless',
+        '--headless',
         '--disable-gpu',
         '--no-sandbox'
         
@@ -68,27 +68,20 @@ class CrossPartnerController extends DailyCrawlerController
             $product_infos = \App\Product::all()->where( 'id', $product_id );
 	        var_dump($product_infos);
 
-            //クロール実行が1日のとき
-            if ( date( 'Y/m/d' ) == date( 'Y/m/01' ) ) {
-                $s_Y = date( 'Y', strtotime( '-1 day' ) );
-                $s_M = date( 'n', strtotime( '-1 day' ) );
-            } //date( 'Y/m/d' ) == date( 'Y/m/01' )
-            else {
-                $s_Y = date( 'Y' );
-                $s_M = date( 'n' );
-            }
+            $ym = date( 'Ym', strtotime( '-1 day' ) );
+
             foreach ( $product_infos as $product_info ) {
                 
                 $crawler_1 = $browser
                 ->visit( $product_info->asp->login_url )
-                ->keys( '#AgentLoginid', 'imai@surprizz.co.jp' )
-                ->keys( '#AgentPasswd', '938kefs7' )
+                ->keys( $product_info->asp->login_key, $product_info->login_value )
+                ->keys( $product_info->asp->password_key, $product_info->password_value )
                 ->click( $product_info->asp->login_selector )
                 ->visit( $product_info->asp->lp1_url )
-                ->visit('http://crosspartners.net/agent/clients/su/2554')
+                ->visit('http://crosspartners.net/agent/clients/su/'.$product_info->asp_sponsor_id)
                 //->visit('http://crosspartners.net/master/result_reports/ajax_paging/is_monthly:1/start:201907/end:201907/user_site_id:/ad_id:252?_=1563862637371')
                 ->visit('http://crosspartners.net/master/result_reports/index/is_daily:1')
-                ->visit('http://crosspartners.net/master/result_reports/ajax_paging/page:1/is_daily:1/start:201907/end:201907/ad_id:252/sort:start/direction:asc?_=1563862637371')
+                ->visit('http://crosspartners.net/master/result_reports/ajax_paging/page:1/is_daily:1/start:'.$ym.'/end:'.$ym.'/ad_id:'.$product_info->asp_product_id.'/sort:start/direction:asc?_=1563862637371')
                 ->crawler();
 
                 echo $crawler_1->html();
@@ -178,7 +171,7 @@ class CrossPartnerController extends DailyCrawlerController
                 $iPlus       = 1;
                 //for( $i = 1 ; $page >= $i ; $i++ ){
 
-                $crawler_for_site = $browser->visit('http://crosspartners.net/master/result_reports/ajax_paging/is_partners:1/start:201907/end:201907/user_site_id:/ad_id:252?_=1563862637371')->crawler();
+                $crawler_for_site = $browser->visit('http://crosspartners.net/master/result_reports/ajax_paging/is_partners:1/start:'.$ym.'/end:'.$ym.'/user_site_id:/ad_id:'.$product_info->asp_product_id.'?_=1563862637371')->crawler();
                 
 
                 while ( trim( preg_replace( '/[\n\r\t ]+/', ' ', str_replace( "\xc2\xa0", " ", $crawler_for_site->filter( 'table.highlight > tbody > tr:nth-child('.$iPlus.') > td:nth-child(1)' )->count() ) ) ) ) {

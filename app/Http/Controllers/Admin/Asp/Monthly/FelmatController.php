@@ -47,7 +47,7 @@ class FelmatController extends MonthlyCrawlerController
         $options = [
         '--window-size=1920,1080',
         '--start-maximized',
-        //'--headless',
+        '--headless',
         '--disable-gpu',
         '--no-sandbox'
         
@@ -95,6 +95,7 @@ class FelmatController extends MonthlyCrawlerController
                         ->type('#search > div > div:nth-child(2) > div.col-sm-4.form-inline > div > input:nth-child(3)', $end)
                         ->click('#sel_promotion_id_chosen')
                         ->click('#sel_promotion_id_chosen > div > ul > li:nth-child(2)')
+                        //->select('adv_id', '1050' )
                         ->click('#view > div > button.btn.btn-primary.btn-sm')->crawler();
 
 
