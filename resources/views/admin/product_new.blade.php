@@ -84,7 +84,7 @@
                             <label for="loginid" class="col-md-4 col-form-label text-md-right">ログインID<font style="color:red">*</font></label>
 
                             <div class="col-md-6">
-                                <input id="loginid" type="text" class="form-control{{ $errors->has('loginid') ? ' is-invalid' : '' }}" name="loginid" >
+                                <input id="loginid" type="text" class="form-control{{ $errors->has('loginid') ? ' is-invalid' : '' }}" name="loginid" value="" >
 
                                 @if ($errors->has('loginid'))
                                     <span class="invalid-feedback" role="alert">
@@ -98,29 +98,24 @@
                             <label for="password" class="col-md-4 col-form-label text-md-right">パスワード<font style="color:red">*</font></label>
 
                             <div class="col-md-6">
-                                <input id="password" type="password" class="form-control" name="password" >
+                                <input id="password" type="password" class="form-control" name="password" value="" >
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="asp_sponsor_id" class="col-md-4 col-form-label text-md-right">ASP:広告主ID@if($products[0]['sponsor_id_require_flag'] == 1 )
-                            <font style="color:red">*</font>
-                            @endif</label>
+                            <label for="asp_sponsor_id" class="col-md-4 col-form-label text-md-right">ASP:広告主ID
+                        </label>
 
                             <div class="col-md-6">
-                                <input id="asp_sponsor_id" type="text" class="form-control" name="asp_sponsor_id" @if($products[0]['sponsor_id_require_flag'] == 1 )
-                            required 
-                            @endif>
+                                <input id="asp_sponsor_id" type="text" class="form-control" name="asp_sponsor_id" >
+
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="asp_product_id" class="col-md-4 col-form-label text-md-right">ASP:案件ID@if($products[0]['sponsor_id_require_flag'] == 1 )
-                            <font style="color:red">*</font>
-                            @endif</label>
+                            <label for="asp_product_id" class="col-md-4 col-form-label text-md-right" >ASP:案件ID
+                        </label>
 
                             <div class="col-md-6">
-                                <input id="asp_product_id" type="text" class="form-control" name="asp_product_id" @if($products[0]['sponsor_id_require_flag'] == 1 )
-                            required 
-                            @endif>
+                                <input id="asp_product_id" type="text" class="form-control" name="asp_product_id" >
                             </div>
                         </div>
                         <div class="form-group row mb-0">
