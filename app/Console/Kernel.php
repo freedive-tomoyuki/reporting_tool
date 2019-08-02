@@ -29,9 +29,9 @@ class Kernel extends ConsoleKernel
         //          ->hourly();
         $schedule->call('App\Http\Controllers\Admin\DailyCrawlerController@dailytimer')->dailyAt('20:27');
 
-        $schedule->call('App\Http\Controllers\Admin\MonthlyCrawlerController@monthlytimer')->dailyAt('20:20');
+        $schedule->call('App\Http\Controllers\Admin\MonthlyCrawlerController@monthlytimer')->dailyAt('20:35');
 
-        $schedule->call('App\Http\Controllers\Admin\MonthlyCrawlerController@calc_approval_rate_site')->dailyAt('20:40');
+        $schedule->call('App\Http\Controllers\Admin\MonthlyCrawlerController@calc_approval_rate_site')->dailyAt('20:42');
     }
 
     /**
