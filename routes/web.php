@@ -136,7 +136,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth:admin'], function() {
     
     Route::get('pdf/media/{id?}/{month?}','Admin\ExportController@pdf_media' );
     
-   
+    //Route::get('api/getRequiredFlag/{id}', 'Api\getAspController@getRequiredFlag');
 });
 Route::group(['middleware' => 'auth:user'], function() {
 
@@ -157,7 +157,12 @@ Route::group(['middleware' => 'auth:user'], function() {
     Route::post( 'monthly_result_site','MonthlyController@monthly_result_site_search');
 
 });
-
+Route::get('api/getRequiredFlag/{id}',function($id){
+    
+    $RequiredFlag = DB::table('asps')->select('sponsor_id_require_flag','product_id_require_flag')->where('id', $id)->get();
+    return $RequiredFlag;
+            //return ['sponsor_id_require_falg' => request('title'),'product_id_require_falg' => request('content')];
+});
 //CSV出力
 Route::get('csv/{id}/{s_date?}/{e_date?}','DailyController@downloadCSV');
 Route::get('csv_site/{id}/{s_date?}/{e_date?}','DailyController@downloadSiteCSV');
@@ -188,7 +193,7 @@ Route::get('product_delete/{product_base_id}/{asp_id}','ProductController@delete
 
 */
 //テスト用
-Route::get('felmat','Asp\Daily\FelmatController@felmat');
+/*Route::get('felmat','Asp\Daily\FelmatController@felmat');
 Route::get('affitown/{id}','Asp\Daily\AffiTownController@affitown');
 Route::get('trafficgate/{id}','Asp\Daily\TrafficGateController@trafficgate');
 Route::get('scan/{id}','Asp\Daily\SCANController@scan');
@@ -198,12 +203,11 @@ Route::get('affitownMonthly/{id}','Asp\Monthly\AffiTownController@affitown');
 Route::get('trafficgateMonthly/{id}','Asp\Monthly\TrafficGateController@trafficgate');
 Route::get('scanMonthly/{id}','Asp\Monthly\SCANController@scan');
 
-//テスト用
 Route::get('/afb', 'DailydataController@afb');
 Route::get('/at', 'DailydataController@at');
 Route::get('/vc', 'DailydataController@vc');
 Route::get('/test','ScrapingController@index');
-
+*/
 Route::get('test1','DailyCrawlerController@dailytimer');
 Route::get('test2','MonthlyCrawlerController@monthlytimer');
 Route::get('check','CheckController@check');

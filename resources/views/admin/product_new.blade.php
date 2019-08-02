@@ -10,7 +10,7 @@
         <h2 class="card-header">案件登録</h2>
     </div>
 </div>
-<div class="container">
+<div class="container" id="app">
     <div class="row justify-content-center">
         <div class="col-md-12">
             <div class="card">
@@ -61,7 +61,7 @@
                             <label for="email" class="col-md-4 col-form-label text-md-right">ASP<font style="color:red">*</font></label>
 
                             <div class="col-md-6">
-                                <select class="form-control" name="asp_id" >
+                                <select class="form-control" name="asp_id" v-model="selected" v-on:change="switchAsp">
                                   <option value=""> -- </option>
                                             @foreach($asps as $asp)
                                               <option value="{{ $asp -> id }}"
@@ -79,7 +79,6 @@
                                 @endif
                             </div>
                         </div>
-
                         <div class="form-group row">
                             <label for="loginid" class="col-md-4 col-form-label text-md-right">ログインID<font style="color:red">*</font></label>
 
@@ -95,7 +94,7 @@
                         </div>
 
                         <div class="form-group row">
-                            <label for="password" class="col-md-4 col-form-label text-md-right">パスワード<font style="color:red">*</font></label>
+                            <label for="password" class="col-md-4 col-form-label text-md-right">パスワード</label>
 
                             <div class="col-md-6">
                                 <input id="password" type="password" class="form-control" name="password" value="" >
@@ -103,19 +102,23 @@
                         </div>
                         <div class="form-group row">
                             <label for="asp_sponsor_id" class="col-md-4 col-form-label text-md-right">ASP:広告主ID
+                                <component_sponsor v-if="show"></component_sponsor>
                         </label>
 
                             <div class="col-md-6">
-                                <input id="asp_sponsor_id" type="text" class="form-control" name="asp_sponsor_id" >
+                                <input id="asp_sponsor_id" type="text" class="form-control" name="asp_sponsor_id" v-if="any">
+                                <input id="asp_sponsor_id" type="text" class="form-control" name="asp_sponsor_id" v-if="required" required>
 
                             </div>
                         </div>
                         <div class="form-group row">
                             <label for="asp_product_id" class="col-md-4 col-form-label text-md-right" >ASP:案件ID
+                                <component_product v-if="show1"></component_product>
                         </label>
 
                             <div class="col-md-6">
-                                <input id="asp_product_id" type="text" class="form-control" name="asp_product_id" >
+                                <input id="asp_product_id" type="text" class="form-control" name="asp_product_id" v-if="any">
+                                <input id="asp_product_id" type="text" class="form-control" name="asp_product_id" v-if="required" required>
                             </div>
                         </div>
                         <div class="form-group row mb-0">

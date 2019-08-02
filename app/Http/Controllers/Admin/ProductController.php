@@ -165,5 +165,16 @@ class ProductController extends Controller
         
         return view('admin.product_edit',compact('product_bases','asps','products','user'));
     }
-
+    /*
+     必須項目取得
+    */
+/*    public function getRequiredFlag($id)
+    {
+        if (Request::ajax())
+        {
+            $RequiredFlag = Asp::Select('sponsor_id_require_flag','product_id_require_flag')->where('id', '=', $id)->get();
+            return Response::json( $RequiredFlag );
+        } 
+    }
+*/
 }
