@@ -47,7 +47,7 @@ class RentracksController extends DailyCrawlerController
         /*
         案件の大本IDからASP別のプロダクトIDを取得
         */
-        $product_id = $this->BasetoProduct( 5, 3 );
+        $product_id = $this->BasetoProduct( 5, $product_base_id );
         
         /*
         Chromeドライバーのインスタンス呼び出し

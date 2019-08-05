@@ -146,7 +146,7 @@
         new Vue({
             el: '#app',
             data: {
-                selected: {{ $products[0]['asp_id'] }},
+                selected: '',
                 show: false,
                 show1: false,
                 any: true,
