@@ -135,7 +135,7 @@
                 <div class="form-group col-md-12 col-sm-12 col-xs-12 col-lg-12">
                    <button type="submit" class="btn btn-success col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1 col-xs-10 col-xs-offset-1"><i class='fas fa-file-download'></i>
                     <?php
-                      $s_date = (old("searchdate_start"))? old("searchdate_start"): date("Y-m-d",strtotime('-1 day'));
+                      $s_date = (old("searchdate_start"))? old("searchdate_start"): date('Y-m-01',strtotime('-1 day'));
                       $e_date = (old("searchdate_end"))? old("searchdate_end"):date("Y-m-d",strtotime('-1 day'));
                       if( old('product')){
                           $product_base = old('product') ;
@@ -144,7 +144,7 @@
                       }
                       
                     ?>
-                    <a href='admin/csv_site/{{ $product_base }}/{{ urlencode($s_date) }}/{{  urlencode($e_date) }}' class='d-block'>
+                    <a href='/admin/csv_site/{{ $product_base }}/{{ urlencode($s_date) }}/{{  urlencode($e_date) }}' class='d-block'>
                       CSV
                     </a>
                   </button>

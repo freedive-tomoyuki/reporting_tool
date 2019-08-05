@@ -125,8 +125,17 @@
                   </div>
                   <div class="form-group col-md-12 col-sm-12 col-xs-12 col-lg-12">
 <!--                   <button type="submit" class="btn btn-primary col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1 col-xs-10 col-xs-offset-1"><i class='fas fa-search'></i> 検索</button>
- -->                <button class="btn btn-success col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1 col-xs-10 col-xs-offset-1"><i class='fas fa-file-download'></i>
-                    <a href='/admin/csv_site/{{ $products[0]->id }}/{{ $products[0]->date }}' class='d-block'>
+                  
+ -->
+                  <?php
+                      if( old('product')){
+                          $product_base = old('product') ;
+                      }else{
+                          $product_base =  3 ;
+                      }
+                  ?>                
+                  <button class="btn btn-success col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1 col-xs-10 col-xs-offset-1"><i class='fas fa-file-download'></i>
+                    <a href='/admin/csv_monthly_site/{{ $product_base }}/{{ $products[0]->date }}' class='d-block'>
                       ＣＳＶ
                     </a>
                   </button>
