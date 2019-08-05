@@ -81,7 +81,7 @@
 					<li
 					@if(strpos( Request::path() , "yearly_result" ) !== false )
 						class="active"
-					@endif><a class="" href="">
+					@endif><a class="" href="/admin/yearly_result">
 						<span class="fas fa-angle-right">&nbsp;</span> 年間
 					</a></li>
 					<li 
@@ -164,62 +164,7 @@
 	<script src="/js/custom.js"></script>
 	<script src="/js/addons/datatables.min.js"></script>
 
-    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.13/dist/vue.min.js"></script>
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <script>
-		var ComponentA = {
-		    template: "<font style='color:red'>*</font>",
-		}
-		var ComponentB = {
-		    template: "<font style='color:red'>*</font>",
-		}
-        new Vue({
-			el: '#app',
-			data: {
-	            selected: '',
-	            show: false,
-	            show1: false,
-	            any: true,
-	            required: false,
-	        },
-	        components: {
-		      'component_sponsor': ComponentA,
-		      'component_product': ComponentB,
-		    },
-			methods: {
-	    		switchAsp:function() {
-	                var id = this.selected ;
-				    //console.log(id);
-	    			axios.get('/api/getRequiredFlag/' + id).then((res)=>{
-	    				if(res.data[0]['sponsor_id_require_flag'] == 1 ){
-	    					this.show = true;
-	    					this.any = false;
-	    					this.required = true;
-	    				}else{
-	    					this.show = false;
-	    					this.any = true;
-	    					this.required = false;
-	    				}
-	    				if(res.data[0]['product_id_require_flag'] == 1 ){
-	    					this.show1 = true;
-	    					this.any = false;
-	    					this.required = true;
-	    				}else{
-	    					this.show1 = false;
-	    					this.any = true;
-	    					this.required = false;
-	    				}
-                })
-                    .catch(error => { 
-                    	console.log(error)
-                    })
-                    .then(response => { 
-						console.log(response)
-					})
-	    		}
-	    	}
-        })
-    </script>
+
 	<script>
 		/*window.onload = function () {
 			var chart1 = document.getElementById("line-chart").getContext("2d");

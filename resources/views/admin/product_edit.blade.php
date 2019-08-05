@@ -121,8 +121,8 @@
 
                             <div class="col-md-6">
                                 
-                                <input id="asp_product_id" type="text" class="form-control" name="asp_product_id" v-if="any" value="{{ $products[0]['asp_product_id'] }}">
-                                <input id="asp_product_id" type="text" class="form-control" name="asp_product_id" v-if="required" value="{{ $products[0]['asp_product_id'] }}" required>
+                                <input id="asp_product_id" type="text" class="form-control" name="asp_product_id" v-if="any1" value="{{ $products[0]['asp_product_id'] }}">
+                                <input id="asp_product_id" type="text" class="form-control" name="asp_product_id" v-if="required1" value="{{ $products[0]['asp_product_id'] }}" required>
                             </div>
                         </div>
                         <input type="hidden" name="id" value="{{ $products[0]['id'] }}">
@@ -139,4 +139,95 @@
         </div>
     </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.5.13/dist/vue.min.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+        var ComponentA = {
+            template: "<font style='color:red'>*</font>",
+        }
+        var ComponentB = {
+            template: "<font style='color:red'>*</font>",
+        }
+        new Vue({
+            el: '#app',
+            data: {
+                selected: {{ $products[0]['asp_id'] }},
+                show: false,
+                show1: false,
+                any: true,
+                required: false,
+                any1: true,
+                required1: false,
+            },
+            components: {
+              'component_sponsor': ComponentA,
+              'component_product': ComponentB,
+            },
+            methods: {
+                switchAsp : function() {
+                    var id = this.selected ;
+                    //console.log(id);
+                    axios.get('/api/getRequiredFlag/' + id).then((res)=>{
+                        if(res.data[0]['sponsor_id_require_flag'] == 1 ){
+                            this.show = true;
+                            this.any = false;
+                            this.required = true;
+                        }else{
+                            this.show = false;
+                            this.any = true;
+                            this.required = false;
+                        }
+                        if(res.data[0]['product_id_require_flag'] == 1 ){
+                            this.show1 = true;
+                            this.any1 = false;
+                            this.required1 = true;
+                        }else{
+                            this.show1 = false;
+                            this.any1 = true;
+                            this.required1 = false;
+                        }
+                    })
+                    .catch(error => { 
+                        console.log(error)
+                    })
+                    .then(response => { 
+                        console.log(response)
+                    })
+                },
+                window:onload = function() {  
+                    console.log({{ $products[0]['asp_id'] }});
+                    var id = {{ $products[0]['asp_id'] }};
+                    
+                    axios.get('/api/getRequiredFlag/' + id).then((res)=>{
+                        
+                        if(res.data[0]['sponsor_id_require_flag'] == 1 ){
+                            this.show = true;
+                            this.any = false;
+                            this.required = true;
+                        }else{
+                            this.show = false;
+                            this.any = true;
+                            this.required = false;
+                        }
+                        if(res.data[0]['product_id_require_flag'] == 1 ){
+                            this.show1 = true;
+                            this.any1 = false;
+                            this.required1 = true;
+                        }else{
+                            this.show1 = false;
+                            this.any1 = true;
+                            this.required1 = false;
+                        }
+                        console.log(this);
+                    })
+                    .catch(error => { 
+                        console.log(error)
+                    })
+                    .then(response => { 
+                        console.log(response)
+                    })
+                }
+            }
+        })
+    </script>
 @endsection
