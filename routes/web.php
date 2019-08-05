@@ -208,8 +208,8 @@ Route::get('/at', 'DailydataController@at');
 Route::get('/vc', 'DailydataController@vc');
 Route::get('/test','ScrapingController@index');
 */
-Route::get('test1','DailyCrawlerController@dailytimer');
-Route::get('test2','MonthlyCrawlerController@monthlytimer');
+Route::get('test1','Admin\DailyCrawlerController@dailytimer');
+Route::get('test2','Admin\MonthlyCrawlerController@monthlytimer');
 Route::get('check','CheckController@check');
 Route::get('diff/{id?}','DailyCrawlerController@diff');
 Route::get('diff_site','DailyCrawlerController@diff_site');
