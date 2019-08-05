@@ -193,39 +193,6 @@
                     .then(response => { 
                         console.log(response)
                     })
-                },
-                window:onload = function() {  
-                    console.log({{ $products[0]['asp_id'] }});
-                    var id = {{ $products[0]['asp_id'] }};
-                    
-                    axios.get('/api/getRequiredFlag/' + id).then((res)=>{
-                        
-                        if(res.data[0]['sponsor_id_require_flag'] == 1 ){
-                            this.show = true;
-                            this.any = false;
-                            this.required = true;
-                        }else{
-                            this.show = false;
-                            this.any = true;
-                            this.required = false;
-                        }
-                        if(res.data[0]['product_id_require_flag'] == 1 ){
-                            this.show1 = true;
-                            this.any1 = false;
-                            this.required1 = true;
-                        }else{
-                            this.show1 = false;
-                            this.any1 = true;
-                            this.required1 = false;
-                        }
-                        console.log(this);
-                    })
-                    .catch(error => { 
-                        console.log(error)
-                    })
-                    .then(response => { 
-                        console.log(response)
-                    })
                 }
             }
         })
