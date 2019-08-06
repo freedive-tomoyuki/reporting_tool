@@ -133,7 +133,7 @@
     </script>
 </head>
 <body onload="init()">
-  <header>年間レポート</header>
+  <h2 class="text-center">年間レポート</h2>
         <h3>年間総合</h3> 
                 <table class="table table-striped table-bordered" width="100%">
                         <thead>
