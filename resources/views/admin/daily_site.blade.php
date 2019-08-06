@@ -179,7 +179,7 @@
                           <th class="th-sm">No</th>
                           <th class="th-sm">ASP</th>
                           <th class="th-sm">Date</th>
-                          <th class="th-sm">Media ID</th>
+                          <th class="th-sm" style="max-width: 50px;" >Media ID</th>
                           <th class="th-sm">サイト名</th>
                           <th class="th-sm">Imp</th>
                           <th class="th-sm">CTR</th>

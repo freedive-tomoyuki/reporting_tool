@@ -321,6 +321,6 @@ class CsvExportController extends Controller
                     $csvData = json_decode(json_encode($csvData), true);
                     //var_dump($csvData);
                     //echo gettype($csvHeader);
-                    return CSV::download($csvData, $csvHeader, $product[0]['product_name'].'_'.$month_table.'_daily_site.csv');
+                    return CSV::download($csvData, $csvHeader, $product[0]['product_name'].'_'.$month_table.'_monthly_site.csv');
     }
 }
