@@ -483,22 +483,42 @@ class ExportController extends Controller
         $pdf = PDF::loadView($bladeFile, compact('asps','yearly_cvs','yearly_clicks','yearly_imps','yearly_approvals','yearly_cvrs','yearly_ctrs',
                 'yearly_cvs_asp','yearly_clicks_asp','yearly_imps_asp','yearly_ctrs_asp','yearly_cvrs_asp','yearly_chart'));
 
+        $header = '
+        <!DOCTYPE html>
+        <html lang="ja">
+          <head>
+            <meta charset="UTF-8">
+            <style type="text/css">
+              body { margin: 0;}
+            </style>
+          </head>
+          <body>
+            ヘッダーテキスト
+          </body>
+        </html>';
+        
         $pdf->setOption('enable-javascript', true);
         $pdf->setOption('javascript-delay', 5000);
         $pdf->setOption('enable-smart-shrinking', true);
         $pdf->setOption('no-stop-slow-scripts', true);
         $pdf->setOption('encoding', 'utf-8');
-        $pdf->setOption('margin-top', 10);
-        $pdf->setOption('margin-bottom', 10);
-        $pdf->setOption('margin-left', 10);
-        $pdf->setOption('margin-right', 10);
-        $pdf->setOption('header-center', $product[0]['product_name'].' '.$header);
-        //$pdf->setOption('header-right', $today);
-        $pdf->setOption('header-font-size', 14);
-        $pdf->setOption('footer-center', '[page]');
-        $pdf->setOption('header-font-name', 'IPAexMincho');
+
+        //$pdf->setOption('header-font-name', 'IPAexMincho');
         $pdf->setOption('footer-font-name', 'IPAexMincho'); 
+        //$pdf->setOption('margin-top', 10);
+        //$pdf->setOption('margin-bottom', 10);
+        //$pdf->setOption('margin-left', 10);
+        //$pdf->setOption('margin-right', 10);
+        //$pdf->setOption('header-center', $product[0]['product_name'].' '.$header);
+        $pdf->setOption('header-html', $header);
+        
+        //$pdf->setOption('header-right', $today);
+        //$pdf->setOption('header-font-size', 14);
+        $pdf->setOption('footer-center', '[page]');
+
         $pdf->setOption('orientation', 'Landscape');
+
+        //return view('pdf.media',compact('products','site_ranking'));
         return $pdf->inline();
         //return $pdf->download('sample.pdf'); 
 
