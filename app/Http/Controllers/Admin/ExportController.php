@@ -488,7 +488,7 @@ class ExportController extends Controller
         $pdf->setOption('enable-smart-shrinking', true);
         $pdf->setOption('no-stop-slow-scripts', true);
         $pdf->setOption('encoding', 'utf-8');
-        $pdf->setOption('header-center', $product[0]['product_name'].' '.$header);
+        $pdf->setOption('header-center', htmlentities($product[0]['product_name']).' '.$header);
         $pdf->setOption('header-right', $today);
         $pdf->setOption('header-font-size', 14);
         $pdf->setOption('footer-center', '[page] ページ');
@@ -594,8 +594,8 @@ class ExportController extends Controller
         $pdf->setOption('header-right', $today);
         $pdf->setOption('header-font-size', 14);
         $pdf->setOption('footer-center', '[page] ページ');
-        $pdf->setOption('header-font-name', 'IPAex明朝,IPAexMincho');
-        $pdf->setOption('footer-font-name', 'IPAex明朝,IPAexMincho'); 
+        $pdf->setOption('header-font-name', 'IPAexMincho');
+        $pdf->setOption('footer-font-name', 'IPAexMincho'); 
         return $pdf->inline();
 
     }
