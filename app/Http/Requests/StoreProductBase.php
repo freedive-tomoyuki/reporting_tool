@@ -24,12 +24,14 @@ class StoreProductBase extends FormRequest
     {
         return [
             'name' => 'required|string',
+            'schedule' => 'required',
         ];
     }
     public function attributes()
     {
         return [
             'name' => '案件名',
+            'schedule' => 'タイマー設定',
         ]; 
     }
     /**

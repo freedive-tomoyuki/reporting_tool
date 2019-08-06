@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use DB;
 use App\Product;
 use App\Asp;
+use App\Schedule;
 use App\ProductBase;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -93,13 +94,20 @@ class ProductController extends Controller
     public function edit_product_base($id) {
         $product_bases = ProductBase::where('id',$id)->get()->toArray();
         $user = Auth::user();
-        return view('admin.product_base_edit',compact('product_bases','user'));
+        $schedule = Schedule::where('product_base_id',$id)->get()->toArray();
+        //var_dump($schedule);
+        return view('admin.product_base_edit',compact('product_bases','user','schedule'));
     }
     //各親案件の編集実装
-    public function update_product_base($id,StoreProduct $request) {
+    public function update_product_base($id,StoreProductBase $request) {
         ProductBase::where('id',$id)
         ->update([
             'product_name' => $request->name,
+        ]);
+        echo $id;
+        Schedule::where('id',$id)
+        ->update([
+            'killed_flag' => $request->schedule,
         ]);
         return redirect('/admin/product_list');
     }
@@ -108,6 +116,7 @@ class ProductController extends Controller
         $product_bases = ProductBase::all();
         $asps = Asp::all();
         $user = Auth::user();
+        
 
         if($id != ''){
             $products = Product::join('asps','products.asp_id','=','asps.id')
@@ -118,6 +127,7 @@ class ProductController extends Controller
                 ->where('product_base_id',$request->product_base_id)
                 ->get()
                 ->toArray();
+
         }
         
         return view('admin.product_edit',compact('product_bases','asps','products','user'));

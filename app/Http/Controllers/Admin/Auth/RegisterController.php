@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin\Auth;
 
 use App\User;
 use Auth;
+use App\Schedule;
 use App\ProductBase;
 use Illuminate\Http\Request;
 use Illuminate\Auth\Events\Registered;
@@ -100,6 +101,10 @@ class RegisterController extends Controller
 
         $data = ProductBase::create([
             'product_name' => $name,
+        ]);
+        Schedule::create([
+            'killed_flag' => 0,
+            'product_base_id' => $data->id,
         ]);
         
         return User::create([

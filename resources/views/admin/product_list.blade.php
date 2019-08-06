@@ -33,7 +33,7 @@
 
 									</div>
 									<div class="col-xs-2 col-md-2">
-										<a href="/admin/product_base/edit/{{ $product->id }}" target="_blank">
+										<a href="/admin/product_base/edit/{{ $product->id }}">
 											<button type="button" class="btn btn-md btn-info">設定</button>
 										</a>
 									</div>
