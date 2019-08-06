@@ -225,18 +225,59 @@ class ExportController extends Controller
         //$daily_ranking = $this->daily_ranking_asp($id,date("Y-m-1",strtotime('-1 day')),date("Y-m-d",strtotime('-1 day')));
         $daily_ranking = $this->daily_ranking_asp($id,$startdate,$enddate);
 
+        $header_html = '
+        <!DOCTYPE html>
+        <html lang="ja">
+          <head>
+            <meta charset="UTF-8">
+            <style type="text/css">
+              body { 
+                padding: 10px;
+                font-size: 20px;
+                font-family: "ＭＳ ゴシック",sans-serif;
+                text-align: center;
+              }
+            </style>
+          </head>
+          <body>
+            '.$product[0]['product_name'].' '.$header.' ('.$today.')</body>
+        </html>';
+        
+        $footer_html = '<!DOCTYPE html>
+                <html>
+                  <head>
+                  <style type="text/css">
+                    body { text-align: center; font-size: 15px; font-family: "ＭＳ ゴシック",sans-serif; }
+                  </style>
+                  </head>
+                  <body>
+                         Page <span id="page"></span> of 
+                        <span id="topage"></span>   
+                        <script> 
+                          var vars={};
+                          var x=window.location.search.substring(1).split("&");
+
+                          for (var i in x) {
+                            var z=x[i].split("=",2);
+                            vars[z[0]] = unescape(z[1]);
+                          }
+                          document.getElementById("page").innerHTML = vars.page; 
+                          document.getElementById("topage").innerHTML = vars.topage;
+
+                        </script> 
+                  </body>
+                </html>';
+
         $pdf = PDF::loadView('pdf.pdf', compact('products','product_bases','total','total_chart','daily_ranking','monthlyDatas','monthlyDataTotals','monthlyDataEstimates','monthlyDataEstimateTotals','monthlyCharts'));
         $pdf->setOption('enable-javascript', true);
         $pdf->setOption('javascript-delay', 5000);
         $pdf->setOption('enable-smart-shrinking', true);
         $pdf->setOption('no-stop-slow-scripts', true);
         $pdf->setOption('encoding', 'utf-8');
-        $pdf->setOption('header-center', $product[0]['product_name'].' '.$header);
-        $pdf->setOption('header-right', $today);
-        $pdf->setOption('header-font-size', 14);
-        $pdf->setOption('footer-center', '[page] ページ');
-        $pdf->setOption('header-font-name', 'IPAex明朝,IPAexMincho');
-        $pdf->setOption('footer-font-name', 'IPAex明朝,IPAexMincho'); 
+
+        $pdf->setOption('header-html', $header_html);
+        $pdf->setOption('footer-html', $footer_html);
+        
         $pdf->setOption('orientation', 'Landscape');
         
         //return view('pdf.pdf', compact('products','product_bases','total','total_chart','daily_ranking'));
@@ -483,38 +524,58 @@ class ExportController extends Controller
         $pdf = PDF::loadView($bladeFile, compact('asps','yearly_cvs','yearly_clicks','yearly_imps','yearly_approvals','yearly_cvrs','yearly_ctrs',
                 'yearly_cvs_asp','yearly_clicks_asp','yearly_imps_asp','yearly_ctrs_asp','yearly_cvrs_asp','yearly_chart'));
 
-        $header = '
+        $header_html = '
         <!DOCTYPE html>
         <html lang="ja">
           <head>
             <meta charset="UTF-8">
             <style type="text/css">
-              body { margin: 0;}
+              body { 
+                padding: 10px;
+                font-size: 20px;
+                font-family: "ＭＳ ゴシック",sans-serif;
+                text-align: center;
+              }
             </style>
           </head>
           <body>
-            ヘッダーテキスト
-          </body>
+            '.$product[0]['product_name'].' '.$header.' ('.$today.')</body>
         </html>';
         
+        $footer_html = '<!DOCTYPE html>
+                <html>
+                  <head>
+                  <style type="text/css">
+                    body { text-align: center; font-size: 15px; font-family: "ＭＳ ゴシック",sans-serif; }
+                  </style>
+                  </head>
+                  <body>
+                         Page <span id="page"></span> of 
+                        <span id="topage"></span>   
+                        <script> 
+                          var vars={};
+                          var x=window.location.search.substring(1).split("&");
+
+                          for (var i in x) {
+                            var z=x[i].split("=",2);
+                            vars[z[0]] = unescape(z[1]);
+                          }
+                          document.getElementById("page").innerHTML = vars.page; 
+                          document.getElementById("topage").innerHTML = vars.topage;
+
+                        </script> 
+                  </body>
+                </html>';
+
+
         $pdf->setOption('enable-javascript', true);
         $pdf->setOption('javascript-delay', 5000);
         $pdf->setOption('enable-smart-shrinking', true);
         $pdf->setOption('no-stop-slow-scripts', true);
         $pdf->setOption('encoding', 'utf-8');
 
-        //$pdf->setOption('header-font-name', 'IPAexMincho');
-        $pdf->setOption('footer-font-name', 'IPAexMincho'); 
-        //$pdf->setOption('margin-top', 10);
-        //$pdf->setOption('margin-bottom', 10);
-        //$pdf->setOption('margin-left', 10);
-        //$pdf->setOption('margin-right', 10);
-        //$pdf->setOption('header-center', $product[0]['product_name'].' '.$header);
-        $pdf->setOption('header-html', $header);
-        
-        //$pdf->setOption('header-right', $today);
-        //$pdf->setOption('header-font-size', 14);
-        $pdf->setOption('footer-center', '[page]');
+        $pdf->setOption('header-html', $header_html);
+        $pdf->setOption('footer-html', $footer_html);
 
         $pdf->setOption('orientation', 'Landscape');
 
@@ -606,7 +667,48 @@ class ExportController extends Controller
         $site_ranking = $this->monthly_ranking_site($id,$searchdate);
         //var_dump($site_ranking);
         //return view('pdf.media',compact('products','site_ranking'));
+        $header_html = '
+        <!DOCTYPE html>
+        <html lang="ja">
+          <head>
+            <meta charset="UTF-8">
+            <style type="text/css">
+              body { 
+                padding: 10px;
+                font-size: 20px;
+                font-family: "ＭＳ ゴシック",sans-serif;
+                text-align: center;
+              }
+            </style>
+          </head>
+          <body>
+            '.$product[0]['product_name'].' '.$header.' ('.$today.')</body>
+        </html>';
+        
+        $footer_html = '<!DOCTYPE html>
+                <html>
+                  <head>
+                  <style type="text/css">
+                    body { text-align: center; font-size: 15px; font-family: "ＭＳ ゴシック",sans-serif; }
+                  </style>
+                  </head>
+                  <body>
+                         Page <span id="page"></span> of 
+                        <span id="topage"></span>   
+                        <script> 
+                          var vars={};
+                          var x=window.location.search.substring(1).split("&");
 
+                          for (var i in x) {
+                            var z=x[i].split("=",2);
+                            vars[z[0]] = unescape(z[1]);
+                          }
+                          document.getElementById("page").innerHTML = vars.page; 
+                          document.getElementById("topage").innerHTML = vars.topage;
+
+                        </script> 
+                  </body>
+                </html>';
         $pdf = PDF::loadView('pdf.media',compact('products','site_ranking'));
         $pdf->setOption('enable-javascript', true);
         $pdf->setOption('javascript-delay', 5000);
@@ -614,12 +716,8 @@ class ExportController extends Controller
         $pdf->setOption('no-stop-slow-scripts', true);
         $pdf->setOption('encoding', 'utf-8');
         $pdf->setOption('orientation', 'Landscape');
-        $pdf->setOption('header-center', $product[0]['product_name'].' '.$header);
-        $pdf->setOption('header-right', $today);
-        $pdf->setOption('header-font-size', 14);
-        $pdf->setOption('footer-center', '[page] ページ');
-        $pdf->setOption('header-font-name', 'IPAexMincho');
-        $pdf->setOption('footer-font-name', 'IPAexMincho'); 
+        $pdf->setOption('header-html', $header_html);
+        $pdf->setOption('footer-html', $footer_html);
         return $pdf->inline();
 
     }
