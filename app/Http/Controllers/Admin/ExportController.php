@@ -492,7 +492,7 @@ class ExportController extends Controller
         $pdf->setOption('margin-bottom', 10);
         $pdf->setOption('margin-left', 10);
         $pdf->setOption('margin-right', 10);
-        $pdf->setOption('header-center', htmlentities($product[0]['product_name']).' '.$header);
+        $pdf->setOption('header-center', $product[0]['product_name'].' '.$header);
         //$pdf->setOption('header-right', $today);
         $pdf->setOption('header-font-size', 14);
         $pdf->setOption('footer-center', '[page]');
