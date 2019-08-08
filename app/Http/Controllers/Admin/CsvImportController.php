@@ -348,9 +348,7 @@ class CsvImportController extends Controller
 			//月次データ
 			foreach($month_array as $a ){
 				//Monthlydata::insert($array_1);
-				echo "<pre>";
-				var_dump($a);
-				echo "</pre>";
+
 				foreach( $a as $d ){
 				//CVR
 					$d['cvr'] = ($d['click'] == 0 || $d['cv'] == 0 )? 0 : ($d['cv'] / $d['click']) * 100 ;
@@ -366,9 +364,6 @@ class CsvImportController extends Controller
 				        ['product_id' => $d['product_id'] , 'date' => $d['date'],'asp_id' => $d['asp_id'] ],
 				        ['imp' => $d['imp'],'click' => $d['click'],'cv' => $d['cv'],'active' => $d['active'],'partnership' => $d['cost'],'cost' => $d['cost'],'price' => $d['price'],'approval_price' => $d['approval_price'],'approval' => $d['approval'],'cvr' => $d['cvr'],'ctr' => $d['ctr'],'cpa' => $d['cpa'], 'created_at' =>  \Carbon\Carbon::now(),'updated_at' => \Carbon\Carbon::now()]
 				    );
-					echo "<pre>";
-					var_dump($date);
-					echo "</pre>";
 			    }
 			}
 
@@ -443,7 +438,7 @@ class CsvImportController extends Controller
 	        
 	    }
 
-        //return redirect('admin/csv/import', 303);
+        return redirect('admin/csv/import', 303);
 	    
 
 	}
