@@ -56,7 +56,15 @@ class CsvImportController extends Controller
 		        //"approval.required" => "承認件数の指定は必須項目です。",
 		        //"approval_price.required" => "承認金額の指定は必須項目です。",
 		        "integer" => "整数で入力してください。",
-		        "numeric" => "数値で入力してください。",
+		        "imp.numeric" => "インプレッション数の指定は数値で入力してください。",
+		        "click.numeric" => "クリック数の指定は数値で入力してください。",
+		        "cv.numeric" => "CV数は数値で入力してください。",
+		        "active.numeric" => "アクティブ数の指定は数値で入力してください。",
+		        "partnership.numeric" => "提携数の指定は数値で入力してください。",
+		        "asp_id.numeric" => "ASPIDの指定は数値で入力してください。",
+		        "product_id.numeric" => "案件IDの指定は数値で入力してください。",
+		        "price.numeric" => "発生金額の指定は数値で入力してください。",
+
 		        "date" => "日付の形式で記載してください。"
 		];
 
@@ -336,9 +344,13 @@ class CsvImportController extends Controller
 					$month_array[$date_key][$product_key]['date'] = $end_of_date;
 					
 			}
+
 			//月次データ
 			foreach($month_array as $a ){
 				//Monthlydata::insert($array_1);
+				echo "<pre>";
+				var_dump($a);
+				echo "</pre>";
 				foreach( $a as $d ){
 				//CVR
 					$d['cvr'] = ($d['click'] == 0 || $d['cv'] == 0 )? 0 : ($d['cv'] / $d['click']) * 100 ;
@@ -349,11 +361,14 @@ class CsvImportController extends Controller
 				//CPA
 					$d['cpa'] = ($d['price'] == 0 || $d['cv'] == 0 )? 0 : $d['price'] / $d['cv'] ;
 
-					DB::table('monthlydatas')
+					$date = DB::table('monthlydatas')
 				    ->updateOrInsert(
 				        ['product_id' => $d['product_id'] , 'date' => $d['date'],'asp_id' => $d['asp_id'] ],
-				        ['imp' => $d['imp'],'click' => $d['click'],'cv' => $d['cv'],'active' => $d['active'],'partnership' => $d['cost'],'cost' => $d['cost'],'price' => $d['price'],'approval' => $d['approval_price'],'approval' => $d['approval_price'],'cvr' => $d['cvr'],'ctr' => $d['ctr'],'cpa' => $d['cpa'], 'created_at' =>  \Carbon\Carbon::now(),'updated_at' => \Carbon\Carbon::now()]
+				        ['imp' => $d['imp'],'click' => $d['click'],'cv' => $d['cv'],'active' => $d['active'],'partnership' => $d['cost'],'cost' => $d['cost'],'price' => $d['price'],'approval_price' => $d['approval_price'],'approval' => $d['approval'],'cvr' => $d['cvr'],'ctr' => $d['ctr'],'cpa' => $d['cpa'], 'created_at' =>  \Carbon\Carbon::now(),'updated_at' => \Carbon\Carbon::now()]
 				    );
+					echo "<pre>";
+					var_dump($date);
+					echo "</pre>";
 			    }
 			}
 
@@ -428,7 +443,7 @@ class CsvImportController extends Controller
 	        
 	    }
 
-        return redirect('admin/csv/import', 303);
+        //return redirect('admin/csv/import', 303);
 	    
 
 	}
