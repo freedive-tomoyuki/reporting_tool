@@ -85,6 +85,9 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth:admin'], function() {
     Route::get('product/add','Admin\ProductController@add');
     Route::post('product/add','Admin\ProductController@create_product');
 
+    //登録前のアイパスチェック
+    Route::post('product/check','Admin\CheckerController@check');
+
     //広告主一覧・登録
     Route::get('product_base/add','Admin\ProductController@add_product_base');
     Route::post('product_base/add','Admin\ProductController@create_product_base');
@@ -136,6 +139,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth:admin'], function() {
     
     Route::get('pdf/media/{id?}/{month?}','Admin\ExportController@pdf_media' );
     
+
     //Route::get('api/getRequiredFlag/{id}', 'Api\getAspController@getRequiredFlag');
 });
 Route::group(['middleware' => 'auth:user'], function() {

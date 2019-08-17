@@ -1,6 +1,9 @@
 @extends('layouts.appnew')
 
 @section('content')
+
+
+
 <div class="row">
     <ol class="breadcrumb">
       <li><a href="/admin/product_list">広告主管理</a></li>
@@ -10,13 +13,14 @@
         <h2 class="card-header">案件登録</h2>
     </div>
 </div>
-<div class="container" id="app">
+<div class="container" >
     <div class="row justify-content-center">
         <div class="col-md-12">
             <div class="card">
                 
 
                 <div class="card-body">
+                    
                     <form method="POST" action="/admin/product/add" aria-label="{{ __('Register') }}">
                         @csrf
 
@@ -61,7 +65,7 @@
                             <label for="email" class="col-md-4 col-form-label text-md-right">ASP<font style="color:red">*</font></label>
 
                             <div class="col-md-6">
-                                <select class="form-control" name="asp_id" v-model="selected" v-on:change="switchAsp">
+                                <select class="form-control" name="asp_id" v-model="selected" v-on:change="switchAsp" >
                                   <option value=""> -- </option>
                                             @foreach($asps as $asp)
                                               <option value="{{ $asp -> id }}"
@@ -80,10 +84,10 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="loginid" class="col-md-4 col-form-label text-md-right">ログインID<font style="color:red">*</font></label>
+                            <label for="loginid" class="col-md-4 col-form-label text-md-right" >ログインID<font style="color:red">*</font></label>
 
                             <div class="col-md-6">
-                                <input id="loginid" type="text" class="form-control{{ $errors->has('loginid') ? ' is-invalid' : '' }}" name="loginid" value="" >
+                                <input id="loginid" type="text" class="form-control{{ $errors->has('loginid') ? ' is-invalid' : '' }}" name="loginid" value=""  v-model="login">
 
                                 @if ($errors->has('loginid'))
                                     <span class="invalid-feedback" role="alert">
@@ -94,10 +98,10 @@
                         </div>
 
                         <div class="form-group row">
-                            <label for="password" class="col-md-4 col-form-label text-md-right">パスワード</label>
+                            <label for="password" class="col-md-4 col-form-label text-md-right" >パスワード<font style="color:red">*</font></label>
 
                             <div class="col-md-6">
-                                <input id="password" type="password" class="form-control" name="password" value="" >
+                                <input id="password" type="password" class="form-control" name="password" value=""  v-model="password">
                             </div>
                         </div>
                         <div class="form-group row">
@@ -106,8 +110,8 @@
                         </label>
 
                             <div class="col-md-6">
-                                <input id="asp_sponsor_id" type="text" class="form-control" name="asp_sponsor_id" v-if="any">
-                                <input id="asp_sponsor_id" type="text" class="form-control" name="asp_sponsor_id" v-if="required" required>
+                                <input id="asp_sponsor_id" type="text" class="form-control" name="asp_sponsor_id" v-model="sponsor" v-if="any" >
+                                <input id="asp_sponsor_id" type="text" class="form-control" name="asp_sponsor_id" v-model="sponsor" v-if="required" required>
 
                             </div>
                         </div>
@@ -117,18 +121,26 @@
                         </label>
 
                             <div class="col-md-6">
-                                <input id="asp_product_id" type="text" class="form-control" name="asp_product_id" v-if="any">
-                                <input id="asp_product_id" type="text" class="form-control" name="asp_product_id" v-if="required" required>
+                                <input id="asp_product_id" type="text" class="form-control" name="asp_product_id" v-model="product" v-if="any">
+                                <input id="asp_product_id" type="text" class="form-control" name="asp_product_id" v-model="product" v-if="required" required>
                             </div>
                         </div>
                         <div class="form-group row mb-0">
-                            <div class="col-md-6 offset-md-4">
-                                <button type="submit" class="btn btn-primary">
+                            <div class="col-md-2 offset-md-4">
+                                <button type="submit" class="btn btn-primary" v-if="after">
                                     {{ __('Register') }}
                                 </button>
+                                <button type="button" id="checkStart" class="btn btn-success" v-if="before" v-on:click="checkStart">
+                                    {{ __('Check') }}
+                                </button>
+                                <div class="pull-right"><item-component v-show="loading"></item-component></div>
+                                
                             </div>
                         </div>
+
                     </form>
+
+
                 </div>
             </div>
         </div>
@@ -143,6 +155,9 @@
         var ComponentB = {
             template: "<font style='color:red'>*</font>",
         }
+        var ItemComponent = {
+            template: "<div class='loader'>Loading...</div>",
+        }
         new Vue({
             el: '#app',
             data: {
@@ -153,10 +168,19 @@
                 required: false,
                 any1: true,
                 required1: false,
+                before: true,
+                after: false,
+                login:'',
+                password:'',
+                product:'',
+                sponsor:'',
+                loading: false,
+                
             },
             components: {
               'component_sponsor': ComponentA,
               'component_product': ComponentB,
+              'item-component': ItemComponent
             },
             methods: {
                 switchAsp : function() {
@@ -188,6 +212,33 @@
                     .then(response => { 
                         console.log(response)
                     })
+                },
+                checkStart:function(){
+                    //this.login = 
+                    console.log(this);
+                    this.loading = true;
+                    axios.post('/admin/product/check',
+                    {
+                        login:this.login,
+                        password:this.password,
+                        asp_id:this.selected,
+                        sponsor:this.sponsor,
+                        product:this.product,
+                    }
+                    ).then((res)=>{
+                        console.log(res.data);
+                        this.loading = false;
+                        if(res.data == 1){
+                            this.before = false;
+                            this.after = true;
+                        }else{
+                            this.before = true;
+                            this.after = false;
+                        }
+                    }).catch(error => { 
+                        this.loading = false;
+                    })
+
                 }
             }
         })
