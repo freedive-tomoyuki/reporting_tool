@@ -254,7 +254,16 @@ class DailyCrawlerController extends Controller
       return json_encode($target_asp);
     }
 
+    private function refreshQueue():void
+    {
+        \Artisan::call('queue:flush');
+        \Artisan::call('queue:work --timeout=0');
+        \DB::table('jobs')->truncate();
+    }
+
     public function run(Request $request){
+
+          $this->refreshQueue();
 
           DailySearchJob::dispatch($request->product);
 /*
