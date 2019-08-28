@@ -32,7 +32,7 @@ class MonthlyController extends Controller
     /**
         月次の基本データ表示（デフォルト）
     */
-    public function monthly_result() {
+    public function monthlyResult() {
         $user = Auth::user();
 
         $products = Monthlydata::select(['name', 'imp', 'click','cv', 'cvr', 'ctr', 'active', 'partnership','monthlydatas.created_at','products.product','products.id','price','cpa','cost','approval','approval_price','approval_rate','last_cv'])
@@ -123,7 +123,7 @@ class MonthlyController extends Controller
     /**
         月次の基本データ表示（検索後）
     */
-	public function monthly_result_search(SearchMonthlyRequest $request) {
+	public function monthlyResultSearch(SearchMonthlyRequest $request) {
 
         $user = Auth::user();
 		$id = ($request->product != null)? $request->product : 3 ;
@@ -267,7 +267,7 @@ class MonthlyController extends Controller
     *
     */
 
-    public function monthly_result_site() {
+    public function monthlyResultSite() {
 
         $user = Auth::user();
         
@@ -293,7 +293,7 @@ class MonthlyController extends Controller
         /**
         * 日次のグラフ用データの一覧を取得する。
         */
-        $site_ranking = $this->monthly_ranking_site(3,date("Y-m-d", strtotime('-1 day')));
+        $site_ranking = $this->monthlyRankingSite(3,date("Y-m-d", strtotime('-1 day')));
 
         /**
         * VIEWを表示する。
@@ -312,7 +312,7 @@ class MonthlyController extends Controller
     *
     */
 
-    public function monthly_result_site_search(SearchMonthlySiteRequest $request) {
+    public function monthlyResultSiteSearch(SearchMonthlySiteRequest $request) {
         $user = Auth::user();
         $id = ($request->product != null)? $request->product : 3 ;
         $month =($request->month != null)? $request->month : date("Y-m-d", strtotime('-1 day'));
@@ -368,7 +368,7 @@ class MonthlyController extends Controller
         /**
         * 日次のグラフ用データの一覧を取得する。
         */
-        $site_ranking = $this->monthly_ranking_site($id,$searchdate,$asp_id);
+        $site_ranking = $this->monthlyRankingSite($id,$searchdate,$asp_id);
         /**
         * VIEWを表示する。
         */
@@ -383,7 +383,7 @@ class MonthlyController extends Controller
     /**
 　    月別ランキング一覧取得
     */
-    public function monthly_ranking_site($id ,$searchdate = null,$asp_id=null) {
+    public function monthlyRankingSite($id ,$searchdate = null,$asp_id=null) {
 
                 /*
                     案件ｘ対象期間からCVがTOP10のサイトを抽出

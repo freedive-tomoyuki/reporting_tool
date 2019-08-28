@@ -1,248 +1,71 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Jobs;
 
-use Illuminate\Http\Request;
-use Laravel\Dusk\Browser;
-use Symfony\Component\DomCrawler\Crawler;
-use Revolution\Salvager\Client;
-use Revolution\Salvager\Drivers\Chrome;
-use Illuminate\Support\Facades\Auth; 
-use App\Http\Controllers\Controller;
+use Illuminate\Bus\Queueable;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Support\Facades\Log;
 
 
-use App\Http\Controllers\Admin\Asp;
-//use App\Dailydata;
+use DB;
 use App\Product;
-//use App\Dailysite;
-use App\ProductBase;
 use App\Monthlydata;
-use App\Monthlysite;
-use App\Schedule;
 use App\DailyDiff;
 use App\DailySiteDiff;
-use DB;
-use App\Jobs\DailySearchJob;
 
-//header('Content-Type: text/html; charset=utf-8');
-
-class DailyCrawlerController extends Controller
+class DailySearchJob implements ShouldQueue
 {
-    //protected $calculationservice;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public function __construct()
-    {
-        //$this->middleware('guest');
-        $this->middleware('auth:admin');
-    }
-    public function index()
-    {
-        $user = Auth::user();
-        $product_bases = ProductBase::all();
-        //var_dump($product_bases);
-        return view('admin.crawlerdaily',compact('product_bases','user'));
-    }
-    public function show_test()
-    {
-      $datas = \App\Product::all()->where('id','6');
-      //var_dump($datas->asp) ;
-      foreach($datas as $data)
-      {
+    public $tries = 10;
 
-          //データにnullの値があるためif文入れる（本来はいらない）
-          //if(!empty($data->asp->cv)) 
-              //部署名取得
-              echo $data->asp->login_url;
-              //echo $data->asp->imp." ".$data->asp->click."<br>";
-      }
-    }
-    public function save_daily($data){
-        $data_array = json_decode(json_encode(json_decode($data)), True );
-/*
-        echo gettype($data_array);
-        var_dump($data_array);
-        
-        var_dump($data_array[0]['cv']);
-        var_dump($data_array[0]['click']);
-        var_dump($data_array[0]['imp']);
-*/
-        $cv = (intval($data_array[0]['cv']) != "" ) ? intval($data_array[0]['cv']) : 0 ; 
-        $click = (intval($data_array[0]['click']) != "" ) ? intval($data_array[0]['click']) : 0 ;
-        $imp = (intval($data_array[0]['imp']) != "" ) ? intval($data_array[0]['imp']) : 0 ;
-
-        $crv = ($cv == 0 || $click == 0 )? 0 : ( $cv / $click ) * 100  ;
-        $ctv = ($click == 0 || $imp == 0 )? 0 : ( $click / $imp ) * 100  ;
-        $ratio = (date("d")/date("t"));
-        $estimate_cv = ceil(($cv)/ $ratio);
-        echo '|1:'.$cv;
-        echo '|2:'.$ratio;
-        echo '|3:'.$estimate_cv;
-        /*Dailydata::create(
-            [
-            'imp' => $imp,
-            'click' => $click,
-            'cv' => $cv,
-            'estimate_cv' => $estimate_cv,
-            'cvr' => round($crv,2),
-            'ctr' => round($ctv,2),
-            'active' => $data_array[0]['active'],
-            'partnership' => $data_array[0]['partnership'],
-            'asp_id' => $data_array[0]['asp'],
-            'product_id' => $data_array[0]['product'],
-            'price' => $data_array[0]['price'],
-            'cost' => $data_array[0]['cost'],
-            'cpa' => $data_array[0]['cpa'],
-            'date' => $data_array[0]['date']
-            ]
-        );*/
-        Monthlydata::create(
-            [
-            'imp' => $imp,
-            'click' => $click,
-            'cv' => $cv,
-            'estimate_cv' => $estimate_cv,
-            'cvr' => round($crv,2),
-            'ctr' => round($ctv,2),
-            'active' => $data_array[0]['active'],
-            'partnership' => $data_array[0]['partnership'],
-            'asp_id' => $data_array[0]['asp'],
-            'product_id' => $data_array[0]['product'],
-            'price' => $data_array[0]['price'],
-            'cost' => $data_array[0]['cost'],
-            'cpa' => $data_array[0]['cpa'],
-            'date' => $data_array[0]['date']
-            ]
-        );
-
-
-    }
+    private $product;
     /**
-    　CPA算出用の関数
-    */
-    public function cpa($cv ,$price ,$asp){
-      $calData = array();
-      /*
-        A8の場合の算出
-      */
-      if( $asp == 1 ){
-        //$asp_fee = ($price * 1.2 * 1.08) * 1.08 ;
-        //$asp_fee = ($price*1.08)+($price*1.08*0.3);//FDグロス
-        $total = (($price * 1.08)+($price * 1.08 * 0.3) * 1.08 * 1.2);
-        //$total = $asp_fee * 1.08 * 1.2;
-      }
-      /*
-        それ以外のASPの場合の算出
-      */
-      else{
-        //$asp_fee = ($price * 1.3 * 1.08) ;
-        $asp_fee = $price ;//グロス
-        $total = $asp_fee * 1.3;//FDグロス
-      }
-
-      $calData['cpa'] = round(($total == 0 || $cv == 0 )? 0 : $total / $cv);
-      $calData['cost'] = $total;
-
-      return json_encode($calData);
-
+     * Create a new job instance.
+     *
+     * @return void
+     */
+    public function __construct($product)
+    {
+        //
+        $this->product = $product;
     }
 
-    public function save_site($data){
-        $month = date('m');
-        $date = date('d');
+    /**
+     * Execute the job.
+     *
+     * @return void
+     */
+    public function handle()
+    {
+        //
+        logger()->info("It's work! | ".$this->product);
         
-        $data_array = json_decode(json_encode(json_decode($data)), True );
+        $aspRow = array();
+        $asp_array = array();
 
-        //echo gettype($data_array);
+        $asp_name = $this->filterAsp($this->product);
+        
+        echo $this->product;
 
-        //var_dump($data_array);
+        $asp_array = (json_decode($asp_name,true));
+        
+        var_dump($asp_array);
 
-        //for($i=0 ; $i <= count($data_array[0]) ; $i++){
-        foreach($data_array as $data ){
-
-
-            $cv = (intval($data['cv']) != "" ) ? intval($data['cv']) : 0 ; 
-            $click = (intval($data['click']) != "" ) ? intval($data['click']) : 0 ;
-            $imp = (intval($data['imp']) != "" ) ? intval($data['imp']) : 0 ;
-
-            $cvr = ($cv == 0 || $click ==0 )? 0 : ( $cv / $click ) * 100 ;
-            $ctr = ($click == 0|| $imp ==0 )? 0 : ( $click / $imp ) * 100 ;
-            $ratio = (date("d")/date("t"));
-            $estimate_cv = ceil(($cv)/ $ratio);
-
-            /*Dailysite::create(
-                [
-                  'media_id' => $data['media_id'],
-                  'site_name' => $data['site_name'],
-                  'imp' => $imp,
-                  'click' => $click,
-                  'cv' => $cv,
-                  'estimate_cv' => $estimate_cv,
-                  'cvr' => round($cvr, 2),
-                  'ctr' => round($ctr, 2),
-                  'product_id' => $data['product'],
-                  'price' => $data['price'],
-                  'cost' => $data['cost'],
-                  'cpa' => $data['cpa'],
-                  'date' => $data['date']
-                  
-                ]
-            );*/
-            Monthlysite::create(
-                [
-                  'media_id' => $data['media_id'],
-                  'site_name' => $data['site_name'],
-                  'imp' => $imp,
-                  'click' => $click,
-                  'cv' => $cv,
-                  'estimate_cv' => $estimate_cv,
-                  'cvr' => round($cvr, 2),
-                  'ctr' => round($ctr, 2),
-                  'product_id' => $data['product'],
-                  'price' => $data['price'],
-                  'cost' => $data['cost'],
-                  'cpa' => $data['cpa'],
-                  'date' => $data['date']
-                ]
-            );
+        foreach ($asp_array as $name){
+            $functionName = str_replace(' ', '' ,mb_strtolower($name["name"]));
+            $className = 'App\Http\Controllers\Admin\Asp\Daily'. '\\'.str_replace(' ', '' ,$name["name"]).'Controller';
+            $run = new $className();
+            $run->{$functionName}($this->product);
         }
 
+        //差分からデイリーの件数を取得
+        $this->diff($this->product);
+        $this->diff_site($this->product);
     }
-    /*
-    public function cpa($cv ,$price ,$asp){
-      $calData = array();
-    */
-      /*
-        A8の場合の算出
-      */
-    /*  if( $asp == 1 ){
-        //$asp_fee = ($price * 1.2 * 1.08) * 1.08 ;
-        $asp_fee = ($price*1.08)+($price*1.08*0.3);//FDグロス
-        $total = $asp_fee * 1.08 * 1.2;
-      }
-    */
-      /*
-        それ以外のASPの場合の算出
-      */
-    /*  else{
-        //$asp_fee = ($price * 1.3 * 1.08) ;
-        $asp_fee = $price ;//グロス
-        $total = $asp_fee * 1.3;//FDグロス
-      }
-
-        $calData['cpa'] = round(($total == 0 || $cv == 0 )? 0 : $total / $cv);
-        $calData['cost'] = $total;
-        
-      return json_encode($calData);
-    }*/
-    public function BasetoProduct($asp_id, $product_base_id){
-        $converter = Product::select();
-        $converter->where('product_base_id', $product_base_id);
-        $converter->where('asp_id', $asp_id );
-        $converter = $converter->get()->toArray();
-              //var_dump($a8_product[0]["id"]);
-        return $converter[0]["id"];
-    } 
-
 
     public function filterAsp( $product_id ){
       $target_asp = Product::select('asp_id','name')
@@ -253,58 +76,6 @@ class DailyCrawlerController extends Controller
 
       return json_encode($target_asp);
     }
-
-    public function run(Request $request){
-
-          DailySearchJob::dispatch($request->product);
-/*
-          $aspRow = array();
-          $asp_array = array();
-
-          $asp_name = $this->filterAsp($request->product);
-          //var_dump($asp_name);
-          $asp_array = (json_decode($asp_name,true));
-          //var_dump($asp_array);
-          //echo gettype($asp_id);
-          //$i = 0;
-
-          foreach ($asp_array as $name){
-
-            //array_push($aspRow,str_replace(' ', '' ,mb_strtolower($name["name"])));
-            $functionName = str_replace(' ', '' ,mb_strtolower($name["name"]));
-            echo $className = 'App\Http\Controllers\Admin\Asp\Daily'. '\\'.str_replace(' ', '' ,$name["name"]).'Controller';
-            $run = new $className();
-            //echo __NAMESPACE__;
-            $run->{$functionName}($request->product);
-
-          }*/
-          //var_dump($aspRow);
-
-          //foreach($aspRow as $function_name){
-            //$this->{$function_name}($request->product);
-            //var_dump($function_name);
-          //}
-
-          /**
-            差分からデイリーの件数を取得
-          */
-          //$this->diff($request->product);
-          //$this->diff_site($request->product);
-
-          //$this->a8($request->product);
-          //$this->rentracks($request->product);
-          //$controller = new EstimateController;
-          
-
-          //$this->a8($request->product);
-          //$this->rentracks($request->product);
-          //$this->accesstrade($request->product);
-          //$this->valuecommerce($request->product);
-          //$this->afb($request->product);
-          //echo "a";
-          //return view('daily_result');
-          //return redirect()->to('/daily_result', $status = 302, $headers = [], $secure = null);
-    }
     /**
     *  前日分との差分からその日単位の増減数を計算
     *
@@ -312,14 +83,14 @@ class DailyCrawlerController extends Controller
     public function diff($product_base_id){
         $i =0;
 
-        $Array = array();
-        $Array_1 = array();
-        $daily_diff = array();
-        $daily_diff_1 = array();
-        $diff_ = array();
+        $Array          = array();
+        $Array_1        = array();
+        $daily_diff     = array();
+        $daily_diff_1   = array();
+        $diff_          = array();
 
-        $date = date("Y-m-d",strtotime("-1 day")); 
-        $date_1 = date("Y-m-d",strtotime("-2 day")); 
+        $date           = date("Y-m-d",strtotime("-1 day")); 
+        $date_1         = date("Y-m-d",strtotime("-2 day")); 
 
         $products = Product::select()
               ->where('product_base_id', $product_base_id)
@@ -472,16 +243,15 @@ class DailyCrawlerController extends Controller
     public function diff_site($product_base_id = 4){
         $i =0;
 
-        $Array = array();
-        $Array_1 = array();
-        $daily_diff = array();
-        $daily_diff_1 = array();
-        $diff_ = array();
-        $list = array();
-        $date = date("Y-m-d",strtotime("-1 day")); 
-        $date_1 = date("Y-m-d",strtotime("-2 day"));
-
-        $month = date('Ym',strtotime("-1 day"));
+        $Array          = array();
+        $Array_1        = array();
+        $daily_diff     = array();
+        $daily_diff_1   = array();
+        $diff_          = array();
+        $list           = array();
+        $date           = date("Y-m-d",strtotime("-1 day")); 
+        $date_1         = date("Y-m-d",strtotime("-2 day"));
+        $month          = date('Ym',strtotime("-1 day"));
 
         $products = Product::select()
               ->where('product_base_id', $product_base_id)
@@ -635,31 +405,5 @@ class DailyCrawlerController extends Controller
             );
         }
 
-    }
-    public function dailytimer(){
-
-      $products = Schedule::Select('product_base_id')->where('killed_flag',0)->get()->toArray();
-      //var_dump($products);
-
-      foreach($products as $product){
-          $aspRow = array();
-          $asp_array = array();
-          //echo $product["product_base_id"];
-          $asp_name = $this->filterAsp($product["product_base_id"]);
-          //var_dump($asp_name);
-          $asp_array = (json_decode($asp_name,true));
-
-          foreach ($asp_array as $name){
-            $functionName = str_replace(' ', '' ,mb_strtolower($name["name"]));
-            $className = __NAMESPACE__ . '\\' . 'Asp\Daily'. '\\'.str_replace(' ', '' ,$name["name"]).'Controller';
-            $run = new $className();
-            $run->{$functionName}($product["product_base_id"]);
-          }
-          /**
-            差分からデイリーの件数を取得
-          */
-            $this->diff($product["product_base_id"]);
-            $this->diff_site($product["product_base_id"]);
-      }
     }
 }

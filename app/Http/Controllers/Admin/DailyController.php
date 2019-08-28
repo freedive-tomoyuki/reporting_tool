@@ -58,7 +58,7 @@ class DailyController extends Controller
     *@return view
     *
     */
-    public function daily_result() {
+    public function dailyResult() {
         $user = Auth::user();
         /**
         * プロダクト一覧を全て取得
@@ -117,7 +117,7 @@ class DailyController extends Controller
         /**
         * 日次のグラフ用データの一覧を取得する。
         */
-        $daily_ranking = $this->daily_ranking_asp(3,date("Y-m-1",strtotime('-1 day')),date("Y-m-d",strtotime('-1 day')));
+        $daily_ranking = $this->dailyRankingAsp(3,date("Y-m-1",strtotime('-1 day')),date("Y-m-d",strtotime('-1 day')));
         //var_dump($daily_ranking);
         //var_dump($products);
         /**
@@ -136,7 +136,7 @@ class DailyController extends Controller
     *@return view
     *
     */
-    public function daily_result_search(SearchDailyRequest $request) {
+    public function dailyResultSearch(SearchDailyRequest $request) {
         $user = Auth::user();
         $request->flash();
         $data = array();
@@ -225,7 +225,7 @@ class DailyController extends Controller
         /**
         * 日次のグラフ用データの一覧を取得する。
         */
-        $daily_ranking = $this->daily_ranking_asp($id,$searchdate_start,$searchdate_end,$asp_id);
+        $daily_ranking = $this->dailyRankingAsp($id,$searchdate_start,$searchdate_end,$asp_id);
         /**
         * VIEWを表示する。
         */
@@ -245,7 +245,7 @@ class DailyController extends Controller
     *
     */
 
-    public function daily_result_site() {
+    public function dailyResultSite() {
         $user = Auth::user();
         $month = date('Ym',strtotime('-1 day'));
         $daily_site_diffs_table = $month.'_daily_site_diffs';
@@ -273,7 +273,7 @@ class DailyController extends Controller
         /**
         * 日次のグラフ用データの一覧を取得する。
         */
-        $site_ranking = $this->daily_ranking_site(3,date("Y-m-01",strtotime('-1 day')),date("Y-m-d",strtotime('-1 day')));
+        $site_ranking = $this->dailyRankingSite(3,date("Y-m-01",strtotime('-1 day')),date("Y-m-d",strtotime('-1 day')));
         /**
         * VIEWを表示する。
         */
@@ -291,7 +291,7 @@ class DailyController extends Controller
     *
     */
 
-    public function daily_result_site_search(SearchDailySiteRequest $request) {
+    public function dailyResultSiteSearch(SearchDailySiteRequest $request) {
         $user = Auth::user();
         $request->flash();
         $table2 = ''; //初期値
@@ -368,7 +368,7 @@ class DailyController extends Controller
         /**
         * 日次のグラフ用データの一覧を取得する。
         */
-        $site_ranking = $this->daily_ranking_site($id,$searchdate_start,$searchdate_end,$asp_id);
+        $site_ranking = $this->dailyRankingSite($id,$searchdate_start,$searchdate_end,$asp_id);
         /**
         * VIEWを表示する。
         */
@@ -383,7 +383,7 @@ class DailyController extends Controller
     /**
         サイト別トップ１０のサイト一覧取得関数
     */
-    public function daily_ranking_site($id = 3 ,$searchdate_start = null,$searchdate_end = null,$asp_id=null) {
+    public function dailyRankingSite($id = 3 ,$searchdate_start = null,$searchdate_end = null,$asp_id=null) {
                 /*
                     案件ｘ対象期間からCVがTOP10のサイトを抽出
                     「StartとEndが同じ日」もしくは、「どちらも入力されていない」の場合・・・①
@@ -461,7 +461,7 @@ class DailyController extends Controller
     /*
         案件期間内のASPの別CV数の計算関数
     */
-    public function daily_ranking_asp($id = 3,$searchdate_start = null,$searchdate_end = null ,$asp_id=null) {
+    public function dailyRankingAsp($id = 3,$searchdate_start = null,$searchdate_end = null ,$asp_id=null) {
         /*
             案件ｘ対象期間から対象案件のCV件数
         */

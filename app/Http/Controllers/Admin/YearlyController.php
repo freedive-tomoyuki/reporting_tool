@@ -31,7 +31,7 @@ class YearlyController extends Controller
     /**
         月次の基本データ表示（デフォルト）
     */
-    public function yearly_result() {
+    public function yearlyResult() {
         $user = Auth::user();
 
          
@@ -302,7 +302,7 @@ date ,sum(case when monthlydatas.asp_id='3' then cv else 0 end) as 'Value commer
     /**
         月次の基本データ表示（検索後）
     */
-	public function yearly_result_search(SearchYearlyRequest $request) {
+	public function yearlyResultSearch(SearchYearlyRequest $request) {
         $request->flash();
         $user = Auth::user();
 		$id = ($request->product != null)? $request->product : 3 ;

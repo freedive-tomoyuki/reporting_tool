@@ -1,5 +1,7 @@
 <?php
 use App\Http\Components\CSV;
+use App\Jobs\SearchJob;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -53,24 +55,24 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth:admin'], function() {
     Route::post('monthly_report','Admin\MonthlyCrawlerController@run')->name('admin.crawlermonthly');
 
     //デイリーレポート一覧
-    Route::get( 'daily_result','Admin\DailyController@daily_result')->name('admin.daily_result');
-    Route::post( 'daily_result','Admin\DailyController@daily_result_search');
+    Route::get( 'daily_result','Admin\DailyController@dailyResult')->name('admin.daily_result');
+    Route::post( 'daily_result','Admin\DailyController@dailyResultSearch');
 
     //デイリーレポート（サイト別）一覧
-    Route::get( 'daily_result_site','Admin\DailyController@daily_result_site')->name('admin.daily_result_site');
-    Route::post( 'daily_result_site','Admin\DailyController@daily_result_site_search');
+    Route::get( 'daily_result_site','Admin\DailyController@dailyResultSite')->name('admin.daily_result_site');
+    Route::post( 'daily_result_site','Admin\DailyController@dailyResultSiteSearch');
 
     //マンスリーレポート一覧
-    Route::get('monthly_result','Admin\MonthlyController@monthly_result');
-    Route::post('monthly_result','Admin\MonthlyController@monthly_result_search');
+    Route::get('monthly_result','Admin\MonthlyController@monthlyResult');
+    Route::post('monthly_result','Admin\MonthlyController@monthlyResultSearch');
 
     //マンスリーレポート（サイト別）一覧
-    Route::get( 'monthly_result_site','Admin\MonthlyController@monthly_result_site')->name('admin.monthly_result_site');
-    Route::post( 'monthly_result_site','Admin\MonthlyController@monthly_result_site_search');
+    Route::get( 'monthly_result_site','Admin\MonthlyController@monthlyResultSite')->name('admin.monthly_result_site');
+    Route::post( 'monthly_result_site','Admin\MonthlyController@monthlyResultSiteSearch');
 
     //イヤーリーレポート一覧
-    Route::get( 'yearly_result','Admin\YearlyController@yearly_result')->name('admin.yearly_result');
-    Route::post( 'yearly_result','Admin\YearlyController@yearly_result_search');
+    Route::get( 'yearly_result','Admin\YearlyController@yearlyResult')->name('admin.yearly_result');
+    Route::post( 'yearly_result','Admin\YearlyController@yearlyResultSearch');
 
     //ASP一覧・詳細
     Route::get('asp_list','Admin\AspController@list')->name('admin.asp_list');
@@ -101,10 +103,10 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth:admin'], function() {
     Route::get('export','Admin\ExportController@index')->name('admin.csv.export');
     Route::post('export','Admin\ExportController@selected');
     
-    //月次
+    //月次データインポート
     Route::post('csv/month/import','Admin\CsvImportController@store_month');
     Route::post('csv_site/import','Admin\CsvImportController@store_month_site');
-    //日次
+    //日次データインポート
     Route::post('csv/daily/import','Admin\CsvImportController@store_daily');
     Route::post('csv_site/daily/import','Admin\CsvImportController@store_daily_site');
     Route::get('showApproval','Admin\MonthlyCrawlerController@calc_approval_rate');
@@ -139,6 +141,10 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth:admin'], function() {
     
     Route::get('pdf/media/{id?}/{month?}','Admin\ExportController@pdf_media' );
     
+    Route::get('test/{text}', function ($text) {
+    SearchJob::dispatch($text);
+    return 'Queued!';
+});
 
     //Route::get('api/getRequiredFlag/{id}', 'Api\getAspController@getRequiredFlag');
 });
@@ -171,7 +177,9 @@ Route::get('api/getRequiredFlag/{id}',function($id){
 Route::get('csv/{id}/{s_date?}/{e_date?}','DailyController@downloadCSV');
 Route::get('csv_site/{id}/{s_date?}/{e_date?}','DailyController@downloadSiteCSV');
 Route::get('dailycal','EstimateController@dailyCal');
-
+Route::get('dd',function(){
+    dd(app());
+    });
 
 
 /*

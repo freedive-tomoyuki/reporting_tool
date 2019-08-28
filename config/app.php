@@ -172,7 +172,7 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\TelescopeServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
-        App\Providers\CSVServiceProvider::class,
+        //App\Providers\CSVServiceProvider::class,
         Weidner\Goutte\GoutteServiceProvider::class,
         Josh\Component\PhantomJs\PhantomJsServiceProvider::class,
         //\Laravel\Dusk\DuskServiceProvider::class,
