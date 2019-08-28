@@ -256,9 +256,9 @@ class DailyCrawlerController extends Controller
 
     private function refreshQueue():void
     {
-        \Artisan::call('queue:flush');
+        //\Artisan::call('queue:flush');
         \Artisan::call('queue:work --timeout=0');
-        \DB::table('jobs')->truncate();
+        //\DB::table('jobs')->truncate();
     }
 
     public function run(Request $request){
