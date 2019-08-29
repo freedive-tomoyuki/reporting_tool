@@ -269,7 +269,7 @@ class DailyCrawlerController extends Controller
           DailySearchJob::dispatch($request->product)->delay(now()->addSecond(5));
 
           //\Artisan::call('queue:work');
-          \Artisan::call('queue:work' ,[ '--timeout' => 0 ]);
+          \Artisan::call('queue:work');
           //\Artisan::call('queue:work' ,[ '--timeout' => 0 ]);
 /*
           $aspRow = array();
