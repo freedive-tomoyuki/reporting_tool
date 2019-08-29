@@ -49,11 +49,11 @@ class DailySearchJob implements ShouldQueue
 
         $asp_name = $this->filterAsp($this->product);
         
-        echo $this->product;
+        //echo $this->product;
 
         $asp_array = (json_decode($asp_name,true));
         
-        var_dump($asp_array);
+        //var_dump($asp_array);
 
         foreach ($asp_array as $name){
             $functionName = str_replace(' ', '' ,mb_strtolower($name["name"]));
@@ -114,10 +114,10 @@ class DailySearchJob implements ShouldQueue
 
         
         }
-        echo "<pre>";
+        /*echo "<pre>";
         var_dump($daily_diff);
         var_dump($daily_diff_1);
-        echo "</pre>";
+        echo "</pre>";*/
         $e_asp = array();
         $l_asp = array();
         $x = 0;
@@ -161,7 +161,7 @@ class DailySearchJob implements ShouldQueue
               //var_dump($l_asp);
               foreach ( $daily_diff as $diff ) {
                         if( in_array($diff["asp_id"], $l_asp )){
-                          echo $diff["asp_id"];
+                         // echo $diff["asp_id"];
                             $diff_[$i]["imp"] = $diff["imp"];
                             $diff_[$i]["click"] = $diff["click"];
                             $diff_[$i]["cv"] = $diff["cv"];
@@ -210,9 +210,9 @@ class DailySearchJob implements ShouldQueue
             $diff_= $daily_diff;
         }
 
-        echo "<pre>最終データ";
-        var_dump($diff_);
-        echo "</pre>";
+        //echo "<pre>最終データ";
+        //var_dump($diff_);
+        //echo "</pre>";
         //$daily_diff = new DailyDiff();
         foreach ($diff_ as $insert_diff) {
             DailyDiff::create(
@@ -276,12 +276,12 @@ class DailySearchJob implements ShouldQueue
         //$Array = json_decode($Array,true);
         //$Array_1 = json_decode($Array_1,true);
          
-        echo "<pre>";
-        echo "[Array]";
-        var_dump($Array);
-        echo "[Array1]";
-        var_dump($Array_1);
-        echo "</pre>";
+        //echo "<pre>";
+        //echo "[Array]";
+        //var_dump($Array);
+        //echo "[Array1]";
+        //var_dump($Array_1);
+        //echo "</pre>";
 
         foreach ( $Array as $diff){
             foreach ( $diff as $site_a){
@@ -294,25 +294,25 @@ class DailySearchJob implements ShouldQueue
             }
         }
         
-        echo "<pre>";
-        echo "result1";
-        var_dump($daily_diff);
-        echo "result2";
-        var_dump($daily_diff_1);
-        echo "</pre>";
+        //echo "<pre>";
+        //echo "result1";
+        //var_dump($daily_diff);
+        //echo "result2";
+        //var_dump($daily_diff_1);
+        //echo "</pre>";
         $daily_diff = json_decode(json_encode($daily_diff), true);
         $daily_diff_1 = json_decode(json_encode($daily_diff_1), true);
 
         foreach ( $daily_diff_1 as $site){
-              echo $site["media_id"];
-              echo $site["product_id"];
+              //echo $site["media_id"];
+              //echo $site["product_id"];
               
               array_push($list , $site["media_id"]."_".$site["product_id"] );
         }
 
-        echo "<pre>";
-        var_dump($list);
-        echo "</pre>";
+        //echo "<pre>";
+        //var_dump($list);
+        //echo "</pre>";
         /* 前日比でなくなっているASPを考慮 */
         $i = 0;
         //echo date("Y-m-t",strtotime("-1 month"));
@@ -373,17 +373,17 @@ class DailySearchJob implements ShouldQueue
             $diff_= $daily_diff ;
         }
         
-        echo "<pre>";
-        echo "diff_";
-        var_dump($diff_);
-        echo "</pre>";
+        //echo "<pre>";
+        //echo "diff_";
+        //var_dump($diff_);
+        //echo "</pre>";
         //$daily_diff = new DailyDiff();
         foreach ($diff_ as $insert_diff) {
-          echo "<pre>";
+          //echo "<pre>";
           
           $insert_diff = json_decode(json_encode($insert_diff), True );
-          var_dump($insert_diff);
-          echo "</pre>";
+          //var_dump($insert_diff);
+          //echo "</pre>";
           
 
             DailySiteDiff::create(

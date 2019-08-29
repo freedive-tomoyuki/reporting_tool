@@ -41,7 +41,7 @@ class CrossPartnerController extends DailyCrawlerController
     }    
     public function crosspartner( $product_base_id ) //OK
     {
-        echo $product_base_id ;
+        //echo $product_base_id ;
         Browser::macro('crawler', function () {
         return new Crawler($this->driver->getPageSource() ?? '', $this->driver->getCurrentURL() ?? '');
         });
@@ -57,7 +57,7 @@ class CrossPartnerController extends DailyCrawlerController
         
         //案件の大本IDからASP別のプロダクトIDを取得
         $product_id = $this->BasetoProduct( 10, $product_base_id );
-        var_dump($product_id);
+        //var_dump($product_id);
         // Chromeドライバーのインスタンス呼び出し
         $client = new Client( new Chrome( $options ) );
         
@@ -66,7 +66,7 @@ class CrossPartnerController extends DailyCrawlerController
         {
             
             $product_infos = \App\Product::all()->where( 'id', $product_id );
-	        var_dump($product_infos);
+	        //var_dump($product_infos);
 
             $ym = date( 'Ym', strtotime( '-1 day' ) );
 
@@ -84,11 +84,11 @@ class CrossPartnerController extends DailyCrawlerController
                 ->visit('http://crosspartners.net/master/result_reports/ajax_paging/page:1/is_daily:1/start:'.$ym.'/end:'.$ym.'/ad_id:'.$product_info->asp_product_id.'/sort:start/direction:asc?_=1563862637371')
                 ->crawler();
 
-                echo $crawler_1->html();
+                //echo $crawler_1->html();
 
                 //パートナー数
                 $crawler_2 = $browser->visit('http://crosspartners.net/master/joins/index/in_session:0')->visit('http://crosspartners.net/master/joins/ajax_paging?_=1564026842857')->crawler();
-                echo $crawler_2->html();
+                //echo $crawler_2->html();
 
                 //パートナー別レポート
                 //$crawler_3 = $browser->visit('http://crosspartners.net/master/result_reports/ajax_paging/is_partners:1/start:201907/end:201907/user_site_id:/ad_id:252?_=1563862637371')->crawler();
@@ -173,8 +173,8 @@ class CrossPartnerController extends DailyCrawlerController
                 
 
                 while ( trim( preg_replace( '/[\n\r\t ]+/', ' ', str_replace( "\xc2\xa0", " ", $crawler_for_site->filter( 'table.highlight > tbody > tr:nth-child('.$iPlus.') > td:nth-child(1)' )->count() ) ) ) ) {
-                    echo "iPlus".$iPlus ;
-                    echo trim( preg_replace( '/[\n\r\t ]+/', ' ', str_replace( "\xc2\xa0", " ", $crawler_for_site->filter( 'table.highlight > tbody > tr:nth-child('.$iPlus.') > td:nth-child(1)' )->text() ) ) );
+                    //echo "iPlus".$iPlus ;
+                    //echo trim( preg_replace( '/[\n\r\t ]+/', ' ', str_replace( "\xc2\xa0", " ", $crawler_for_site->filter( 'table.highlight > tbody > tr:nth-child('.$iPlus.') > td:nth-child(1)' )->text() ) ) );
 
                                 $crosspartner_site[$count]['product'] = $product_info->id;
 
@@ -197,7 +197,7 @@ class CrossPartnerController extends DailyCrawlerController
                                           return $c->attr('id');
                                         });
                                         preg_match( '/member_id:(\d+)/', $member_id_source[0], $member_id_array );
-                                        echo $crosspartner_site[$count][$key] = $member_id_array[ 1 ];
+                                        $crosspartner_site[$count][$key] = $member_id_array[ 1 ];
                                     }else{
                                         $crosspartner_site[$count][$key] = trim(preg_replace('/[^0-9]/', '', $crawler_for_site->filter($value)->text()));
                                     }
@@ -233,10 +233,10 @@ class CrossPartnerController extends DailyCrawlerController
                 $crosspartner_data1[0]['cpa']= $calData['cpa']; //CPA
                 $crosspartner_data1[0]['cost']= $calData['cost'];
                             //var_dump($media_id_pre);
-                echo "<pre>";
-                var_dump($crosspartner_data1);
-                var_dump($crosspartner_site);
-                echo "</pre>";
+                //echo "<pre>";
+                //var_dump($crosspartner_data1);
+                //var_dump($crosspartner_site);
+                //echo "</pre>";
                 /*
                 サイトデータ・日次データ保存
                 */

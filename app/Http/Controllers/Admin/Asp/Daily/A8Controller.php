@@ -54,12 +54,12 @@ class A8Controller extends DailyCrawlerController
             
             //クロール実行が1日のとき
             if ( date( 'Y/m/d' ) == date( 'Y/m/01' ) ) {
-               echo $s_Y = date( 'Y', strtotime( '-1 day' ) );
-               echo  $s_M = date( 'n', strtotime( '-1 day' ) );
+                $s_Y = date( 'Y', strtotime( '-1 day' ) );
+                $s_M = date( 'n', strtotime( '-1 day' ) );
             } //date( 'Y/m/d' ) == date( 'Y/m/01' )
             else {
-               echo  $s_Y = date( 'Y' );
-               echo  $s_M = date( 'n' );
+                $s_Y = date( 'Y' );
+                $s_M = date( 'n' );
             }
             foreach ( $product_infos as $product_info ) {
                 
@@ -124,10 +124,10 @@ class A8Controller extends DailyCrawlerController
                 
                 $crawler_for_site = $browser->visit('https://adv.a8.net/a8v2/ecAsRankingReportAction.do?reportType=11&insId=' . $product_info->asp_product_id . '&asmstId=&termType=1&d-2037996-p=1&multiSelectFlg=0&year=' . $s_Y . '&month=' . $s_M )->crawler();
                 $count_selector   = '#contents1clm > form:nth-child(6) > span.pagebanner';
-                echo $count_data       = intval( trim( preg_replace( '/[^0-9]/', '', substr( $crawler_for_site->filter( $count_selector )->text(), 0, 7 ) ) ) );
+                $count_data       = intval( trim( preg_replace( '/[^0-9]/', '', substr( $crawler_for_site->filter( $count_selector )->text(), 0, 7 ) ) ) );
                 
                 //echo 'count_data＞'.$count_data;
-                echo $page_count = ceil( $count_data / 500 );
+                $page_count = ceil( $count_data / 500 );
                 //echo 'page_count' . $page_count;
                 
                 for ( $page = 0; $page < $page_count; $page++ ) {

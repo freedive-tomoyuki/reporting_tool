@@ -89,7 +89,7 @@ class AffiTownController extends DailyCrawlerController
                 //echo $crawler->html();
 
                 $crawler2 = $browser->visit( "https://affi.town/adserver/report/mc/impression.af" )->visit( "https://affi.town/adserver/report/mc/impression.af?advertiseId=" . $product_info->asp_product_id . "&mediaId=&fromDate=" . $s_date . "&toDate=" . $e_date )->type( '#all_display > p > input[type=search]', '合計' )->crawler();
-                echo $crawler2->html();
+                //echo $crawler2->html();
                 //https://affi.town/adserver/report/mc/impression.af?advertiseId=4316&mediaId=&since=2019-07-01&until=2019-07-27
                 /*
                 selector 設定
@@ -140,7 +140,7 @@ class AffiTownController extends DailyCrawlerController
                     return $data;
                     
                 } );
-                var_dump( $affitown_data_imp );
+                //var_dump( $affitown_data_imp );
                 /*
                 サイト抽出　
                 */
@@ -206,8 +206,8 @@ class AffiTownController extends DailyCrawlerController
                 $affitown_data[ 0 ][ 'cost' ] = $calData[ 'cost' ];
                 
                 //echo "<pre>";
-                var_dump( $affitown_data );
-                var_dump( $affitown_site );
+                //var_dump( $affitown_data );
+                //var_dump( $affitown_site );
                 //echo "</pre>";
                 
                 

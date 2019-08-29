@@ -84,7 +84,7 @@ class AccesstradeController extends DailyCrawlerController
                         'price' => $product_info->asp->daily_price_selector 
                     );
                 }
-                var_dump( $crawler );
+                //var_dump( $crawler );
                 //$crawler->each(function (Crawler $node) use ( $selector ){
                 
                 $atdata = $crawler->each( function( Crawler $node ) use ($selector, $product_info)
@@ -113,7 +113,7 @@ class AccesstradeController extends DailyCrawlerController
                             $data[ $key ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
                             
                         }
-                        echo $data[ $key ];
+                        //echo $data[ $key ];
                         
                     } //$selector as $key => $value
                     //$data['cpa']= $this->cpa($data['cv'] ,$data['price'] , 2);
@@ -159,7 +159,7 @@ class AccesstradeController extends DailyCrawlerController
                     $x++;
                     
                 } //$array_sites as $site
-                var_dump( $data );
+                //var_dump( $data );
                 
                 $this->save_site( json_encode( $data ) );
                 $this->save_daily( json_encode( $atdata ) );

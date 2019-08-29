@@ -174,7 +174,7 @@ class RentracksController extends DailyCrawlerController
 
                 $crawler_for_site = $browser->visit( "https://manage.rentracks.jp/sponsor/detail_partner" )->select( '#idDropdownlist1', $product_info->asp_product_id )->select( '#idGogoYear', $s_Y )->select( '#idGogoMonth', $s_M )->select( '#idGogoDay', $s_D )->select( '#idDoneYear', $e_Y )->select( '#idDoneMonth', $e_M )->select( '#idDoneDay', $e_D )->select( '#idPageSize', '300' )->click( '#idButton1' )->crawler();
                 
-                var_dump( $crawler_for_site->html() );
+                //var_dump( $crawler_for_site->html() );
                 //アクティブ件数を取得
                 $active_partner = trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( '#main > div.hitbox > em' )->text() ) );
                 //echo $active_partner;

@@ -26,7 +26,7 @@ class AFRoController extends DailyCrawlerController
     
     public function afro( $product_base_id ) //OK
     {
-        echo $product_base_id ;
+        //echo $product_base_id ;
         Browser::macro('crawler', function () {
         return new Crawler($this->driver->getPageSource() ?? '', $this->driver->getCurrentURL() ?? '');
         });
@@ -42,7 +42,7 @@ class AFRoController extends DailyCrawlerController
         
         //案件の大本IDからASP別のプロダクトIDを取得
         $product_id = $this->BasetoProduct( 11, $product_base_id );
-        var_dump($product_id);
+        //var_dump($product_id);
         // Chromeドライバーのインスタンス呼び出し
         $client = new Client( new Chrome( $options ) );
         
@@ -51,7 +51,7 @@ class AFRoController extends DailyCrawlerController
         {
             
             $product_infos = \App\Product::all()->where( 'id', $product_id );
-	        var_dump($product_infos);
+	        //var_dump($product_infos);
 
             //クロール実行が1日のとき
             if ( date( 'Y/m/d' ) == date( 'Y/m/01' ) ) {
@@ -66,7 +66,7 @@ class AFRoController extends DailyCrawlerController
                 
                 $crawler_1 = $browser->visit( $product_info->asp->login_url )->keys( 'input[type=text]', 'imai@surprizz.co.jp' )->keys( 'input[type=password]', 'fromtokyo' )->click( $product_info->asp->login_selector )->visit( $product_info->asp->lp1_url . $product_info->asp_sponsor_id )->crawler();
 
-                echo $crawler_1->html();
+                //echo $crawler_1->html();
 
                 //パートナー数
                 //$crawler_2 = $browser->visit('http://crosspartners.net/master/joins/index/in_session:0')->crawler();

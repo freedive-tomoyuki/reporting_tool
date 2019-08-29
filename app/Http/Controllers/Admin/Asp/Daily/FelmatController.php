@@ -31,12 +31,12 @@ class FelmatController extends DailyCrawlerController
     public function siteCreate($siteName, $seed)
     {
         $siteId = '';
-        echo $siteName;
+        //echo $siteName;
         mt_srand($seed, MT_RAND_MT19937);
         foreach (str_split($siteName) as $char) {
             $char_array[] = ord($char) + mt_rand(0, 255);
         }
-        var_dump($char_array);
+        //var_dump($char_array);
         $siteId = mb_substr(implode($char_array), 0, 100);
         //echo $siteId;
         
@@ -120,7 +120,7 @@ class FelmatController extends DailyCrawlerController
                 */
                 
                 $crawler3 = $browser->visit("https://www.felmat.net/advertiser/publisher/data")->click('#sel_adv_id_chosen')->click('#sel_adv_id_chosen > div > ul > li.active-result.result-selected')->click('#view > div > button.btn.btn-primary.btn-sm')->crawler();
-                echo $crawler3->html();
+                //echo $crawler3->html();
                 
                 /*
                 selector 設定
@@ -175,7 +175,7 @@ class FelmatController extends DailyCrawlerController
                     return $data;
                     
                 });
-                var_dump($felmat_data2);
+                //var_dump($felmat_data2);
                 /*
                 $crawler3　をフィルタリング
                 */
@@ -185,8 +185,8 @@ class FelmatController extends DailyCrawlerController
                     $data = array();
                     
                     foreach ($selector3 as $key => $value) {
-                        echo preg_replace('/[^0-9]/', '', mb_substr($node->filter($value)->text(), 0, 7));
-                        echo mb_substr($node->filter($value)->text(), 0, 7);
+                        preg_replace('/[^0-9]/', '', mb_substr($node->filter($value)->text(), 0, 7));
+                        mb_substr($node->filter($value)->text(), 0, 7);
                         $data[$key] = intval(trim(preg_replace('/[^0-9]/', '', mb_substr($node->filter($value)->text(), 0, 7))));
                         
                     }
@@ -194,7 +194,7 @@ class FelmatController extends DailyCrawlerController
                     return $data;
                     
                 });
-                var_dump($felmat_data3);
+                //var_dump($felmat_data3);
                 /*
                 サイト抽出　
                 */
@@ -206,8 +206,8 @@ class FelmatController extends DailyCrawlerController
                 $count           = 0;
                 
                 for ($i = 1; $page >= $i; $i++) {
-                    echo "ページ数page:" . $page;
-                    echo "ページ数i:" . $i;
+                    //echo "ページ数page:" . $page;
+                    //echo "ページ数i:" . $i;
                     $crawlCountPerOne = ($page == $i) ? $count_last_page : 20;
                     
                     //最後のページ
@@ -228,7 +228,7 @@ class FelmatController extends DailyCrawlerController
                     
                     for ($x = 1; $crawlCountPerOne >= $x; $x++) {
                         $felmat_site[$count]['product'] = $product_info->id;
-                        echo "CountX:" . $x;
+                        //echo "CountX:" . $x;
                         
                         
                         //echo 'iPlus'.$iPlus;
@@ -271,10 +271,10 @@ class FelmatController extends DailyCrawlerController
                 $felmat_data[0]['cpa']  = $calData['cpa']; //CPA
                 $felmat_data[0]['cost'] = $calData['cost'];
                 
-                echo "<pre>";
-                var_dump($felmat_data);
-                var_dump($felmat_site);
-                echo "</pre>";
+                //echo "<pre>";
+                //var_dump($felmat_data);
+                //var_dump($felmat_site);
+                //echo "</pre>";
                 
                 /*
                 サイトデータ・日次データ保存

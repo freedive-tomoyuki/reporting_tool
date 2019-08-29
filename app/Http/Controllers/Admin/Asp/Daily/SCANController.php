@@ -141,8 +141,8 @@ class SCANController extends DailyCrawlerController
                     
                 } );
                 
-                var_dump( $scan_data );
-                var_dump( $scan_data2 );
+                //var_dump( $scan_data );
+                //var_dump( $scan_data2 );
                 //var_dump($scan_data3);
                 /*
                 サイト抽出　
@@ -153,7 +153,7 @@ class SCANController extends DailyCrawlerController
                 $y                = 0;
                 $i                = 3;
                 
-                echo $crawler_for_site->html();
+                //echo $crawler_for_site->html();
                 while ( $crawler_for_site->filter( '#report_clm > div > div.report_table > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(2)' )->count() > 0 ) {
                     $scan_site[ $y ][ 'product' ] = $product_info->id;
                     $scan_site[ $y ][ 'imp' ]     = 0;
@@ -199,10 +199,10 @@ class SCANController extends DailyCrawlerController
                 $scan_data[ 0 ][ 'cpa' ]  = $calData[ 'cpa' ]; //CPA
                 $scan_data[ 0 ][ 'cost' ] = $calData[ 'cost' ];
                 
-                echo "<pre>";
-                var_dump( $scan_data );
-                var_dump( $scan_site );
-                echo "</pre>";
+                //echo "<pre>";
+                //var_dump( $scan_data );
+                //var_dump( $scan_site );
+                //echo "</pre>";
                 
                 
                 /*
