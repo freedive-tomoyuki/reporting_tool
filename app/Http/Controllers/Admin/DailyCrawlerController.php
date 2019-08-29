@@ -268,6 +268,9 @@ class DailyCrawlerController extends Controller
 
           DailySearchJob::dispatch($request->product)->delay(now()->addSecond(5));
 
+          \Artisan::call('queue:work', ['--tries' => 3]);
+
+          \Artisan::call('queue:restart');
           //\Artisan::call('queue:work');
           //\Artisan::call('queue:work');
           //\Artisan::call('queue:work' ,[ '--timeout' => 0 ]);
