@@ -269,7 +269,7 @@ class DailyCrawlerController extends Controller
           DailySearchJob::dispatch($request->product)->delay(now()->addSecond(5));
 
           //\Artisan::call('queue:work');
-          //\Artisan::call('queue:work' ,[ '--timeout' => 0 ,'--once' ]);
+          \Artisan::call('queue:work' ,[ '--option' => '--timeout=0' ]);
           //\Artisan::call('queue:work' ,[ '--timeout' => 0 ]);
 /*
           $aspRow = array();
@@ -317,7 +317,7 @@ class DailyCrawlerController extends Controller
           //$this->afb($request->product);
           //echo "a";
           //return view('daily_result');
-          return redirect()->to('/daily_report', $status = 302, $headers = [], $secure = null);
+          return redirect()->to('/admin/daily_report', $status = 302, $headers = [], $secure = null);
     }
     /**
     *  前日分との差分からその日単位の増減数を計算
