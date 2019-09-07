@@ -95,7 +95,7 @@ class MonthlyController extends Controller
                         sum(estimate_cost) as total_estimate_cost"))
                     ->get();
                     $productsEstimateTotals = json_decode(json_encode($productsEstimateTotals), true);
-                    var_dump($productsEstimateTotals);
+                    //var_dump($productsEstimateTotals);
 
 
         $product_bases = ProductBase::all();
