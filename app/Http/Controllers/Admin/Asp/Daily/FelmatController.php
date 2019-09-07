@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Admin\Asp\Daily;
 
-use Illuminate\Http\Request;
 use Laravel\Dusk\Browser;
-use App\Http\Controllers\Controller;
-use App\Http\Controllers\Admin\DailyCrawlerController;
-use Symfony\Component\DomCrawler\Crawler;
+use Illuminate\Http\Request;
 use Revolution\Salvager\Client;
+use App\Http\Controllers\Controller;
 use Revolution\Salvager\Drivers\Chrome;
+use Symfony\Component\DomCrawler\Crawler;
+use App\Http\Controllers\Admin\DailyCrawlerController;
 
 use App\Dailydata;
 use App\Product;
@@ -19,7 +19,6 @@ use App\Monthlysite;
 use App\Schedule;
 use App\DailyDiff;
 use App\DailySiteDiff;
-//header('Content-Type: text/html; charset=utf-8');
 
 class FelmatController extends DailyCrawlerController
 {
@@ -66,7 +65,7 @@ class FelmatController extends DailyCrawlerController
         /*
         案件の大本IDからASP別のプロダクトIDを取得
         */
-        $product_id = $this->BasetoProduct(6, $product_base_id);
+        $product_id = $this->dailySearchService->BasetoProduct(6, $product_base_id);
         
         /*
         Chromeドライバーのインスタンス呼び出し
@@ -245,14 +244,14 @@ class FelmatController extends DailyCrawlerController
                             if ($key == 'site_name') {
                                 
                                 $felmat_site[$count][$key]       = trim($crawler_for_site->filter($value)->text());
-                                $felmat_site[$count]['media_id'] = $this->siteCreate(trim($crawler_for_site->filter($value)->text()), 20);
+                                $felmat_site[$count]['media_id'] = $this->dailySearchService->siteCreate(trim($crawler_for_site->filter($value)->text()), 20);
                             } else {
                                 
                                 $felmat_site[$count][$key] = trim(preg_replace('/[^0-9]/', '', $crawler_for_site->filter($value)->text()));
                             }
                             
                         }
-                        $calData                     = json_decode(json_encode(json_decode($this->cpa($felmat_site[$count]['cv'], $felmat_site[$count]['price'], 5))), True);
+                        $calData                     = json_decode(json_encode(json_decode($this->dailySearchService->cpa($felmat_site[$count]['cv'], $felmat_site[$count]['price'], 5))), True);
                         $felmat_site[$count]['cpa']  = $calData['cpa']; //CPA
                         $felmat_site[$count]['cost'] = $calData['cost'];
                         $felmat_site[$count]['date'] = date('Y-m-d', strtotime('-1 day'));
@@ -267,7 +266,7 @@ class FelmatController extends DailyCrawlerController
                 $felmat_data[0]['active']      = $felmat_data2[0]['active'];
                 $felmat_data[0]['partnership'] = $felmat_data3[0]['partnership'];
                 
-                $calData                = json_decode(json_encode(json_decode($this->cpa($felmat_data[0]['cv'], $felmat_data[0]['price'], 5))), True);
+                $calData                = json_decode(json_encode(json_decode($this->dailySearchService->cpa($felmat_data[0]['cv'], $felmat_data[0]['price'], 5))), True);
                 $felmat_data[0]['cpa']  = $calData['cpa']; //CPA
                 $felmat_data[0]['cost'] = $calData['cost'];
                 
@@ -279,8 +278,8 @@ class FelmatController extends DailyCrawlerController
                 /*
                 サイトデータ・日次データ保存
                 */
-                $this->save_site(json_encode($felmat_site));
-                $this->save_daily(json_encode($felmat_data));
+                $this->dailySearchService->save_site(json_encode($felmat_site));
+                $this->dailySearchService->save_daily(json_encode($felmat_data));
                 
                 //var_dump($crawler_for_site);
             }

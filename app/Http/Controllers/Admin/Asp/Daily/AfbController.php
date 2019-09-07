@@ -2,15 +2,13 @@
 
 namespace App\Http\Controllers\Admin\Asp\Daily;
 
-use Illuminate\Http\Request;
 use Laravel\Dusk\Browser;
-use App\Http\Controllers\Controller;
-use App\Http\Controllers\Admin\DailyCrawlerController;
-use Symfony\Component\DomCrawler\Crawler;
+use Illuminate\Http\Request;
 use Revolution\Salvager\Client;
+use App\Http\Controllers\Controller;
 use Revolution\Salvager\Drivers\Chrome;
-//use Revolution\Salvager\Facades\Salvager;
-
+use Symfony\Component\DomCrawler\Crawler;
+use App\Http\Controllers\Admin\DailyCrawlerController;
 
 use App\Dailydata;
 use App\Product;
@@ -50,7 +48,7 @@ class AfbController extends DailyCrawlerController
         
     
         //案件の大本IDからASP別のプロダクトIDを取得
-        $product_id = $this->BasetoProduct( 4, $product_base_id );
+        $product_id = $this->dailySearchService->BasetoProduct( 4, $product_base_id );
         
         // Chromeドライバーのインスタンス呼び出し
         //$client = new Client( new Chrome( $options ) );
@@ -158,7 +156,7 @@ class AfbController extends DailyCrawlerController
                         
                     } //$selector_crawler as $key => $value
 
-                    $calData        = json_decode( json_encode( json_decode( $this->cpa( $data[ 'cv' ], $data[ 'price' ], 4 ) ) ), True );
+                    $calData        = json_decode( json_encode( json_decode( $this->dailySearchService->cpa( $data[ 'cv' ], $data[ 'price' ], 4 ) ) ), True );
                     $data[ 'cpa' ]  = $calData[ 'cpa' ]; //CPA
                     $data[ 'cost' ] = $calData[ 'cost' ]; //獲得単価
                     return $data;
@@ -221,7 +219,7 @@ class AfbController extends DailyCrawlerController
                         }
                         
                     } //$selector_for_site as $key => $value
-                    $calData                 = json_decode( json_encode( json_decode( $this->cpa( $afbsite[ $i ][ 'cv' ], $afbsite[ $i ][ 'price' ], 4 ) ) ), True );
+                    $calData                 = json_decode( json_encode( json_decode( $this->dailySearchService->cpa( $afbsite[ $i ][ 'cv' ], $afbsite[ $i ][ 'price' ], 4 ) ) ), True );
                     $afbsite[ $i ][ 'cpa' ]  = $calData[ 'cpa' ]; //CPA
                     $afbsite[ $i ][ 'cost' ] = $calData[ 'cost' ]; //獲得単価
                     
@@ -233,8 +231,8 @@ class AfbController extends DailyCrawlerController
                 $afbdata[ 0 ][ 'active' ]      = $active[ 0 ];
                 $afbdata[ 0 ][ 'partnership' ] = $partnership[ 0 ];
                 
-                $this->save_daily( json_encode( $afbdata ) );
-                $this->save_site( json_encode( $afbsite ) );
+                $this->dailySearchService->save_daily( json_encode( $afbdata ) );
+                $this->dailySearchService->save_site( json_encode( $afbsite ) );
                 
             }//$product_infos as $product_info
         } ); 

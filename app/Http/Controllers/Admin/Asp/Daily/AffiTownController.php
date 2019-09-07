@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Admin\Asp\Daily;
 
-use Illuminate\Http\Request;
 use Laravel\Dusk\Browser;
-use App\Http\Controllers\Controller;
-use App\Http\Controllers\Admin\DailyCrawlerController;
-use Symfony\Component\DomCrawler\Crawler;
+use Illuminate\Http\Request;
 use Revolution\Salvager\Client;
+use App\Http\Controllers\Controller;
 use Revolution\Salvager\Drivers\Chrome;
+use Symfony\Component\DomCrawler\Crawler;
+use App\Http\Controllers\Admin\DailyCrawlerController;
 
 use App\Dailydata;
 use App\Product;
@@ -19,8 +19,6 @@ use App\Monthlysite;
 use App\Schedule;
 use App\DailyDiff;
 use App\DailySiteDiff;
-//header('Content-Type: text/html; charset=utf-8');
-
 
 class AffiTownController extends DailyCrawlerController
 {
@@ -50,7 +48,7 @@ class AffiTownController extends DailyCrawlerController
         /*
         案件の大本IDからASP別のプロダクトIDを取得
         */
-        $product_id = $this->BasetoProduct( 7, $product_base_id );
+        $product_id = $this->dailySearchService->BasetoProduct( 7, $product_base_id );
         
         /*
         Chromeドライバーのインスタンス呼び出し
@@ -187,7 +185,7 @@ class AffiTownController extends DailyCrawlerController
                         }
                         
                     } //$selector_for_site as $key => $value
-                    $calData                       = json_decode( json_encode( json_decode( $this->cpa( $affitown_site[ $i ][ 'cv' ], $affitown_site[ $i ][ 'price' ], 7 ) ) ), True );
+                    $calData                       = json_decode( json_encode( json_decode( $this->dailySearchService->cpa( $affitown_site[ $i ][ 'cv' ], $affitown_site[ $i ][ 'price' ], 7 ) ) ), True );
                     $affitown_site[ $i ][ 'cpa' ]  = $calData[ 'cpa' ]; //CPA
                     $affitown_site[ $i ][ 'cost' ] = $calData[ 'cost' ];
                     $affitown_site[ $i ][ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
@@ -201,7 +199,7 @@ class AffiTownController extends DailyCrawlerController
                 
                 $affitown_data[ 0 ][ 'imp' ] = $affitown_data_imp[ 0 ][ 'imp' ];
                 
-                $calData                      = json_decode( json_encode( json_decode( $this->cpa( $affitown_data[ 0 ][ 'cv' ], $affitown_data[ 0 ][ 'price' ], 7 ) ) ), True );
+                $calData                      = json_decode( json_encode( json_decode( $this->dailySearchService->cpa( $affitown_data[ 0 ][ 'cv' ], $affitown_data[ 0 ][ 'price' ], 7 ) ) ), True );
                 $affitown_data[ 0 ][ 'cpa' ]  = $calData[ 'cpa' ]; //CPA
                 $affitown_data[ 0 ][ 'cost' ] = $calData[ 'cost' ];
                 
@@ -214,8 +212,8 @@ class AffiTownController extends DailyCrawlerController
                 /*
                 サイトデータ・日次データ保存
                 */
-                $this->save_site( json_encode( $affitown_site ) );
-                $this->save_daily( json_encode( $affitown_data ) );
+                $this->dailySearchService->save_site( json_encode( $affitown_site ) );
+                $this->dailySearchService->save_daily( json_encode( $affitown_data ) );
                 
                 //var_dump($crawler_for_site);
             } //$product_infos as $product_info

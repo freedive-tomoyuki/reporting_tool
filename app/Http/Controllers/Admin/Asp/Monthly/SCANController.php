@@ -41,7 +41,7 @@ class SCANController extends MonthlyCrawlerController
         '--no-sandbox'
         ];
         
-        $product_id = $this->BasetoProduct( 9, $product_base_id );
+        $product_id = $this->monthlySearchService->BasetoProduct( 9, $product_base_id );
         
         $client = new Client( new Chrome( $options ) );
         
@@ -64,7 +64,7 @@ class SCANController extends MonthlyCrawlerController
                 ->click( $product_info->asp->login_selector )
                 ->visit( "https://www.scadnet.com/merchant/report/monthly.php?s=" . $product_info->asp_sponsor_id . "&c_id=" . $product_info->asp_product_id )
                 ->crawler();
-                var_dump( $crawler );
+                //var_dump( $crawler );
                 /**
                 先月・今月のセレクタ
                 */
@@ -98,7 +98,7 @@ class SCANController extends MonthlyCrawlerController
                         $data[ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
                         
                         if($key == 'approval_price'){
-                            $data[ $key ]   = $this->calc_approval_price(
+                            $data[ $key ]   = $this->monthlySearchService->calc_approval_price(
                                 trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) ), 9);
 
                         }else{
@@ -118,7 +118,7 @@ class SCANController extends MonthlyCrawlerController
                         }
 
                         if($key == 'approval_price'){
-                            $data[ 'last_' . $key ] = $this->calc_approval_price(
+                            $data[ 'last_' . $key ] = $this->monthlySearchService->calc_approval_price(
                                 trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) ), 9);
                                 
                         }else{
@@ -212,7 +212,7 @@ class SCANController extends MonthlyCrawlerController
                                 $scan_site[ $count_site ][ $key ] = trim( $crawler_for_site->filter( $value )->text() );
                             } //$key == 'site_name' || $key == 'media_id'
                             elseif($key == 'approval_price'){
-                                $scan_site[ $count_site ][ $key ] = $this->calc_approval_price(
+                                $scan_site[ $count_site ][ $key ] = $this->monthlySearchService->calc_approval_price(
                                     trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) ) , 9);
                             }
                             else {
@@ -224,11 +224,11 @@ class SCANController extends MonthlyCrawlerController
                     } // endfor
                 } //$x = 0; $x < 2; $x++
                 
-                var_dump( $scan_data );
-                var_dump( $scan_site );
+                // var_dump( $scan_data );
+                // var_dump( $scan_site );
                 
-                $this->save_monthly( json_encode( $scan_data ) );
-                $this->save_site( json_encode( $scan_site ) );
+                $this->monthlySearchService->save_monthly( json_encode( $scan_data ) );
+                $this->monthlySearchService->save_site( json_encode( $scan_site ) );
                 
             } //$product_infos as $product_info
         } );

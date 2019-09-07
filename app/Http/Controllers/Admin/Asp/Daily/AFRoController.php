@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Admin\Asp\Daily;
 
-use Illuminate\Http\Request;
 use Laravel\Dusk\Browser;
-use App\Http\Controllers\Controller;
-use App\Http\Controllers\Admin\DailyCrawlerController;
-use Symfony\Component\DomCrawler\Crawler;
+use Illuminate\Http\Request;
 use Revolution\Salvager\Client;
+use App\Http\Controllers\Controller;
 use Revolution\Salvager\Drivers\Chrome;
+use Symfony\Component\DomCrawler\Crawler;
+use App\Http\Controllers\Admin\DailyCrawlerController;
 
 use App\Dailydata;
 use App\Product;
@@ -19,7 +19,6 @@ use App\Monthlysite;
 use App\Schedule;
 use App\DailyDiff;
 use App\DailySiteDiff;
-//header('Content-Type: text/html; charset=utf-8');
 
 class AFRoController extends DailyCrawlerController
 {
@@ -41,7 +40,7 @@ class AFRoController extends DailyCrawlerController
         ];
         
         //案件の大本IDからASP別のプロダクトIDを取得
-        $product_id = $this->BasetoProduct( 11, $product_base_id );
+        $product_id = $this->dailySearchService->BasetoProduct( 11, $product_base_id );
         //var_dump($product_id);
         // Chromeドライバーのインスタンス呼び出し
         $client = new Client( new Chrome( $options ) );

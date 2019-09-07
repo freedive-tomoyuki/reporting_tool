@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Admin\Asp\Daily;
 
-use Illuminate\Http\Request;
 use Laravel\Dusk\Browser;
-use App\Http\Controllers\Controller;
-use App\Http\Controllers\Admin\DailyCrawlerController;
-use Symfony\Component\DomCrawler\Crawler;
+use Illuminate\Http\Request;
 use Revolution\Salvager\Client;
+use App\Http\Controllers\Controller;
 use Revolution\Salvager\Drivers\Chrome;
+use Symfony\Component\DomCrawler\Crawler;
+use App\Http\Controllers\Admin\DailyCrawlerController;
 
 use App\Dailydata;
 use App\Product;
@@ -19,7 +19,6 @@ use App\Monthlysite;
 use App\Schedule;
 use App\DailyDiff;
 use App\DailySiteDiff;
-//header('Content-Type: text/html; charset=utf-8');
 
 class RentracksController extends DailyCrawlerController
 {
@@ -47,7 +46,7 @@ class RentracksController extends DailyCrawlerController
         /*
         案件の大本IDからASP別のプロダクトIDを取得
         */
-        $product_id = $this->BasetoProduct( 5, $product_base_id );
+        $product_id = $this->dailySearchService->BasetoProduct( 5, $product_base_id );
         
         /*
         Chromeドライバーのインスタンス呼び出し
@@ -206,7 +205,7 @@ class RentracksController extends DailyCrawlerController
                         }
                         
                     } //$selector_for_site as $key => $value
-                    $calData                = json_decode( json_encode( json_decode( $this->cpa( $rtsite[ $i ][ 'cv' ], $rtsite[ $i ][ 'price' ], 5 ) ) ), True );
+                    $calData                = json_decode( json_encode( json_decode( $this->dailySearchService->cpa( $rtsite[ $i ][ 'cv' ], $rtsite[ $i ][ 'price' ], 5 ) ) ), True );
                     $rtsite[ $i ][ 'cpa' ]  = $calData[ 'cpa' ]; //CPA
                     $rtsite[ $i ][ 'cost' ] = $calData[ 'cost' ];
                     $rtsite[ $i ][ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
@@ -218,7 +217,7 @@ class RentracksController extends DailyCrawlerController
                 $rtdata[ 0 ][ 'partnership' ] = $rtdata2[ 0 ][ 'partnership' ];
                 $rtdata[ 0 ][ 'active' ]      = $rtdata3[ 0 ][ 'active' ];
                 
-                $calData               = json_decode( json_encode( json_decode( $this->cpa( $rtdata[ 0 ][ 'cv' ], $rtdata[ 0 ][ 'price' ], 5 ) ) ), True );
+                $calData               = json_decode( json_encode( json_decode( $this->dailySearchService->cpa( $rtdata[ 0 ][ 'cv' ], $rtdata[ 0 ][ 'price' ], 5 ) ) ), True );
                 $rtdata[ 0 ][ 'cpa' ]  = $calData[ 'cpa' ]; //CPA
                 $rtdata[ 0 ][ 'cost' ] = $calData[ 'cost' ];
                 
@@ -231,8 +230,8 @@ class RentracksController extends DailyCrawlerController
                 /*
                 サイトデータ・日次データ保存
                 */
-                $this->save_site( json_encode( $rtsite ) );
-                $this->save_daily( json_encode( $rtdata ) );
+                $this->dailySearchService->save_site( json_encode( $rtsite ) );
+                $this->dailySearchService->save_daily( json_encode( $rtdata ) );
                 
                 //var_dump($crawler_for_site);
             } //$product_infos as $product_info

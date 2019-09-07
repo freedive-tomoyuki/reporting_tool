@@ -43,7 +43,7 @@ class RentracksController extends MonthlyCrawlerController
         /*
         案件の大本IDからASP別のプロダクトIDを取得
         */
-        $product_id = $this->BasetoProduct( 5, $product_base_id );
+        $product_id = $this->monthlySearchService->BasetoProduct( 5, $product_base_id );
         
         /*
         Chromeドライバーのインスタンス呼び出し
@@ -128,7 +128,7 @@ class RentracksController extends MonthlyCrawlerController
                     foreach ( $selector_this as $key => $value ) {
 
                         if($key == 'approval_price'){
-                            $data[ $key ]   = $this->calc_approval_price(
+                            $data[ $key ]   = $this->monthlySearchService->calc_approval_price(
                                 trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) ), 5);
                         }else{
                             $data[ $key ]   = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
@@ -139,7 +139,7 @@ class RentracksController extends MonthlyCrawlerController
                     foreach ( $selector_before as $key => $value ) {
 
                         if($key == 'approval_price'){
-                            $data[ 'last_' . $key ] = $this->calc_approval_price(
+                            $data[ 'last_' . $key ] = $this->monthlySearchService->calc_approval_price(
                                 trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) ), 5);
                         }else{
                             $data[ 'last_' . $key ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
@@ -157,7 +157,7 @@ class RentracksController extends MonthlyCrawlerController
                     return $data;
                     
                 } );
-                var_dump( $rtdata );
+                //var_dump( $rtdata );
                 /*
                 サイト抽出　
                 */
@@ -259,7 +259,7 @@ class RentracksController extends MonthlyCrawlerController
                             } //$key == 'site_name'
                             elseif($key == 'approval_price'){
 
-                                $rtsite[ $y ][ $key ] = $this->calc_approval_price(
+                                $rtsite[ $y ][ $key ] = $this->monthlySearchService->calc_approval_price(
                                     trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) ), 5);
                                 
                             }
@@ -274,15 +274,15 @@ class RentracksController extends MonthlyCrawlerController
                     
                 } //$x = 0; $x < 2; $x++
                 
-                echo "<pre>";
-                var_dump( $rtdata );
-                var_dump( $rtsite );
-                echo "</pre>";
+                // echo "<pre>";
+                // var_dump( $rtdata );
+                // var_dump( $rtsite );
+                // echo "</pre>";
                 /*
                 サイトデータ・月次データ保存
                 */
-                $this->save_site( json_encode( $rtsite ) );
-                $this->save_monthly( json_encode( $rtdata ) );
+                $this->monthlySearchService->save_site( json_encode( $rtsite ) );
+                $this->monthlySearchService->save_monthly( json_encode( $rtdata ) );
                 
                 //var_dump($crawler_for_site);
             } //$product_infos as $product_info

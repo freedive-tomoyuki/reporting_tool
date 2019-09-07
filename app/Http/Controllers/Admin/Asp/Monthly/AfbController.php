@@ -41,7 +41,7 @@ class AfbController extends MonthlyCrawlerController
         /*
         案件の大本IDからASP別のプロダクトIDを取得
         */
-        $product_id = $this->BasetoProduct( 4, $product_base_id );
+        $product_id = $this->monthlySearchService->BasetoProduct( 4, $product_base_id );
         /*
         Chromeドライバーのインスタンス呼び出し
         */
@@ -84,7 +84,7 @@ class AfbController extends MonthlyCrawlerController
                     ->click( '#report_form_1 > div > table > tbody > tr:nth-child(5) > td > p > label:nth-child(3)' )
                     ->click( '#report_form_1 > div > div.btn_area.mt20 > ul.btn_list_01 > li > input' )
                     ->crawler();
-                    echo $crawler->html();
+                    //echo $crawler->html();
                 //var_dump( $crawler);
                 //先月・今月のセレクタ
                 $selector_this   = array(
@@ -107,7 +107,7 @@ class AfbController extends MonthlyCrawlerController
                         $data[ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
 
                         if($key == 'approval_price'){
-                            $data[ $key ]   = $this->calc_approval_price(
+                            $data[ $key ]   = $this->monthlySearchService->calc_approval_price(
                                 trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) ) ,4);
                         }else{
                             $data[ $key ]   = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
@@ -123,7 +123,7 @@ class AfbController extends MonthlyCrawlerController
                             $data[ 'last_date' ] = date( 'Y-m-d', strtotime( 'last day of previous month' ) );
                         }
                         if($key == 'approval_price'){
-                            $data[ 'last_' . $key ] = $this->calc_approval_price(
+                            $data[ 'last_' . $key ] = $this->monthlySearchService->calc_approval_price(
                                 trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) ),4);
                         }else{
                             $data[ 'last_' . $key ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
@@ -223,7 +223,7 @@ class AfbController extends MonthlyCrawlerController
                             elseif($key == 'approval_price'){
 
                                 $afbsite[ $y ][ $key ] = 
-                                    $this->calc_approval_price(
+                                    $this->monthlySearchService->calc_approval_price(
                                         trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) )
                                     , 4);
                             }
@@ -239,8 +239,8 @@ class AfbController extends MonthlyCrawlerController
                     } // endfor
                 } //$x = 0; $x < 2; $x++
                 
-                $this->save_monthly( json_encode( $afbdata ) );
-                $this->save_site( json_encode( $afbsite ) );
+                $this->monthlySearchService->save_monthly( json_encode( $afbdata ) );
+                $this->monthlySearchService->save_site( json_encode( $afbsite ) );
                 
             } //$product_infos as $product_info
         } );

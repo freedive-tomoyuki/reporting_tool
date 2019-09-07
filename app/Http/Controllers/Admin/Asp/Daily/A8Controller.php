@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Admin\Asp\Daily;
 
-use Illuminate\Http\Request;
 use Laravel\Dusk\Browser;
-use App\Http\Controllers\Controller;
-use App\Http\Controllers\Admin\DailyCrawlerController;
-use Symfony\Component\DomCrawler\Crawler;
+use Illuminate\Http\Request;
 use Revolution\Salvager\Client;
+use App\Http\Controllers\Controller;
 use Revolution\Salvager\Drivers\Chrome;
+use Symfony\Component\DomCrawler\Crawler;
+use App\Http\Controllers\Admin\DailyCrawlerController;
 
 use App\Dailydata;
 use App\Product;
@@ -19,7 +19,6 @@ use App\Monthlysite;
 use App\Schedule;
 use App\DailyDiff;
 use App\DailySiteDiff;
-//header('Content-Type: text/html; charset=utf-8');
 
 class A8Controller extends DailyCrawlerController
 {
@@ -41,7 +40,7 @@ class A8Controller extends DailyCrawlerController
         ];
         
         //案件の大本IDからASP別のプロダクトIDを取得
-        $product_id = $this->BasetoProduct( 1, $product_base_id );
+        $product_id = $this->dailySearchService->BasetoProduct( 1, $product_base_id );
         
         // Chromeドライバーのインスタンス呼び出し
         $client = new Client( new Chrome( $options ) );
@@ -116,7 +115,7 @@ class A8Controller extends DailyCrawlerController
                 $a8data_1[ 0 ][ 'imp' ]   = trim( preg_replace( '/[^0-9]/', '', $a8data_2[ 0 ][ "imp" ] ) );
                 $a8data_1[ 0 ][ 'price' ] = trim( preg_replace( '/[^0-9]/', '', $a8data_2[ 0 ][ "price" ] ) );
                 
-                $calData = json_decode( json_encode( json_decode( $this->cpa( $a8data_1[ 0 ][ 'cv' ], $a8data_1[ 0 ][ 'price' ], 1 ) ) ), True );
+                $calData = json_decode( json_encode( json_decode( $this->dailySearchService->cpa( $a8data_1[ 0 ][ 'cv' ], $a8data_1[ 0 ][ 'price' ], 1 ) ) ), True );
                 
                 $a8data_1[ 0 ][ 'cpa' ]  = $calData[ 'cpa' ]; //CPA
                 $a8data_1[ 0 ][ 'cost' ] = $calData[ 'cost' ]; //獲得単価
@@ -164,7 +163,7 @@ class A8Controller extends DailyCrawlerController
                             $data[ $count ][ $key ] = trim( $crawler_for_site->filter( $value )->text() );
                         } //$selector_for_site as $key => $value
                         
-                        $calData = json_decode( json_encode( json_decode( $this->cpa( $data[ $count ][ 'cv' ], $data[ $count ][ 'price' ], 1 ) ) ), True );
+                        $calData = json_decode( json_encode( json_decode( $this->dailySearchService->cpa( $data[ $count ][ 'cv' ], $data[ $count ][ 'price' ], 1 ) ) ), True );
                         
                         //$data[$count]['product'] = $product_info->id;
                         $data[ $count ][ 'product' ] = $product_info->id;
@@ -184,8 +183,8 @@ class A8Controller extends DailyCrawlerController
                 /**
                 １サイトずつサイト情報の登録を実行
                 */
-                $this->save_site( json_encode( $data ) );
-                $this->save_daily( json_encode( $a8data_1 ) );
+                $this->dailySearchService->save_site( json_encode( $data ) );
+                $this->dailySearchService->save_daily( json_encode( $a8data_1 ) );
                 
                 
             } //$product_infos as $product_info

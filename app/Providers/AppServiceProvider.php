@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use DuskServiceProvider;
+use App\Services\DailySearchService;
+
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -15,6 +17,8 @@ class AppServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->bind('App\Services\CalculationService');
+        $this->app->bind('App\Services\DailySearchService');
+        $this->app->bind('App\Services\MonthlySearchService');
     }
 
     /**
@@ -24,6 +28,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        
     }
 }

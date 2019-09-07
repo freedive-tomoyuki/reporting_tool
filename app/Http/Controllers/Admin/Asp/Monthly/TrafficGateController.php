@@ -38,7 +38,7 @@ class TrafficGateController extends MonthlyCrawlerController
         '--no-sandbox'
         ];
         
-        $product_id = $this->BasetoProduct( 8, $product_base_id );
+        $product_id = $this->monthlySearchService->BasetoProduct( 8, $product_base_id );
         
         $client = new Client( new Chrome( $options ) );
         
@@ -90,7 +90,7 @@ class TrafficGateController extends MonthlyCrawlerController
                     foreach ( $selector_this as $key => $value ) {
                         
                         if($key == 'approval_price'){
-                            $data[ $key ]   = $this->calc_approval_price(
+                            $data[ $key ]   = $this->monthlySearchService->calc_approval_price(
                                 trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) ) , 8);
                         
                         }else{
@@ -104,7 +104,7 @@ class TrafficGateController extends MonthlyCrawlerController
                     foreach ( $selector_before as $key => $value ) {
                         if($key == 'approval_price'){
                         
-                            $data[ 'last_' . $key ] = $this->calc_approval_price(
+                            $data[ 'last_' . $key ] = $this->monthlySearchService->calc_approval_price(
                                 trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) ) , 8);
                         
                         }else{
@@ -127,7 +127,7 @@ class TrafficGateController extends MonthlyCrawlerController
                     
                 } );
                 
-                var_dump( $trafficgate_data );
+                //var_dump( $trafficgate_data );
                 
                 //$rtsite = array();
                 
@@ -169,8 +169,8 @@ class TrafficGateController extends MonthlyCrawlerController
                             $m = date( 'n', strtotime( '-1 month' ) ); //先月
                         }
                     }
-                    echo 'Y' . $y;
-                    echo 'm' . $m;
+                    // echo 'Y' . $y;
+                    // echo 'm' . $m;
                     //$crawler_for_site = $browser
                     //  ->visit("https://www.trafficgate.net/merchant/report/site_monthly.cgi?year=".$y."&month=".$m)
                     //  ->crawler();
@@ -221,7 +221,7 @@ class TrafficGateController extends MonthlyCrawlerController
                                 } //$key == 'site_name'
                                 elseif ($key == 'approval_price') {
 
-                                    $trafficgate_site[ $active_count ][ $key ] = $this->calc_approval_price(
+                                    $trafficgate_site[ $active_count ][ $key ] = $this->monthlySearchService->calc_approval_price(
                                             trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) ) , 8);
                                         
                                 }
@@ -231,18 +231,18 @@ class TrafficGateController extends MonthlyCrawlerController
                                 }
                                 
                             } //$selector_for_site as $key => $value
-                            echo "active_count" . $active_count++;
-                            echo "i" . $i++;
+                            $active_count++;
+                            $i++;
                         } //trim( preg_replace( '/[\n\r\t ]+/', ' ', str_replace( "\xc2\xa0", " ", $crawler_for_site->filter( '#container-big2 > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(2)' )->text() ) ) ) != ""
                         
                         $page++;
                     } //trim( preg_replace( '/[\n\r\t ]+/', ' ', str_replace( "\xc2\xa0", " ", $browser->visit( "https://www.trafficgate.net/merchant/report/site_monthly.cgi?page=" . $page . "&year=" . $y . "&month=" . $m )->crawler()->filter( '#container-big2 > table > tbody > tr:nth-child(7) > td:nth-child(2)' )->text() ) ) ) != ""
                 } //$x = 0; $x < 2; $x++
                 
-                var_dump( $trafficgate_data );
-                var_dump( $trafficgate_site );
-                $this->save_monthly( json_encode( $trafficgate_data ) );
-                $this->save_site( json_encode( $trafficgate_site ) );
+                // var_dump( $trafficgate_data );
+                // var_dump( $trafficgate_site );
+                $this->monthlySearchService->save_monthly( json_encode( $trafficgate_data ) );
+                $this->monthlySearchService->save_site( json_encode( $trafficgate_site ) );
                 
             } //$product_infos as $product_info
         } );

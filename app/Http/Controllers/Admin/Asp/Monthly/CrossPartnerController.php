@@ -39,7 +39,7 @@ class CrossPartnerController extends MonthlyCrawlerController
         ];
         
         //案件の大本IDからASP別のプロダクトIDを取得
-        $product_id = $this->BasetoProduct( 10, $product_base_id );
+        $product_id = $this->monthlySearchService->BasetoProduct( 10, $product_base_id );
 
         // Chromeドライバーのインスタンス呼び出し
         $client = new Client( new Chrome( $options ) );
@@ -97,7 +97,7 @@ class CrossPartnerController extends MonthlyCrawlerController
 
                         if($key == 'approval_price'){
                             $data[ $key ]   = 
-                                $this->calc_approval_price(
+                                $this->monthlySearchService->calc_approval_price(
                                     trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) ) ,2
                                 );
                         }
@@ -118,7 +118,7 @@ class CrossPartnerController extends MonthlyCrawlerController
                         
                         //$data[ 'last_' . $key ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
                         if($key == 'approval_price'){
-                            $data[ 'last_' . $key ] = $this->calc_approval_price(trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) ) ,2);
+                            $data[ 'last_' . $key ] = $this->monthlySearchService->calc_approval_price(trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) ) ,2);
                         }
                         else{
                             $data[ 'last_' . $key ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
@@ -202,8 +202,8 @@ class CrossPartnerController extends MonthlyCrawlerController
                 /*
                 サイトデータ・日次データ保存
                 */
-                $this->save_site( json_encode( $crosspartner_site ) );
-                $this->save_monthly( json_encode( $crosspartner_data ) );
+                $this->monthlySearchService->save_site( json_encode( $crosspartner_site ) );
+                $this->monthlySearchService->save_monthly( json_encode( $crosspartner_data ) );
             
             } //$product_infos as $product_info
         } );

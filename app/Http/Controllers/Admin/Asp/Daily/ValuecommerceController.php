@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Admin\Asp\Daily;
 
-use Illuminate\Http\Request;
 use Laravel\Dusk\Browser;
-use App\Http\Controllers\Controller;
-use App\Http\Controllers\Admin\DailyCrawlerController;
-use Symfony\Component\DomCrawler\Crawler;
+use Illuminate\Http\Request;
 use Revolution\Salvager\Client;
+use App\Http\Controllers\Controller;
 use Revolution\Salvager\Drivers\Chrome;
+use Symfony\Component\DomCrawler\Crawler;
+use App\Http\Controllers\Admin\DailyCrawlerController;
 
 use App\Dailydata;
 use App\Product;
@@ -19,7 +19,6 @@ use App\Monthlysite;
 use App\Schedule;
 use App\DailyDiff;
 use App\DailySiteDiff;
-//header('Content-Type: text/html; charset=utf-8');
 
 class ValuecommerceController extends DailyCrawlerController
 {
@@ -39,7 +38,7 @@ class ValuecommerceController extends DailyCrawlerController
         '--lang=ja_JP',
         '--disable-gpu',
         ];
-        $product_id = $this->BasetoProduct( 3, $product_base_id );
+        $product_id = $this->dailySearchService->BasetoProduct( 3, $product_base_id );
         
         // Chromeドライバーのインスタンス呼び出し
         $client = new Client( new Chrome( $options ) );
@@ -86,7 +85,7 @@ class ValuecommerceController extends DailyCrawlerController
                     } //$selector_crawler as $key => $value
                     //$data['cpa']= $this->cpa($data['cv'] ,$data['price'] , 1); 
                     //CPAとASPフィー込みの価格を計算
-                    $calData = json_decode( json_encode( json_decode( $this->cpa( $data[ 'cv' ], $data[ 'price' ], 3 ) ) ), True );
+                    $calData = json_decode( json_encode( json_decode( $this->dailySearchService->cpa( $data[ 'cv' ], $data[ 'price' ], 3 ) ) ), True );
                     
                     $data[ 'cpa' ]     = $calData[ 'cpa' ]; //CPA
                     $data[ 'cost' ]    = $calData[ 'cost' ]; //獲得単価
@@ -154,7 +153,7 @@ class ValuecommerceController extends DailyCrawlerController
                             } //$selector_for_site as $key => $value
                             
                             //CPAとASPフィーの考慮した数値を算出
-                            $calData = json_decode( json_encode( json_decode( $this->cpa( $data[ $count ][ 'cv' ], $data[ $count ][ 'price' ], 3 ) ) ), True );
+                            $calData = json_decode( json_encode( json_decode( $this->dailySearchService->cpa( $data[ $count ][ 'cv' ], $data[ $count ][ 'price' ], 3 ) ) ), True );
                             
                             //各サイトのデータ保存
                             $data[ $count ][ 'cpa' ]  = $calData[ 'cpa' ]; //CPA
@@ -168,8 +167,8 @@ class ValuecommerceController extends DailyCrawlerController
                 //var_dump($data);
                 //クロールデータの保存
                 //$client->quit();
-                $this->save_daily( json_encode( $vcdata ) );
-                $this->save_site( json_encode( $data ) );
+                $this->dailySearchService->save_daily( json_encode( $vcdata ) );
+                $this->dailySearchService->save_site( json_encode( $data ) );
                 
             } //$product_infos as $product_info
         } );

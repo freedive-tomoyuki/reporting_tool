@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Admin\Asp\Daily;
 
-use Illuminate\Http\Request;
 use Laravel\Dusk\Browser;
-use App\Http\Controllers\Controller;
-use App\Http\Controllers\Admin\DailyCrawlerController;
-use Symfony\Component\DomCrawler\Crawler;
+use Illuminate\Http\Request;
 use Revolution\Salvager\Client;
+use App\Http\Controllers\Controller;
 use Revolution\Salvager\Drivers\Chrome;
+use Symfony\Component\DomCrawler\Crawler;
+use App\Http\Controllers\Admin\DailyCrawlerController;
 
 use App\Dailydata;
 use App\Product;
@@ -19,7 +19,6 @@ use App\Monthlysite;
 use App\Schedule;
 use App\DailyDiff;
 use App\DailySiteDiff;
-//header('Content-Type: text/html; charset=utf-8');
 
 class CrossPartnerController extends DailyCrawlerController
 {
@@ -56,7 +55,7 @@ class CrossPartnerController extends DailyCrawlerController
         ];
         
         //案件の大本IDからASP別のプロダクトIDを取得
-        $product_id = $this->BasetoProduct( 10, $product_base_id );
+        $product_id = $this->dailySearchService->BasetoProduct( 10, $product_base_id );
         //var_dump($product_id);
         // Chromeドライバーのインスタンス呼び出し
         $client = new Client( new Chrome( $options ) );
@@ -207,7 +206,7 @@ class CrossPartnerController extends DailyCrawlerController
 
                                 $calData = json_decode(
                                             json_encode(
-                                              json_decode($this->cpa($crosspartner_site[$count]['cv'] ,$crosspartner_site[$count]['price'] , 5))
+                                              json_decode($this->dailySearchService->cpa($crosspartner_site[$count]['cv'] ,$crosspartner_site[$count]['price'] , 5))
                                             ), True
                                           );
                                 $crosspartner_site[$count]['cpa']= $calData['cpa']; //CPA
@@ -228,7 +227,7 @@ class CrossPartnerController extends DailyCrawlerController
                 $crosspartner_data1[0]['partnership'] = $crosspartner_data2[0]['partnership'];
 
                 $calData = json_decode(
-                                  json_encode(json_decode($this->cpa($crosspartner_data1[0]['cv'] ,$crosspartner_data1[0]['price'] , 5))), True
+                                  json_encode(json_decode($this->dailySearchService->cpa($crosspartner_data1[0]['cv'] ,$crosspartner_data1[0]['price'] , 5))), True
                             );
                 $crosspartner_data1[0]['cpa']= $calData['cpa']; //CPA
                 $crosspartner_data1[0]['cost']= $calData['cost'];
@@ -240,8 +239,8 @@ class CrossPartnerController extends DailyCrawlerController
                 /*
                 サイトデータ・日次データ保存
                 */
-                $this->save_site( json_encode( $crosspartner_site ) );
-                $this->save_daily( json_encode( $crosspartner_data1 ) );
+                $this->dailySearchService->save_site( json_encode( $crosspartner_site ) );
+                $this->dailySearchService->save_daily( json_encode( $crosspartner_data1 ) );
             
             } //$product_infos as $product_info
         } );

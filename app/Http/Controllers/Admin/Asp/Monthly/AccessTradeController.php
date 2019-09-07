@@ -39,7 +39,7 @@ class AccesstradeController extends MonthlyCrawlerController
         
         ];
         
-        $product_id = $this->BasetoProduct( 2, $product_base_id );
+        $product_id = $this->monthlySearchService->BasetoProduct( 2, $product_base_id );
         
         $client = new Client( new Chrome( $options ) );
         
@@ -79,7 +79,7 @@ class AccesstradeController extends MonthlyCrawlerController
                     'approval_price' => 'body > report-page > div > div > main > ng-component > section > div > div > div > display > div > table > tbody > tr:nth-child(' . $row_before . ') > td:nth-child(7)' 
                 );
                 
-                var_dump( $crawler );
+                //var_dump( $crawler );
                 //$crawler->each(function (Crawler $node) use ( $selector ){
                 /**
                 今月用のデータ取得selector
@@ -97,7 +97,7 @@ class AccesstradeController extends MonthlyCrawlerController
 
                         if($key == 'approval_price'){
                             $data[ $key ]   = 
-                                $this->calc_approval_price(
+                                $this->monthlySearchService->calc_approval_price(
                                     trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) ) ,2
                                 );
                         }
@@ -117,7 +117,7 @@ class AccesstradeController extends MonthlyCrawlerController
                         
                         //$data[ 'last_' . $key ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
                         if($key == 'approval_price'){
-                            $data[ 'last_' . $key ] = $this->calc_approval_price(trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) ) ,2);
+                            $data[ 'last_' . $key ] = $this->monthlySearchService->calc_approval_price(trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) ) ,2);
                         }
                         else{
                             $data[ 'last_' . $key ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
@@ -172,7 +172,7 @@ class AccesstradeController extends MonthlyCrawlerController
                         $data[ $x ][ 'media_id' ]       = $site[ "partnerSiteId" ];
                         $data[ $x ][ 'site_name' ]      = $site[ "partnerSiteName" ];
                         $data[ $x ][ 'approval' ]       = $site[ "approvedCount" ];
-                        $data[ $x ][ 'approval_price' ] = $this->calc_approval_price($site[ "approvedTotalReward" ] ,2);
+                        $data[ $x ][ 'approval_price' ] = $this->monthlySearchService->calc_approval_price($site[ "approvedTotalReward" ] ,2);
                         
                         $x++;
                         
@@ -180,8 +180,8 @@ class AccesstradeController extends MonthlyCrawlerController
                     
                 } //$i = 0; $i < 2; $i++
                 
-                $this->save_site( json_encode( $data ) );
-                $this->save_monthly( json_encode( $atdata ) );
+                $this->monthlySearchService->save_site( json_encode( $data ) );
+                $this->monthlySearchService->save_monthly( json_encode( $atdata ) );
             } //$product_infos as $product_info
             
         } );

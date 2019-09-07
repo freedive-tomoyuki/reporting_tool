@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Admin\Asp\Daily;
 
-use Illuminate\Http\Request;
 use Laravel\Dusk\Browser;
-use App\Http\Controllers\Controller;
-use App\Http\Controllers\Admin\DailyCrawlerController;
-use Symfony\Component\DomCrawler\Crawler;
+use Illuminate\Http\Request;
 use Revolution\Salvager\Client;
+use App\Http\Controllers\Controller;
 use Revolution\Salvager\Drivers\Chrome;
+use Symfony\Component\DomCrawler\Crawler;
+use App\Http\Controllers\Admin\DailyCrawlerController;
 
 use App\Dailydata;
 use App\Product;
@@ -19,7 +19,6 @@ use App\Monthlysite;
 use App\Schedule;
 use App\DailyDiff;
 use App\DailySiteDiff;
-//header('Content-Type: text/html; charset=utf-8');
 
 class AccesstradeController extends DailyCrawlerController
 {
@@ -41,7 +40,7 @@ class AccesstradeController extends DailyCrawlerController
         
         ];
         
-        $product_id = $this->BasetoProduct( 2, $product_base_id );
+        $product_id = $this->dailySearchService->BasetoProduct( 2, $product_base_id );
         
         $client = new Client( new Chrome( $options ) );
         
@@ -118,7 +117,7 @@ class AccesstradeController extends DailyCrawlerController
                     } //$selector as $key => $value
                     //$data['cpa']= $this->cpa($data['cv'] ,$data['price'] , 2);
                     
-                    $calData = json_decode( json_encode( json_decode( $this->cpa( $data[ 'cv' ], $data[ 'price' ], 2 ) ) ), True );
+                    $calData = json_decode( json_encode( json_decode( $this->dailySearchService->cpa( $data[ 'cv' ], $data[ 'price' ], 2 ) ) ), True );
                     
                     $data[ 'cpa' ]  = $calData[ 'cpa' ]; //CPA
                     $data[ 'cost' ] = $calData[ 'cost' ]; //獲得単価
@@ -150,7 +149,7 @@ class AccesstradeController extends DailyCrawlerController
                     $data[ $x ][ 'price' ]     = $site[ "occurredTotalReward" ];
                     
                     //$data[$x]['cpa']= $this->cpa($site['occurredTotalReward'] ,$site["actionCount"] , 1)
-                    $calData              = json_decode( json_encode( json_decode( $this->cpa( $site[ "actionCount" ], $site[ 'occurredTotalReward' ], 1 ) ) ), True );
+                    $calData              = json_decode( json_encode( json_decode( $this->dailySearchService->cpa( $site[ "actionCount" ], $site[ 'occurredTotalReward' ], 1 ) ) ), True );
                     $data[ $x ][ 'cpa' ]  = $calData[ 'cpa' ]; //CPA
                     $data[ $x ][ 'cost' ] = $calData[ 'cost' ]; //獲得単価
                     
@@ -161,8 +160,8 @@ class AccesstradeController extends DailyCrawlerController
                 } //$array_sites as $site
                 //var_dump( $data );
                 
-                $this->save_site( json_encode( $data ) );
-                $this->save_daily( json_encode( $atdata ) );
+                $this->dailySearchService->save_site( json_encode( $data ) );
+                $this->dailySearchService->save_daily( json_encode( $atdata ) );
             } //$product_infos as $product_info
             
         } );

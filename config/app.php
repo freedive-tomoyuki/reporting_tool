@@ -244,6 +244,8 @@ return [
         'Salvager' => Revolution\Salvager\Facades\Salvager::class,
         'PDF' => Barryvdh\Snappy\Facades\SnappyPdf::class,
         'SnappyImage' => Barryvdh\Snappy\Facades\SnappyImage::class,
+        'DailySearch' => App\Facades\DailySearchFacade::class,
+        'MonthlySearch' => App\Facades\MonthlySearchFacade::class,
     ],
 
 ];

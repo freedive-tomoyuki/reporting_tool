@@ -38,7 +38,7 @@ class A8Controller extends MonthlyCrawlerController
         '--no-sandbox'
         
         ];
-        $product_id = $this->BasetoProduct( 1, $product_base_id );
+        $product_id = $this->monthlySearchService->BasetoProduct( 1, $product_base_id );
         
         $client = new Client( new Chrome( $options ) );
         
@@ -79,7 +79,7 @@ class A8Controller extends MonthlyCrawlerController
                     foreach ( $selector_this as $key => $value ) {
 
                         if($key == 'approval_price'){
-                            $data[ $key ]   = $this->calc_approval_price(trim( $node->filter( $value )->text() ), 1);
+                            $data[ $key ]   = $this->monthlySearchService->calc_approval_price(trim( $node->filter( $value )->text() ), 1);
                         }else{
                             $data[ $key ]   = trim( $node->filter( $value )->text() );
                         }
@@ -91,8 +91,8 @@ class A8Controller extends MonthlyCrawlerController
                     foreach ( $selector_before as $key => $value ) {
                     
                         if($key == 'approval_price'){
-                            //$data[ $key ]   = $this->calc_approval_price(trim( $node->filter( $value )->text() ));
-                            $data[ 'last_' . $key ] = $this->calc_approval_price(trim( $node->filter( $value )->text() ), 1);
+                            //$data[ $key ]   = $this->monthlySearchService->calc_approval_price(trim( $node->filter( $value )->text() ));
+                            $data[ 'last_' . $key ] = $this->monthlySearchService->calc_approval_price(trim( $node->filter( $value )->text() ), 1);
                         }else{
                             $data[ 'last_' . $key ] = trim( $node->filter( $value )->text() );
                         }
@@ -109,9 +109,9 @@ class A8Controller extends MonthlyCrawlerController
                     
                 } );
                 
-                var_dump( $a8data );
+                //var_dump( $a8data );
                 
-                $this->save_monthly( json_encode( $a8data ) );
+                $this->monthlySearchService->save_monthly( json_encode( $a8data ) );
             } //$product_infos as $product_info
         } );
         

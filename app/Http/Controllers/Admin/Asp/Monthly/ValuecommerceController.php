@@ -40,7 +40,7 @@ class ValuecommerceController extends MonthlyCrawlerController
         '--disable-gpu',
         '--no-sandbox'
         ];
-        $product_id = $this->BasetoProduct( 3, $product_base_id );
+        $product_id = $this->monthlySearchService->BasetoProduct( 3, $product_base_id );
         
         $client = new Client( new Chrome( $options ) );
         
@@ -89,7 +89,7 @@ class ValuecommerceController extends MonthlyCrawlerController
                      'approval' => '#reportCompare > tbody > tr:nth-child(1) > td:nth-child(11)',
                     'approval_price' => '#reportCompare > tbody > tr:nth-child(1) > td:nth-child(20)' 
                 );
-                echo $crawler->html();
+                //echo $crawler->html();
                 /**
                 セレクターからフィルタリング
                 */
@@ -105,7 +105,7 @@ class ValuecommerceController extends MonthlyCrawlerController
                         
                         if ($key == 'approval_price') {
                         
-                            $data[ $key ]   = $this->calc_approval_price(
+                            $data[ $key ]   = $this->monthlySearchService->calc_approval_price(
                                 trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) ), 3);
                         
                         }else{
@@ -125,7 +125,7 @@ class ValuecommerceController extends MonthlyCrawlerController
                         }
                         if ($key == 'approval_price') {
 
-                            $data[ 'last_' . $key ] = $this->calc_approval_price(
+                            $data[ 'last_' . $key ] = $this->monthlySearchService->calc_approval_price(
                                 trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) ), 3);
                         
                         }else{
@@ -138,7 +138,7 @@ class ValuecommerceController extends MonthlyCrawlerController
                     return $data;
                 } );
                 
-                var_dump( $vcdata );
+                //var_dump( $vcdata );
                 //１ページ目クロール
                 //$pagination_page = $product_info->asp->lp2_url;
                 //$crawler_for_site = $browser->visit($pagination_page)->crawler();
@@ -183,15 +183,15 @@ class ValuecommerceController extends MonthlyCrawlerController
                     }
                     
                     $crawler_for_site = $browser->visit( 'https://mer.valuecommerce.ne.jp/affiliate_analysis/?condition%5BfromYear%5D=' . $y . '&condition%5BfromMonth%5D=' . $n . '&condition%5BtoYear%5D=' . $y . '&condition%5BtoMonth%5D=' . $n . '&condition%5BactiveFlag%5D=Y&allPage=1&notOmksPage=1&omksPage=1&pageType=all&page=1' )->crawler();
-                    echo $crawler_for_site->html();
+                    //echo $crawler_for_site->html();
                     
                     //　アクティブサイト数（https://mer.valuecommerce.ne.jp/affiliate_analysis/） 
                     $active = explode( "/", $crawler_for_site->filter( "#cusomize_wrap > span" )->text() );
-                    echo "active件数→" . $active[ 1 ] . "←active件数";
+                    //echo "active件数→" . $active[ 1 ] . "←active件数";
                     
                     //ページ数を計算　＝　アクティブサイト数 / ４０
                     $count_page = ( $active[ 1 ] > 40 ) ? ceil( $active[ 1 ] / 40 ) : 1;
-                    echo "count_page件数→" . $count_page . "←count_page件数";
+                    //echo "count_page件数→" . $count_page . "←count_page件数";
                     
                     //var_dump($crawler_for_site);
                     
@@ -212,15 +212,15 @@ class ValuecommerceController extends MonthlyCrawlerController
                         //}
                         //https://mer.valuecommerce.ne.jp/affiliate_analysis/?condition%5BfromYear%5D=2019&condition%5BfromMonth%5D=7&condition%5BtoYear%5D=2019&condition%5BtoMonth%5D=7&condition%5BactiveFlag%5D=Y&allPage=1&notOmksPage=1&omksPage=1&pageType=all&page=1
                         //今月分クロール
-                        echo 'https://mer.valuecommerce.ne.jp/affiliate_analysis/?condition%5BfromYear%5D=' . $y . '&condition%5BfromMonth%5D=' . $n . '&condition%5BtoYear%5D=' . $y . '&condition%5BtoMonth%5D=' . $n . '&condition%5BactiveFlag%5D=Y&allPage=1&notOmksPage=1&omksPage=1&pageType=all&page=' . $target_page;
+                        //echo 'https://mer.valuecommerce.ne.jp/affiliate_analysis/?condition%5BfromYear%5D=' . $y . '&condition%5BfromMonth%5D=' . $n . '&condition%5BtoYear%5D=' . $y . '&condition%5BtoMonth%5D=' . $n . '&condition%5BactiveFlag%5D=Y&allPage=1&notOmksPage=1&omksPage=1&pageType=all&page=' . $target_page;
 
                         $crawler_for_site = $browser->visit( 'https://mer.valuecommerce.ne.jp/affiliate_analysis/?condition%5BfromYear%5D=' . $y . '&condition%5BfromMonth%5D=' . $n . '&condition%5BtoYear%5D=' . $y . '&condition%5BtoMonth%5D=' . $n . '&condition%5BactiveFlag%5D=Y&allPage=1&notOmksPage=1&omksPage=1&pageType=all&page=' . $target_page )->crawler();
                         //echo 'https://mer.valuecommerce.ne.jp/affiliate_analysis/?condition%5BfromYear%5D='.$s_Y.'&condition%5BfromMonth%5D='.$s_M.'&condition%5BtoYear%5D='.$s_Y.'&condition%5BtoMonth%5D='.$s_M.'&condition%5BactiveFlag%5D=Y&allPage=1&notOmksPage=1&omksPage=1&pageType=all&page='.$target_page;
                         //最終ページのみ件数でカウント
                         $crawler_count    = ( $target_page == $count_page ) ? $active[ 1 ] - ( $page * 40 ) : 40;
-                        echo $crawler_count;
+                        //echo $crawler_count;
                         
-                        echo $target_page . "ページ目のcrawler_count＞＞" . $crawler_count . "</br>";
+                        //echo $target_page . "ページ目のcrawler_count＞＞" . $crawler_count . "</br>";
                         /**
                         １行ごと　クロール
                         */
@@ -232,7 +232,7 @@ class ValuecommerceController extends MonthlyCrawlerController
                             //){  
                             //1ページMAXの件数は４０件
                             //$count = ($page*40)+$i+$addtion;
-                            echo "count→" . $count . "←count";
+                            //echo "count→" . $count . "←count";
                             $data[ $count ][ 'product' ] = $product_info->id;
                             
                             //if($crawler_for_site->filter('#all > div.tablerline > table > tbody > tr:nth-child('.$i.') > td:nth-child(2)')->count() != 0){
@@ -272,7 +272,7 @@ class ValuecommerceController extends MonthlyCrawlerController
                                     
                                 } //$key == 'approval'
                                 elseif ($key == 'approval_price') {
-                                    $data[ $count ][ $key ] = $this->calc_approval_price(
+                                    $data[ $count ][ $key ] = $this->monthlySearchService->calc_approval_price(
                                         trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) ), 3);
                                 }
                                 else {
@@ -291,12 +291,12 @@ class ValuecommerceController extends MonthlyCrawlerController
                     } //$page = 0; $page < $count_page; $page++
                     //addtion = $active[1];
                 } //$x = 0; $x < 2; $x++
-                echo "<pre>";
-                //var_dump( $data );
-                echo "</pre>";
+                // echo "<pre>";
+                // var_dump( $data );
+                // echo "</pre>";
                 
-                $this->save_monthly( json_encode( $vcdata ) );
-                $this->save_site( json_encode( $data ) );
+                $this->monthlySearchService->save_monthly( json_encode( $vcdata ) );
+                $this->monthlySearchService->save_site( json_encode( $data ) );
                 
             } //$product_infos as $product_info
         } );

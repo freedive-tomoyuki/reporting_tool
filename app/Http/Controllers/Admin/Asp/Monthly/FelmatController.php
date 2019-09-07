@@ -54,7 +54,7 @@ class FelmatController extends MonthlyCrawlerController
         ];
         
         //案件の大本IDからASP別のプロダクトIDを取得
-        $product_id = $this->BasetoProduct( 6, $product_base_id );
+        $product_id = $this->monthlySearchService->BasetoProduct( 6, $product_base_id );
 
         // Chromeドライバーのインスタンス呼び出し
         $client = new Client( new Chrome( $options ) );
@@ -119,7 +119,7 @@ class FelmatController extends MonthlyCrawlerController
 
                             if($key == 'approval_price'){
                                 $data[ $key ]   = 
-                                    $this->calc_approval_price(
+                                    $this->monthlySearchService->calc_approval_price(
                                         trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) ) ,2
                                     );
                             }
@@ -167,16 +167,16 @@ class FelmatController extends MonthlyCrawlerController
                     ->crawler();
                     $selector ='body > div.wrapper > div.page-content.no-left-sidebar > div > div:nth-child(5) > div > div:nth-child(2) > div:nth-child(1) > div:nth-child(3) > div';
                     
-                    echo "アクティブ数";
-                    echo $active = intval(trim(preg_replace('/[^0-9]/', '', mb_substr($crawler->filter($selector)->text(), 0, 7))));
+                    //echo "アクティブ数";
+                    $active = intval(trim(preg_replace('/[^0-9]/', '', mb_substr($crawler->filter($selector)->text(), 0, 7))));
 
                     $page            = ceil($active / 20);
                     $count_last_page = $active % 20;
 
 
                     for ($i = 1; $page >= $i; $i++) {
-                        echo "ページ数page:" . $page;
-                        echo "ページ数i:" . $i;
+                        // echo "ページ数page:" . $page;
+                        // echo "ページ数i:" . $i;
                         $crawlCountPerOne = ($page == $i) ? $count_last_page : 20;
                         
                         //最後のページ
@@ -195,7 +195,7 @@ class FelmatController extends MonthlyCrawlerController
                         
                         for ($x = 1; $crawlCountPerOne >= $x; $x++) {
                             $felmat_site[$count]['product'] = $product_info->id;
-                            echo "CountX:" . $x;
+                            //echo "CountX:" . $x;
                             //$iPlus = $x ;
                             //echo 'iPlus'.$iPlus;
                             
@@ -225,15 +225,15 @@ class FelmatController extends MonthlyCrawlerController
                     
                 }
 
-                echo "<pre>";
-                var_dump($array);
-                var_dump($felmat_site);
-                echo "</pre>";
+                // echo "<pre>";
+                // var_dump($array);
+                // var_dump($felmat_site);
+                // echo "</pre>";
                 /*
                 サイトデータ・日次データ保存
                 */
-                $this->save_site( json_encode( $felmat_site ) );
-                $this->save_monthly( json_encode( $array ) );
+                $this->monthlySearchService->save_site( json_encode( $felmat_site ) );
+                $this->monthlySearchService->save_monthly( json_encode( $array ) );
             
             } //$product_infos as $product_info
         } );

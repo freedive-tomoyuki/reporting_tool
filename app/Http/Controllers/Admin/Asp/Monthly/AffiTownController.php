@@ -38,7 +38,7 @@ class AffiTownController extends MonthlyCrawlerController
         '--no-sandbox'
         ];
         
-        $product_id = $this->BasetoProduct( 7, $product_base_id );
+        $product_id = $this->monthlySearchService->BasetoProduct( 7, $product_base_id );
         
         $client = new Client( new Chrome( $options ) );
         
@@ -50,12 +50,12 @@ class AffiTownController extends MonthlyCrawlerController
             日付　取得
             */
             if ( date( 'Y/m/d' ) == date( 'Y/m/01' ) ) {
-                echo $start = date( "Ym", strtotime( "-2 month" ) );
-                echo $end = date( "Ym", strtotime( "-1 month" ) );
+                $start  = date( "Ym", strtotime( "-2 month" ) );
+                $end    = date( "Ym", strtotime( "-1 month" ) );
             } //date( 'Y/m/d' ) == date( 'Y/m/01' )
             else {
-                echo $start = date( "Ym", strtotime( "-1 month" ) );
-                echo $end = date( "Ym" );
+                $start  = date( "Ym", strtotime( "-1 month" ) );
+                $end    = date( "Ym" );
             }
             
             foreach ( $product_infos as $product_info ) {
@@ -67,7 +67,7 @@ class AffiTownController extends MonthlyCrawlerController
                 ->click( $product_info->asp->login_selector )
                 ->visit( "https://affi.town/adserver/report/mc/monthly.af?advertiseId=" . $product_info->asp_product_id . "&fromDate=" . $start . "&toDate=" . $end )
                 ->crawler();
-                echo $crawler->html();
+                //echo $crawler->html();
                 
                 /**
                 先月・今月のセレクタ
@@ -97,7 +97,7 @@ class AffiTownController extends MonthlyCrawlerController
                         
                         if($key == 'approval_price'){
                             $data[ $key ]   =
-                                $this->calc_approval_price(
+                                $this->monthlySearchService->calc_approval_price(
                                     trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) ), 7);
                                 
                         }else{
@@ -110,7 +110,7 @@ class AffiTownController extends MonthlyCrawlerController
                         
                         if( $key == 'approval_price' ){
                             $data[ 'last_' . $key ] = 
-                                $this->calc_approval_price(
+                                $this->monthlySearchService->calc_approval_price(
                                     trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) ),7);
 
                         }else{
@@ -130,7 +130,7 @@ class AffiTownController extends MonthlyCrawlerController
                     
                 } );
                 
-                var_dump( $affitown_data );
+                //var_dump( $affitown_data );
                 
                 
                 /**
@@ -199,7 +199,7 @@ class AffiTownController extends MonthlyCrawlerController
                             } //$key == 'site_name'
                             elseif($key == 'approval_price'){
                                 $affitown_site[ $active_count ][ $key ] = 
-                                        $this->calc_approval_price(
+                                        $this->monthlySearchService->calc_approval_price(
                                             trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) ),7 );
                             }
                             else {
@@ -215,8 +215,8 @@ class AffiTownController extends MonthlyCrawlerController
                     
                 } //$x = 0; $x < 2; $x++
                 //var_dump( $affitown_site );
-                $this->save_monthly( json_encode( $affitown_data ) );
-                $this->save_site( json_encode( $affitown_site ) );
+                $this->monthlySearchService->save_monthly( json_encode( $affitown_data ) );
+                $this->monthlySearchService->save_site( json_encode( $affitown_site ) );
             } //foreach ($product_infos as $product_info)
             
         } );
