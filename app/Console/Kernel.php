@@ -27,11 +27,11 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')
         //          ->hourly();
-        $schedule->call('App\Http\Controllers\Admin\DailyCrawlerController@dailytimer')->dailyAt('11:05');
+        $schedule->call('App\Http\Controllers\Admin\DailyCrawlerController@dailytimer')->dailyAt('16:04');
 
-        $schedule->call('App\Http\Controllers\Admin\MonthlyCrawlerController@monthlytimer')->dailyAt('11:20');
+        $schedule->call('App\Http\Controllers\Admin\MonthlyCrawlerController@monthlytimer')->dailyAt('16:14');
 
-        $schedule->call('App\Http\Controllers\Admin\MonthlyCrawlerController@calc_approval_rate_site')->dailyAt('11:30');
+        $schedule->call('App\Http\Controllers\Admin\MonthlyCrawlerController@calc_approval_rate_site')->dailyAt('16:20');
     }
 
     /**
