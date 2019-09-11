@@ -217,16 +217,16 @@
                         <td><?php echo $i; ?></td>
                         <td>{{ $product->name }}</td>
                         <td>{{ $product->date }}</td>
-                        <td>{{ $product->imp }}</td>
-                        <td>{{ $product->ctr }}</td>
-                        <td>{{ $product->click }}</td>
-                        <td>{{ $product->cvr }}</td>
-                        <td>{{ $product->cv }}</td>
-                        <td>{{ $product->estimate_cv  }}</td>
-                        <td>{{ $product->active }}</td>
-                        <td>{{ $product->partnership }}</td>
-                        <td>{{ $product->cost }}</td>
-                        <td>{{ $product->cpa }}</td>
+                        <td>{{ number_format($product->imp) }}</td>
+                        <td>{{ number_format($product->ctr) }}</td>
+                        <td>{{ number_format($product->click) }}</td>
+                        <td>{{ number_format($product->cvr) }}</td>
+                        <td>{{ number_format($product->cv) }}</td>
+                        <td>{{ number_format($product->estimate_cv)  }}</td>
+                        <td>{{ number_format($product->active) }}</td>
+                        <td>{{ number_format($product->partnership) }}</td>
+                        <td>{{ number_format($product->cost) }}</td>
+                        <td>{{ number_format($product->cpa) }}</td>
                         <?php $i++; ?>
                     </tr>
                     @endforeach

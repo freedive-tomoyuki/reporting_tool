@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Admin\Asp\Check;
 use Illuminate\Http\Request;
 use Laravel\Dusk\Browser;
 use App\Http\Controllers\Controller;
-//use App\Http\Controllers\Admin\DailyCrawlerController;
 use Symfony\Component\DomCrawler\Crawler;
 use Revolution\Salvager\Client;
 use Revolution\Salvager\Drivers\Chrome;
@@ -20,7 +19,7 @@ class A8Controller extends Controller
 {
     //public $result ;
 
-    public function a8( $id , $pass , $product, $sponsor ) //OK
+    public function a8( $id , $pass , $product, $sponsor = null ) //OK
     {
         
         Browser::macro('crawler', function () {
@@ -46,22 +45,26 @@ class A8Controller extends Controller
             
             $asp_info = Asp::where('id','=',1)->get()->toArray();
             //echo $asp_info;
-                $crawler_test = $browser->visit( $asp_info[0]['login_url'] )
-                    ->type( $asp_info[0]['login_key'], $id )
-                    ->type( $asp_info[0]['password_key'], $pass )
-                    ->click( $asp_info[0]['login_selector'] )
-                    ->visit( $asp_info[0]['lp1_url'] . $product )
-                    ->crawler()->getUri();
+                try{
+                    $crawler_test = $browser->visit( $asp_info[0]['login_url'] )
+                        ->type( $asp_info[0]['login_key'], $id )
+                        ->type( $asp_info[0]['password_key'], $pass )
+                        ->click( $asp_info[0]['login_selector'] )
+                        ->visit( $asp_info[0]['lp1_url'] . $product )
+                        ->crawler()->getUri();
 
-                if (strpos($crawler_test,'ecQuickReportAction') !== false ){
-                    $result = 1;
-                    //var_dump($result);
-                }else{
-                    $result = 0;
-                    //var_dump($result);
+                    if (strpos($crawler_test,'ecQuickReportAction') !== false ){
+                        $result = 1;
+                        //var_dump($result);
+                    }else{
+                        $result = 0;
+                        //var_dump($result);
+                    }
+                    return $result;
+
+                }catch ( Exception $ex ) {
+                    return $result = 0;
                 }
-                return $result;
-            //var_dump($crawler_test);
         });
         //var_dump($result);
         return $result;

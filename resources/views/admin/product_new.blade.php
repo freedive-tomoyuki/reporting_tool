@@ -31,9 +31,9 @@
                                 <input id="name" type="text" class="form-control{{ $errors->has('name') ? ' is-invalid' : '' }}" name="name" value="{{ old('name') }}"  autofocus>
 
                                 @if ($errors->has('name'))
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $errors->first('name') }}</strong>
-                                    </span>
+                                    <div class="alert alert-danger" role="alert">
+                                        {{ $errors->first('name') }}
+                                    </div>
                                 @endif
                             </div>
                         </div>
@@ -55,9 +55,9 @@
                                             @endforeach
                                 </select>
                                 @if ($errors->has('product'))
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $errors->first('product') }}</strong>
-                                    </span>
+                                    <div class="alert alert-danger" role="alert">
+                                        {{ $errors->first('product') }}
+                                    </div>
                                 @endif
                             </div>
                         </div>
@@ -77,9 +77,9 @@
                                             @endforeach
                                 </select>
                                 @if ($errors->has('asp_id'))
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $errors->first('asp_id') }}</strong>
-                                    </span>
+                                    <div class="alert alert-danger" role="alert">
+                                        {{ $errors->first('asp_id') }}
+                                    </div>
                                 @endif
                             </div>
                         </div>
@@ -87,12 +87,12 @@
                             <label for="loginid" class="col-md-4 col-form-label text-md-right" >ログインID<font style="color:red">*</font></label>
 
                             <div class="col-md-6">
-                                <input id="loginid" type="text" class="form-control{{ $errors->has('loginid') ? ' is-invalid' : '' }}" name="loginid" value=""  v-model="login">
+                                <input id="loginid" type="text" class="form-control{{ $errors->has('loginid') ? ' is-invalid' : '' }}" name="loginid" value="{{ old('loginid') }}"  v-model="login">
 
                                 @if ($errors->has('loginid'))
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $errors->first('loginid') }}</strong>
-                                    </span>
+                                    <div class="alert alert-danger" role="alert">
+                                        {{ $errors->first('loginid') }}
+                                    </div>
                                 @endif
                             </div>
                         </div>
@@ -101,7 +101,8 @@
                             <label for="password" class="col-md-4 col-form-label text-md-right" >パスワード<font style="color:red">*</font></label>
 
                             <div class="col-md-6">
-                                <input id="password" type="password" class="form-control" name="password" value=""  v-model="password">
+                                <input id="password" type="password" class="form-control" name="password"  v-model="password">
+
                             </div>
                         </div>
                         <div class="form-group row">
@@ -110,8 +111,8 @@
                         </label>
 
                             <div class="col-md-6">
-                                <input id="asp_sponsor_id" type="text" class="form-control" name="asp_sponsor_id" v-model="sponsor" v-if="any" >
-                                <input id="asp_sponsor_id" type="text" class="form-control" name="asp_sponsor_id" v-model="sponsor" v-if="required" required>
+                                <input id="asp_sponsor_id" type="text" class="form-control" name="asp_sponsor_id" v-model="sponsor" v-if="any" value="{{ old('asp_sponsor_id') }}" >
+                                <input id="asp_sponsor_id" type="text" class="form-control" name="asp_sponsor_id" v-model="sponsor" v-if="required" value="{{ old('asp_sponsor_id') }}" required>
 
                             </div>
                         </div>
@@ -121,23 +122,24 @@
                         </label>
 
                             <div class="col-md-6">
-                                <input id="asp_product_id" type="text" class="form-control" name="asp_product_id" v-model="product" v-if="any">
-                                <input id="asp_product_id" type="text" class="form-control" name="asp_product_id" v-model="product" v-if="required" required>
+                                <input id="asp_product_id" type="text" class="form-control" name="asp_product_id" v-model="product" v-if="any" value="{{ old('asp_product_id') }}">
+                                <input id="asp_product_id" type="text" class="form-control" name="asp_product_id" v-model="product" v-if="required" value="{{ old('asp_product_id') }}" required>
                             </div>
                         </div>
-                        <div class="form-group row mb-0">
-                            <div class="col-md-2 offset-md-4">
-                                <button type="submit" class="btn btn-primary" v-if="after">
+                        <div class="col-md-2 offset-md-4">
+                                <button type="submit" class="btn btn-primary" v-if="ok">
                                     {{ __('Register') }}
                                 </button>
-                                <button type="button" id="checkStart" class="btn btn-success" v-if="before" v-on:click="checkStart">
+                                <button type="button" id="checkStart" class="btn btn-success" v-else v-on:click="checkStart">
                                     {{ __('Check') }}
                                 </button>
-                                <div class="pull-right"><item-component v-show="loading"></item-component></div>
-                                
-                            </div>
+                                <div class="pull-right">
+                                    <item-component v-show="loading"></item-component>
+                                </div>
                         </div>
-
+                        <div class="col-md-8 offset-md-6">
+                            <div class="alert alert-danger " v-if="errorMessage">ID/PASSWORDが異なります</div>
+                        </div>
                     </form>
 
 
@@ -168,8 +170,8 @@
                 required: false,
                 any1: true,
                 required1: false,
-                before: true,
-                after: false,
+                ok: false,
+                errorMessage: false,
                 login:'',
                 password:'',
                 product:'',
@@ -229,11 +231,11 @@
                         console.log(res.data);
                         this.loading = false;
                         if(res.data == 1){
-                            this.before = false;
-                            this.after = true;
+                            this.ok = true;
+                            this.errorMessage = false;
                         }else{
-                            this.before = true;
-                            this.after = false;
+                            this.ok = false;
+                            this.errorMessage = true;
                         }
                     }).catch(error => { 
                         this.loading = false;

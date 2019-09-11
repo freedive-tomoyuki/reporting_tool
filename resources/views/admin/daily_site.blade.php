@@ -210,13 +210,13 @@
                         <td>{{ $product->date }}</td>
                         <td>{{ $product->media_id }}</td>
                         <td>{{ $product->site_name }}</td>
-                        <td>{{ $product->imp }}</td>
-                        <td>{{ $product->ctr }}</td>
-                        <td>{{ $product->click }}</td>
-                        <td>{{ $product->cvr }}</td>
-                        <td>{{ $product->cv }}</td>
-                        <td>{{ $product->estimate_cv  }}</td>
-                        <th>{{ $product->cost }}</th>
+                        <td>{{ number_format($product->imp) }}</td>
+                        <td>{{ number_format($product->ctr) }}</td>
+                        <td>{{ number_format($product->click) }}</td>
+                        <td>{{ number_format($product->cvr) }}</td>
+                        <td>{{ number_format($product->cv) }}</td>
+                        <td>{{ number_format($product->estimate_cv)  }}</td>
+                        <th>{{ number_format($product->cost) }}</th>
                         <th><?php
                           echo $val;
                         ?></th>

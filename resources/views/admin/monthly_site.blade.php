@@ -201,15 +201,15 @@
                         <td>{{ $product->name }}</td>
                         <td>{{ $product->media_id }}</td>
                         <td>{{ $product->site_name }}</td>
-                        <td>{{ $product->imp }}</td>
-                        <td>{{ $product->ctr }}</td>
-                        <td>{{ $product->click }}</td>
-                        <td>{{ $product->cvr }}</td>
-                        <td>{{ $product->cv }}</td>
-                        <td>{{ $product->cost }}</td>
-                        <td>{{ $product->approval }}</td>
-                        <td>{{ $product->approval_price }}</td>
-                        <td>{{ $product->approval_rate }}%</td>
+                        <td>{{ number_format($product->imp) }}</td>
+                        <td>{{ number_format($product->ctr) }}</td>
+                        <td>{{ number_format($product->click) }}</td>
+                        <td>{{ number_format($product->cvr) }}</td>
+                        <td>{{ number_format($product->cv) }}</td>
+                        <td>{{ number_format($product->cost) }}</td>
+                        <td>{{ number_format($product->approval) }}</td>
+                        <td>{{ number_format($product->approval_price) }}</td>
+                        <td>{{ number_format($product->approval_rate) }}%</td>
                         <td><?php
                           echo $val;
                         ?></td>

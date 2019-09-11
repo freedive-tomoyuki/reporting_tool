@@ -11,7 +11,7 @@
         <h2 class="card-header">案件編集</h2>
     </div>
 </div>
-<div class="container" id="app">
+<div class="container">
     <div class="row justify-content-center">
         <div class="col-md-12">
             <div class="card">
@@ -28,9 +28,9 @@
                                 <input id="name" type="text" class="form-control{{ $errors->has('name') ? 'is-invalid' : '' }}" name="name" value="{{ $products[0]['product'] }}"  autofocus>
 
                                 @if ($errors->has('name'))
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $errors->first('name') }}</strong>
-                                    </span>
+                                    <div class="alert alert-danger" role="alert">
+                                        {{ $errors->first('name') }}
+                                    </div>
                                 @endif
                             </div>
                         </div>
@@ -52,9 +52,9 @@
                                             @endforeach
                                 </select>
                                 @if ($errors->has('product'))
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $errors->first('product') }}</strong>
-                                    </span>
+                                    <div class="alert alert-danger" role="alert">
+                                        {{ $errors->first('product') }}
+                                    </div>
                                 @endif
                             </div>
                         </div>
@@ -64,6 +64,7 @@
                             <div class="col-md-6">
                                 <select class="form-control" name="asp_id"  v-model="selected" v-on:change="switchAsp">
                                   <option value=""> -- </option>
+                                  {{ $products[0]['asp_id'] }}
                                             @foreach($asps as $asp)
                                               <option value="{{ $asp -> id }}"
                                                 @if( $products[0]['asp_id'] == $asp->id  )
@@ -74,9 +75,9 @@
                                             @endforeach
                                 </select>
                                 @if ($errors->has('asp_id'))
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $errors->first('asp_id') }}</strong>
-                                    </span>
+                                    <div class="alert alert-danger" role="alert">
+                                        {{ $errors->first('asp_id') }}
+                                    </div>
                                 @endif
                             </div>
                         </div>
@@ -85,12 +86,12 @@
                             <label for="loginid" class="col-md-4 col-form-label text-md-right">ログインID<font style="color:red">*</font></label>
 
                             <div class="col-md-6">
-                                <input id="loginid" type="text" class="form-control{{ $errors->has('loginid') ? ' is-invalid' : '' }}" name="loginid" value="{{  $products[0]['login_value'] }}">
+                                <input id="loginid" type="text" class="form-control{{ $errors->has('loginid') ? ' is-invalid' : '' }}" name="loginid" value="{{  $products[0]['login_value'] }}"  v-model="login">
 
                                 @if ($errors->has('loginid'))
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $errors->first('loginid') }}</strong>
-                                    </span>
+                                    <div class="alert alert-danger" role="alert">
+                                        {{ $errors->first('loginid') }}
+                                    </div>
                                 @endif
                             </div>
                         </div>
@@ -99,7 +100,7 @@
                             <label for="password" class="col-md-4 col-form-label text-md-right">パスワード<font style="color:red">*</font></label>
 
                             <div class="col-md-6">
-                                <input id="password" type="password" class="form-control" name="password" value="{{ $products[0]['password_value'] }}" >
+                                <input id="password" type="password" class="form-control" name="password" value="{{ $products[0]['password_value'] }}" v-model="password">
                             </div>
                         </div> 
                         
@@ -110,8 +111,8 @@
 
                             <div class="col-md-6">
                                 
-                                <input id="asp_sponsor_id" type="text" class="form-control" name="asp_sponsor_id" v-if="any" value="{{ $products[0]['asp_sponsor_id'] }}">
-                                <input id="asp_sponsor_id" type="text" class="form-control" name="asp_sponsor_id" v-if="required"   value="{{ $products[0]['asp_sponsor_id'] }}" required>
+                                <input id="asp_sponsor_id" type="text" class="form-control" name="asp_sponsor_id" v-model="sponsor" v-if="any" value="{{ $products[0]['asp_sponsor_id'] }}">
+                                <input id="asp_sponsor_id" type="text" class="form-control" name="asp_sponsor_id" v-model="sponsor" v-if="required"   value="{{ $products[0]['asp_sponsor_id'] }}" required>
                             </div>
                         </div>
                         <div class="form-group row">
@@ -121,18 +122,34 @@
 
                             <div class="col-md-6">
                                 
-                                <input id="asp_product_id" type="text" class="form-control" name="asp_product_id" v-if="any1" value="{{ $products[0]['asp_product_id'] }}">
-                                <input id="asp_product_id" type="text" class="form-control" name="asp_product_id" v-if="required1" value="{{ $products[0]['asp_product_id'] }}" required>
+                                <input id="asp_product_id" type="text" class="form-control" name="asp_product_id" v-model="product" v-if="any1" value="{{ $products[0]['asp_product_id'] }}">
+                                <input id="asp_product_id" type="text" class="form-control" name="asp_product_id" v-model="product" v-if="required1" value="{{ $products[0]['asp_product_id'] }}" required>
                             </div>
                         </div>
                         <input type="hidden" name="id" value="{{ $products[0]['id'] }}">
-                        <div class="form-group row mb-0">
+<!--                         <div class="form-group row mb-0">
                             <div class="col-md-6 offset-md-4">
                                 <button type="submit" class="btn btn-primary">
                                     {{ __('Edit') }}
                                 </button>
                             </div>
+                        </div> -->
+                        
+                        <div class="col-md-2 offset-md-4">
+                                <button type="submit" class="btn btn-primary" v-if="ok">
+                                    {{ __('Edit') }}
+                                </button>
+                                <button type="button" id="checkStart" class="btn btn-success" v-else v-on:click="checkStart">
+                                    {{ __('Check') }}
+                                </button>
+                                <div class="pull-right">
+                                    <item-component v-show="loading"></item-component>
+                                </div>
                         </div>
+                        <div class="col-md-8 offset-md-6">
+                            <div class="alert alert-danger " v-if="errorMessage">ID/PASSWORDが異なります</div>
+                        </div>
+
                     </form>
                 </div>
             </div>
@@ -148,6 +165,9 @@
         var ComponentB = {
             template: "<font style='color:red'>*</font>",
         }
+        var ItemComponent = {
+            template: "<div class='loader'>Loading...</div>",
+        }
         new Vue({
             el: '#app',
             data: {
@@ -158,10 +178,19 @@
                 required: false,
                 any1: true,
                 required1: false,
+                ok: false,
+                errorMessage: false,
+                login: '{{ $products[0]["login_value"] }}',
+                password: '{{ $products[0]["password_value"] }}',
+                product: '{{ $products[0]["asp_product_id"] }}',
+                sponsor: '{{ $products[0]["asp_sponsor_id"] }}',
+                loading: false,
+                
             },
             components: {
               'component_sponsor': ComponentA,
               'component_product': ComponentB,
+              'item-component': ItemComponent
             },
             methods: {
                 switchAsp : function() {
@@ -192,6 +221,32 @@
                     })
                     .then(response => { 
                         console.log(response)
+                    })
+                },
+                checkStart:function(){
+                    //this.login = 
+                    console.log(this);
+                    this.loading = true;
+                    axios.post('/admin/product/check',
+                    {
+                        login:this.login,
+                        password:this.password,
+                        asp_id:this.selected,
+                        sponsor:this.sponsor,
+                        product:this.product,
+                    }
+                    ).then((res)=>{
+                        console.log(res.data);
+                        this.loading = false;
+                        if(res.data == 1){
+                            this.ok = true;
+                            this.errorMessage = false;
+                        }else{
+                            this.ok = false;
+                            this.errorMessage = true;
+                        }
+                    }).catch(error => {
+                        this.loading = false;
                     })
                 }
             }

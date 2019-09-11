@@ -55,19 +55,33 @@ class CheckerController extends Controller
 
     public function check(Request $request){
 
+          $result = 0;
           $aspRow = array();
           $asp_array = array();
+          //var_dump($request);
+          //echo "sid";
 
-          $asp_name = Asp::select('name')->where('id', '=' ,$request->asp_id)->get()->toArray();
-          //$asp_array = (json_decode($asp_name,true));
-          $result = 1;
-          //var_dump($asp_name[0]["name"]);
-          $functionName = str_replace(' ', '' ,mb_strtolower($asp_name[0]["name"]));
-          $className = 'App\Http\Controllers\Admin\Asp\Check'. '\\'.str_replace(' ', '' ,$asp_name[0]["name"]).'Controller';
-          $run = new $className();
-          //var_dump($run);
-            //echo __NAMESPACE__;
-          $result = $run->{$functionName}($request->login ,$request->password,$request->product,$request->sponsor );
+          //echo $request->login;
+          //echo $request->password; 
+          //echo $request->selected;
+
+          if(($request->login != '') && ($request->password != '') && ($request->asp_id != '') ){
+
+              //echo "aa";
+              $asp_name = Asp::select('name')->where('id', '=' ,$request->asp_id)->get()->toArray();
+              $functionName = str_replace(' ', '' ,mb_strtolower($asp_name[0]["name"]));
+
+              $className = 'App\Http\Controllers\Admin\Asp\Check'. '\\'.str_replace(' ', '' ,$asp_name[0]["name"]).'Controller';
+              $run = new $className();
+          
+              $pid = ($request->product != '')? $request->product : '' ;
+              $sid = ($request->sponsor != '')? $request->sponsor : '' ;
+              
+              $result = $run->{$functionName}($request->login ,$request->password, $pid ,$sid );
+          
+          }else{
+            $result = 0;
+          }
           //var_dump($result);
           return $result;
 

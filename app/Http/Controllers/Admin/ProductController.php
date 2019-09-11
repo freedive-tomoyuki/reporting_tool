@@ -59,7 +59,6 @@ class ProductController extends Controller
     }
 
     public function create_product(StoreProduct $request) {
-
         $product = new Product();
         $product->product = $request->name;
         $product->asp_id = $request->asp_id;
@@ -81,7 +80,6 @@ class ProductController extends Controller
     }
     //各親案件の追加実装
     public function create_product_base(StoreProductBase $request) {
-
         $product_base = new ProductBase();
         $product_base->product_name = $request->name;
         
@@ -104,7 +102,7 @@ class ProductController extends Controller
         ->update([
             'product_name' => $request->name,
         ]);
-        echo $id;
+
         Schedule::where('id',$id)
         ->update([
             'killed_flag' => $request->schedule,
@@ -134,6 +132,7 @@ class ProductController extends Controller
     }
     //各案件の編集実装
     public function update_product($id,StoreProduct $request) {
+
         Product::where('id',$id)
         ->update([
             'product' => $request->name,
@@ -162,6 +161,7 @@ class ProductController extends Controller
 
     //各案件の編集画面
     public function edit_product($asp_id,$product_base_id) {
+ 
         $product_bases = ProductBase::all();
         $asps = Asp::all();
         $user = Auth::user();
