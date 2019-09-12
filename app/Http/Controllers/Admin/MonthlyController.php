@@ -160,16 +160,16 @@ class MonthlyController extends Controller
                     if(!empty($searchdate)){
                         $products->where('monthlydatas.date', 'LIKE' , "%".$searchdate."%");
                     }
-                    echo $id;
-                    echo $searchdate;
-                    echo $psql = $products->toSql();
+                    //echo $id;
+                    //echo $searchdate;
+                    //echo $psql = $products->toSql();
 
                     $products = $products->get();//->toArray();
 
-                    echo '<pre>';
+                    //echo '<pre>';
 
-                    var_dump($products->toArray());
-                    echo '</pre>';
+                    //var_dump($products->toArray());
+                    //echo '</pre>';
 
          /**
             当月の実績値トータル
