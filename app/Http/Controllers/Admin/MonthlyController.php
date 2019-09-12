@@ -175,8 +175,11 @@ class MonthlyController extends Controller
             当月の実績値トータル
         */
 
-        $productsTotals = Monthlydata::select(DB::raw("date, product_id,sum(imp) as total_imp,sum(click) as total_click,sum(cv) as total_cv,sum(active) as total_active,sum(partnership) as total_partnership,sum(price) as total_price ,sum(cost) as total_cost,sum(approval) as total_approval, sum(approval_price) as total_approval_price"))
-                   ->join('products','monthlydatas.product_id','=','products.id');
+        $productsTotals = Monthlydata::select(DB::raw("date, sum(imp) as total_imp,sum(click) as total_click,sum(cv) as total_cv,sum(active) as total_active,sum(partnership) as total_partnership,sum(price) as total_price ,sum(cost) as total_cost,sum(approval) as total_approval, sum(approval_price) as total_approval_price, sum(last_cv) as total_last_cv"))
+                    ->join('products','monthlydatas.product_id','=','products.id')
+                    ->join('asps','products.asp_id','=','asps.id')
+                    ->leftjoin(DB::raw("(select `cv` as last_cv, `product_id` from `monthlydatas` inner join `products` on `monthlydatas`.`product_id` = `products`.`id` where `product_base_id` = ".$id." and `monthlydatas`.`date` like '".$search_last_date."') AS last_month"), 'monthlydatas.product_id','=','last_month.product_id');
+
                     if(!empty($id)){
                         $productsTotals->where('products.product_base_id', $id);
                     }
