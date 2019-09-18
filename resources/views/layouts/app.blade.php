@@ -34,7 +34,7 @@
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span></button>
 				<a class="navbar-brand" href="#"><span>Report Tool</span></a>
-				<a href="/admin/login" class="btn btn-link text-md-right">管理用</a>
+				<!-- <a href="/admin/login" class="btn btn-link text-md-right">管理用</a> -->
 				<!-- <ul class="nav navbar-top-links navbar-right">
 					<li class="dropdown"><a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
 						<em class="fa fa-bell"></em><span class="label label-info"></span>
@@ -105,6 +105,12 @@
 					</a></li>
 				</ul>
 			</li>
+			<li 
+			@if( strpos( Request::path() ,'export') !== false)
+				class="active"
+			@endif
+			><a href="{{ route('csv.export') }}"><em class="fas fa-file-export">&nbsp;</em> エクスポート</a></li>
+			
 			<li>
 				<a class="dropdown-item" href="{{ route('logout') }}"
                                        onclick="event.preventDefault();

@@ -1,4 +1,4 @@
-    @extends('layouts.appnew')
+@extends('layouts.admin')
 
 @section('content')
 <div class="row">
@@ -50,7 +50,7 @@
                 </form>
                 <div>
                 <hr>
-                    <a href='/admin/DownloadTemplateCsv'><i class="fas fa-download">&nbsp;</i>CSVフォーマットをダウンロードする</a></br>
+                    <u><a href='/admin/DownloadTemplateCsv'><i class="fas fa-download">&nbsp;</i>CSVフォーマットをダウンロードする</a></br></u>
                     ※【ASP】×【日別】✕【案件】の件数をご記載してください。</br>
                     ※ASPIDは、ASP管理をご参照ください。</br>
                     ※案件IDは、広告主管理をご参照ください。</br>
@@ -74,7 +74,7 @@
 
                 </form>
                 <hr>
-                    <a href='/admin/DownloadTemplateCsvSite'><i class="fas fa-download">&nbsp;</i>CSVフォーマットをダウンロードする</a></br>
+                    <u><a href='/admin/DownloadTemplateCsvSite'><i class="fas fa-download">&nbsp;</i>CSVフォーマットをダウンロードする</a></br></u>
                     ※【ASP】✕【サイト】✕【月別】×【案件】の件数をご記載してください。</br>
                     ※ASPIDは、ASP管理をご参照ください。</br>
                     ※案件IDは、広告主管理をご参照ください。</br>

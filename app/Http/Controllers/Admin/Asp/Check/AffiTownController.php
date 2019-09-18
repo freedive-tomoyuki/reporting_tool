@@ -58,10 +58,12 @@ class AffiTownController extends Controller
                         ->type( $asp_info[0]['login_key'], $id )
                         ->type( $asp_info[0]['password_key'], $pass )
                         ->click( $asp_info[0]['login_selector'] )
-                        ->visit( $asp_info[0]['lp1_url'] )
-                        ->crawler()->getUri();
+                        //->visit( $asp_info[0]['lp1_url'] )
+                        ->crawler();
 
-                    if (strpos($crawler,'merchant') !== false ){
+                        $text = $crawler->filter('title')->text();
+
+                    if (strpos($text,'広告主管理画面') !== false ){
                         $result = 1;
                         //var_dump($result);
                     }else{

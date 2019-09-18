@@ -122,13 +122,13 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth:admin'], function() {
     function() {
         $data = array();
         $csvHeader = ['日付','案件ID','ASPID','Imp', 'Click','CV','SiteID','Site名','発生金額','承認件数','承認金額'];
-        return CSV::download($data, $csvHeader, 'template_daily.csv');
+        return CSV::download($data, $csvHeader, 'template_monthly_site.csv');
     });
     Route::get('DownloadTemplateCsv',
     function() {
         $data = array();
         $csvHeader = ['日付','案件ID','ASPID','Imp','Click','CV','アクティブ','提携数','発生金額','承認件数','承認金額'];
-        return CSV::download($data, $csvHeader, 'template_monthly_site.csv');
+        return CSV::download($data, $csvHeader, 'template_daily.csv');
     });
     Route::get('excel_test','Admin\ExportController@excel');
     //PDF出力
@@ -166,21 +166,55 @@ Route::group(['middleware' => 'auth:user'], function() {
     Route::get( 'monthly_result_site','MonthlyController@monthly_result_site')->name('monthly_result_site');
     Route::post( 'monthly_result_site','MonthlyController@monthly_result_site_search');
 
+    
+    //CSVエクスポート
+    Route::get('csv/{id}/{s_date?}/{e_date?}','CsvExportController@downloadDaily');
+    Route::get('csv_site/{id}/{s_date?}/{e_date?}','CsvExportController@downloadSiteDaily');
+    Route::get('csv_monthly/{id}/{month?}','CsvExportController@downloadMonthly');
+    Route::get('csv_monthly_estimate/{id}','CsvExportController@downloadMonthlyEstimate');
+    Route::get('csv_monthly_site/{id}/{month?}','CsvExportController@downloadSiteMonthly');
+
+    //エクスポートページ
+    Route::get('export','ExportController@index')->name('csv.export');
+    Route::post('export','ExportController@selected');
+
+    //テンプレートダウンロード
+    Route::get('DownloadTemplateCsvSite',
+    function() {
+        $data = array();
+        $csvHeader = ['日付','案件ID','ASPID','Imp', 'Click','CV','SiteID','Site名','発生金額','承認件数','承認金額'];
+        return CSV::download($data, $csvHeader, 'template_monthly_site.csv');
+    });
+
+    Route::get('DownloadTemplateCsv',
+    function() {
+        $data = array();
+        $csvHeader = ['日付','案件ID','ASPID','Imp','Click','CV','アクティブ','提携数','発生金額','承認件数','承認金額'];
+        return CSV::download($data, $csvHeader, 'template_daily.csv');
+    });
+    
+    //PDF出力
+    //今月・昨月分 済
+    Route::get('pdf/monthly/{id?}/{month?}','ExportController@pdf' );
+    //年間＋ASP別 済
+    Route::get('pdf/yearly/{id?}','ExportController@pdf_yearly' );
+
+    Route::get('pdf/three_month/{id?}/{term?}','ExportController@pdf_yearly' );
+    
+    Route::get('pdf/media/{id?}/{month?}','ExportController@pdf_media' );
 });
+
 Route::get('api/getRequiredFlag/{id}',function($id){
     
     $RequiredFlag = DB::table('asps')->select('sponsor_id_require_flag','product_id_require_flag')->where('id', $id)->get();
     return $RequiredFlag;
             //return ['sponsor_id_require_falg' => request('title'),'product_id_require_falg' => request('content')];
 });
+
 //CSV出力
 Route::get('csv/{id}/{s_date?}/{e_date?}','DailyController@downloadCSV');
 Route::get('csv_site/{id}/{s_date?}/{e_date?}','DailyController@downloadSiteCSV');
 Route::get('dailycal','EstimateController@dailyCal');
-Route::get('dd',function(){
-    dd(app());
-    });
-
 
 /*
 //ASP一覧・詳細

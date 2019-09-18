@@ -1,4 +1,4 @@
-    @extends('layouts.admin')
+    @extends('layouts.app')
 
 @section('content')
 <div class="row">
@@ -20,33 +20,33 @@
         <div class="panel panel-default">
             <div class="panel-heading">エクスポート</div>
             <div class="panel-body">
-                    <form role="form" enctype="multipart/form-data" method="post" action="/admin/export">
-                        {{ csrf_field() }}
+                    <form role="form" enctype="multipart/form-data" method="post" action="/export">
                         <div class="form-group form-inline">
                             <label>
                             案件選択
                             </label>
+                            <fieldset disabled>
                             <select class="form-control" name="product" >
                                     <option value=""> -- </option>
                                     @foreach($product_bases as $product_base)
                                       <option value="{{ $product_base -> id }}"
-                                        @if( old('product'))
-                                          @if( old('product') == $product_base->id  )
+                                        @if( $user->product_base_id )
+                                          @if( $user->product_base_id == $product_base->id  )
                                             selected
                                           @endif
                                         @else
-                                          @if( $product_base->id == 3 )
+                                          @if( $product_base->id == $user->product_base_id )
                                             selected
                                           @endif
                                         @endif
                                         >{{ $product_base -> product_name }}</option>
                                     @endforeach
                             </select>
-                            <button type="submit" class="btn btn-default">更新</button> 
+                            </fieldset>
+                            <!-- <button type="submit" class="btn btn-default">更新</button> --> 
                     
                         </div>
                     </form> 
-                    @if(old('product'))
                     <hr>
                         <div class="form-group form-inline ">
                             <label>
@@ -54,62 +54,58 @@
                             </label>
                         </div>
                         <div class="form-group">
-                            <label class="col-sm-2 control-label">年間</label>
-                                <div class="col-sm-10">
+                            <label class="col-sm-3 control-label">年間</label>
+                                <div class="col-sm-9">
                                     <div class="text-left form-control-static">
-                                        <a href='/admin/pdf/yearly/{{ old('product') }}' class="btn btn-success btn-sm" role="button"><i class="fas fa-download">&nbsp;</i>PDF</a>
+                                        <a href='/pdf/yearly/{{ $user->product_base_id }}' class="btn btn-success btn-sm" role="button"><i class="fas fa-download">&nbsp;</i>PDF</a>
                                     </div>
                                 </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-sm-2 control-label">直近３ヶ月</label>
-                                <div class="col-sm-10">
+                            <label class="col-sm-3 control-label">直近３ヶ月</label>
+                                <div class="col-sm-9">
                                     <div class="text-left form-control-static">
-                                        <a href='/admin/pdf/three_month/{{ old('product') }}/term' class="btn btn-success btn-sm" role="button"><i class="fas fa-download">&nbsp;</i>PDF</a>
+                                        <a href='/pdf/three_month/{{ $user->product_base_id }}/term' class="btn btn-success btn-sm" role="button"><i class="fas fa-download">&nbsp;</i>PDF</a>
                                     </div>
                                 </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-sm-2 control-label">昨月の全体成果</label>
-                                <div class="col-sm-10">
+                            <label class="col-sm-3 control-label">昨月の全体成果</label>
+                                <div class="col-sm-9">
                                     <div class="text-left form-control-static">
-                                        <a href='/admin/pdf/monthly/{{ old('product') }}/one_month' class="btn btn-success btn-sm" role="button"><i class="fas fa-download">&nbsp;</i>PDF</a>
+                                        <a href='/pdf/monthly/{{ $user->product_base_id }}/one_month' class="btn btn-success btn-sm" role="button"><i class="fas fa-download">&nbsp;</i>PDF</a>
                                     </div>
                                 </div>
-                            </label>
                         </div>
                         <div class="form-group">
-                            <label class="col-sm-2 control-label">今月の全体成果</label>
-                                <div class="col-sm-10">
+                            <label class="col-sm-3 control-label">今月の全体成果</label>
+                                <div class="col-sm-9">
                                     <div class="text-left form-control-static">
-                                        <a href='/admin/pdf/monthly/{{ old('product') }}' class="btn btn-success btn-sm" role="button"><i class="fas fa-download">&nbsp;</i>PDF</a>
+                                        <a href='/pdf/monthly/{{ $user->product_base_id }}' class="btn btn-success btn-sm" role="button"><i class="fas fa-download">&nbsp;</i>PDF</a>
                                     </div>
                                 </div>
-                            </label>
                         </div>
+
                         <div class="form-group">
-                            <label class="col-sm-2 control-label">昨月のメディア別成果</label>
-                                <div class="col-sm-10">
+                            <label class="col-sm-3 control-label">昨月のメディア別成果</label>
+                                <div class="col-sm-9">
                                     <div class="text-left form-control-static">
-                                        <a href='/admin/pdf/media/{{ old('product') }}/one_month' class="btn btn-success btn-sm" role="button"><i class="fas fa-download">&nbsp;</i>PDF</a>
+                                        <a href='/pdf/media/{{ $user->product_base_id }}/one_month' class="btn btn-success btn-sm" role="button"><i class="fas fa-download">&nbsp;</i>PDF</a>
                                     </div>
                                 </div>
-                            </label>
                         </div>
+
                         <div class="form-group">
-                            <label class="col-sm-2 control-label">今月のメディア別成果</label>
-                                <div class="col-sm-10">
+                            <label class="col-sm-3 control-label">今月のメディア別成果</label>
+                                <div class="col-sm-9">
                                     <div class="text-left form-control-static">
-                                        <a href='/admin/pdf/media/{{ old('product') }}' class="btn btn-success btn-sm" role="button"><i class="fas fa-download">&nbsp;</i>PDF</a>
+                                        <a href='/pdf/media/{{ $user->product_base_id }}' class="btn btn-success btn-sm" role="button"><i class="fas fa-download">&nbsp;</i>PDF</a>
                                     </div>
                                 </div>
-                            </label>
                         </div>
-                    @endif
 
                 </div>
 
-            </div>
         </div>
 
 </div>
