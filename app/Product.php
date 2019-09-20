@@ -17,6 +17,7 @@ class Product extends Model
         'asp_sponsor_id',
         'product_base_id',
     ];
+
     public function asp()
     {
         return $this->belongsTo('App\Asp');

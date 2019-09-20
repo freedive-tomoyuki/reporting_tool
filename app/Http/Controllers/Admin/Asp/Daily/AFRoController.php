@@ -19,6 +19,7 @@ use App\Monthlysite;
 use App\Schedule;
 use App\DailyDiff;
 use App\DailySiteDiff;
+use Mail;
 
 class AFRoController extends DailyCrawlerController
 {

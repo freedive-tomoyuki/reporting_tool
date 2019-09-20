@@ -117,17 +117,16 @@ class ProductController extends Controller
         
 
         if($id != ''){
-            $products = Product::join('asps','products.asp_id','=','asps.id')
+            $products = Product::select('products.id','asp_id','login_value','password_value','product','asp_product_id','asp_sponsor_id','product_base_id')->join('asps','products.asp_id','=','asps.id')
             ->where('products.id',$id)->get()->toArray();
         }else{
-            $products = Product::join('asps','products.asp_id','=','asps.id')
+            $products = Product::select('products.id','asp_id','login_value','password_value','product','asp_product_id','asp_sponsor_id','product_base_id')->join('asps','products.asp_id','=','asps.id')
                 ->where('asp_id',$request->asp_id)
                 ->where('product_base_id',$request->product_base_id)
                 ->get()
                 ->toArray();
 
         }
-        
         return view('admin.product_edit',compact('product_bases','asps','products','user'));
     }
     //各案件の編集実装
