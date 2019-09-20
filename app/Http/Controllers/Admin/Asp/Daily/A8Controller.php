@@ -35,7 +35,7 @@ class A8Controller extends DailyCrawlerController
         $options = [
         '--window-size=1920,1080',
         '--start-maximized',
-        '--headless',
+        //'--headless',
         '--disable-gpu',
         '--no-sandbox'
         
@@ -64,7 +64,7 @@ class A8Controller extends DailyCrawlerController
                     }
                     foreach ( $product_infos as $product_info ) {
                         
-                        $crawler_1 = $browser->visit( $product_info->asp->login_url )->type( $product_info->login_key, $product_info->login_value )->type( $product_info->password_key, $product_info->password_value )->click( $product_info->asp->login_selector )->visit( $product_info->asp->lp1_url . $product_info->asp_product_id )->crawler();
+                        $crawler_1 = $browser->visit( $product_info->asp->login_url )->type( $product_info->asp->login_key, $product_info->login_value )->type( $product_info->asp->password_key, $product_info->password_value )->click( $product_info->asp->login_selector )->visit( $product_info->asp->lp1_url . $product_info->asp_product_id )->crawler();
                         
                         $crawler_2 = $browser->visit( $product_info->asp->lp2_url )->select( '#reportOutAction > table > tbody > tr:nth-child(2) > td > select', '23' )->radio( 'insId', $product_info->asp_product_id )->click( '#reportOutAction > input[type="image"]:nth-child(3)' )->crawler();
                         

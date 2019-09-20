@@ -48,25 +48,44 @@ class DailySearchService
         $ratio  = (date("d")/date("t"));
         $estimate_cv = ceil(($cv)/ $ratio);
 
-        Monthlydata::create(
+        // Monthlydata::create(
+        //     [
+        //     'imp' => $imp,
+        //     'click' => $click,
+        //     'cv' => $cv,
+        //     'estimate_cv' => $estimate_cv,
+        //     'cvr' => round($crv,2),
+        //     'ctr' => round($ctv,2),
+        //     'active' => $data_array[0]['active'],
+        //     'partnership' => $data_array[0]['partnership'],
+        //     'asp_id' => $data_array[0]['asp'],
+        //     'product_id' => $data_array[0]['product'],
+        //     'price' => $data_array[0]['price'],
+        //     'cost' => $data_array[0]['cost'],
+        //     'cpa' => $data_array[0]['cpa'],
+        //     'date' => $data_array[0]['date']
+        //     ]
+        // );
+        Monthlydata::updateOrCreate(
             [
-            'imp' => $imp,
-            'click' => $click,
-            'cv' => $cv,
-            'estimate_cv' => $estimate_cv,
-            'cvr' => round($crv,2),
-            'ctr' => round($ctv,2),
-            'active' => $data_array[0]['active'],
-            'partnership' => $data_array[0]['partnership'],
-            'asp_id' => $data_array[0]['asp'],
-            'product_id' => $data_array[0]['product'],
-            'price' => $data_array[0]['price'],
-            'cost' => $data_array[0]['cost'],
-            'cpa' => $data_array[0]['cpa'],
-            'date' => $data_array[0]['date']
+              'date' => $data_array[0]['date'] ,
+              'product_id' => $data_array[0]['product']
+            ],
+            [
+              'asp_id' => $data_array[0]['asp'],
+              'imp' => $imp,
+              'click' => $click,
+              'cv' => $cv,
+              'estimate_cv' => $estimate_cv,
+              'cvr' => round($crv,2),
+              'ctr' => round($ctv,2),
+              'active' => $data_array[0]['active'],
+              'partnership' => $data_array[0]['partnership'],
+              'price' => $data_array[0]['price'],
+              'cost' => $data_array[0]['cost'],
+              'cpa' => $data_array[0]['cpa']
             ]
         );
-
 
     }
     /**
@@ -117,9 +136,33 @@ class DailySearchService
             $ratio = (date("d")/date("t"));
             $estimate_cv = ceil(($cv)/ $ratio);
 
-            Monthlysite::create(
+            // Monthlysite::create(
+            //     [
+            //       'media_id' => $data['media_id'],
+            //       'site_name' => $data['site_name'],
+            //       'imp' => $imp,
+            //       'click' => $click,
+            //       'cv' => $cv,
+            //       'estimate_cv' => $estimate_cv,
+            //       'cvr' => round($cvr, 2),
+            //       'ctr' => round($ctr, 2),
+            //       'product_id' => $data['product'],
+            //       'price' => $data['price'],
+            //       'cost' => $data['cost'],
+            //       'cpa' => $data['cpa'],
+            //       'date' => $data['date']
+            //     ]
+            // );
+            $monthlysites_table = date('Ym').'_monthlysites';
+            
+
+            DB::table($monthlysites_table)->updateOrInsert(
                 [
                   'media_id' => $data['media_id'],
+                  'product_id' => $data['product'],
+                  'date' => $data['date']
+                ],
+                [
                   'site_name' => $data['site_name'],
                   'imp' => $imp,
                   'click' => $click,
@@ -127,11 +170,11 @@ class DailySearchService
                   'estimate_cv' => $estimate_cv,
                   'cvr' => round($cvr, 2),
                   'ctr' => round($ctr, 2),
-                  'product_id' => $data['product'],
                   'price' => $data['price'],
                   'cost' => $data['cost'],
-                  'cpa' => $data['cpa'],
-                  'date' => $data['date']
+                  'cpa' => $data['cpa'], 
+                  'created_at' =>  \Carbon\Carbon::now(),
+                  'updated_at' => \Carbon\Carbon::now()
                 ]
             );
         }
@@ -293,8 +336,31 @@ class DailySearchService
         }
 
         foreach ($diff_data as $insert_diff) {
-            DailyDiff::create(
-                [
+            // DailyDiff::create(
+            //     [
+            //     'imp' => $insert_diff["imp"],
+            //     'ctr' => $insert_diff["ctr"],
+            //     'click' => $insert_diff["click"],
+            //     'cv' => $insert_diff["cv"],
+            //     'cvr' => $insert_diff["cvr"],
+            //     'active' => $insert_diff["active"],
+            //     'partnership' => $insert_diff["partnership"],
+            //     'price' => $insert_diff["price"],
+            //     'cpa' => $insert_diff["cpa"],
+            //     'cost' => $insert_diff["cost"],
+            //     'estimate_cv' => $insert_diff["estimate_cv"],
+            //     'asp_id' => $insert_diff["asp_id"],
+            //     'date' => $insert_diff["date"],
+            //     'product_id' => $insert_diff["product_id"]
+            //     ]
+            // );
+            DailyDiff::updateOrCreate(
+              [
+                'date' => $insert_diff["date"],
+                'product_id' => $insert_diff["product_id"]
+              ],
+              [
+                'asp_id' => $insert_diff["asp_id"],
                 'imp' => $insert_diff["imp"],
                 'ctr' => $insert_diff["ctr"],
                 'click' => $insert_diff["click"],
@@ -305,11 +371,8 @@ class DailySearchService
                 'price' => $insert_diff["price"],
                 'cpa' => $insert_diff["cpa"],
                 'cost' => $insert_diff["cost"],
-                'estimate_cv' => $insert_diff["estimate_cv"],
-                'asp_id' => $insert_diff["asp_id"],
-                'date' => $insert_diff["date"],
-                'product_id' => $insert_diff["product_id"]
-                ]
+                'estimate_cv' => $insert_diff["estimate_cv"]
+              ]
             );
         }
 
@@ -444,22 +507,47 @@ class DailySearchService
           
           $insert_diff = json_decode(json_encode($insert_diff), True );
 
-            DailySiteDiff::create(
-                [
+            // DailySiteDiff::create(
+            //     [
+            //       'imp' => $insert_diff["imp"],
+            //       'ctr' => $insert_diff["ctr"],
+            //       'click' => $insert_diff["click"],
+            //       'cv' => $insert_diff["cv"],
+            //       'cvr' => $insert_diff["cvr"],
+            //       'media_id' => $insert_diff["media_id"],
+            //       'site_name' => $insert_diff["site_name"],
+            //       'price' => $insert_diff["price"],
+            //       'cpa' => $insert_diff["cpa"],
+            //       'cost' => $insert_diff["cost"],
+            //       'date' => $insert_diff["date"],
+            //       'estimate_cv' => $insert_diff["estimate_cv"],
+            //       'product_id' => $insert_diff["product_id"]
+            //     ]
+            // );
+            //DailySiteDiff::updateOrCreate(
+
+            $dailysites_table = date('Ym').'_dailysites';
+            
+            DB::table($dailysites_table)->updateOrInsert(
+              [
+                  'media_id' => $insert_diff["media_id"],
+                  'date' => $insert_diff["date"],
+                  'product_id' => $insert_diff["product_id"]
+              ],
+              [
                   'imp' => $insert_diff["imp"],
                   'ctr' => $insert_diff["ctr"],
                   'click' => $insert_diff["click"],
                   'cv' => $insert_diff["cv"],
                   'cvr' => $insert_diff["cvr"],
-                  'media_id' => $insert_diff["media_id"],
                   'site_name' => $insert_diff["site_name"],
                   'price' => $insert_diff["price"],
                   'cpa' => $insert_diff["cpa"],
                   'cost' => $insert_diff["cost"],
-                  'date' => $insert_diff["date"],
-                  'estimate_cv' => $insert_diff["estimate_cv"],
-                  'product_id' => $insert_diff["product_id"]
-                ]
+                  'estimate_cv' => $insert_diff["estimate_cv"], 
+                  'created_at' =>  \Carbon\Carbon::now(),
+                  'updated_at' => \Carbon\Carbon::now()
+              ]
             );
         }
 

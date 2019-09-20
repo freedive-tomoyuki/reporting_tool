@@ -9,7 +9,7 @@
 
 発生日時: {{ $sendData['datetime'] }}
 エラー内容: {{ $sendData['message'] }}
-案件ID: {{ $sendData['message'] }}
+案件ID: {{ $sendData['product_id'] }}
 実行タイプ: {{ $sendData['type'] }}
 ---
 ==============================================

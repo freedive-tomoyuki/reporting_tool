@@ -26,7 +26,7 @@
                                         @endforeach
                                     </select>
                                 </div>
-                                <input class="btn btn-primary" type="submit" value='run' >
+                                <input class="btn btn-primary" type="submit" value='実行' >
                             </form>
                             <br>
                             
@@ -48,7 +48,7 @@
                                         @endforeach
                                     </select>
                                 </div>
-                                <input class="btn btn-primary" type="submit" value='run' >
+                                <input class="btn btn-primary" type="submit" value='実行' >
                             </form>
                             <br>
                             
