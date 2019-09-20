@@ -167,12 +167,16 @@ class DailySearchService
 
         $Array          = array();
         $Array_1        = array();
-        $daily_diff     = array();
-        $daily_diff_1   = array();
-        $diff_          = array();
+        $yesterday_data     = array();
+        $before_yesterday_data   = array();
+        $diff_data          = array();
 
-        $date           = date("Y-m-d",strtotime("-1 day")); 
-        $date_1         = date("Y-m-d",strtotime("-2 day")); 
+        $yesterday           = date("Y-m-d",strtotime("-1 day")); 
+        $before_yesterday         = date("Y-m-d",strtotime("-2 day")); 
+
+        $match_asp_id = array();//マッチしたASP配列
+        $yesterday_asp_id = array();
+        $diff_asp_id = array();//差分のあるASP配列
 
         $products = Product::select()
               ->where('product_base_id', $product_base_id)
@@ -182,121 +186,113 @@ class DailySearchService
 
         foreach($products as $product){
           //昨日分
-          $Array = Monthlydata::where("product_id",$product['id'])->where("date",$date)->get()->toArray();
+          $Array = Monthlydata::where("product_id",$product['id'])->where("date",$yesterday)->get()->toArray();
           if(!empty($Array)){
-            array_push($daily_diff , $Array[0] );
-
+            array_push($yesterday_data , $Array[0] );//昨日のデータ
           }
           //おととい分
-          $Array_1 = Monthlydata::where("product_id",$product['id'])->where("date",$date_1)->get()->toArray();
+          $Array_1 = Monthlydata::where("product_id",$product['id'])->where("date",$before_yesterday)->get()->toArray();
           if(!empty($Array_1)){
-            array_push($daily_diff_1 , $Array_1[0] );
+            array_push($before_yesterday_data , $Array_1[0] );
           }
-          
-
-        
         }
-        /*echo "<pre>";
-        var_dump($daily_diff);
-        var_dump($daily_diff_1);
-        echo "</pre>";*/
-        $e_asp = array();
-        $l_asp = array();
-        $x = 0;
-           
-        /* 前日比でなくなっているASPを考慮 */
-        if(date("Y-m-d",strtotime("-2 day")) != date("Y-m-t",strtotime("-2 day"))){
-          if(!empty($daily_diff_1)){
-              foreach ( $daily_diff as $diff ){
-                  foreach ( $daily_diff_1 as $diff_1 ) {
-                      if($diff["asp_id"] == $diff_1["asp_id"]){
-                        //$asp_id = $diff["asp_id"];
-                        $diff_[$i]["imp"] = $diff["imp"] - $diff_1["imp"];
-                        $diff_[$i]["click"] = $diff["click"] - $diff_1["click"];
-                        $diff_[$i]["cv"] = $diff["cv"] - $diff_1["cv"];
-                        $diff_[$i]["ctr"] = 
-                        ($diff_[$i]["imp"] > 0 && $diff_[$i]["click"] > 0 ) ? intval($diff_[$i]["imp"])/intval($diff_[$i]["click"]): 0 ;
-                        $diff_[$i]["cvr"] = 
-                        ($diff_[$i]["click"] > 0 && $diff_[$i]["cv"] > 0 )? intval($diff_[$i]["click"])/intval($diff_[$i]["cv"]): 0 ;
 
-                        $diff_[$i]["active"] = $diff["active"];
-                        $diff_[$i]["estimate_cv"] = $diff["estimate_cv"];
-                        $diff_[$i]["partnership"] = $diff["partnership"];
-                        $diff_[$i]["price"] = $diff["price"] - $diff_1["price"];
-                        $diff_[$i]["cpa"] = $diff["cpa"];
-                        $diff_[$i]["cost"] = $diff["cost"] - $diff_1["cost"];
-                        $diff_[$i]["asp_id"] = $diff["asp_id"];
-                        $diff_[$i]["date"] = $diff["date"];
-                        $diff_[$i]["product_id"] = $diff["product_id"];
+        // 前日比でなくなっているASPを考慮 
+        if(date("Y-m-d",strtotime("-2 day")) != date("Y-m-t",strtotime("-2 day"))){//２日前が月末のとき
+
+          if(!empty($before_yesterday_data)){//おとといのデータが全案件取れている
+              foreach ( $yesterday_data as $diff ){
+                
+                array_push( $yesterday_asp_id , $diff["asp_id"]);//実行したASP
+
+                  foreach ( $before_yesterday_data as $diff_1 ) {
+                      if($diff["asp_id"] == $diff_1["asp_id"]){
+
+                        $diff_data[$i]["imp"] = $diff["imp"] - $diff_1["imp"];
+                        $diff_data[$i]["click"] = $diff["click"] - $diff_1["click"];
+                        $diff_data[$i]["cv"] = $diff["cv"] - $diff_1["cv"];
+                        $diff_data[$i]["ctr"] = 
+                        ($diff_data[$i]["imp"] > 0 && $diff_data[$i]["click"] > 0 ) ? intval($diff_data[$i]["imp"])/intval($diff_data[$i]["click"]): 0 ;
+                        $diff_data[$i]["cvr"] = 
+                        ($diff_data[$i]["click"] > 0 && $diff_data[$i]["cv"] > 0 )? intval($diff_data[$i]["click"])/intval($diff_data[$i]["cv"]): 0 ;
+
+                        $diff_data[$i]["active"] = $diff["active"];
+                        $diff_data[$i]["estimate_cv"] = $diff["estimate_cv"];
+                        $diff_data[$i]["partnership"] = $diff["partnership"];
+                        $diff_data[$i]["price"] = $diff["price"] - $diff_1["price"];
+                        $diff_data[$i]["cpa"] = $diff["cpa"];
+                        $diff_data[$i]["cost"] = $diff["cost"] - $diff_1["cost"];
+                        $diff_data[$i]["asp_id"] = $diff["asp_id"];
+                        $diff_data[$i]["date"] = $diff["date"];
+                        $diff_data[$i]["product_id"] = $diff["product_id"];
                         //$diff_[$i]["killed_flag"] = 0;
                         $i++;
-                        array_push( $e_asp, $diff["asp_id"]);
-                        array_diff( $l_asp, $e_asp);
-                        //var_dump();
+                        array_push( $match_asp_id, $diff["asp_id"]);
 
-                      }else{
-                        array_push( $l_asp , $diff["asp_id"]);
-                        
-                      } 
+                      }
+
                   }
+
               }
-              //var_dump($l_asp);
-              foreach ( $daily_diff as $diff ) {
-                        if( in_array($diff["asp_id"], $l_asp )){
+
+              $diff_asp_id = array_diff( $yesterday_asp_id, $match_asp_id);
+
+              //一昨日はない／昨日はあるという案件（途中で始まった案件）
+              foreach ( $yesterday_data as $diff ) {
+                        if( in_array($diff["asp_id"], $diff_asp_id )){
                          // echo $diff["asp_id"];
-                            $diff_[$i]["imp"] = $diff["imp"];
-                            $diff_[$i]["click"] = $diff["click"];
-                            $diff_[$i]["cv"] = $diff["cv"];
-                            $diff_[$i]["ctr"] = 
-                            ($diff_[$i]["imp"] > 0 && $diff_[$i]["click"] > 0 ) ? intval($diff_[$i]["imp"])/intval($diff_[$i]["click"]): 0 ;
-                            $diff_[$i]["cvr"] = 
-                            ($diff_[$i]["click"] > 0 && $diff_[$i]["cv"] > 0 )? intval($diff_[$i]["click"])/intval($diff_[$i]["cv"]): 0 ;
-                            $diff_[$i]["active"] = $diff["active"];
-                            $diff_[$i]["estimate_cv"] = $diff["estimate_cv"];
-                            $diff_[$i]["partnership"] = $diff["partnership"];
-                            $diff_[$i]["price"] = $diff["price"] ;
-                            $diff_[$i]["cpa"] = $diff["cpa"];
-                            $diff_[$i]["cost"] = $diff["cost"];
-                            $diff_[$i]["asp_id"] = $diff["asp_id"];
-                            $diff_[$i]["date"] = $diff["date"];
-                            $diff_[$i]["product_id"] = $diff["product_id"];
+                            $diff_data[$i]["imp"] = $diff["imp"];
+                            $diff_data[$i]["click"] = $diff["click"];
+                            $diff_data[$i]["cv"] = $diff["cv"];
+                            $diff_data[$i]["ctr"] = 
+                            ($diff_data[$i]["imp"] > 0 && $diff_data[$i]["click"] > 0 ) ? intval($diff_data[$i]["imp"])/intval($diff_data[$i]["click"]): 0 ;
+                            $diff_data[$i]["cvr"] = 
+                            ($diff_data[$i]["click"] > 0 && $diff_data[$i]["cv"] > 0 )? intval($diff_data[$i]["click"])/intval($diff_data[$i]["cv"]): 0 ;
+                            $diff_data[$i]["active"] = $diff["active"];
+                            $diff_data[$i]["estimate_cv"] = $diff["estimate_cv"];
+                            $diff_data[$i]["partnership"] = $diff["partnership"];
+                            $diff_data[$i]["price"] = $diff["price"] ;
+                            $diff_data[$i]["cpa"] = $diff["cpa"];
+                            $diff_data[$i]["cost"] = $diff["cost"];
+                            $diff_data[$i]["asp_id"] = $diff["asp_id"];
+                            $diff_data[$i]["date"] = $diff["date"];
+                            $diff_data[$i]["product_id"] = $diff["product_id"];
                             //$diff_[$i]["killed_flag"] = 0;
                             $i++;
                         }
               }
           }else{
-              foreach ( $daily_diff as $diff ){
-                        //$asp_id = $diff["asp_id"];
-                        $diff_[$i]["imp"] = $diff["imp"];
-                        $diff_[$i]["click"] = $diff["click"];
-                        $diff_[$i]["cv"] = $diff["cv"];
-                        $diff_[$i]["ctr"] = 
-                        ($diff_[$i]["imp"] > 0 && $diff_[$i]["click"] > 0 ) ? intval($diff_[$i]["imp"])/intval($diff_[$i]["click"]): 0 ;
-                        $diff_[$i]["cvr"] = 
-                        ($diff_[$i]["click"] > 0 && $diff_[$i]["cv"] > 0 )? intval($diff_[$i]["click"])/intval($diff_[$i]["cv"]): 0 ;
 
-                        $diff_[$i]["active"] = $diff["active"];
-                        $diff_[$i]["estimate_cv"] = $diff["estimate_cv"];
-                        $diff_[$i]["partnership"] = $diff["partnership"];
-                        $diff_[$i]["price"] = $diff["price"] ;
-                        $diff_[$i]["cpa"] = $diff["cpa"];
-                        $diff_[$i]["cost"] = $diff["cost"];
-                        $diff_[$i]["asp_id"] = $diff["asp_id"];
-                        $diff_[$i]["date"] = $diff["date"];
-                        $diff_[$i]["product_id"] = $diff["product_id"];
+            //一昨日のデータが全案件取れていないとき
+              foreach ( $yesterday_data as $diff ){
+                        //$asp_id = $diff["asp_id"];
+
+                        $diff_data[$i]["imp"] = $diff["imp"];
+                        $diff_data[$i]["click"] = $diff["click"];
+                        $diff_data[$i]["cv"] = $diff["cv"];
+                        $diff_data[$i]["ctr"] = 
+                        ($diff_data[$i]["imp"] > 0 && $diff_data[$i]["click"] > 0 ) ? intval($diff_data[$i]["imp"])/intval($diff_data[$i]["click"]): 0 ;
+                        $diff_data[$i]["cvr"] = 
+                        ($diff_data[$i]["click"] > 0 && $diff_data[$i]["cv"] > 0 )? intval($diff_data[$i]["click"])/intval($diff_data[$i]["cv"]): 0 ;
+
+                        $diff_data[$i]["active"] = $diff["active"];
+                        $diff_data[$i]["estimate_cv"] = $diff["estimate_cv"];
+                        $diff_data[$i]["partnership"] = $diff["partnership"];
+                        $diff_data[$i]["price"] = $diff["price"] ;
+                        $diff_data[$i]["cpa"] = $diff["cpa"];
+                        $diff_data[$i]["cost"] = $diff["cost"];
+                        $diff_data[$i]["asp_id"] = $diff["asp_id"];
+                        $diff_data[$i]["date"] = $diff["date"];
+                        $diff_data[$i]["product_id"] = $diff["product_id"];
                         //$diff_[$i]["killed_flag"] = 0;
                         $i++;
               }
           }
-        }else{
-            $diff_= $daily_diff;
+        }else{//1日のデータは差分を取らない。
+            $diff_data= $yesterday_data;
         }
 
-        //echo "<pre>最終データ";
-        //var_dump($diff_);
-        //echo "</pre>";
-        //$daily_diff = new DailyDiff();
-        foreach ($diff_ as $insert_diff) {
+        foreach ($diff_data as $insert_diff) {
             DailyDiff::create(
                 [
                 'imp' => $insert_diff["imp"],
@@ -327,13 +323,18 @@ class DailySearchService
 
         $Array          = array();
         $Array_1        = array();
-        $daily_diff     = array();
-        $daily_diff_1   = array();
-        $diff_          = array();
-        $list           = array();
-        $date           = date("Y-m-d",strtotime("-1 day")); 
-        $date_1         = date("Y-m-d",strtotime("-2 day"));
+        $yesterday_data     = array();
+        $before_yesterday_data   = array();
+        $diff_data          = array();
+        $before_yesterday_site_id           = array();
+
+        $yesterday           = date("Y-m-d",strtotime("-2 day")); 
+        $before_yesterday         = date("Y-m-d",strtotime("-3 day"));
         $month          = date('Ym',strtotime("-1 day"));
+
+        $match_asp_id = array();//マッチしたASP配列
+        $yesterday_asp_id = array();
+        $diff_asp_id = array();//差分のあるASP配列
 
         $products = Product::select()
               ->where('product_base_id', $product_base_id)
@@ -345,128 +346,103 @@ class DailySearchService
 
           $monthlysites_table = $month.'_monthlysites';
 
-          $Array[$product['id']] = DB::table($monthlysites_table)->where("product_id",$product['id'])->where("date",$date)->get()->toArray();
+          $Array[$product['id']] = DB::table($monthlysites_table)->where("product_id",$product['id'])->where("date",$yesterday)->get()->toArray();
           
           //array_push($daily_diff[] , $Array );
 
-          $Array_1[$product['id']] = DB::table($monthlysites_table)->where("product_id",$product['id'])->where("date",$date_1)->get()->toArray();
-          //array_push($daily_diff_1 , $Array_1 );
-          
-          //$i++;
+          $Array_1[$product['id']] = DB::table($monthlysites_table)->where("product_id",$product['id'])->where("date",$before_yesterday)->get()->toArray();
         
         }
-        //$Array = json_decode($Array,true);
-        //$Array_1 = json_decode($Array_1,true);
-         
-        //echo "<pre>";
-        //echo "[Array]";
-        //var_dump($Array);
-        //echo "[Array1]";
-        //var_dump($Array_1);
-        //echo "</pre>";
 
         foreach ( $Array as $diff){
             foreach ( $diff as $site_a){
-              array_push($daily_diff , $site_a );
+              array_push($yesterday_data , $site_a );
             }
         }
         foreach ( $Array_1 as $diff){
             foreach ( $diff as $site_b){
-              array_push($daily_diff_1 , $site_b );
+              array_push($before_yesterday_data , $site_b );
             }
         }
-        
-        //echo "<pre>";
-        //echo "result1";
-        //var_dump($daily_diff);
-        //echo "result2";
-        //var_dump($daily_diff_1);
-        //echo "</pre>";
-        $daily_diff = json_decode(json_encode($daily_diff), true);
-        $daily_diff_1 = json_decode(json_encode($daily_diff_1), true);
 
-        foreach ( $daily_diff_1 as $site){
+        $yesterday_data = json_decode(json_encode($yesterday_data), true);
+        $before_yesterday_data = json_decode(json_encode($before_yesterday_data), true);
+
+        foreach ( $before_yesterday_data as $site){
               //echo $site["media_id"];
               //echo $site["product_id"];
               
-              array_push($list , $site["media_id"]."_".$site["product_id"] );
+              array_push($before_yesterday_site_id , $site["media_id"]."_".$site["product_id"] );
         }
 
         //echo "<pre>";
         //var_dump($list);
         //echo "</pre>";
-        /* 前日比でなくなっているASPを考慮 */
+        // 前日比でなくなっているASPを考慮 
         $i = 0;
         //echo date("Y-m-t",strtotime("-1 month"));
         //月初一日
-        if(date("Y-m-d",strtotime("-2 day")) != date("Y-m-t",strtotime("-2 day"))){
-            foreach ( $daily_diff as $site){
-                foreach ( $daily_diff_1 as $site_1){
-              //foreach ( $Array_1 as $diff_1 ) {
+        if(date("Y-m-d",strtotime("-3 day")) != date("Y-m-t",strtotime("-3 day"))){
+            foreach ( $yesterday_data as $site){
+
+                foreach ( $before_yesterday_data as $site_1){
 
                   if($site["media_id"] == $site_1["media_id"] && $site["product_id"] == $site_1["product_id"] ){
                   //$media_id = $diff["media_id"];
-                  
-                      $diff_[$i]["imp"] = $site["imp"] - $site_1["imp"];
-                      $diff_[$i]["click"] = $site["click"] - $site_1["click"];
-                      $diff_[$i]["cv"] = $site["cv"] - $site_1["cv"];
-                      $diff_[$i]["ctr"] = 
-                      ($diff_[$i]["imp"] > 0 && $diff_[$i]["click"] > 0 ) ? intval($diff_[$i]["imp"])/intval($diff_[$i]["click"]): 0 ;
-                      $diff_[$i]["cvr"] = 
-                      ($diff_[$i]["click"] > 0 && $diff_[$i]["cv"] > 0 )? intval($diff_[$i]["click"])/intval($diff_[$i]["cv"]): 0 ;
-                      $diff_[$i]["estimate_cv"] = $site["estimate_cv"];
-                      $diff_[$i]["price"] = $site["price"] - $site_1["price"];
-                      $diff_[$i]["cpa"] = $site["cpa"];
-                      $diff_[$i]["cost"] = $site["cost"] - $site_1["cost"];
-                      $diff_[$i]["media_id"] = $site["media_id"];
-                      $diff_[$i]["site_name"] = $site["site_name"];
-                      $diff_[$i]["date"] = $site["date"];
-                      $diff_[$i]["product_id"] = $site["product_id"];
+                      //echo "同じ:".$site["media_id"]."_".$site["product_id"]."<br>";
+                      //echo $i."同じ:".$site["media_id"]."_".$site["product_id"]."_".$site["site_name"]."<br>";
+                      $diff_data[$i]["imp"] = $site["imp"] - $site_1["imp"];
+                      $diff_data[$i]["click"] = $site["click"] - $site_1["click"];
+                      $diff_data[$i]["cv"] = $site["cv"] - $site_1["cv"];
+                      $diff_data[$i]["ctr"] = 
+                      ($diff_data[$i]["imp"] > 0 && $diff_data[$i]["click"] > 0 ) ? intval($diff_data[$i]["imp"])/intval($diff_data[$i]["click"]): 0 ;
+                      $diff_data[$i]["cvr"] = 
+                      ($diff_data[$i]["click"] > 0 && $diff_data[$i]["cv"] > 0 )? intval($diff_data[$i]["click"])/intval($diff_data[$i]["cv"]): 0 ;
+                      $diff_data[$i]["estimate_cv"] = $site["estimate_cv"];
+                      $diff_data[$i]["price"] = $site["price"] - $site_1["price"];
+                      $diff_data[$i]["cpa"] = $site["cpa"];
+                      $diff_data[$i]["cost"] = $site["cost"] - $site_1["cost"];
+                      $diff_data[$i]["media_id"] = $site["media_id"];
+                      $diff_data[$i]["site_name"] = $site["site_name"];
+                      $diff_data[$i]["date"] = $site["date"];
+                      $diff_data[$i]["product_id"] = $site["product_id"];
                  
-                    //} 
                     $i++;
                     break;
                   }
 
               }
             }
-          foreach ( $daily_diff as $site){
-                  if(!in_array($site["media_id"]."_".$site["product_id"], $list)){
-                      $diff_[$i]["imp"] = $site["imp"];
-                      $diff_[$i]["click"] = $site["click"];
-                      $diff_[$i]["cv"] = $site["cv"];
-                      $diff_[$i]["ctr"] = 
-                      ($diff_[$i]["imp"] > 0 && $diff_[$i]["click"] > 0 ) ? intval($diff_[$i]["imp"])/intval($diff_[$i]["click"]): 0 ;
-                      $diff_[$i]["cvr"] = 
-                      ($diff_[$i]["click"] > 0 && $diff_[$i]["cv"] > 0 )? intval($diff_[$i]["click"])/intval($diff_[$i]["cv"]): 0 ;
-                      $diff_[$i]["estimate_cv"] = $site["estimate_cv"];
-                      $diff_[$i]["price"] = $site["price"];
-                      $diff_[$i]["cpa"] = $site["cpa"];
-                      $diff_[$i]["cost"] = $site["cost"] ;
-                      $diff_[$i]["media_id"] = $site["media_id"];
-                      $diff_[$i]["site_name"] = $site["site_name"];
-                      $diff_[$i]["date"] = $site["date"];
-                      $diff_[$i]["product_id"] = $site["product_id"];
+          foreach ( $yesterday_data as $site){
+
+                  if(!in_array($site["media_id"]."_".$site["product_id"], $before_yesterday_site_id)){
+                      //echo $i."Diff:".$site["media_id"]."_".$site["product_id"]."_".$site["site_name"]."<br>";
+                      $diff_data[$i]["imp"] = $site["imp"];
+                      $diff_data[$i]["click"] = $site["click"];
+                      $diff_data[$i]["cv"] = $site["cv"];
+                      $diff_data[$i]["ctr"] = 
+                      ($diff_data[$i]["imp"] > 0 && $diff_data[$i]["click"] > 0 ) ? intval($diff_data[$i]["imp"])/intval($diff_data[$i]["click"]): 0 ;
+                      $diff_data[$i]["cvr"] = 
+                      ($diff_data[$i]["click"] > 0 && $diff_data[$i]["cv"] > 0 )? intval($diff_data[$i]["click"])/intval($diff_data[$i]["cv"]): 0 ;
+                      $diff_data[$i]["estimate_cv"] = $site["estimate_cv"];
+                      $diff_data[$i]["price"] = $site["price"];
+                      $diff_data[$i]["cpa"] = $site["cpa"];
+                      $diff_data[$i]["cost"] = $site["cost"] ;
+                      $diff_data[$i]["media_id"] = $site["media_id"];
+                      $diff_data[$i]["site_name"] = $site["site_name"];
+                      $diff_data[$i]["date"] = $site["date"];
+                      $diff_data[$i]["product_id"] = $site["product_id"];
                       $i++;
                   }
               
           }
         }else{
-            $diff_= $daily_diff ;
+            $diff_data= $yesterday_data ;
         }
-        
-        //echo "<pre>";
-        //echo "diff_";
-        //var_dump($diff_);
-        //echo "</pre>";
-        //$daily_diff = new DailyDiff();
-        foreach ($diff_ as $insert_diff) {
-          //echo "<pre>";
+
+        foreach ($diff_data as $insert_diff) {
           
           $insert_diff = json_decode(json_encode($insert_diff), True );
-          //var_dump($insert_diff);
-          //echo "</pre>";
-          
 
             DailySiteDiff::create(
                 [
