@@ -246,7 +246,7 @@ class FelmatController extends DailyCrawlerController
                                     if ($key == 'site_name') {
                                         
                                         $felmat_site[$count][$key]       = trim($crawler_for_site->filter($value)->text());
-                                        $felmat_site[$count]['media_id'] = $this->dailySearchService->siteCreate(trim($crawler_for_site->filter($value)->text()), 20);
+                                        $felmat_site[$count]['media_id'] = $this->siteCreate(trim($crawler_for_site->filter($value)->text()), 20);
                                     } else {
                                         
                                         $felmat_site[$count][$key] = trim(preg_replace('/[^0-9]/', '', $crawler_for_site->filter($value)->text()));
