@@ -22,7 +22,7 @@ class getAspController extends Controller
     {
         //$RequiredFlag = 1;
         //var_dump(1);
-        $RequiredFlag = DB::table('asps')->select('sponsor_id_require_flag','product_id_require_flag')->where('id', $id)->get();
+        $RequiredFlag = DB::table('asps')->select('id','sponsor_id_require_flag','product_id_require_flag')->where('id', $id)->get();
         return $RequiredFlag;
     }
 

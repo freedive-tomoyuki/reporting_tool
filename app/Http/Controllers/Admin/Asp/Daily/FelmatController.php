@@ -59,7 +59,7 @@ class FelmatController extends DailyCrawlerController
         $options = [
                 '--window-size=1920,1080',
                 '--start-maximized',
-                '--headless',
+                //'--headless',
                 '--disable-gpu',
                 '--no-sandbox'
         ];
@@ -80,10 +80,10 @@ class FelmatController extends DailyCrawlerController
         　　$product_id:案件ID
         　　$yesterday:昨日の日付
         */
-        $client->browse(function(Browser $browser) use (&$crawler)
+        $client->browse(function(Browser $browser) use (&$crawler, $product_id)
         {
             try{
-                    $product_infos = \App\Product::all()->where('id', 15);
+                    $product_infos = \App\Product::all()->where('id', $product_id);
                     
                     $first = date( 'Y-m-01', strtotime( '-1 day' ) );
                     $end = date( 'Y-m-d', strtotime( '-1 day' ) );
@@ -103,7 +103,7 @@ class FelmatController extends DailyCrawlerController
                             ->type('#search > div > div:nth-child(2) > div.col-sm-4.form-inline > div > input:nth-child(1)', $first)
                             ->type('#search > div > div:nth-child(2) > div.col-sm-4.form-inline > div > input:nth-child(3)', $end)
                             ->click('#sel_promotion_id_chosen')
-                            ->click('#sel_promotion_id_chosen > div > ul > li:nth-child(2)')
+                            ->click($product_info->product_order)
                             ->click('#view > div > button.btn.btn-primary.btn-sm')->crawler();
                         //echo $crawler->html();
                         /*
@@ -114,7 +114,7 @@ class FelmatController extends DailyCrawlerController
                             //->type('#search > div > div:nth-child(2) > div.col-sm-4.form-inline > div > input:nth-child(3)', $yesterday)
                             ->type('#search > div > div:nth-child(2) > div.col-sm-4.form-inline > div > input:nth-child(1)', $first)
                             ->type('#search > div > div:nth-child(2) > div.col-sm-4.form-inline > div > input:nth-child(3)', $end)
-                            ->click('#sel_promotion_id_chosen')->click('#sel_promotion_id_chosen > div > ul > li:nth-child(2)')->click('#view > div > button.btn.btn-primary.btn-sm')->crawler();
+                            ->click('#sel_promotion_id_chosen')->click($product_info->product_order)->click('#view > div > button.btn.btn-primary.btn-sm')->crawler();
                         //echo $crawler2->html();
                         /*
                         クロール：
@@ -213,12 +213,12 @@ class FelmatController extends DailyCrawlerController
                             
                             //最後のページ
                                 if ($i > 1) {
-                                    $crawler_for_site = $browser->visit("https://www.felmat.net/advertiser/report/partnersite") ->type('#search > div > div:nth-child(2) > div.col-sm-4.form-inline > div > input:nth-child(1)', $first)->type('#search > div > div:nth-child(2) > div.col-sm-4.form-inline > div > input:nth-child(3)', $end)->click('#sel_promotion_id_chosen')->click('#sel_promotion_id_chosen > div > ul > li:nth-child(2)')->click('#view > div > button.btn.btn-primary.btn-sm');
+                                    $crawler_for_site = $browser->visit("https://www.felmat.net/advertiser/report/partnersite") ->type('#search > div > div:nth-child(2) > div.col-sm-4.form-inline > div > input:nth-child(1)', $first)->type('#search > div > div:nth-child(2) > div.col-sm-4.form-inline > div > input:nth-child(3)', $end)->click('#sel_promotion_id_chosen')->click($product_info->product_order)->click('#view > div > button.btn.btn-primary.btn-sm');
                                     $p = $i + 1;
                                     
                                     $crawler_for_site->click('div.wrapper > div.page-content.no-left-sidebar > div > div:nth-child(5) > div > div:nth-child(2) > div:nth-child(1) > div:nth-child(2) > div > ul > li:nth-child(' . $p . ') > a');
                                 }else{
-                                    $crawler_for_site = $browser->visit("https://www.felmat.net/advertiser/report/partnersite") ->type('#search > div > div:nth-child(2) > div.col-sm-4.form-inline > div > input:nth-child(1)', $first)->type('#search > div > div:nth-child(2) > div.col-sm-4.form-inline > div > input:nth-child(3)', $end)->click('#sel_promotion_id_chosen')->click('#sel_promotion_id_chosen > div > ul > li:nth-child(2)')->click('#view > div > button.btn.btn-primary.btn-sm');
+                                    $crawler_for_site = $browser->visit("https://www.felmat.net/advertiser/report/partnersite") ->type('#search > div > div:nth-child(2) > div.col-sm-4.form-inline > div > input:nth-child(1)', $first)->type('#search > div > div:nth-child(2) > div.col-sm-4.form-inline > div > input:nth-child(3)', $end)->click('#sel_promotion_id_chosen')->click($product_info->product_order)->click('#view > div > button.btn.btn-primary.btn-sm');
                                 }
 
                             

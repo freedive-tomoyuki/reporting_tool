@@ -126,6 +126,18 @@
                                 <input id="asp_product_id" type="text" class="form-control" name="asp_product_id" v-model="product" v-if="required1" value="{{ $products[0]['asp_product_id'] }}" required>
                             </div>
                         </div>
+                        <div class="form-group row" v-if="product_order">
+                            <label for="asp_product_id" class="col-md-4 col-form-label text-md-right">対象案件のフォームの順序
+                            <font style='color:red'>*</font>
+                            </label>
+                            <div class="col-md-6">
+                                <select class="form-control" name='product_order'>
+                                
+                                    <option v-for="n in 3" v-bind:value="n" > @{{ n }}番目</option>
+                                
+                                </select>
+                            </div>
+                        </div>
                         <input type="hidden" name="id" value="{{ $products[0]['id'] }}">
 <!--                         <div class="form-group row mb-0">
                             <div class="col-md-6 offset-md-4">
@@ -168,7 +180,7 @@
         var ItemComponent = {
             template: "<div class='loader'>Loading...</div>",
         }
-        new Vue({
+        vue = new Vue({
             el: '#app',
             data: {
                 selected: {{ $products[0]['asp_id'] }},
@@ -185,12 +197,15 @@
                 product: '{{ $products[0]["asp_product_id"] }}',
                 sponsor: '{{ $products[0]["asp_sponsor_id"] }}',
                 loading: false,
-                
+                product_order: false,
             },
             components: {
               'component_sponsor': ComponentA,
               'component_product': ComponentB,
               'item-component': ItemComponent
+            },
+            created: function () {
+              this.switchAsp()
             },
             methods: {
                 switchAsp : function() {
@@ -215,6 +230,11 @@
                             this.any1 = true;
                             this.required1 = false;
                         }
+                        if(id == 6){
+                            this.product_order = true;
+                        }else{
+                            this.product_order = false;
+                        }
                     })
                     .catch(error => { 
                         console.log(error)
@@ -223,6 +243,7 @@
                         console.log(response)
                     })
                 },
+
                 checkStart:function(){
                     //this.login = 
                     console.log(this);
@@ -250,6 +271,7 @@
                     })
                 }
             }
-        })
+        });
+
     </script>
 @endsection

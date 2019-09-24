@@ -126,6 +126,18 @@
                                 <input id="asp_product_id" type="text" class="form-control" name="asp_product_id" v-model="product" v-if="required" value="{{ old('asp_product_id') }}" required>
                             </div>
                         </div>
+                        <div class="form-group row" v-if="product_order">
+                            <label for="asp_product_id" class="col-md-4 col-form-label text-md-right">対象案件のフォームの順序
+                            <font style='color:red'>*</font>
+                            </label>
+                            <div class="col-md-6">
+                                <select class="form-control" name='product_order'>
+                                
+                                    <option v-for="n in 3" v-bind:value="n" > @{{ n }}番目</option>
+                                
+                                </select>
+                            </div>
+                        </div>
                         <div class="col-md-2 offset-md-4">
                                 <button type="submit" class="btn btn-primary" v-if="ok">
                                     {{ __('Register') }}
@@ -177,6 +189,7 @@
                 product:'',
                 sponsor:'',
                 loading: false,
+                product_order:false,
                 
             },
             components: {
@@ -206,6 +219,11 @@
                             this.show1 = false;
                             this.any1 = true;
                             this.required1 = false;
+                        }
+                        if(id == 6){
+                            this.product_order = true;
+                        }else{
+                            this.product_order = false;
                         }
                     })
                     .catch(error => { 

@@ -67,6 +67,14 @@ class ProductController extends Controller
         $product->password_value = $request->password;
         $product->asp_product_id = $request->asp_product_id;
         $product->asp_sponsor_id = $request->asp_sponsor_id;
+        
+        $product_order = '';
+        
+        if($request->product_order){
+            $num = $request->product_order + 1 ;
+            $product_order =  '#sel_promotion_id_chosen > div > ul > li:nth-child('.$num.')' ;
+            $product->product_order = $product_order;
+        }
         $product->save();
  
         return redirect('/admin/product_list');
@@ -132,6 +140,13 @@ class ProductController extends Controller
     //各案件の編集実装
     public function update_product($id,StoreProduct $request) {
 
+        $product_order = '';
+        
+        if($request->product_order){
+            $num = $request->product_order + 1 ;
+            $product_order =  '#sel_promotion_id_chosen > div > ul > li:nth-child('.$num.')' ;
+        }
+            
         Product::where('id',$id)
         ->update([
             'product' => $request->name,
@@ -141,7 +156,7 @@ class ProductController extends Controller
             'password_value' => $request->password,
             'asp_product_id' => $request->asp_product_id,
             'asp_sponsor_id' => $request->asp_sponsor_id,
-            
+            'product_order' => $product_order,
             'killed_flag' => '0',
         ]);
         return redirect('/admin/product_list');
