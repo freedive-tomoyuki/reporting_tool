@@ -59,7 +59,7 @@ class FelmatController extends DailyCrawlerController
         $options = [
                 '--window-size=1920,1080',
                 '--start-maximized',
-                //'--headless',
+                '--headless',
                 '--disable-gpu',
                 '--no-sandbox'
         ];
