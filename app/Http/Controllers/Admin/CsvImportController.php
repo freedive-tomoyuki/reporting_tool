@@ -570,7 +570,7 @@ class CsvImportController extends Controller
 				DB::table($monthlysites_table)
 				    ->updateOrInsert(
 			        ['product_id' => $d['product_id'] , 'date' => $d['date'],'media_id' => $d['media_id'] ],
-			        ['imp' => $d['imp'],'click' => $d['click'],'cv' => $d['cv'],'cost' => $d['cost'],'price' => $d['price'],'cvr' => $d['cvr'],'ctr' => $d['ctr'],'cpa' => $d['cpa'], 'created_at' =>  \Carbon\Carbon::now(),'updated_at' => \Carbon\Carbon::now()]
+			        ['imp' => $d['imp'],'click' => $d['click'],'cv' => $d['cv'],'site_name' => $d['site_name'],'cost' => $d['cost'],'price' => $d['price'],'cvr' => $d['cvr'],'ctr' => $d['ctr'],'cpa' => $d['cpa'], 'created_at' =>  \Carbon\Carbon::now(),'updated_at' => \Carbon\Carbon::now()]
 					);
 			}
 
@@ -601,7 +601,7 @@ class CsvImportController extends Controller
 					DB::table($monthlysites_table)
 					    ->updateOrInsert(
 				        ['product_id' => $d['product_id'] , 'date' => $d['date'],'media_id' => $d['media_id'] ],
-				        ['imp' => $d['imp'],'click' => $d['click'],'cv' => $d['cv'],'cost' => $d['cost'],'price' => $d['price'],'cvr' => $d['cvr'],'ctr' => $d['ctr'],'cpa' => $d['cpa'], 'created_at' =>  \Carbon\Carbon::now(),'updated_at' => \Carbon\Carbon::now()]
+				        ['imp' => $d['imp'],'click' => $d['click'],'cv' => $d['cv'],'site_name' => $d['site_name'],'cost' => $d['cost'],'price' => $d['price'],'cvr' => $d['cvr'],'ctr' => $d['ctr'],'cpa' => $d['cpa'], 'created_at' =>  \Carbon\Carbon::now(),'updated_at' => \Carbon\Carbon::now()]
 						);
 		        }
 

@@ -293,8 +293,8 @@ class CsvImportController extends Controller
 	        	
 	        	$product_key = $data['product_id'];
 
-	        	echo "product".$data['product_id']."<br>";
-	        	echo "asp".$data['asp_id']."<br>";
+	        	//echo "product".$data['product_id']."<br>";
+	        	//echo "asp".$data['asp_id']."<br>";
 				
 				//アクティブ数
 					$month_array[$date_key][$product_key]['active'] = ($month_array[$date_key][$product_key]['active'] < $data['active'])? $data['active'] : $month_array[$date_key][$product_key]['active'];
@@ -450,7 +450,7 @@ class CsvImportController extends Controller
 	{
 		$products = Product::all();
 
-		var_dump($request->month);
+		//var_dump($request->month);
 		$month = str_replace('-','',$request->month);
 
 	    // setlocaleを設定
@@ -586,9 +586,9 @@ class CsvImportController extends Controller
 	        for ($i = 0; $i <= $array_partial_count - 1; $i++){
 	            //CSVimport::insert($array_partial[$i]);
 				foreach( $array_partial[$i] as $d ){
-		            /*echo "<pre>D";
+		            echo "<pre>D";
 		            var_dump($d);
-		            echo "</pre>";*/
+		            echo "</pre>";
 					$d['cvr'] = ($d['click'] == 0 || $d['cv'] == 0 )? 0 : ($d['cv'] / $d['click']) * 100 ;
 
 					//CTR
