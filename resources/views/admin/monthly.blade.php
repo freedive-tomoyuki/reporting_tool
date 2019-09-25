@@ -77,9 +77,9 @@
                         <label class="control-label">Month</label>
                                 <p class="form-control-static">
                                 @if(old('month'))
-                                {{ old('month') }}
+                                  {{ old('month') }}
                                 @else
-                                 {{ date("Y-m",strtotime('-1 day')) }}　
+                                  {{ date("Y-m",strtotime('-1 day')) }}　
                                 @endif
                                 @if(old('month') == date("Y-m",strtotime('-1 day'))|| !old('month') )
                                 {{"前日分までのデータ"}}
@@ -104,9 +104,11 @@
                      <div class="form-group col-md-12">
                       <label class="control-label">消化率</label>
                               <p class="form-control-static">
-                              <?php
-                                   echo ceil((date("d",strtotime('-1 day'))/date("t"))*100)." %";
-                              ?>
+                                @if(old('month') == date('Y-m'))
+                                  {{ ceil((date("d",strtotime('-1 day'))/date("t"))*100).'%' }} 
+                                @else
+                                  {{ '100%' }}　
+                                @endif
                               </p>
                      </div>
                   </div>
