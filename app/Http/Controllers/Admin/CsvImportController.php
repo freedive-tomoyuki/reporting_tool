@@ -196,9 +196,9 @@ class CsvImportController extends Controller
 	            $date 		= mb_convert_encoding($row[0], 'UTF-8', 'SJIS');
 	            $product_id = mb_convert_encoding($row[1], 'UTF-8', 'SJIS');
 	            $asp_id 	= mb_convert_encoding($row[2], 'UTF-8', 'SJIS');
-	            $imp 		= mb_convert_encoding($row[3], 'UTF-8', 'SJIS');
-	            $click 		= mb_convert_encoding($row[4], 'UTF-8', 'SJIS');
-	            $cv 		= mb_convert_encoding($row[5], 'UTF-8', 'SJIS');
+	            $imp 		= preg_replace('/[^0-9]/','',mb_convert_encoding($row[3], 'UTF-8', 'SJIS'));
+	            $click 		= preg_replace('/[^0-9]/','',mb_convert_encoding($row[4], 'UTF-8', 'SJIS'));
+	            $cv 		= preg_replace('/[^0-9]/','',mb_convert_encoding($row[5], 'UTF-8', 'SJIS'));
 	            $active 	= mb_convert_encoding($row[6], 'UTF-8', 'SJIS');
 	            $partnership = mb_convert_encoding($row[7], 'UTF-8', 'SJIS');
 	            $price 		= mb_convert_encoding($row[8], 'UTF-8', 'SJIS');
