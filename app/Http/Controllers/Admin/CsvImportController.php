@@ -209,9 +209,10 @@ class CsvImportController extends Controller
                     
                 $data[ 'cpa' ]  = $calData[ 'cpa' ]; //CPA
                 $data[ 'cost' ] = $calData[ 'cost' ];
-
-                $ctr = (($click == 0)||($imp == 0))? 0 : ($click/$imp) * 100 ;
-                $cvr = (($cv == 0)||($click == 0))? 0 : ($cv/$click) * 100 ;
+                \Log::debug($click);
+                \Log::debug($imp);
+                $ctr = (($click == false)||($imp == false))? 0 : ($click/$imp) * 100 ;
+                $cvr = (($cv == false)||($click == false))? 0 : ($cv/$click) * 100 ;
 
 
 	            $csvimport_monthly_array = [
