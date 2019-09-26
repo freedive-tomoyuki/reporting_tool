@@ -283,19 +283,24 @@ class CsvImportController extends Controller
 	        	$month_array[$date_array][$product_key]['price'] = 0;
 	        	$month_array[$date_array][$product_key]['approval'] = 0;
 	        	$month_array[$date_array][$product_key]['approval_price'] = 0;
+	        	$month_array[$date_array][$product_key]['date'] = '';
 	    	}
 
 	    	//配列をまるっとインポート(バルクインサート)
 	        foreach ($array_monthly as $data) {
-	        	
+	        	//$end_of_date = 0;
 	        	//$date_key = $data['date'];
 	        	$date_key = date('Ym', strtotime($data['date']));
-	        	$end_of_date = date('Y-m-t', strtotime($data['date']));
-	        	
+
 	        	$product_key = $data['product_id'];
 
-	        	echo "product".$data['product_id']."<br>";
-	        	echo "asp".$data['asp_id']."<br>";
+				//日次（月末）
+				if($month_array[$date_key][$product_key]['date'] == '' || strtotime($data['date']) > strtotime($month_array[$date_key][$product_key]['date']) ){
+					$max_date_of_month = date('Y-m-d', strtotime($data['date']));
+	        		$month_array[$date_key][$product_key]['date'] = $max_date_of_month;
+				}
+	        	//echo "product".$data['product_id']."<br>";
+	        	//echo "asp".$data['asp_id']."<br>";
 				
 				//アクティブ数
 					$month_array[$date_key][$product_key]['active'] = ($month_array[$date_key][$product_key]['active'] < $data['active'])? $data['active'] : $month_array[$date_key][$product_key]['active'];
@@ -341,8 +346,7 @@ class CsvImportController extends Controller
 							|| $month_array[$date_key][$product_key]['cv'] == 0 )? 0 :
 								$month_array[$date_key][$product_key]['price'] / $month_array[$date_key][$product_key]['cv'] ;
 */
-				//日次（月末）
-					$month_array[$date_key][$product_key]['date'] = $end_of_date;
+
 					
 			}
 
