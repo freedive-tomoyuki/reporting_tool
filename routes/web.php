@@ -211,6 +211,10 @@ Route::get('api/getRequiredFlag/{id}',function($id){
             //return ['sponsor_id_require_falg' => request('title'),'product_id_require_falg' => request('content')];
 });
 
+Route::get('check',function(){
+    echo "OK";
+});
+
 //CSV出力
 Route::get('csv/{id}/{s_date?}/{e_date?}','DailyController@downloadCSV');
 Route::get('csv_site/{id}/{s_date?}/{e_date?}','DailyController@downloadSiteCSV');
@@ -256,7 +260,7 @@ Route::get('/test','ScrapingController@index');
 */
 Route::get('test1','Admin\DailyCrawlerController@dailytimer');
 Route::get('test2','Admin\MonthlyCrawlerController@monthlytimer');
-Route::get('check','CheckController@check');
+//Route::get('check','CheckController@check');
 Route::get('diff/{id?}','Admin\TestController@run');
 Route::get('diff_site','DailyCrawlerController@diff_site');
 Route::get('calChart/{id?}','Admin\YearlyController@calChart' );
