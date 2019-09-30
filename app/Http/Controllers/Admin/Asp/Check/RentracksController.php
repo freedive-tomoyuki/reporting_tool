@@ -51,7 +51,7 @@ class RentracksController extends Controller
                         //->visit( $asp_info[0]['lp1_url'] )
                         ->crawler()->getUri();
 
-                    if (strpos($crawler,'sponsor') !== false ){
+                    if (strpos($crawler,'top') !== false ){
                         $result = 1;
                         //var_dump($result);
                     }else{
