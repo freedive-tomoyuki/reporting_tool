@@ -62,7 +62,7 @@
                             <label for="email" class="col-md-4 col-form-label text-md-right">ASP<font style="color:red">*</font></label>
 
                             <div class="col-md-6">
-                                <select class="form-control" name="asp_id"  v-model="selected" v-on:change="switchAsp" v-bind:disabled="fixed">
+                                <select class="form-control" name="asp_id"  v-model="selected" v-on:change="switchAsp" v-bind:readonly="fixed">
                                   <option value=""> -- </option>
                                   {{ $products[0]['asp_id'] }}
                                             @foreach($asps as $asp)
@@ -86,7 +86,7 @@
                             <label for="loginid" class="col-md-4 col-form-label text-md-right">ログインID<font style="color:red">*</font></label>
 
                             <div class="col-md-6">
-                                <input id="loginid" type="text" class="form-control{{ $errors->has('loginid') ? ' is-invalid' : '' }}" name="loginid" value="{{  $products[0]['login_value'] }}"  v-model="login" v-bind:disabled="fixed">
+                                <input id="loginid" type="text" class="form-control{{ $errors->has('loginid') ? ' is-invalid' : '' }}" name="loginid" value="{{  $products[0]['login_value'] }}"  v-model="login" v-bind:readonly="fixed">
 
                                 @if ($errors->has('loginid'))
                                     <div class="alert alert-danger" role="alert">
@@ -100,7 +100,7 @@
                             <label for="password" class="col-md-4 col-form-label text-md-right">パスワード<font style="color:red">*</font></label>
 
                             <div class="col-md-6">
-                                <input id="password" type="password" class="form-control" name="password" value="{{ $products[0]['password_value'] }}" v-model="password" v-bind:disabled="fixed">
+                                <input id="password" type="password" class="form-control" name="password" value="{{ $products[0]['password_value'] }}" v-model="password" v-bind:readonly="fixed">
                             </div>
                         </div> 
                         
