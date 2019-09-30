@@ -270,6 +270,7 @@
                         }
                     }).catch(error => {
                         this.loading = false;
+                        this.errorMessage = true;
                     })
                 }
             }
