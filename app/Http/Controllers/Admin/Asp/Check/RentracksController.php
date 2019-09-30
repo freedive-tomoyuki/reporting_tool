@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Admin\Asp\Check;
 
-use Illuminate\Http\Request;
 use Laravel\Dusk\Browser;
 use App\Http\Controllers\Controller;
 use Symfony\Component\DomCrawler\Crawler;
@@ -10,8 +9,6 @@ use Revolution\Salvager\Client;
 use Revolution\Salvager\Drivers\Chrome;
 
 use App\Asp;
-use App\Product;
-use App\ProductBase;
 
 class RentracksController extends Controller
 {
@@ -47,10 +44,10 @@ class RentracksController extends Controller
  
                 try{
                     $crawler = 
-                        $browser->visit("https://manage.rentracks.jp/sponsor/login/" )
-                        ->type("#main > div > form > dl:nth-child(1) > dd > input[type=text]", $id )
-                        ->type("#main > div > form > dl:nth-child(2) > dd > input[type=password]", $pass )
-                        ->click( "#main > div > form > div > input[type=submit]" )
+                        $browser->visit( $asp_info[0]['login_url'] )
+                        ->type( $asp_info[0]['login_key'], $id )
+                        ->type( $asp_info[0]['password_key'], $pass )
+                        ->click( $asp_info[0]['login_selector'] )
                         //->visit( $asp_info[0]['lp1_url'] )
                         ->crawler()->getUri();
 
