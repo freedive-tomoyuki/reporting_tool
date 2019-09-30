@@ -162,18 +162,20 @@ class DailyController extends Controller
                     ->join('products','daily_diffs.product_id','=','products.id')
                     ->join('asps','products.asp_id','=','asps.id');
                     if(!empty($id)){
-                        $products->where('product_base_id', $id);
+                        $products = $products->where('product_base_id', $id);
                     }
                     if(!empty($asp_id)){
-                        $products->where('products.asp_id', $asp_id);
+                        $products = $products->where('products.asp_id', $asp_id);
                     }
                     if(!empty($searchdate_start)){
-                        $products->where('daily_diffs.date', '>=' , $searchdate_start);
+                        $products = $products->where('daily_diffs.date', '>=' , $searchdate_start);
                     }
                     if(!empty($searchdate_end)){
-                        $products->where('daily_diffs.date', '<=' , $searchdate_end );
+                        $products = $products->where('daily_diffs.date', '<=' , $searchdate_end );
                     }
-        $products = $products->get();
+                    $products = $products->orderBy('cv','desc');
+                    $products = $products->limit(2500);
+                    $products = $products->get();
 /*        echo '<pre>';
         var_dump($products->toArray());
         echo '</pre>';*/
@@ -193,22 +195,23 @@ class DailyController extends Controller
                     if(!empty($searchdate_end)){
                         $total->where('daily_diffs.date', '<=' , $searchdate_end );
                     }
+                    
         $total = $total->get();
 
         $total_chart = DailyDiff::select(DB::raw("date, sum(imp) as total_imp,sum(click) as total_click,sum(cv) as total_cv"))
                     ->join('products','daily_diffs.product_id','=','products.id')
                     ->join('asps','products.asp_id','=','asps.id');
                     if(!empty($id)){
-                        $total_chart->where('product_base_id', $id);
+                        $total_chart = $total_chart->where('product_base_id', $id);
                     }
                     if(!empty($asp_id)){
-                        $total_chart->where('products.asp_id', $asp_id);
+                        $total_chart = $total_chart->where('products.asp_id', $asp_id);
                     }
                     if(!empty($searchdate_start)){
-                        $total_chart->where('daily_diffs.date', '>=' , $searchdate_start);
+                        $total_chart = $total_chart->where('daily_diffs.date', '>=' , $searchdate_start);
                     }
                     if(!empty($searchdate_end)){
-                        $total_chart->where('daily_diffs.date', '<=' , $searchdate_end );
+                        $total_chart = $total_chart->where('daily_diffs.date', '<=' , $searchdate_end );
                     }
 
                     $total_chart = $total_chart->groupby('date')->get()->toArray();

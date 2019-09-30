@@ -41,18 +41,17 @@ class RentracksController extends Controller
 
         //Chromeドライバー実行
         $client->browse( function( Browser $browser ) use (&$crawler, $id , $pass , &$result)
-        //$client->browse( function( Browser $browser ) use (&$crawler, $id , $pass , $product, &$result)
         {
             
             $asp_info = Asp::where('id','=',5)->get()->toArray();
  
                 try{
                     $crawler = 
-                        $browser->visit( $asp_info[0]['login_url'] )
-                        ->type( $asp_info[0]['login_key'], $id )
-                        ->type( $asp_info[0]['password_key'], $pass )
-                        ->click( $asp_info[0]['login_selector'] )
-                        ->visit( $asp_info[0]['lp1_url'] )
+                        $browser->visit("https://manage.rentracks.jp/sponsor/login/" )
+                        ->type("#main > div > form > dl:nth-child(1) > dd > input[type=text]", $id )
+                        ->type("#main > div > form > dl:nth-child(2) > dd > input[type=password]", $pass )
+                        ->click( "#main > div > form > div > input[type=submit]" )
+                        //->visit( $asp_info[0]['lp1_url'] )
                         ->crawler()->getUri();
 
                     if (strpos($crawler,'sponsor') !== false ){

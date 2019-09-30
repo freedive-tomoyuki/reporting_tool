@@ -128,7 +128,7 @@ class CsvExportController extends Controller
                     }
                     $csvData = $csvData->get()->toArray();
                     $csvData = json_decode(json_encode($csvData), true);
-                    var_dump($csvData);
+                    //var_dump($csvData);
                     //var_dump($csvData);
                     //echo gettype($csvHeader);
                     return CSV::download($csvData, $csvHeader, $product[0]['product_name'].'_'.$s_data.'_'.$e_data.'_daily_site.csv');

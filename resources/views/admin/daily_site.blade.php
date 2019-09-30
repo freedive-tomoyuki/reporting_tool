@@ -74,7 +74,14 @@
          </div>
          </form>
       </div>
-   </div>
+      @if (count($errors) > 0)
+      <div class="alert alert-danger">
+          @foreach ($errors->all() as $error)
+              {{ $error }}
+          @endforeach
+      </div>
+      @endif
+    </div>
 </div>
 <div class="row">
 
@@ -216,10 +223,10 @@
                         <td>{{ number_format($product->cvr) }}</td>
                         <td>{{ number_format($product->cv) }}</td>
                         <td>{{ number_format($product->estimate_cv)  }}</td>
-                        <th>{{ number_format($product->cost) }}</th>
-                        <th><?php
+                        <td>{{ number_format($product->cost) }}</td>
+                        <td><?php
                           echo $val;
-                        ?></th>
+                        ?></td>
                         <?php $i++; ?>
                     </tr>
                     @endforeach

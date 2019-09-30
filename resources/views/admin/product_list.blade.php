@@ -25,12 +25,13 @@
 							<div class="col-xs-12">
 								<div class="row">
 									<div class="col-xs-2 col-md-2 date">
-										<div class="large">ID : {{ $product->id }}</div>
+										<div class="large">{{ $product->id }}</div>
 										
 									</div>
 									<div class="col-xs-8 col-md-8">
 										<h4><a href="/admin/product_detail/{{ $product->id }}">{{ $product->product_name }}</a></h4>
-
+										<span><b>Email</b>：{{ $product->email }}</span>
+										<span><b>登録日</b>：{{ $product->created_at }}</span>
 									</div>
 									<div class="col-xs-2 col-md-2">
 										<a href="/admin/product_base/edit/{{ $product->id }}">

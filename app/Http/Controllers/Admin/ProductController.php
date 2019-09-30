@@ -29,13 +29,16 @@ class ProductController extends Controller
         
         $products = Product::where('killed_flag',0)->get();
         $products_id = $products->toArray();
-        $products_bases = ProductBase::where('killed_flag',0)->get();
+        
+        $products_bases = New ProductBase;
+        $products_bases = $products_bases->product_base_users();
 
         foreach($products_id as $product_id){
         	if(!in_array( $product_id['product_base_id'],$product_packages)){
         		array_push($product_packages, $product_id['product_base_id']);
         	}
-		}
+        }
+
         return view('admin.product_list',compact('products','products_bases','user'));
     }
 
@@ -101,7 +104,6 @@ class ProductController extends Controller
         $product_bases = ProductBase::where('id',$id)->get()->toArray();
         $user = Auth::user();
         $schedule = Schedule::where('product_base_id',$id)->get()->toArray();
-        //var_dump($schedule);
         return view('admin.product_base_edit',compact('product_bases','user','schedule'));
     }
     //各親案件の編集実装
@@ -111,7 +113,7 @@ class ProductController extends Controller
             'product_name' => $request->name,
         ]);
 
-        Schedule::where('id',$id)
+        Schedule::where('product_base_id',$id)
         ->update([
             'killed_flag' => $request->schedule,
         ]);

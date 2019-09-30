@@ -328,16 +328,16 @@ class DailyController extends Controller
                     ->join('products',DB::raw($daily_site_diffs_table2.'.product_id'),'=','products.id')
                     ->join('asps','products.asp_id','=','asps.id');
                     if(!empty($id)){
-                        $table2->where('product_base_id', $id);
+                        $table2 = $table2->where('product_base_id', $id);
                     }
                     if(!empty($asp_id)){
-                        $table2->where('products.asp_id', $asp_id);
+                        $table2 = $table2->where('products.asp_id', $asp_id);
                     }
                     if(!empty($searchdate_start)){
-                        $table2->where('date', '>=' , $searchdate_start );
+                        $table2 = $table2->where('date', '>=' , $searchdate_start );
                     }
                     if(!empty($searchdate_end)){
-                        $table2->where('date', '<=' , $searchdate_end );
+                        $table2 = $table2->where('date', '<=' , $searchdate_end );
                     }
 
         }
@@ -351,19 +351,19 @@ class DailyController extends Controller
                     ->join('asps','products.asp_id','=','asps.id');
 
                     if(!empty($id)){
-                        $products->where('product_base_id', $id);
+                        $products = $products->where('product_base_id', $id);
                     }
                     if(!empty($asp_id)){
-                        $products->where('products.asp_id', $asp_id);
+                        $products = $products->where('products.asp_id', $asp_id);
                     }
                     if(!empty($searchdate_start)){
-                        $products->where('date', '>=' , $searchdate_start );
+                        $products = $products->where('date', '>=' , $searchdate_start );
                     }
                     if(!empty($searchdate_end)){
-                        $products->where('date', '<=' , $searchdate_end );
+                        $products = $products->where('date', '<=' , $searchdate_end );
                     }
                     if(!empty($table2)){
-                        $products->union($table2);
+                        $products = $products->union($table2);
                     }
                     $products = $products->orderBy('cv','desc');
                     $products = $products->limit(2500);

@@ -18,19 +18,12 @@
 							<div class="col-xs-12">
 								<div class="row">
 									<div class="col-xs-2 col-md-2 date">
-										<div class="large">ID : {{ $asp -> id }}</div>
+										<div class="large">{{ $asp -> id }}</div>
 										
 									</div>
-									<div class="col-xs-8 col-md-8">
+									<div class="col-xs-10 col-md-10">
 										<h4><a href="/admin/asp_detail/{{ $asp -> id }}">{{ $asp -> name }}</a></h4>
-										<p></p>
-
-									</div>
-									<div class="col-xs-2 col-md-2">
-										<a href="{{ $asp -> login_url }}" target="_blank">
-											<button type="button" class="btn btn-md btn-success">ログインURL</button>
-										</a>
-										
+										<span><b>URL</b>：<a href="{{ $asp -> login_url }}" target="_blank">{{ $asp -> login_url }}</a></span>
 
 									</div>
 

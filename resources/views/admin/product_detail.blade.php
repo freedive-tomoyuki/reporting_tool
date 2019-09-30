@@ -25,7 +25,7 @@
 							<div class="col-xs-12">
 								<div class="row">
 									<div class="col-xs-2 col-md-2 date">
-										<div class="large">ID : {{ $asp->products_id }}</div>
+										<div class="large">{{ $asp->products_id }}</div>
 										
 									</div>
 									<div class="col-xs-8 col-md-8">
@@ -59,7 +59,7 @@
 													</button>
 									                <button type="button" class="btn btn-primary">
 										                <a href="/admin/product_delete/{{ $asp->product_base_id }}/{{ $asp->id }}">
-										                ボタン
+										                OK
 										            	</a>
 									            	</button>
 									            </div>
