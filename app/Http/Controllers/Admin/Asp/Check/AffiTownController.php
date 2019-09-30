@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Admin\Asp\Check;
 
-use Illuminate\Http\Request;
 use Laravel\Dusk\Browser;
 use App\Http\Controllers\Controller;
 use Symfony\Component\DomCrawler\Crawler;
@@ -10,11 +9,6 @@ use Revolution\Salvager\Client;
 use Revolution\Salvager\Drivers\Chrome;
 
 use App\Asp;
-use App\Product;
-use App\ProductBase;
-
-//header('Content-Type: text/html; charset=utf-8');
-
 
 class AffiTownController extends Controller
 {

@@ -59,7 +59,7 @@ class SCANController extends Controller
                         ->type( $asp_info[0]['login_key'], $id )
                         ->type( $asp_info[0]['password_key'], $pass )
                         ->click( $asp_info[0]['login_selector'] )
-                        ->visit( $asp_info[0]['lp1_url'].$product)
+                        //->visit( $asp_info[0]['lp1_url'].$product)
                         ->crawler()->getUri();
 
                     if (strpos($crawler,'merchant') !== false ){

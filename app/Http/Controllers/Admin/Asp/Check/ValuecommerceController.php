@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Admin\Asp\Check;
 
-use Illuminate\Http\Request;
 use Laravel\Dusk\Browser;
 use App\Http\Controllers\Controller;
 use Symfony\Component\DomCrawler\Crawler;
@@ -10,8 +9,7 @@ use Revolution\Salvager\Client;
 use Revolution\Salvager\Drivers\Chrome;
 
 use App\Asp;
-use App\Product;
-use App\ProductBase;
+
 
 class ValuecommerceController extends Controller
 {
@@ -41,7 +39,6 @@ class ValuecommerceController extends Controller
 
         //Chromeドライバー実行
         $client->browse( function( Browser $browser ) use (&$crawler, $id , $pass , &$result)
-        //$client->browse( function( Browser $browser ) use (&$crawler, $id , $pass , $product, &$result)
         {
             $asp_info = Asp::where('id','=',3)->get()->toArray();
  
@@ -50,9 +47,10 @@ class ValuecommerceController extends Controller
                         ->type( $asp_info[0]['login_key'], $id )
                         ->type( $asp_info[0]['password_key'], $pass )
                         ->click( $asp_info[0]['login_selector'] )
-                        //->visit( $asp_info[0]['lp1_url'] )
+                        ->visit( $asp_info[0]['lp1_url'] )
                         ->crawler()->getUri();
-                        echo $crawler ;
+                        //echo $crawler ;
+
                     if (strpos($crawler,'home') !== false ){
                         $result = 1;
                         //var_dump($result);
