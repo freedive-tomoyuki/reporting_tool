@@ -267,6 +267,8 @@ class DailyController extends Controller
                     //->where('date', 'LIKE' , "%".date("Y-m-d",strtotime('-1 day'))."%")
                     ->where('date', '>=' , date("Y-m-01",strtotime('-1 day'))) 
                     ->where('date', '<=' , date("Y-m-d",strtotime('-1 day')))
+                    ->orderBy('cv','desc')
+                    ->limit(2500)
                     ->get();
 
         //var_dump($products);
@@ -337,6 +339,7 @@ class DailyController extends Controller
                     if(!empty($searchdate_end)){
                         $table2->where('date', '<=' , $searchdate_end );
                     }
+
         }
 
         $daily_site_diffs_table = $month_1.'_daily_site_diffs';
@@ -362,6 +365,8 @@ class DailyController extends Controller
                     if(!empty($table2)){
                         $products->union($table2);
                     }
+                    $products = $products->orderBy('cv','desc');
+                    $products = $products->limit(2500);
                     $products = $products->get();
 
 
