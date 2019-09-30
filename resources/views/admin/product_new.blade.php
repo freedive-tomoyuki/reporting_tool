@@ -65,7 +65,7 @@
                             <label for="email" class="col-md-4 col-form-label text-md-right">ASP<font style="color:red">*</font></label>
 
                             <div class="col-md-6">
-                                <select class="form-control" name="asp_id" v-model="selected" v-on:change="switchAsp" >
+                                <select class="form-control" name="asp_id" v-model="selected" v-on:change="switchAsp" v-bind:disabled="fixed">
                                   <option value=""> -- </option>
                                             @foreach($asps as $asp)
                                               <option value="{{ $asp -> id }}"
@@ -87,7 +87,7 @@
                             <label for="loginid" class="col-md-4 col-form-label text-md-right" >ログインID<font style="color:red">*</font></label>
 
                             <div class="col-md-6">
-                                <input id="loginid" type="text" class="form-control{{ $errors->has('loginid') ? ' is-invalid' : '' }}" name="loginid" value="{{ old('loginid') }}"  v-model="login">
+                                <input id="loginid" type="text" class="form-control{{ $errors->has('loginid') ? ' is-invalid' : '' }}" name="loginid" value="{{ old('loginid') }}"  v-model="login" v-bind:disabled="fixed">
 
                                 @if ($errors->has('loginid'))
                                     <div class="alert alert-danger" role="alert">
@@ -101,7 +101,7 @@
                             <label for="password" class="col-md-4 col-form-label text-md-right" >パスワード<font style="color:red">*</font></label>
 
                             <div class="col-md-6">
-                                <input id="password" type="password" class="form-control" name="password"  v-model="password">
+                                <input id="password" type="password" class="form-control" name="password"  v-model="password" v-bind:disabled="fixed">
 
                             </div>
                         </div>
@@ -190,6 +190,7 @@
                 sponsor:'',
                 loading: false,
                 product_order:false,
+                fixed:false,
                 
             },
             components: {
@@ -251,6 +252,8 @@
                         if(res.data == 1){
                             this.ok = true;
                             this.errorMessage = false;
+                            this.fixed = true;
+
                         }else{
                             this.ok = false;
                             this.errorMessage = true;
