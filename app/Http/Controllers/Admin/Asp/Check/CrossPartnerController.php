@@ -17,22 +17,7 @@ use App\ProductBase;
 
 class CrossPartnerController extends Controller
 {
-/**
-　再現性のある数値を生成 サイトIDとして適用
-*/
-    public function siteCreate($siteName,$seed){
-      $siteId='';
-      //echo $siteName;
-      mt_srand($seed, MT_RAND_MT19937);
-      foreach(str_split($siteName) as $char) {
-            $char_array[] = ord($char) + mt_rand(0, 255) ;
-      }
-      //var_dump($char_array);
-      $siteId = mb_substr(implode($char_array),0,100);
-      //echo $siteId;
-
-      return $siteId;
-    }    
+   
     public function crosspartner( $id , $pass , $product = null, $sponsor = null) //OK
     {
         /*
@@ -69,7 +54,7 @@ class CrossPartnerController extends Controller
                         ->keys( $asp_info[0]['login_key'], $id )
                         ->keys( $asp_info[0]['password_key'], $pass )
                         ->click( $asp_info[0]['login_selector'] )
-                        //->visit( $asp_info[0]['lp1_url'] )
+                        ->visit( $asp_info[0]['lp1_url'] )
                         ->crawler()->getUri();
 
                     if (strpos($crawler,'tops') !== false ){
@@ -79,14 +64,14 @@ class CrossPartnerController extends Controller
                         $result = 0;
                         //var_dump($result);
                     }
-                    return $result;
+                    return $crawler;
 
                 }catch ( Exception $ex ) {
-                    return $result = 0;
+                    return $crawler = 0;
                 }
             //var_dump($crawler);
         });
         //var_dump($result);
-        return $result;
+        return $crawler;
     }
 }
