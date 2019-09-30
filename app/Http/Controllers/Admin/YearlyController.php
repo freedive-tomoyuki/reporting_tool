@@ -5,9 +5,7 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
-//use App\Dailydata;
 use App\Dailyestimate;
-//use App\DailyTotal;
 use App\DailyEstimateTotal;
 use App\ProductBase;
 use App\Product;
@@ -144,7 +142,7 @@ class YearlyController extends Controller
         $asps = Product::Select('asp_id','name')->join('asps','products.asp_id','=','asps.id')->where('product_base_id', 3)->where('products.killed_flag',0)->get()->toArray();
 
         foreach ($asps as $asp) {
-            echo $asp["asp_id"];
+            //echo $asp["asp_id"];
         //成果発生数
             $key = $asp["asp_id"];
                 $select = '';
@@ -422,7 +420,7 @@ date ,sum(case when monthlydatas.asp_id='3' then cv else 0 end) as 'Value commer
         $asps = Product::Select('asp_id','name')->join('asps','products.asp_id','=','asps.id')->where('product_base_id', $id)->where('products.killed_flag',0)->get()->toArray();
 
         foreach ($asps as $asp) {
-            echo $asp["asp_id"];
+            //echo $asp["asp_id"];
         //成果発生数
             $key = $asp["asp_id"];
                 $select = '';
