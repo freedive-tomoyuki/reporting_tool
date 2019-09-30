@@ -4,7 +4,7 @@
 <div class="row">
     <ol class="breadcrumb">
       <li><a href="/admin/product_list">広告主管理</a></li>
-      <li ><a href="/admin/product_detail/{{ $products[0]['id'] }}">案件一覧</a></li>
+      <li ><a href="/admin/product_detail/{{ $products[0]['product_base_id'] }}">案件一覧</a></li>
       <li class="active">案件編集</li>
     </ol>
     <div class="col-md-12">

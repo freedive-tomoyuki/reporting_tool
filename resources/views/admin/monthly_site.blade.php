@@ -65,7 +65,14 @@
          </form>
 
       </div>
-   </div>
+      @if (count($errors) > 0)
+         <div class="alert alert-danger">
+           @foreach ($errors->all() as $error)
+             {{ $error }}
+           @endforeach
+         </div>
+      @endif
+    </div>
 </div>
 
 <div class="row">
@@ -80,7 +87,7 @@
                       <label class="control-label">ASP</label>
                       <div>
                               <p class="form-control-static">
-                                @if( old('asps')  )
+                                @if( old('asp_id')  )
                                     @foreach($asps as $asp)
                                         @if( old('asp_id') == $asp->id  )
                                             {{ $asp -> name }}

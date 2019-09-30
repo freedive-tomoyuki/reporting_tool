@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Admin\Asp\Check;
 
-use Illuminate\Http\Request;
 use Laravel\Dusk\Browser;
 use App\Http\Controllers\Controller;
 use Symfony\Component\DomCrawler\Crawler;
@@ -10,8 +9,6 @@ use Revolution\Salvager\Client;
 use Revolution\Salvager\Drivers\Chrome;
 
 use App\Asp;
-use App\Product;
-use App\ProductBase;
 
 //header('Content-Type: text/html; charset=utf-8');
 
@@ -30,7 +27,7 @@ class CrossPartnerController extends Controller
         $options = [
                 '--window-size=1920,3000',
                 '--start-maximized',
-                '--headless',
+                //'--headless',
                 '--disable-gpu',
                 '--no-sandbox',
                 '--lang=ja_JP',
