@@ -259,7 +259,6 @@ class Browser
         if (! empty($body)) {
             $this->resize($body->getSize()->getWidth(), $body->getSize()->getHeight());
         }
-
         return $this;
     }
 
