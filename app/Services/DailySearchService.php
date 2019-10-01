@@ -153,7 +153,7 @@ class DailySearchService
             //       'date' => $data['date']
             //     ]
             // );
-            $monthlysites_table = date('Ym').'_monthlysites';
+            $monthlysites_table = date('Ym',strtotime('-1 day')).'_monthlysites';
 
 
             DB::table($monthlysites_table)->updateOrInsert(
@@ -526,7 +526,7 @@ class DailySearchService
             // );
             //DailySiteDiff::updateOrCreate(
 
-            $dailysites_table = date('Ym').'_daily_site_diffs';
+            $dailysites_table = date('Ym',strtotime('-1 day')).'_daily_site_diffs';
             
             DB::table($dailysites_table)->updateOrInsert(
               [
