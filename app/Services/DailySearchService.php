@@ -391,8 +391,8 @@ class DailySearchService
         $diff_data          = array();
         $before_yesterday_site_id           = array();
 
-        $yesterday           = date("Y-m-d",strtotime("-2 day")); 
-        $before_yesterday         = date("Y-m-d",strtotime("-3 day"));
+        $yesterday           = date("Y-m-d",strtotime("-1 day")); 
+        $before_yesterday         = date("Y-m-d",strtotime("-2 day"));
         $month          = date('Ym',strtotime("-1 day"));
 
         $match_asp_id = array();//マッチしたASP配列
