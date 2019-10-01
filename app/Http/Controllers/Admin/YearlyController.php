@@ -128,8 +128,8 @@ class YearlyController extends Controller
             $yearly_cvrs[$key] = ($yearly_cvs[$key]!=0 || $value!=0)? $yearly_cvs[$key] / $value * 100 : 0 ; 
         
         }
-        $product_bases = ProductBase::all();
-        $asps = Asp::all();
+        $product_bases = ProductBase::where('killed_flag', '==' ,0 )->get();
+        $asps = Asp::where('killed_flag', '==' ,0 )->get();
 
         //グラフ数値
         $chart_data = Monthlydata::select(['name', 'imp', 'click','cv','date'])
@@ -401,7 +401,7 @@ date ,sum(case when monthlydatas.asp_id='3' then cv else 0 end) as 'Value commer
             $yearly_cvrs[$key] = ($yearly_cvs[$key]!=0 || $value!=0)? $yearly_cvs[$key] / $value * 100 : 0 ; 
         
         }
-        $product_bases = ProductBase::all();
+        $product_bases = ProductBase::where('killed_flag', '==' ,0 )->get();
 
         //グラフ数値
         $chart_data = Monthlydata::select(['name', 'imp', 'click','cv'])

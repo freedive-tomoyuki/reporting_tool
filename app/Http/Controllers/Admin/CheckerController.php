@@ -5,23 +5,22 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 //use App\Http\Requests\CheckerRequest;
 
-use Laravel\Dusk\Browser;
-use Symfony\Component\DomCrawler\Crawler;
-use Revolution\Salvager\Client;
-use Revolution\Salvager\Drivers\Chrome;
+// use Laravel\Dusk\Browser;
+// use Symfony\Component\DomCrawler\Crawler;
+// use Revolution\Salvager\Client;
+// use Revolution\Salvager\Drivers\Chrome;
 use Illuminate\Support\Facades\Auth; 
 use App\Http\Controllers\Controller;
 
-
-use App\Product;
+//use App\Product;
 //use App\Dailysite;
 use App\Asp;
-use App\Monthlydata;
-use App\Monthlysite;
-use App\Schedule;
-use App\DailyDiff;
-use App\DailySiteDiff;
-use DB;
+// use App\Monthlydata;
+// use App\Monthlysite;
+// use App\Schedule;
+// use App\DailyDiff;
+// use App\DailySiteDiff;
+// use DB;
 //use App\Services\CalculationService;
 
 //header('Content-Type: text/html; charset=utf-8');
@@ -56,8 +55,8 @@ class CheckerController extends Controller
     public function check(Request $request){
 
           $result = 0;
-          $aspRow = array();
-          $asp_array = array();
+          // $aspRow = array();
+          // $asp_array = array();
           //var_dump($request);
           //echo "sid";
 

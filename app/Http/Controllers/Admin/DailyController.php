@@ -63,11 +63,11 @@ class DailyController extends Controller
         /**
         * プロダクト一覧を全て取得
         */
-        $product_bases = ProductBase::all();
+        $product_bases = ProductBase::where('killed_flag', '==' ,0 )->get();
         /**
         * ASP一覧を全て取得
         */
-        $asps = Asp::all();
+        $asps = Asp::where('killed_flag', '==' ,0 )->get();
         $data = array();
         /**
         * Eloquentを利用して、dailydatasテーブルから案件ID＝１の昨日データ取得する。
@@ -143,11 +143,11 @@ class DailyController extends Controller
         /**
         * プロダクト一覧を全て取得
         */
-        $product_bases = ProductBase::all();
+        $product_bases = ProductBase::where('killed_flag', '==' ,0 )->get();
         /**
         * ASP一覧を全て取得
         */  
-        $asps = Asp::all();
+        $asps = Asp::where('killed_flag', '==' ,0 )->get();
 
         $i = 0;
 
@@ -253,11 +253,11 @@ class DailyController extends Controller
         /**
         * プロダクト一覧を全て取得
         */
-        $product_bases = ProductBase::all();
+        $product_bases = ProductBase::where('killed_flag', '==' ,0 )->get();
         /**
         * ASP一覧を全て取得
         */  
-        $asps = Asp::all();
+        $asps = Asp::where('killed_flag', '==' ,0 )->get();
 
         $products = DB::table($daily_site_diffs_table)
                     ->select(['name', 'imp', 'click','cv', 'cvr', 'ctr', 'media_id','site_name','date','products.product','products.id','price','cpa','cost','estimate_cv'])
@@ -306,11 +306,11 @@ class DailyController extends Controller
         /**
         * プロダクト一覧を全て取得
         */
-        $product_bases = ProductBase::all();
+        $product_bases = ProductBase::where('killed_flag', '==' ,0 )->get();
         /**
         * ASP一覧を全て取得
         */  
-        $asps = Asp::all();
+        $asps = Asp::where('killed_flag', '==' ,0 )->get();
 
         //開始月と終了月が同月の場合
         if(date('m',strtotime($searchdate_start)) == date('m',strtotime($searchdate_end))) {

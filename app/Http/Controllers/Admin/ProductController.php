@@ -54,8 +54,8 @@ class ProductController extends Controller
     }
 
     public function add() {
-        $product_bases = ProductBase::all();
-        $asps = Asp::all();
+        $product_bases = ProductBase::where('killed_flag', '==' ,0 )->get();
+        $asps = Asp::where('killed_flag', '==' ,0 )->get();
         $user = Auth::user();
 
         return view('admin.product_new',compact('product_bases','asps','user'));
@@ -121,8 +121,8 @@ class ProductController extends Controller
     }
     //各案件の編集画面
     public function edit($id=null,Request $request) {
-        $product_bases = ProductBase::all();
-        $asps = Asp::all();
+        $product_bases = ProductBase::where('killed_flag', '==' ,0 )->get();
+        $asps = Asp::where('killed_flag', '==' ,0 )->get();
         $user = Auth::user();
         
 
@@ -178,8 +178,8 @@ class ProductController extends Controller
     //各案件の編集画面
     public function edit_product($asp_id,$product_base_id) {
  
-        $product_bases = ProductBase::all();
-        $asps = Asp::all();
+        $product_bases = ProductBase::where('killed_flag', '==' ,0 )->get();
+        $asps = Asp::where('killed_flag', '==' ,0 )->get();
         $user = Auth::user();
 
         $products = Product::where('asp_id',$asp_id)

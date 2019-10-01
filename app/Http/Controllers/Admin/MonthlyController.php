@@ -5,14 +5,10 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
-//use App\Dailydata;
-use App\Dailyestimate;
-//use App\DailyTotal;
-use App\DailyEstimateTotal;
+
 use App\ProductBase;
 use App\Asp;
 use App\Monthlydata;
-use App\Monthlysite;
 use App\Http\Requests\SearchMonthlyRequest;
 use App\Http\Requests\SearchMonthlySiteRequest;
 //use App\MonthlyTotal;
@@ -98,8 +94,8 @@ class MonthlyController extends Controller
                     //var_dump($productsEstimateTotals);
 
 
-        $product_bases = ProductBase::all();
-        $asps = Asp::all();
+        $product_bases = ProductBase::where('killed_flag', '==' ,0 )->get();
+        $asps = Asp::where('killed_flag', '==' ,0 )->get();
 
         //var_dump($products);
 
@@ -243,8 +239,8 @@ class MonthlyController extends Controller
             $productsEstimates = 'Empty';
             $productsEstimateTotals = 'Empty';
         }
-                $product_bases = ProductBase::all();
-                $asps = Asp::all();
+                $product_bases = ProductBase::where('killed_flag', '==' ,0 )->get();
+                $asps = Asp::where('killed_flag', '==' ,0 )->get();
 
         //グラフ数値
                 $chart_data = Monthlydata::select(['name', 'imp', 'click','cv'])
@@ -291,11 +287,11 @@ class MonthlyController extends Controller
         /**
         * プロダクト一覧を全て取得
         */
-        $product_bases = ProductBase::all();
+        $product_bases = ProductBase::where('killed_flag', '==' ,0 )->get();
         /**
         * ASP一覧を全て取得
         */  
-        $asps = Asp::all();
+        $asps = Asp::where('killed_flag', '==' ,0 )->get();
         //var_dump($products);
         /**
         * 日次のグラフ用データの一覧を取得する。
@@ -361,11 +357,11 @@ class MonthlyController extends Controller
         /**
         * プロダクト一覧を全て取得
         */
-        $product_bases = ProductBase::all();
+        $product_bases = ProductBase::where('killed_flag', '==' ,0 )->get();
         /**
         * ASP一覧を全て取得
         */  
-        $asps = Asp::all();
+        $asps = Asp::where('killed_flag', '==' ,0 )->get();
         //var_dump($products);
 
         

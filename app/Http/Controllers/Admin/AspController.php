@@ -17,7 +17,7 @@ class AspController extends Controller
 
     public function list() {
         $user = Auth::user();
-        $asps = Asp::all();
+        $asps = Asp::where('killed_flag', '==' ,0 )->get();
 
         return view('admin.asp_list',compact('asps','user'));
  
