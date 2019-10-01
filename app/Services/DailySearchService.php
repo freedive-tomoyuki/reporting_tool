@@ -447,15 +447,21 @@ class DailySearchService
         //月初一日のデータ以外
         if(date("Y-m-d",strtotime("-2 day")) != date("Y-m-t",strtotime("-2 day"))){
           
-          var_dump($yesterday_data);
-          var_dump($before_yesterday_data);
+
 
             foreach ( $yesterday_data as $site){
 
                 foreach ( $before_yesterday_data as $site_1){
 
+
                   if($site["media_id"] == $site_1["media_id"] && $site["product_id"] == $site_1["product_id"] ){
-                      //$media_id = $diff["media_id"];
+                    \Log::debug('昨日メディア"'.$site["media_id"].'"');
+                    \Log::debug('昨日案件"'.$site["product_id"].'"');
+                    \Log::debug('昨日メディア"'.$site["date"].'"');
+                    \Log::debug('おととい案件"'.$site_1["media_id"].'"');
+                    \Log::debug('おとといメディア"'.$site_1["product_id"].'"');
+                    \Log::debug('おととい案件"'.$site_1["date"].'"');
+                    //$media_id = $diff["media_id"];
                       //echo "同じ:".$site["media_id"]."_".$site["product_id"]."<br>";
                       //echo $i."同じ:".$site["media_id"]."_".$site["product_id"]."_".$site["site_name"]."<br>";
                       $diff_data[$i]["imp"] = $site["imp"] - $site_1["imp"];
