@@ -58,13 +58,13 @@ class ValuecommerceController extends Controller
                         $result = 0;
                         //var_dump($result);
                     }
-                    return $crawler;
+                    return $result;
 
             }catch ( Exception $ex ) {
-                return $crawler = 0;
+                return $result = 0;
             }
         });
         //var_dump($result);
-        return $crawler;
+        return $result;
     }
 }
