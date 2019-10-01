@@ -241,7 +241,7 @@ class DailySearchService
         }
 
         // 前日比でなくなっているASPを考慮 
-        if(date("Y-m-d",strtotime("-2 day")) != date("Y-m-t",strtotime("-2 day"))){//２日前が月末のとき
+        if(date("Y-m-d",strtotime("-2 day")) != date("Y-m-t",strtotime("-2 day"))){//２日前が月末以外のとき
 
           if(!empty($before_yesterday_data)){//おとといのデータが全案件取れている
               foreach ( $yesterday_data as $diff ){
@@ -444,14 +444,18 @@ class DailySearchService
         // 前日比でなくなっているASPを考慮 
         $i = 0;
         //echo date("Y-m-t",strtotime("-1 month"));
-        //月初一日
-        if(date("Y-m-d",strtotime("-3 day")) != date("Y-m-t",strtotime("-3 day"))){
+        //月初一日のデータ以外
+        if(date("Y-m-d",strtotime("-2 day")) != date("Y-m-t",strtotime("-2 day"))){
+          
+          var_dump($yesterday_data);
+          var_dump($before_yesterday_data);
+
             foreach ( $yesterday_data as $site){
 
                 foreach ( $before_yesterday_data as $site_1){
 
                   if($site["media_id"] == $site_1["media_id"] && $site["product_id"] == $site_1["product_id"] ){
-                  //$media_id = $diff["media_id"];
+                      //$media_id = $diff["media_id"];
                       //echo "同じ:".$site["media_id"]."_".$site["product_id"]."<br>";
                       //echo $i."同じ:".$site["media_id"]."_".$site["product_id"]."_".$site["site_name"]."<br>";
                       $diff_data[$i]["imp"] = $site["imp"] - $site_1["imp"];
@@ -476,30 +480,30 @@ class DailySearchService
 
               }
             }
-          foreach ( $yesterday_data as $site){
+            foreach ( $yesterday_data as $site){
 
-                  if(!in_array($site["media_id"]."_".$site["product_id"], $before_yesterday_site_id)){
-                      //echo $i."Diff:".$site["media_id"]."_".$site["product_id"]."_".$site["site_name"]."<br>";
-                      $diff_data[$i]["imp"] = $site["imp"];
-                      $diff_data[$i]["click"] = $site["click"];
-                      $diff_data[$i]["cv"] = $site["cv"];
-                      $diff_data[$i]["ctr"] = 
-                      ($diff_data[$i]["imp"] > 0 && $diff_data[$i]["click"] > 0 ) ? intval($diff_data[$i]["imp"])/intval($diff_data[$i]["click"]): 0 ;
-                      $diff_data[$i]["cvr"] = 
-                      ($diff_data[$i]["click"] > 0 && $diff_data[$i]["cv"] > 0 )? intval($diff_data[$i]["click"])/intval($diff_data[$i]["cv"]): 0 ;
-                      $diff_data[$i]["estimate_cv"] = $site["estimate_cv"];
-                      $diff_data[$i]["price"] = $site["price"];
-                      $diff_data[$i]["cpa"] = $site["cpa"];
-                      $diff_data[$i]["cost"] = $site["cost"] ;
-                      $diff_data[$i]["media_id"] = $site["media_id"];
-                      $diff_data[$i]["site_name"] = $site["site_name"];
-                      $diff_data[$i]["date"] = $site["date"];
-                      $diff_data[$i]["product_id"] = $site["product_id"];
-                      $i++;
-                  }
-              
-          }
+                    if(!in_array($site["media_id"]."_".$site["product_id"], $before_yesterday_site_id)){
+                        //echo $i."Diff:".$site["media_id"]."_".$site["product_id"]."_".$site["site_name"]."<br>";
+                        $diff_data[$i]["imp"] = $site["imp"];
+                        $diff_data[$i]["click"] = $site["click"];
+                        $diff_data[$i]["cv"] = $site["cv"];
+                        $diff_data[$i]["ctr"] = 
+                        ($diff_data[$i]["imp"] > 0 && $diff_data[$i]["click"] > 0 ) ? intval($diff_data[$i]["imp"])/intval($diff_data[$i]["click"]): 0 ;
+                        $diff_data[$i]["cvr"] = 
+                        ($diff_data[$i]["click"] > 0 && $diff_data[$i]["cv"] > 0 )? intval($diff_data[$i]["click"])/intval($diff_data[$i]["cv"]): 0 ;
+                        $diff_data[$i]["estimate_cv"] = $site["estimate_cv"];
+                        $diff_data[$i]["price"] = $site["price"];
+                        $diff_data[$i]["cpa"] = $site["cpa"];
+                        $diff_data[$i]["cost"] = $site["cost"] ;
+                        $diff_data[$i]["media_id"] = $site["media_id"];
+                        $diff_data[$i]["site_name"] = $site["site_name"];
+                        $diff_data[$i]["date"] = $site["date"];
+                        $diff_data[$i]["product_id"] = $site["product_id"];
+                        $i++;
+                    }
+            }
         }else{
+          //１日のデータ
             $diff_data= $yesterday_data ;
         }
 
