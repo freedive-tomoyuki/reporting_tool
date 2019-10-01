@@ -67,13 +67,23 @@ class ValuecommerceController extends DailyCrawlerController
                         $crawler = $browser->visit( $product_info->asp->login_url )->type( $product_info->login_key, $product_info->login_value )->type( $product_info->password_key, $product_info->password_value )->click( $product_info->asp->login_selector )->visit( $product_info->asp->lp1_url )->crawler();
                         //echo $crawler->html();
                         
-                        $selector_crawler = array(
-                            'imp' => $product_info->asp->daily_imp_selector,
-                            'click' => $product_info->asp->daily_click_selector,
-                            'cv' => $product_info->asp->daily_cv_selector,
-                            'partnership' => $product_info->asp->daily_partnership_selector,
-                            'price' => $product_info->asp->daily_price_selector 
-                        );
+                        if(date( 'Y/m/d' ) == date( 'Y/m/01' )){
+                            $selector_crawler = array(
+                                'imp'       => '#report > tbody > tr:nth-child(4) > td:nth-child(5)',
+                                'click'     => '#report > tbody > tr:nth-child(4) > td:nth-child(8)',
+                                'cv'        => '#report > tbody > tr:nth-child(4) > td:nth-child(11)',
+                                'partnership' => '#report > tbody > tr:nth-child(4) > td:nth-child(2)',
+                                'price'     => '#report > tbody > tr:nth-child(4) > td:nth-child(14)', 
+                            );
+                        }else{
+                            $selector_crawler = array(
+                                'imp'       => $product_info->asp->daily_imp_selector,
+                                'click'     => $product_info->asp->daily_click_selector,
+                                'cv'        => $product_info->asp->daily_cv_selector,
+                                'partnership' => $product_info->asp->daily_partnership_selector,
+                                'price'     => $product_info->asp->daily_price_selector,
+                            );
+                        }
                         
                         
                         
