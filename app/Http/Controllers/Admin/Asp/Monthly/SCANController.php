@@ -48,7 +48,7 @@ class SCANController extends MonthlyCrawlerController
         
         $client->browse( function( Browser $browser ) use (&$crawler, $product_id)
         {
-                    
+            try{  
                     $product_infos = \App\Product::all()->where( 'id', $product_id );
                     
                     foreach ( $product_infos as $product_info ) {
