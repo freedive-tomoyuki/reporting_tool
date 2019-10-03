@@ -103,7 +103,7 @@
                      <div class="form-group col-md-12">
                       <label class="control-label">消化率</label>
                               <p class="form-control-static">
-                                @if(old('month') == date('Y-m'))
+                                @if(old('month') == date('Y-m') || !old('month'))
                                   {{ ceil((date("d",strtotime('-1 day'))/date("t"))*100).'%' }} 
                                 @else
                                   {{ '100%' }}　
