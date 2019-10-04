@@ -223,7 +223,16 @@
                         }
                         if(id == 6){
                             this.product_order = true;
+                            this.fixed = false;
+                            this.ok = false;
+                        }else if(id==12){
+                            this.ok = true;
+                            this.errorMessage = false;
+                            this.fixed = true;
+                            this.product_order = false;
                         }else{
+                            this.fixed = false;
+                            this.ok = false;
                             this.product_order = false;
                         }
                     })
