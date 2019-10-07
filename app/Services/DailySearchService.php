@@ -48,8 +48,8 @@ class DailySearchService
         $ratio  = (date("d")/date("t"));
         $estimate_cv = ceil(($cv)/ $ratio);
 
-        $approval = ($data_array[0]['approval'])? $data_array[0]['approval']: 0 ;
-        $approval_price = ($data_array[0]['approval_price'])? $data_array[0]['approval_price']: 0 ;
+        $approval = (isset($data_array[0]['approval']))? $data_array[0]['approval']: 0 ;
+        $approval_price = (isset($data_array[0]['approval_price']))? $data_array[0]['approval_price']: 0 ;
 
         // Monthlydata::create(
         //     [
