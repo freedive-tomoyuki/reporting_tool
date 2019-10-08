@@ -60,29 +60,48 @@ class S8Controller extends DailyCrawlerController
                     
                     $i = 0;
 
-                    // foreach($results as $result){
-                    //     $calData = json_decode( json_encode( json_decode( $this->dailySearchService->cpa( $result['count_cv'], $result['costs'], 12 ) ) ), True );
-                            
-                    //     $s8Data[$i] = array(
-                    //         'imp'=> ($result['count_imp'])?$result['count_imp']:0,
-                    //         'click'=> ($result['count_click'])?$result['count_click']:0,
-                    //         'cv'=> ($result['count_cv'])?$result['count_cv']:0,
-                    //         'active'=> 0,
-                    //         'partnership'=> 0,
-                    //         'price'=> ($result['prices'] )?$result['prices']:0,
-                    //         'cost'=> ($calData['cost'])?$calData['cost']:0 ,
-                    //         'cpa'=> ($calData['cpa'])?$calData['cpa']:0 ,
-                    //         'date'=> date( 'Y-m-d', strtotime( '-1 day' ) ),
-                    //         'product'=>  $promotion[0]['id'],
-                    //         'asp'=> $promotion[0]['asp_id'],
-                    //         'approval'=> $result['count_apply'],
-                    //         'approval_price'=> $result['count_apply_price'],
-                            
-                    //     );
-                    //     $i++;
-                    // }
-                    // // var_dump($s8Data);
-                    // $this->dailySearchService->save_daily( json_encode( $s8Data ) );
+                    foreach($results as $result){
+                        $calData = json_decode( json_encode( json_decode( $this->dailySearchService->cpa( $result['count_cv'], $result['costs'], 12 ) ) ), True );
+                        if(){
+                            $s8Data[$i] = array(
+                                'imp'=> ($result['count_imp'])?$result['count_imp']:0,
+                                'click'=> ($result['count_click'])?$result['count_click']:0,
+                                'cv'=> ($result['count_cv'])?$result['count_cv']:0,
+                                'active'=> 0,
+                                'partnership'=> 0,
+                                'price'=> ($result['prices'] )?$result['prices']:0,
+                                'cost'=> ($calData['cost'])?$calData['cost']:0 ,
+                                'cpa'=> ($calData['cpa'])?$calData['cpa']:0 ,
+                                'date'=> date( 'Y-m-d', strtotime( '-1 day' ) ),
+                                'product'=>  $promotion[0]['id'],
+                                'asp'=> $promotion[0]['asp_id'],
+                                'approval'=> $result['count_apply'],
+                                'approval_price'=> $result['count_apply_price'],
+                                
+                            );
+                        }else{
+                            $s8SiteData[$i] = array(
+                                //'imp'=> ($result['count_imp'])?$result['count_imp']:0,
+                                //'click'=> ($result['count_click'])?$result['count_click']:0,
+                                'cv'=> ($result['count_cv'])?$result['count_cv']:0,
+                                'active'=> 0,
+                                'partnership'=> 0,
+                                'price'=> ($result['prices'] )?$result['prices']:0,
+                                'cost'=> ($calData['cost'])?$calData['cost']:0 ,
+                                'cpa'=> ($calData['cpa'])?$calData['cpa']:0 ,
+                                'date'=> date( 'Y-m-d', strtotime( '-1 day' ) ),
+                                'product'=>  $promotion[0]['id'],
+                                'asp'=> $promotion[0]['asp_id'],
+                                'approval'=> $result['count_apply'],
+                                'approval_price'=> $result['count_apply_price'],
+                                
+                            );
+                        }
+                        $i++;
+                    }
+                    // var_dump($s8Data);
+                    $this->dailySearchService->save_daily( json_encode( $s8Data ) );
+                    $this->dailySearchService->save_daily( json_encode( $s8Data ) );
                     //$product_id = $this->dailySearchService->BasetoProduct( 3, $product_base_id );
                     
                     //$s8 = curl("https://s8affi.net/api/index.php");

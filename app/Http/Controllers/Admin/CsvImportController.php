@@ -351,6 +351,9 @@ class CsvImportController extends Controller
 			}
 
 			//月次データ
+			$push_cv = array();
+			$push_approval = array();
+			//var_dump($month_array);
 			foreach($month_array as $a ){
 				//Monthlydata::insert($array_1);
 
@@ -363,9 +366,25 @@ class CsvImportController extends Controller
 
 				//CPA
 					$d['cpa'] = ($d['price'] == 0 || $d['cv'] == 0 )? 0 : $d['price'] / $d['cv'] ;
+					//echo "<pre>";
+					//echo $d['date'];
+					array_push($push_cv			,$d['cv']);
+					array_push($push_approval	,$d['approval']);
+					
+					//var_dump($push_cv);
+					//var_dump($push_approval);
+					
+					if(count($push_cv) > 2) 		array_shift($push_cv);
+					if(count($push_approval) > 2) 	array_shift($push_approval);
+					
+					$tree_month_cv = array_sum($push_cv);
+					$tree_month_approval = array_sum($push_approval);
 
 				//承認率
-					$d['approval_rate'] = ($d['cv'] == 0 || $d['approval'] == 0 )? 0 : $d['approval'] / $d['cv'] ;
+					//$d['approval_rate'] = ($d['cv'] == 0 || $d['approval'] == 0 )? 0 : ( $d['approval'] / $d['cv'] )* 100;
+					$d['approval_rate'] = ($tree_month_cv == 0 || $tree_month_approval == 0 )? 0 : ( $tree_month_approval / $tree_month_cv )* 100;
+					//echo "approval_rate=".$d['approval_rate'];
+					//echo "</pre>";
 
 					$date = DB::table('monthlydatas')
 				    ->updateOrInsert(

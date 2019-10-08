@@ -31,20 +31,61 @@ class MonthlyController extends Controller
     public function monthlyResult() {
         $user = Auth::user();
 
-        $products = Monthlydata::select(['name', 'imp', 'click','cv', 'cvr', 'ctr', 'active', 'partnership','monthlydatas.created_at','products.product','products.id','price','cpa','cost','approval','approval_price','approval_rate','last_cv'])
+        $products = Monthlydata::select([
+                        'name', 
+                        'imp', 
+                        'click',
+                        'cv', 
+                        'cvr', 
+                        'ctr', 
+                        'active', 
+                        'partnership',
+                        'monthlydatas.created_at',
+                        'products.product',
+                        'products.id',
+                        'price',
+                        'cpa',
+                        'cost',
+                        'approval',
+                        'approval_price',
+                        'approval_rate',
+                        'last_cv'
+                    ])
                     ->join('products','monthlydatas.product_id','=','products.id')
                     ->join('asps','products.asp_id','=','asps.id')
-                    ->leftjoin(DB::raw("(select `cv` as last_cv, `product_id` from `monthlydatas` inner join `products` on `monthlydatas`.`product_id` = `products`.`id` where `product_base_id` = 3 and `monthlydatas`.`date` like '".date('Y-m-t', strtotime('-1 month'))."') AS last_month"), 'monthlydatas.product_id','=','last_month.product_id')
+                    ->leftjoin(DB::raw("(
+                            select 
+                                `cv` as last_cv,
+                                `product_id` 
+                            from `monthlydatas` 
+                            inner join `products` on `monthlydatas`.`product_id` = `products`.`id` where `product_base_id` = 3 and `monthlydatas`.`date` like '".date('Y-m-t', strtotime('-1 month'))."') AS last_month"), 'monthlydatas.product_id','=','last_month.product_id')
                     ->where('products.product_base_id', 3)
                     ->where('monthlydatas.date', 'LIKE' , "%".date("Y-m-d", strtotime('-1 day'))."%")
                     ->get();//->toArray();
 
-        $productsTotals = Monthlydata::select(DB::raw("date, product_id,sum(imp) as total_imp,sum(click) as total_click,sum(cv) as total_cv,sum(active) as total_active,sum(partnership) as total_partnership,sum(price) as total_price,sum(cost) as total_cost ,sum(approval) as total_approval, sum(approval_price) as total_approval_price, sum(last_cv) as total_last_cv"))
-                    ->join('products','monthlydatas.product_id','=','products.id')
-                    ->leftjoin(DB::raw("(select `cv` as last_cv, `product_id` as pid from `monthlydatas` inner join `products` on `monthlydatas`.`product_id` = `products`.`id` where `product_base_id` = 3 and `monthlydatas`.`date` like '".date('Y-m-t', strtotime('-1 month'))."') AS last_month"), 'monthlydatas.product_id','=','last_month.pid')
-                    ->where('product_base_id', 3)
-                    ->where('monthlydatas.date', 'LIKE' , "%".date("Y-m-d",strtotime('-1 day'))."%")
-                    ->get();
+        $productsTotals = Monthlydata::select
+                (DB::raw(
+                    "date, 
+                    product_id,
+                    sum(imp) as total_imp,
+                    sum(click) as total_click,
+                    sum(cv) as total_cv,
+                    sum(active) as total_active,
+                    sum(partnership) as total_partnership,
+                    sum(price) as total_price,
+                    sum(cost) as total_cost ,
+                    (sum(price)/sum(cv)) as total_cpa ,
+                    sum(approval) as total_approval, 
+                    sum(approval_price) as total_approval_price, 
+                    sum(last_cv) as total_last_cv , 
+                    (sum(approval)/sum(last_cv)*100) as total_approval_rate"
+                    )
+                )
+                ->join('products','monthlydatas.product_id','=','products.id')
+                ->leftjoin(DB::raw("(select `cv` as last_cv, `product_id` as pid from `monthlydatas` inner join `products` on `monthlydatas`.`product_id` = `products`.`id` where `product_base_id` = 3 and `monthlydatas`.`date` like '".date('Y-m-t', strtotime('-1 month'))."') AS last_month"), 'monthlydatas.product_id','=','last_month.pid')
+                ->where('product_base_id', 3)
+                ->where('monthlydatas.date', 'LIKE' , "%".date("Y-m-d",strtotime('-1 day'))."%")
+                ->get();
 
         $ratio = (date("d")/date("t"));
 
@@ -134,18 +175,46 @@ class MonthlyController extends Controller
 
         }else{
             $searchdate = date('Y-m-d', strtotime('last day of ' . $month));
-            $month = date('Y-m',strtotime('-1 month'));
-            $search_last_date = date('Y-m-t', strtotime('last day of ' . $month));
+            $before_month = date('Y-m',strtotime(date('Y-m-01', strtotime($month)).'-1 month'));
+            //var_dump($before_month);
+            $search_last_date = date('Y-m-t', strtotime('last day of ' . $before_month));
         }
 
         $request->flash();
         /**
             当月の実績値
         */
-        $products = Monthlydata::select(['name', 'imp', 'click','cv', 'cvr', 'ctr', 'active', 'partnership','monthlydatas.created_at','products.product','products.id','price','cpa','cost','approval','approval_price','approval_rate','last_cv'])
+        $products = Monthlydata::select([
+                        'name', 
+                        'imp', 
+                        'click',
+                        'cv', 
+                        'cvr', 
+                        'ctr', 
+                        'active', 
+                        'partnership',
+                        'monthlydatas.created_at',
+                        'products.product',
+                        'products.id',
+                        'price',
+                        'cpa',
+                        'cost',
+                        'approval',
+                        'approval_price',
+                        'approval_rate',
+                        'last_cv'
+                    ])
                     ->join('products','monthlydatas.product_id','=','products.id')
                     ->join('asps','products.asp_id','=','asps.id')
-                    ->leftjoin(DB::raw("(select `cv` as last_cv, `product_id` from `monthlydatas` inner join `products` on `monthlydatas`.`product_id` = `products`.`id` where `product_base_id` = ".$id." and `monthlydatas`.`date` like '".$search_last_date."') AS last_month"), 'monthlydatas.product_id','=','last_month.product_id');
+                    ->leftjoin(
+                        DB::raw("
+                                (
+                                    select `cv` as last_cv, `product_id` from `monthlydatas` inner join `products` on `monthlydatas`.`product_id` = `products`.`id` where `product_base_id` = ".$id." and `monthlydatas`.`date` like '".$search_last_date."'
+                                )
+                                 AS last_month"
+                            ),
+                            'monthlydatas.product_id','=','last_month.product_id'
+                        );
 
                     //->where('product_base_id', 1)
                     //->where('dailydatas.created_at', 'LIKE' , "%".date("Y-m")."%")
@@ -171,7 +240,21 @@ class MonthlyController extends Controller
             当月の実績値トータル
         */
 
-        $productsTotals = Monthlydata::select(DB::raw("date, sum(imp) as total_imp,sum(click) as total_click,sum(cv) as total_cv,sum(active) as total_active,sum(partnership) as total_partnership,sum(price) as total_price ,sum(cost) as total_cost,sum(approval) as total_approval, sum(approval_price) as total_approval_price, sum(last_cv) as total_last_cv"))
+        $productsTotals = Monthlydata::select(DB::raw(
+                        "date, 
+                        sum(imp) as total_imp,
+                        sum(click) as total_click,
+                        sum(cv) as total_cv,
+                        sum(active) as total_active,
+                        sum(partnership) as total_partnership ,
+                        sum(price) as total_price ,
+                        sum(cost) as total_cost,
+                        (sum(price)/sum(cv)) as total_cpa ,
+                        sum(approval) as total_approval, 
+                        sum(approval_price) as total_approval_price, 
+                        sum(last_cv) as total_last_cv , 
+                        (sum(approval)/sum(last_cv)*100) as total_approval_rate"
+                    ))
                     ->join('products','monthlydatas.product_id','=','products.id')
                     ->join('asps','products.asp_id','=','asps.id')
                     ->leftjoin(DB::raw("(select `cv` as last_cv, `product_id` from `monthlydatas` inner join `products` on `monthlydatas`.`product_id` = `products`.`id` where `product_base_id` = ".$id." and `monthlydatas`.`date` like '".$search_last_date."') AS last_month"), 'monthlydatas.product_id','=','last_month.product_id');

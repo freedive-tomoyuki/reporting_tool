@@ -245,10 +245,10 @@
                             <th class="th-sm">提携数</th>
                             <th class="th-sm">FDグロス</th>
                             <!-- <th class="th-sm">獲得単価</th> -->
-                            <th class="th-sm">CPA</th>
+                            <th class="th-sm message"><span class="balloon">FDグロス/CV数</span>CPA</th>
                             <th class="th-sm">承認件数</th>
                             <th class="th-sm">承認金額</th>
-                            <th class="th-sm">承認率</th>
+                            <th class="th-sm message"><span class="balloon">直近３ヶ月の数値から算出</span>承認率</th>
                             <th class="th-sm">前月CV<div>（前月比）</div></th>
                         </tr>
                   </thead>
@@ -298,19 +298,11 @@
                         <td>{{ number_format($productsTotals[0]['total_active'])}}</td>
                         <td>{{ number_format($productsTotals[0]['total_partnership'])}}</td>
                         <td>{{ number_format($productsTotals[0]['total_cost'])}}</td>
-                        <!-- <td>{{ number_format($productsTotals[0]['total_price']) }}</td> -->
-                        <?php 
-                          $CpaTotal = (($productsTotals[0]['total_cost'] != 0 )&&($productsTotals[0]['total_cv'] != 0 ))? 
-                          ($productsTotals[0]['total_cost']/$productsTotals[0]['total_cv'])*100 : 0 ; 
-                        ?>
-                        <td>{{ number_format($CpaTotal) }}</td>
+                        
+                        <td>{{ number_format($productsTotals[0]['total_cpa']) }}</td>
                         <td>{{ number_format($productsTotals[0]['total_approval'])}}</td>
                         <td>{{ number_format($productsTotals[0]['total_approval_price'])}}</td>
-                        <?php 
-                          $ApprovalRate = (($productsTotals[0]['total_approval'] != 0 )&&($productsTotals[0]['total_cv'] != 0 ))? 
-                          ($productsTotals[0]['total_approval']/$productsTotals[0]['total_cv'])*100 : 0 ; 
-                        ?>
-                        <td>{{ number_format($ApprovalRate,2) }}</td>
+                        <td>{{ number_format($productsTotals[0]['total_approval_rate'],2) }}%</td>
                         <td>{{ number_format($productsTotals[0]['total_last_cv']) }}</td>
                     </tr>
                 </tfoot>
@@ -364,7 +356,7 @@
                         <td>{{ number_format($productsEstimate->estimate_cost) }}</td>
                         <!-- <td>{{ number_format($productsEstimate->estimate_approval_price) }}</td> -->
                         <?php
-                          $t_cpa = (($productsEstimate->estimate_cost != 0 )&&($productsEstimate->estimate_cv != 0 ))? ($productsEstimate->estimate_cost/$productsEstimate->estimate_cv) * 100 : 0 ;
+                          $t_cpa = (($productsEstimate->estimate_cost != 0 )&&($productsEstimate->estimate_cv != 0 ))? ($productsEstimate->estimate_cost/$productsEstimate->estimate_cv) : 0 ;
                         
 
                         ?>

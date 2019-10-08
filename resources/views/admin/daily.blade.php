@@ -235,23 +235,23 @@
                         <td></td>
                         <td>合計</td>
                         <td> -- </td>
-                        <td>{{ $t->total_imp }}</td>
+                        <td>{{ number_format($t->total_imp) }}</td>
                         <td>{{
-
-                        sprintf('%.2f',( $t->total_click / $t->total_imp ) *100)
-
+                           number_format(
+                              sprintf('%.2f',( $t->total_click / $t->total_imp ) *100)
+                           )
                         }}</td>
-                        <td>{{ $t->total_click }}</td>
+                        <td>{{ number_format($t->total_click) }}</td>
                         <td>{{
-
-                        sprintf('%.2f',( $t->total_cv / $t->total_click ) *100)
-
+                           number_format(
+                           sprintf('%.2f',( $t->total_cv / $t->total_click ) *100)
+                           )
                         }}</td>
-                        <td>{{ $t->total_cv }}</td>
-                        <td>{{ $t->total_estimate_cv }}</td>
-                        <td>{{ $t->total_active }}</td>
-                        <td>{{ $t->total_partnership }}</td>
-                        <td>{{ $t->total_price }}</td>
+                        <td>{{ number_format($t->total_cv) }}</td>
+                        <td>{{ number_format($t->total_estimate_cv) }}</td>
+                        <td>{{ number_format($t->total_active) }}</td>
+                        <td>{{ number_format($t->total_partnership) }}</td>
+                        <td>{{ number_format($t->total_price) }}</td>
                         <td> -- </td>
                   </tr>
                   @endforeach

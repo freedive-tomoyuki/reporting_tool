@@ -85,7 +85,10 @@ class MonthlySearchService
   */
     public function calc_approval_rate($product = null,$t_date = null){
 
-        $dates = [ $t_date ,date('Y-m-t', strtotime('-1 month')),date('Y-m-t', strtotime('-2 month')) ];
+        $before_one_months = date('Y-m-t', strtotime('last day of '.date('Y-m-01', strtotime('-1 month'))));
+        $before_two_months = date('Y-m-t', strtotime('last day of '.date('Y-m-01', strtotime('-2 month'))));
+
+        $dates = [ $t_date , $before_one_months , $before_two_months ];
         //var_dump($dates);
         
         $approval_rate = Monthlydata::select(DB::raw("sum(cv) as total_cv,sum(approval) as total_approval,sum(approval)/sum(cv)*100 as rate,product_id"))
@@ -113,12 +116,24 @@ class MonthlySearchService
   */
 
     public function calc_approval_rate_site($product_id = null, $t_date = null){
+        if(date('Ym') != date('Ym',strtotime('-1 day')))){//１日のデータ取得の場合
+          $monthlysites_table1 = date('Ym', strtotime('-1 day')).'_monthlysites';
+          $monthlysites_table2 = date('Ym', strtotime(date('Y-m-01').'-2 month')).'_monthlysites';
+ 
+        }else{
+          $monthlysites_table1 = date('Ym', strtotime('-1 day')).'_monthlysites';
+          $monthlysites_table2 = date('Ym', strtotime(date('Y-m-01').'-1 month')).'_monthlysites';
+        }
 
-        $monthlysites_table1 = date('Ym', strtotime('-1 day')).'_monthlysites';
-        $monthlysites_table2 = date('Ym', strtotime('-1 month')).'_monthlysites';
-        $monthlysites_table3 = date('Ym', strtotime('-2 month')).'_monthlysites';
-        
-        $dates = [ $t_date ,date('Y-m-t', strtotime('-1 month')),date('Y-m-t', strtotime('-2 month')) ];
+
+        //$before_one_months = date('Ym', strtotime('last day of '.date('Y-m-01', strtotime('-1 month'))));
+        //$before_two_months = date('Y-m-t', strtotime('last day of '.date('Y-m-01', strtotime('-2 month')))); 
+        //$monthlysites_table3 = date('Ym', strtotime('-2 month')).'_monthlysites';
+        $before_one_months = date('Y-m-t', strtotime('last day of '.date('Y-m-01', strtotime('-1 month'))));
+        $before_two_months = date('Y-m-t', strtotime('last day of '.date('Y-m-01', strtotime('-2 month'))));
+
+        //$dates = [ $t_date ,date('Y-m-t', strtotime('-1 month')),date('Y-m-t', strtotime('-2 month')) ];
+        $dates = [ $t_date ,date('Y-m-t', $before_one_months , $before_two_months];
 
         $products = Schedule::Select('product_base_id')->where('killed_flag',0)->get()->toArray();
 
