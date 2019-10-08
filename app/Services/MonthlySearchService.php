@@ -116,7 +116,7 @@ class MonthlySearchService
   */
 
     public function calc_approval_rate_site($product_id = null, $t_date = null){
-        if(date('Ym') != date('Ym',strtotime('-1 day')))){//１日のデータ取得の場合
+        if(date('Ym') != date('Ym',strtotime('-1 day'))){//１日のデータ取得の場合
           $monthlysites_table1 = date('Ym', strtotime('-1 day')).'_monthlysites';
           $monthlysites_table2 = date('Ym', strtotime(date('Y-m-01').'-2 month')).'_monthlysites';
  
