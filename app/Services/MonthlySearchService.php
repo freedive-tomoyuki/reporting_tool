@@ -133,7 +133,7 @@ class MonthlySearchService
         $before_two_months = date('Y-m-t', strtotime('last day of '.date('Y-m-01', strtotime('-2 month'))));
 
         //$dates = [ $t_date ,date('Y-m-t', strtotime('-1 month')),date('Y-m-t', strtotime('-2 month')) ];
-        $dates = [ $t_date ,date('Y-m-t', $before_one_months , $before_two_months];
+        $dates = [ $t_date , $before_one_months , $before_two_months];
 
         $products = Schedule::Select('product_base_id')->where('killed_flag',0)->get()->toArray();
 
