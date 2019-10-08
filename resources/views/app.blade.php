@@ -36,7 +36,7 @@
 </head>
 <body  id="body">
     <div id="app">
-        <nav class="navbar navbar-expand-md navbar-light navbar-laravel">
+        <!-- <nav class="navbar navbar-expand-md navbar-light navbar-laravel">
             <div class="container">
                 <a class="navbar-brand" href="{{ url('/') }}">
                     Report Tool
@@ -46,7 +46,7 @@
                 </button>
 
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <!-- Left Side Of Navbar -->
+                    
                     <ul class="navbar-nav mr-auto">
                         <a href="/admin/login" class="btn btn-link text-md-right">管理用</a>
                         <a href="/login" class="btn btn-link text-md-right">広告主用</a>
@@ -55,7 +55,7 @@
 
                 </div>
             </div>
-        </nav>
+        </nav> -->
 
         <main class="py-4">
             @yield('content')
