@@ -590,10 +590,13 @@ class CsvImportController extends Controller
 				//CPA
 				$d['cpa'] = ($d['price'] == 0 || $d['cv'] == 0 )? 0 : $d['price'] / $d['cv'] ;
 
+				//承認率
+				$d['approval_rate'] = ($d['cv'] == 0 || $d['approval']  == 0 )? 0 : ( $d['approval'] / $d['cv'] )* 100;
+
 				DB::table($monthlysites_table)
 				    ->updateOrInsert(
 			        ['product_id' => $d['product_id'] , 'date' => $d['date'],'media_id' => $d['media_id'] ],
-			        ['imp' => $d['imp'],'click' => $d['click'],'cv' => $d['cv'],'site_name' => $d['site_name'],'cost' => $d['cost'],'price' => $d['price'],'cvr' => $d['cvr'],'ctr' => $d['ctr'],'cpa' => $d['cpa'], 'created_at' =>  \Carbon\Carbon::now(),'updated_at' => \Carbon\Carbon::now()]
+			        ['imp' => $d['imp'],'click' => $d['click'],'cv' => $d['cv'],'approval' => $d['approval'],'approval_price' => $d['approval_price'],'approval_rate' => $d['approval_rate'],'site_name' => $d['site_name'],'cost' => $d['cost'],'price' => $d['price'],'cvr' => $d['cvr'],'ctr' => $d['ctr'],'cpa' => $d['cpa'], 'created_at' =>  \Carbon\Carbon::now(),'updated_at' => \Carbon\Carbon::now()]
 					);
 			}
 
@@ -621,10 +624,13 @@ class CsvImportController extends Controller
 					//CPA
 					$d['cpa'] = ($d['price'] == 0 || $d['cv'] == 0 )? 0 : $d['price'] / $d['cv'] ;
 
+					//承認率
+					$d['approval_rate'] = ($d['cv'] == 0 || $d['approval']  == 0 )? 0 : ( $d['approval'] / $d['cv'] )* 100;
+
 					DB::table($monthlysites_table)
 					    ->updateOrInsert(
 				        ['product_id' => $d['product_id'] , 'date' => $d['date'],'media_id' => $d['media_id'] ],
-				        ['imp' => $d['imp'],'click' => $d['click'],'cv' => $d['cv'],'site_name' => $d['site_name'],'cost' => $d['cost'],'price' => $d['price'],'cvr' => $d['cvr'],'ctr' => $d['ctr'],'cpa' => $d['cpa'], 'created_at' =>  \Carbon\Carbon::now(),'updated_at' => \Carbon\Carbon::now()]
+				        ['imp' => $d['imp'],'click' => $d['click'],'cv' => $d['cv'],'approval' => $d['approval'],'approval_price' => $d['approval_price'],'approval_rate' => $d['approval_rate'],'site_name' => $d['site_name'],'cost' => $d['cost'],'price' => $d['price'],'cvr' => $d['cvr'],'ctr' => $d['ctr'],'cpa' => $d['cpa'], 'created_at' =>  \Carbon\Carbon::now(),'updated_at' => \Carbon\Carbon::now()]
 						);
 		        }
 

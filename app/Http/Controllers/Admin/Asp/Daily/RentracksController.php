@@ -187,7 +187,7 @@ class RentracksController extends DailyCrawlerController
                             //echo 'iPlus' . $iPlus;
                             
                             $selector_for_site = array(
-                                 'media_id' => '#main > table > tbody > tr:nth-child(' . $iPlus . ') > td.c03',
+                                'media_id' => '#main > table > tbody > tr:nth-child(' . $iPlus . ') > td.c03',
                                 'site_name' => '#main > table > tbody > tr:nth-child(' . $iPlus . ') > td.c04 > a',
                                 'imp' => '#main > table > tbody > tr:nth-child(' . $iPlus . ') > td.c05',
                                 'click' => '#main > table > tbody > tr:nth-child(' . $iPlus . ') > td.c06',

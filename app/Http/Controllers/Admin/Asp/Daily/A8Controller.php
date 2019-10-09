@@ -153,7 +153,7 @@ class A8Controller extends DailyCrawlerController
                                 $count = $i + ( 500 * $page );
                                 
                                 $selector_for_site = array(
-                                     'media_id' => '#ReportList > tbody > tr:nth-child(' . $i . ') > td:nth-child(2) > a',
+                                    'media_id' => '#ReportList > tbody > tr:nth-child(' . $i . ') > td:nth-child(2) > a',
                                     'site_name' => '#ReportList > tbody > tr:nth-child(' . $i . ') > td:nth-child(4)',
                                     'imp' => '#ReportList > tbody > tr:nth-child(' . $i . ') > td:nth-child(5)',
                                     'click' => '#ReportList > tbody > tr:nth-child(' . $i . ') > td:nth-child(6)',
