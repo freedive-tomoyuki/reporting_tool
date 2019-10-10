@@ -160,10 +160,11 @@ class SCANController extends DailyCrawlerController
                             $scan_site[ $y ][ 'imp' ]     = 0;
                             
                             $selector_for_site = array(
-                                 'media_id' => '#report_clm > div > div.report_table > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(2)',
+                                'media_id' => '#report_clm > div > div.report_table > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(2)',
                                 'site_name' => '#report_clm > div > div.report_table > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(4)',
                                 'imp' => '#report_clm > div > div.report_table > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(6)',
                                 'click' => '#report_clm > div > div.report_table > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(7)',
+                                'approval' => '#report_clm > div > div.report_table > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(12)',
                                 'cv' => '#report_clm > div > div.report_table > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(10)',
                                 'price' => '#report_clm > div > div.report_table > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(13)' 
                             );
@@ -181,6 +182,8 @@ class SCANController extends DailyCrawlerController
                                 
                             } //$selector_for_site as $key => $value
                             
+                            $scan_site[ $y ][ 'price' ] = round (( $scan_site[ $y ][ 'price' ] / $scan_site[ $y ][ 'approval' ] ) * $scan_site[ $y ][ 'cv' ]);
+
                             $calData                   = json_decode( json_encode( json_decode( $this->dailySearchService->cpa( $scan_site[ $y ][ 'cv' ], $scan_site[ $y ][ 'price' ], 7 ) ) ), True );
                             $scan_site[ $y ][ 'cpa' ]  = $calData[ 'cpa' ]; //CPA
                             $scan_site[ $y ][ 'cost' ] = $calData[ 'cost' ];

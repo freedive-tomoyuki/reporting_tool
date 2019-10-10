@@ -94,13 +94,13 @@ class TrafficGateController extends DailyCrawlerController
                              'imp' => '#container > form > table > tbody > tr > td.report-total:nth-child(2)',
                             'click' => '#container > form > table > tbody > tr > td.report-total:nth-child(3)',
                             'cv' => '#container > form > table > tbody > tr > td.report-total:nth-child(4)',
-                            'price' => '#container > form > table > tbody > tr > td.report-total:nth-child(5)' 
+                            'price' => '#container > form > table > tbody > tr > td.report-total:nth-child(6)'
                             
                         );
                         $selector2 = array(
                              'partnership' => '#container > table > tbody > tr:nth-child(1) > td > table:nth-child(7) > tbody > tr > td' 
                         );
-                        
+                        #container > table > tbody > tr:nth-child(4) > td:nth-child(5)
                         /*
                         $crawler　をフィルタリング
                         */
