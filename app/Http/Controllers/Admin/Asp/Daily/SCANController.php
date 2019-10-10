@@ -182,7 +182,7 @@ class SCANController extends DailyCrawlerController
                                 
                             } //$selector_for_site as $key => $value
                             
-                            $scan_site[ $y ][ 'price' ] = round (( $scan_site[ $y ][ 'price' ] / $scan_site[ $y ][ 'approval' ] ) * $scan_site[ $y ][ 'cv' ]);
+                            $scan_site[ $y ][ 'price' ] = ($scan_site[ $y ][ 'price' ] != 0 && $scan_site[ $y ][ 'approval' ] != 0  )? round (( $scan_site[ $y ][ 'price' ] / $scan_site[ $y ][ 'approval' ] ) * $scan_site[ $y ][ 'cv' ]) : 0 ;
 
                             $calData                   = json_decode( json_encode( json_decode( $this->dailySearchService->cpa( $scan_site[ $y ][ 'cv' ], $scan_site[ $y ][ 'price' ], 7 ) ) ), True );
                             $scan_site[ $y ][ 'cpa' ]  = $calData[ 'cpa' ]; //CPA
