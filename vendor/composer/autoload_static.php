@@ -699,6 +699,7 @@ class ComposerStaticInit17b951e184e5061e46885a751b3be200
         'App\\Http\\Controllers\\Admin\\Asp\\Daily\\CrossPartnerController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/Asp/Daily/CrossPartnerController.php',
         'App\\Http\\Controllers\\Admin\\Asp\\Daily\\FelmatController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/Asp/Daily/FelmatController.php',
         'App\\Http\\Controllers\\Admin\\Asp\\Daily\\RentracksController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/Asp/Daily/RentracksController.php',
+        'App\\Http\\Controllers\\Admin\\Asp\\Daily\\S8Controller' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/Asp/Daily/S8Controller.php',
         'App\\Http\\Controllers\\Admin\\Asp\\Daily\\SCANController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/Asp/Daily/SCANController.php',
         'App\\Http\\Controllers\\Admin\\Asp\\Daily\\TrafficGateController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/Asp/Daily/TrafficGateController.php',
         'App\\Http\\Controllers\\Admin\\Asp\\Daily\\ValuecommerceController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/Asp/Daily/ValuecommerceController.php',

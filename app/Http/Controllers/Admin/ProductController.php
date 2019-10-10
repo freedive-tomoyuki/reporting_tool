@@ -68,6 +68,7 @@ class ProductController extends Controller
         $product->product_base_id = $request->product;
         $product->login_value = $request->loginid;
         $product->password_value = $request->password;
+        $product->price = $request->price; //単価追加20191010
         $product->asp_product_id = $request->asp_product_id;
         $product->asp_sponsor_id = $request->asp_sponsor_id;
         
@@ -127,10 +128,10 @@ class ProductController extends Controller
         
 
         if($id != ''){
-            $products = Product::select('products.id','asp_id','login_value','password_value','product','asp_product_id','asp_sponsor_id','product_base_id')->join('asps','products.asp_id','=','asps.id')
+            $products = Product::select('products.id','asp_id','login_value','password_value','price','product','asp_product_id','asp_sponsor_id','product_base_id')->join('asps','products.asp_id','=','asps.id')
             ->where('products.id',$id)->get()->toArray();
         }else{
-            $products = Product::select('products.id','asp_id','login_value','password_value','product','asp_product_id','asp_sponsor_id','product_base_id')->join('asps','products.asp_id','=','asps.id')
+            $products = Product::select('products.id','asp_id','login_value','password_value','price','product','asp_product_id','asp_sponsor_id','product_base_id')->join('asps','products.asp_id','=','asps.id')
                 ->where('asp_id',$request->asp_id)
                 ->where('product_base_id',$request->product_base_id)
                 ->get()
@@ -156,6 +157,7 @@ class ProductController extends Controller
             'product_base_id' => $request->product,
             'login_value' => $request->loginid,
             'password_value' => $request->password,
+            'price' => $request->price,
             'asp_product_id' => $request->asp_product_id,
             'asp_sponsor_id' => $request->asp_sponsor_id,
             'product_order' => $product_order,

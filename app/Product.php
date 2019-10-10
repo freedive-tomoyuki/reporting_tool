@@ -17,6 +17,7 @@ class Product extends Model
         'asp_sponsor_id',
         'product_base_id',
         'product_order',
+        'price',
     ];
 
     public function asp()

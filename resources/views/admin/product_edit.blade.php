@@ -103,7 +103,12 @@
                                 <input id="password" type="password" class="form-control" name="password" value="{{ $products[0]['password_value'] }}" v-model="password" v-bind:readonly="fixed">
                             </div>
                         </div> 
-                        
+                        <div class="form-group row">
+                            <label for="price" class="col-md-4 col-form-label text-md-right" >単価<font style="color:red">*</font></label>
+                            <div class="col-md-6">
+                                <input id="price" type="text" class="form-control" name="price">
+                            </div>
+                        </div>
                         <div class="form-group row">
                             <label for="asp_sponsor_id" class="col-md-4 col-form-label text-md-right">ASP:広告主ID
                             <component_sponsor v-if="show"></component_sponsor>

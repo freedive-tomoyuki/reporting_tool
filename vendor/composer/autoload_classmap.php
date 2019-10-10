@@ -35,6 +35,7 @@ return array(
     'App\\Http\\Controllers\\Admin\\Asp\\Daily\\CrossPartnerController' => $baseDir . '/app/Http/Controllers/Admin/Asp/Daily/CrossPartnerController.php',
     'App\\Http\\Controllers\\Admin\\Asp\\Daily\\FelmatController' => $baseDir . '/app/Http/Controllers/Admin/Asp/Daily/FelmatController.php',
     'App\\Http\\Controllers\\Admin\\Asp\\Daily\\RentracksController' => $baseDir . '/app/Http/Controllers/Admin/Asp/Daily/RentracksController.php',
+    'App\\Http\\Controllers\\Admin\\Asp\\Daily\\S8Controller' => $baseDir . '/app/Http/Controllers/Admin/Asp/Daily/S8Controller.php',
     'App\\Http\\Controllers\\Admin\\Asp\\Daily\\SCANController' => $baseDir . '/app/Http/Controllers/Admin/Asp/Daily/SCANController.php',
     'App\\Http\\Controllers\\Admin\\Asp\\Daily\\TrafficGateController' => $baseDir . '/app/Http/Controllers/Admin/Asp/Daily/TrafficGateController.php',
     'App\\Http\\Controllers\\Admin\\Asp\\Daily\\ValuecommerceController' => $baseDir . '/app/Http/Controllers/Admin/Asp/Daily/ValuecommerceController.php',
