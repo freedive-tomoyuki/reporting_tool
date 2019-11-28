@@ -4,11 +4,11 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Report Tool</title>
-	<link rel="shortcut icon" href="/img/favicon/favicon.ico">
-	<link href="/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="shortcut icon" href="{{ asset('img/favicon/favicon.ico')}}">
+	<link href="{{ asset('css/bootstrap.min.css')}}" rel="stylesheet">
 	<!-- <link href="css/font-awesome.min.css" rel="stylesheet"> -->
-	<link href="/css/datepicker3.css" rel="stylesheet">
-	<link href="/css/styles.css" rel="stylesheet">
+	<link href="{{ asset('css/datepicker3.css')}}" rel="stylesheet">
+	<link href="{{ asset('css/styles.css')}}" rel="stylesheet">
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
@@ -22,7 +22,7 @@
 	<script src="js/respond.min.js"></script>
 	<![endif]-->
 	<!-- MDBootstrap Datatables  -->
-	<link href="/css/addons/datatables.min.css" rel="stylesheet">
+	<link href="{{ url('css/addons/datatables.min.css')}}" rel="stylesheet">
 
 </head>
 <body>

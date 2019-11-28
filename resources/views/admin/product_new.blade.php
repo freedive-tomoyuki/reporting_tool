@@ -6,7 +6,7 @@
 
 <div class="row">
     <ol class="breadcrumb">
-      <li><a href="/admin/product_list">広告主管理</a></li>
+      <li><a href="{{ url('admin/product_list')}}">広告主管理</a></li>
       <li class="active">案件登録</li>
     </ol>
     <div class="col-md-12">
@@ -21,7 +21,7 @@
 
                 <div class="card-body">
                     
-                    <form method="POST" action="/admin/product/add" aria-label="{{ __('Register') }}">
+                    <form method="POST" action="{{ url('admin/product/add')}}" aria-label="{{ __('Register') }}">
                         @csrf
 
                         <div class="form-group row">

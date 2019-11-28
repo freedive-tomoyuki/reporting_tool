@@ -57,7 +57,7 @@
 	<div id="sidebar-collapse" class="col-sm-3 col-lg-2 sidebar">
 		<div class="profile-sidebar">
 			<div class="profile-userpic">
-				<img src="/img/template/FREEDIVE_logo.jpg" class="img-responsive" alt="">
+				<img src="{{ asset('img/template/FREEDIVE_logo.jpg')}}" class="img-responsive" alt="">
 			</div>
 			<div class="profile-usertitle">
 				<div class="profile-usertitle-name">{{ $user->name }}</div>
@@ -74,38 +74,38 @@
 			@endif
 			><a href="{{ route('admin.crawlerdaily') }}"><em class="fa fa-search">&nbsp;</em> 実装(※手動禁止)</a></li>-->
 
-			<li class="parent "><a href="/admin/daily_result" data-toggle="collapse" >
+			<li class="parent "><a href="{{ url('admin/daily_result')}}" data-toggle="collapse" >
 				<em class="far fa-chart-bar">&nbsp;</em> レポート<span data-toggle="collapse" href="#sub-item-1" class="icon pull-right"><em class="fa fa-plus"></em></span>
 				</a>
 				<ul class="children collapse in" id="sub-item-1">
 					<li
 					@if(strpos( Request::path() , "yearly_result" ) !== false )
 						class="active"
-					@endif><a class="" href="/admin/yearly_result">
+					@endif><a class="" href="{{ url('admin/yearly_result')}}">
 						<span class="fas fa-angle-right">&nbsp;</span> 年間
 					</a></li>
 					<li 
 					@if(strpos( Request::path() , "daily_result" )!== false)
 						class="active"
-					@endif><a class="" href="/admin/daily_result">
+					@endif><a class="" href="{{ url('admin/daily_result')}}">
 						<span class="fas fa-angle-right">&nbsp;</span> 日次（案件別）
 					</a></li>
 					<li 
 					@if( strpos( Request::path() ,"daily_result") !== false && strpos( Request::path() ,'site') !== false )
 						class="active"
-					@endif><a class="" href="/admin/daily_result_site">
+					@endif><a class="" href="{{ url('admin/daily_result_site')}}">
 						<span class="fas fa-angle-right">&nbsp;</span> 日次（サイト別）
 					</a></li>
 					<li
 					@if( strpos(Request::path() , "monthly_result" )!== false)
 						class="active"
-					@endif><a class="" href="/admin/monthly_result">
+					@endif><a class="" href="{{ url('admin/monthly_result')}}">
 						<span class="fas fa-angle-right">&nbsp;</span> 月次（案件別）
 					</a></li>
 					<li
 					@if(strpos( Request::path() ,"monthly_result") !== false && strpos( Request::path() ,'site') !== false )
 						class="active"
-					@endif><a class="" href="/admin/monthly_result_site">
+					@endif><a class="" href="{{ url('admin/monthly_result_site')}}">
 						<span class="fas fa-angle-right">&nbsp;</span> 月次（サイト）
 					</a></li>
 
@@ -154,16 +154,16 @@
 		@yield('content')
 	</div>	<!--/.main-->
 	
-	<script src="/js/jquery-1.11.1.min.js"></script>
-	<script src="/js/bootstrap.min.js"></script>
-	<script src="/js/chart.min.js"></script>
-	<script src="/js/chart-data.js"></script>
-	<script src="/js/easypiechart.js"></script>
-	<script src="/js/easypiechart-data.js"></script>
-	<script src="/js/bootstrap-datepicker.js"></script>
-	<script src="/js/custom.js"></script>
-	<script src="/js/addons/datatables.min.js"></script>
-	<script src="/js/loading.js"></script>
+	<script src="{{ asset('js/jquery-1.11.1.min.js')}}"></script>
+	<script src="{{ asset('js/bootstrap.min.js')}}"></script>
+	<script src="{{ asset('js/chart.min.js')}}"></script>
+	<script src="{{ asset('js/chart-data.js')}}"></script>
+	<script src="{{ asset('js/easypiechart.js')}}"></script>
+	<script src="{{ asset('js/easypiechart-data.js')}}"></script>
+	<script src="{{ asset('js/bootstrap-datepicker.js')}}"></script>
+	<script src="{{ asset('js/custom.js')}}"></script>
+	<script src="{{ asset('js/addons/datatables.min.js')}}"></script>
+	<script src="{{ asset('js/loading.js')}}"></script>
 
 
 	<script>

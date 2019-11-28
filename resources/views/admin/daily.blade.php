@@ -11,7 +11,7 @@
       <h3>日次レポート（案件別）</h3>
       <div class="panel panel-default">
          <div class="panel-heading text-center">検索する</div>
-         <form role="form" action="/admin/daily_result" method="post" >
+         <form role="form" action="{{ url('admin/daily_result')}}" method="post" >
             @csrf
             <div class="panel-body ">
               <div class="col-md-7 col-md-offset-2">
@@ -91,7 +91,7 @@
    <div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">
       <div class="panel panel-default">
          <div class="panel-heading text-center">現在の検索条件を表示する</div>
-         <form role="form" action="/admin/daily_result" method="post" >
+         <form role="form" action="{{ url('admin/daily_result')}}" method="post" >
             <div class="panel-body ">
               <div class="col-md-7 col-md-offset-2">
                 <div class="col-md-12">

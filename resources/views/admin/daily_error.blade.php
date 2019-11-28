@@ -27,7 +27,7 @@
 
           <div class="panel-heading text-center">検索する</div>
           <div class="panel-body">
-          <form role="form" action="/{{ request()->path() }}" method="post" >
+          <form role="form" action="{{ url(request()->path()) }}" method="post" >
                 @csrf
               <div class="col-md-7 col-md-offset-2">
                 <div class="col-md-12">

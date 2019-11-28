@@ -3,8 +3,8 @@
 @section('content')
 <div class="row">
     <ol class="breadcrumb">
-      <li><a href="/admin/product_list">広告主管理</a></li>
-      <li ><a href="/admin/product_detail/{{ $products[0]['product_base_id'] }}">案件一覧</a></li>
+      <li><a href="{{ url('admin/product_list')}}">広告主管理</a></li>
+      <li ><a href="{{ url('admin/product_detail/'. $products[0]['product_base_id'] ) }}">案件一覧</a></li>
       <li class="active">案件編集</li>
     </ol>
     <div class="col-md-12">
@@ -18,7 +18,7 @@
                 
 
                 <div class="card-body">
-                    <form method="POST" action="/admin/product/edit/{{ $products[0]['id'] }}" aria-label="{{ __('Register') }}">
+                    <form method="POST" action="{{ url('admin/product/edit/'. $products[0]['id'] )}}" aria-label="{{ __('Register') }}">
                         @csrf
 
                         <div class="form-group row">

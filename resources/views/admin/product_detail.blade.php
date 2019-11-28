@@ -4,7 +4,7 @@
 @section('content')
 <div class="row">
        	<ol class="breadcrumb">
-		  <li><a href="/admin/product_list">広告主管理</a></li>
+		  <li><a href="{{ url('admin/product_list')}}">広告主管理</a></li>
 		  <li class="active">案件一覧</li>
 		</ol>
       <div class="col-lg-12">
@@ -14,7 +14,7 @@
 
         	<div class="panel-heading">稼働中ASP　一覧
            			<button type="button" class="btn btn-md btn-info pull-right">
-						<a href="/admin/product/add" >新規登録</a>
+						<a href="{{ url('admin/product/add')}}" >新規登録</a>
 					</button></div>
 		        <div class="panel-body  articles-container">
 					<?php $i = 1;?>
@@ -29,12 +29,12 @@
 										
 									</div>
 									<div class="col-xs-8 col-md-8">
-										<h4>{{ $asp->product_name }} /<a href="/admin/asp_detail/{{ $asp->id }}"> {{ $asp->name }}</a></h4>
+										<h4>{{ $asp->product_name }} /<a href="{{ url('admin/asp_detail/'. $asp->id )}}"> {{ $asp->name }}</a></h4>
 										<p></p>
 
 									</div>
 									<div class="col-xs-2 col-md-2">
-										<a href="/admin/product/edit/{{ $asp->products_id }}">
+										<a href="{{ url('admin/product/edit/'. $asp->products_id)}}">
 											<button type="button" class="btn btn-md btn-info">ID/PW編集</button>
 										</a>
 										<button type="button" class="btn btn-danger" data-toggle="modal" data-target="#demoNormalModal{{ $asp->id }}">
@@ -58,7 +58,7 @@
 										                	閉じる
 													</button>
 									                <button type="button" class="btn btn-primary">
-										                <a href="/admin/product_delete/{{ $asp->product_base_id }}/{{ $asp->id }}">
+										                <a href="{{ url('admin/product_delete/'. $asp->product_base_id .'/'. $asp->id ) }}">
 										                OK
 										            	</a>
 									            	</button>

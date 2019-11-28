@@ -15,7 +15,7 @@
           <div class="panel-heading">検索</div>
           <div class="panel-body">
             <div class="col-md-6">
-              <form role="form" action="/admin/yearly_result" method="post" class="form-horizontal">
+              <form role="form" action="{{ url('admin/yearly_result')}}" method="post" class="form-horizontal">
                 @csrf
 
                 <div class="form-group">

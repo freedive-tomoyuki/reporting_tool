@@ -39,7 +39,7 @@
         <div class="panel panel-default">
             <div class="panel-heading">月次/日次 CSVインポート</div>
             <div class="panel-body">
-                <form role="form" enctype="multipart/form-data" method="post" action="/admin/csv/daily/import">
+                <form role="form" enctype="multipart/form-data" method="post" action="{{ url('admin/csv/daily/import')}}">
                     {{ csrf_field() }}
                     
                     <div class="form-group form-inline ">
@@ -61,7 +61,7 @@
         <div class="panel panel-default">
             <div class="panel-heading">サイト別(月別)CSVインポート</div>
             <div class="panel-body">
-                <form role="form" enctype="multipart/form-data" method="post" action="/admin/csv_site/import">
+                <form role="form" enctype="multipart/form-data" method="post" action="{{ url('admin/csv_site/import')}}">
                     {{ csrf_field() }}
                     <div class="form-group  col-md-3">
                         <label>アップロード月</label>

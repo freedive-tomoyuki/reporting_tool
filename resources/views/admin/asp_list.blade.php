@@ -22,7 +22,7 @@
 										
 									</div>
 									<div class="col-xs-10 col-md-10">
-										<h4><a href="/admin/asp_detail/{{ $asp -> id }}">{{ $asp -> name }}</a></h4>
+										<h4><a href="{{ url('admin/asp_detail/'.$asp -> id) }}">{{ $asp -> name }}</a></h4>
 										<span><b>URL</b>：<a href="{{ $asp -> login_url }}" target="_blank">{{ $asp -> login_url }}</a></span>
 
 									</div>

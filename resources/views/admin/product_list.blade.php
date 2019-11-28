@@ -13,7 +13,7 @@
 
         	<div class="panel-heading">広告主　一覧 
         			<button type="button" class="btn btn-md btn-info pull-right">
-						<a href="/admin/register" >新規広告主登録</a>
+						<a href="{{ url('admin/register')}}" >新規広告主登録</a>
 					</button>
 			</div>
 		        <div class="panel-body  articles-container">
@@ -29,12 +29,12 @@
 										
 									</div>
 									<div class="col-xs-8 col-md-8">
-										<h4><a href="/admin/product_detail/{{ $product->id }}">{{ $product->product_name }}</a></h4>
+										<h4><a href="{{ url('admin/product_detail/'. $product->id) }}">{{ $product->product_name }}</a></h4>
 										<span><b>Email</b>：{{ $product->email }}</span>
 										<span><b>登録日</b>：{{ $product->created_at }}</span>
 									</div>
 									<div class="col-xs-2 col-md-2">
-										<a href="/admin/product_base/edit/{{ $product->id }}">
+										<a href="{{ url('admin/product_base/edit/'. $product->id )}}">
 											<button type="button" class="btn btn-md btn-info">設定</button>
 										</a>
 									</div>

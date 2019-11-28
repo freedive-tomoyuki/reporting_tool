@@ -4,7 +4,7 @@
 @section('content')
 <div class="row">
     <ol class="breadcrumb">
-      <li><a href="/admin/product_list">ASP管理</a></li>
+      <li><a href="{{ url('admin/product_list')}}">ASP管理</a></li>
       <li class="active">{{ $asp[0]->name }}　稼働案件一覧</li>
     </ol>
       <div class="col-lg-12">
@@ -26,7 +26,7 @@
 										
 									</div>
 									<div class="col-xs-8 col-md-8">
-										<h4><a href="/admin/product_detail/{{ $product->product_base_id }}">{{ $product->product }}</a></h4>
+										<h4><a href="{{ url('admin/product_detail/ $product->product_base_id ')}}">{{ $product->product }}</a></h4>
 										<p></p>
 
 									</div>

@@ -20,7 +20,7 @@
         <div class="panel panel-default">
             <div class="panel-heading">エクスポート</div>
             <div class="panel-body">
-                    <form role="form" enctype="multipart/form-data" method="post" action="/admin/export">
+                    <form role="form" enctype="multipart/form-data" method="post" action="{{ url('admin/export')}}">
                         {{ csrf_field() }}
                         <div class="form-group form-inline">
                             <label>

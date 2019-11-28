@@ -10,7 +10,7 @@
       <h3>月次レポート(サイト別) </h3>
       <div class="panel panel-default">
          <div class="panel-heading text-center">検索する</div>
-         <form role="form" action="/admin/monthly_result_site" method="post" >
+         <form role="form" action="{{ url('admin/monthly_result_site')}}" method="post" >
             @csrf
             <div class="panel-body ">
               <div class="col-md-7 col-md-offset-2">
@@ -79,7 +79,7 @@
    <div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">
       <div class="panel panel-default">
          <div class="panel-heading text-center">現在の検索条件を表示する</div>
-         <form role="form" action="/admin/monthly_result_site" method="post" >
+         <form role="form" action="{{ url('admin/monthly_result_site')}}" method="post" >
             @csrf
             <div class="panel-body ">
               <div class="col-md-7 col-md-offset-2">

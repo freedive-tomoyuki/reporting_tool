@@ -73,7 +73,7 @@ class DailyController extends Controller
         * Eloquentを利用して、dailydatasテーブルから案件ID＝１の昨日データ取得する。
         * 
         */
-        $products = DailyDiff::select(['name', 'imp', 'click','cv', 'cvr', 'ctr', 'active', 'partnership','date','daily_diffs.created_at','products.product','products.id','price','cpa','cost','estimate_cv'])
+        $products = DailyDiff::select(['name', 'imp', 'click','cv', 'cvr', 'ctr', 'active', 'partnership','date','daily_diffs.created_at','products.product','products.id','daily_diffs.price','cpa','cost','estimate_cv'])
                     ->join('products','daily_diffs.product_id','=','products.id')
                     ->join('asps','products.asp_id','=','asps.id')
                     ->where('product_base_id', 3)
@@ -82,7 +82,7 @@ class DailyController extends Controller
                     ->where('daily_diffs.date', '<=' , date("Y-m-d",strtotime('-1 day')))
                     ->get();
                     
-        $total = DailyDiff::select(DB::raw("date,products.id, sum(imp) as total_imp,sum(click) as total_click,sum(cv) as total_cv,sum(estimate_cv) as total_estimate_cv,sum(active) as total_active,sum(partnership) as total_partnership,sum(price) as total_price "))
+        $total = DailyDiff::select(DB::raw("date,products.id, sum(imp) as total_imp,sum(click) as total_click,sum(cv) as total_cv,sum(estimate_cv) as total_estimate_cv,sum(active) as total_active,sum(partnership) as total_partnership,sum(daily_diffs.price) as total_price "))
                     ->join('products','daily_diffs.product_id','=','products.id')
                     ->join('asps','products.asp_id','=','asps.id')
                     ->where('product_base_id', 3)
@@ -156,7 +156,7 @@ class DailyController extends Controller
         $searchdate_end =($request->searchdate_end != null)? $request->searchdate_end : date("Y-m-d",strtotime('-1 day'));
         $asp_id = ($request->asp_id != null)? $request->asp_id : "" ;
 
-        $products = DailyDiff::select(['name', 'imp', 'click','cv', 'cvr', 'ctr', 'active', 'partnership','date','daily_diffs.created_at','products.product','products.id','price','cpa','cost','estimate_cv'])
+        $products = DailyDiff::select(['name', 'imp', 'click','cv', 'cvr', 'ctr', 'active', 'partnership','date','daily_diffs.created_at','products.product','products.id','daily_diffs.price','cpa','cost','estimate_cv'])
                     ->join('products','daily_diffs.product_id','=','products.id')
                     ->join('asps','products.asp_id','=','asps.id');
                     if(!empty($id)){
@@ -176,7 +176,7 @@ class DailyController extends Controller
         var_dump($products->toArray());
         echo '</pre>';*/
 
-        $total = DailyDiff::select(DB::raw("date,products.id, sum(imp) as total_imp,sum(click) as total_click,sum(cv) as total_cv,sum(estimate_cv) as total_estimate_cv,sum(active) as total_active,sum(partnership) as total_partnership,sum(price) as total_price "))
+        $total = DailyDiff::select(DB::raw("date,products.id, sum(imp) as total_imp,sum(click) as total_click,sum(cv) as total_cv,sum(estimate_cv) as total_estimate_cv,sum(active) as total_active,sum(partnership) as total_partnership,sum(daily_diffs.price) as total_price "))
                     ->join('products','daily_diffs.product_id','=','products.id')
                     ->join('asps','products.asp_id','=','asps.id');
                     if(!empty($id)){
@@ -260,7 +260,7 @@ class DailyController extends Controller
         $asps = Asp::where('killed_flag', '==' ,0 )->get();
 
         $products = DB::table($daily_site_diffs_table)
-                    ->select(['name', 'imp', 'click','cv', 'cvr', 'ctr', 'media_id','site_name','date','products.product','products.id','price','cpa','cost','estimate_cv'])
+                    ->select(['name', 'imp', 'click','cv', 'cvr', 'ctr', 'media_id','site_name','date','products.product','products.id',DB::raw($daily_site_diffs_table.'.price'),'cpa','cost','estimate_cv'])
                     ->join('products',DB::raw($daily_site_diffs_table.'.product_id'),'=','products.id')
                     ->join('asps','products.asp_id','=','asps.id')
                     ->where('product_base_id', 3)
@@ -324,7 +324,7 @@ class DailyController extends Controller
             $daily_site_diffs_table2 = $month_2.'_daily_site_diffs';
             //終了月の検索　クエリビルダ
             $table2 = DB::table($daily_site_diffs_table2)
-                    ->select(['name', 'imp', 'click','cv', 'cvr', 'ctr', 'media_id','site_name','date','products.product','products.id','price','cpa','cost','estimate_cv'])
+                    ->select(['name', 'imp', 'click','cv', 'cvr', 'ctr', 'media_id','site_name','date','products.product','products.id',DB::raw($daily_site_diffs_table2.'.price'),'cpa','cost','estimate_cv'])
                     ->join('products',DB::raw($daily_site_diffs_table2.'.product_id'),'=','products.id')
                     ->join('asps','products.asp_id','=','asps.id');
                     if(!empty($id)){
@@ -346,7 +346,7 @@ class DailyController extends Controller
 
         //開始月の検索　クエリビルダ
         $products = DB::table($daily_site_diffs_table)
-                    ->select(['name', 'imp', 'click','cv', 'cvr', 'ctr', 'media_id','site_name','date','products.product','products.id','price','cpa','cost','estimate_cv'])
+                    ->select(['name', 'imp', 'click','cv', 'cvr', 'ctr', 'media_id','site_name','date','products.product','products.id',DB::raw($daily_site_diffs_table.'.price'),'cpa','cost','estimate_cv'])
                     ->join('products',DB::raw($daily_site_diffs_table.'.product_id'),'=','products.id')
                     ->join('asps','products.asp_id','=','asps.id');
 
