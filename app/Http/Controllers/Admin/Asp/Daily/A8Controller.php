@@ -192,8 +192,8 @@ class A8Controller extends DailyCrawlerController
                         /**
                         １サイトずつサイト情報の登録を実行
                         */
-                        //$this->dailySearchService->save_site( json_encode( $data ) );
-                        //$this->dailySearchService->save_daily( json_encode( $a8data_1 ) );
+                        $this->dailySearchService->save_site( json_encode( $data ) );
+                        $this->dailySearchService->save_daily( json_encode( $a8data_1 ) );
                         
                         
                     } //$product_infos as $product_info
