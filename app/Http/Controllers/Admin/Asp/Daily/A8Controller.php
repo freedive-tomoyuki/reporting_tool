@@ -68,16 +68,18 @@ class A8Controller extends DailyCrawlerController
                         
                         $crawler_2 = $browser->visit( $product_info->asp->lp2_url )->select( '#reportOutAction > table > tbody > tr:nth-child(2) > td > select', '23' )->radio( 'insId', $product_info->asp_product_id )->click( '#reportOutAction > input[type="image"]:nth-child(3)' )->crawler();
                         
+                        $unit_price = $product_info->price;
+
                         if ( date( 'Y/m/d' ) == date( 'Y/m/01' ) ) {
                             $selector_1 = array(
-                                 'active' => '#element > tbody > tr:nth-child(2) > td:nth-child(3)',
+                                'active' => '#element > tbody > tr:nth-child(2) > td:nth-child(3)',
                                 #element > tbody > tr:nth-child(1) > td:nth-child(3)
                                 'partnership' => '#element > tbody > tr:nth-child(2) > td:nth-child(2)' 
                             );
                         } //date( 'Y/m/d' ) == date( 'Y/m/01' )
                         else {
                             $selector_1 = array(
-                                 'active' => $product_info->asp->daily_active_selector,
+                                'active' => $product_info->asp->daily_active_selector,
                                 'partnership' => $product_info->asp->daily_partnership_selector 
                             );
                         }
@@ -85,7 +87,7 @@ class A8Controller extends DailyCrawlerController
                         $selector_2 = array(
                             'imp' => '#ReportList > tbody > tr:nth-child(1) > td:nth-child(2)',
                             'click' => '#ReportList > tbody > tr:nth-child(1) > td:nth-child(3)',
-                            'price' => '#ReportList > tbody > tr:nth-child(1) > td:nth-child(12)',
+                            //'price' => '#ReportList > tbody > tr:nth-child(1) > td:nth-child(12)',
                             'cv' => $product_info->asp->daily_cv_selector 
                         );
                         
@@ -110,13 +112,18 @@ class A8Controller extends DailyCrawlerController
                             } //$selector_2 as $key => $value
                             return $data;
                         } );
-                        //var_dump( $a8data_2 );
+                        var_dump( $a8data_2 );
                         
                         $a8data_1[ 0 ][ 'cv' ]    = trim( preg_replace( '/[^0-9]/', '', $a8data_2[ 0 ][ "cv" ] ) );
                         $a8data_1[ 0 ][ 'click' ] = trim( preg_replace( '/[^0-9]/', '', $a8data_2[ 0 ][ "click" ] ) );
                         $a8data_1[ 0 ][ 'imp' ]   = trim( preg_replace( '/[^0-9]/', '', $a8data_2[ 0 ][ "imp" ] ) );
-                        $a8data_1[ 0 ][ 'price' ] = trim( preg_replace( '/[^0-9]/', '', $a8data_2[ 0 ][ "price" ] ) );
-                        
+                        // $a8data_1[ 0 ][ 'price' ] = trim( preg_replace( '/[^0-9]/', '', $a8data_2[ 0 ][ "price" ] ) );
+                        $a8data_1[ 0 ][ 'price' ] = $a8data_1[ 0 ][ 'cv' ] * $unit_price;
+                        echo "合計<br>";
+                        echo $a8data_1[ 0 ][ 'cv' ]."<br>";
+                        echo $unit_price."<br>";
+                        echo $a8data_1[ 0 ][ 'price' ];
+
                         $calData = json_decode( json_encode( json_decode( $this->dailySearchService->cpa( $a8data_1[ 0 ][ 'cv' ], $a8data_1[ 0 ][ 'price' ], 1 ) ) ), True );
                         
                         $a8data_1[ 0 ][ 'cpa' ]  = $calData[ 'cpa' ]; //CPA
@@ -185,8 +192,8 @@ class A8Controller extends DailyCrawlerController
                         /**
                         １サイトずつサイト情報の登録を実行
                         */
-                        $this->dailySearchService->save_site( json_encode( $data ) );
-                        $this->dailySearchService->save_daily( json_encode( $a8data_1 ) );
+                        //$this->dailySearchService->save_site( json_encode( $data ) );
+                        //$this->dailySearchService->save_daily( json_encode( $a8data_1 ) );
                         
                         
                     } //$product_infos as $product_info
