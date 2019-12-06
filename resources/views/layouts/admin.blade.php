@@ -122,6 +122,11 @@
 			@endif
 			><a href="{{ route('admin.asp_list') }}"><em class="fab fa-adn">&nbsp;</em> ASP管理</a></li>
 			<li 
+			@if( strpos( Request::path() ,'admin/site') !== false)
+				class="active"
+			@endif
+			><a href="{{ route('admin.site_list') }}"><em class="fas fa-book">&nbsp;</em> サイト管理</a></li>
+			<li 
 			@if( strpos( Request::path() ,'csv/import') !== false)
 				class="active"
 			@endif

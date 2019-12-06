@@ -13,7 +13,7 @@
          <form role="form" action="{{ url('admin/daily_result_site')}}" method="post" >
             @csrf
             <div class="panel-body ">
-              <div class="col-md-7 col-md-offset-2">
+              <div class="col-md-10 col-md-offset-2">
                 <div class="col-md-12">
                   <div class="form-group col-md-6">
                       <label class="control-label">ASP</label>

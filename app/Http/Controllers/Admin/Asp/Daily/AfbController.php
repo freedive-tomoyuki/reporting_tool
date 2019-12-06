@@ -156,6 +156,9 @@ class AfbController extends DailyCrawlerController
                                 
                             } //$selector_crawler as $key => $value
 
+                            $unit_price = $product_info->price;
+                            $data[ 'price' ] = $data[ 'cv' ] * $unit_price;
+
                             $calData        = json_decode( json_encode( json_decode( $this->dailySearchService->cpa( $data[ 'cv' ], $data[ 'price' ], 4 ) ) ), True );
                             $data[ 'cpa' ]  = $calData[ 'cpa' ]; //CPA
                             $data[ 'cost' ] = $calData[ 'cost' ]; //獲得単価
@@ -193,7 +196,7 @@ class AfbController extends DailyCrawlerController
                                 'cv' => '#reportTable > tbody > tr:nth-child(' . $i . ') > td:nth-child(9) > p',
                                 'ctr' => '#reportTable > tbody > tr:nth-child(' . $i . ') > td:nth-child(7) > p',
                                 'cvr' => '#reportTable > tbody > tr:nth-child(' . $i . ') > td:nth-child(10) > p',
-                                'price' => '#reportTable > tbody > tr:nth-child(' . $i . ') > td:nth-child(12) > p' 
+                            //    'price' => '#reportTable > tbody > tr:nth-child(' . $i . ') > td:nth-child(12) > p' 
                             );
                             
                             foreach ( $selector_for_site as $key => $value ) {

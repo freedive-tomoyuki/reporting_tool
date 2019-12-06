@@ -24,6 +24,13 @@ class Monthlydata extends Model
     	'product_id',
     	'estimate_cv',
     	'date'
-    ];
+	];
+	public function asp()
+    {
+        return $this->belongsTo('App\Asp');
+	}
+	public function product(){
+        return $this->belongsTo('App\Product');
+    }
 
 }

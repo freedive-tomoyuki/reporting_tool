@@ -221,8 +221,7 @@
                 <button class="btn btn-success btn-md pull-right">
                 <i class='fas fa-file-download'></i>
                 <a href="/admin/csv_monthly/@if( old('product')){{ old('product') }}@else{{ 3 }}@endif/@if( old('month')){{ old('month') }}
-                  @else{{ date('Y-m',strtotime('-1 day'))}}
-                  @endif">
+                  @else{{ date('Y-m',strtotime('-1 day'))}}@endif">
                   
                     CSV
                 </a>
@@ -282,34 +281,34 @@
                         <td></td>
                         <td>合計</td>
                         
-                        <td>{{ number_format($productsTotals[0]['total_imp']) }}</td>
+                        <td>{{ number_format($products_totals[0]['total_imp']) }}</td>
                         <?php 
-                          $CtrTotal = (($productsTotals[0]['total_imp'] != 0 )&&($productsTotals[0]['total_click'] != 0 ))? 
-                          ($productsTotals[0]['total_click']/$productsTotals[0]['total_imp'])*100 : 0 ; 
+                          $CtrTotal = (($products_totals[0]['total_imp'] != 0 )&&($products_totals[0]['total_click'] != 0 ))? 
+                          ($products_totals[0]['total_click']/$products_totals[0]['total_imp'])*100 : 0 ; 
                         ?>
                         <td>{{ number_format($CtrTotal,2) }}</td>
-                        <td>{{ number_format($productsTotals[0]['total_click']) }}</td>
+                        <td>{{ number_format($products_totals[0]['total_click']) }}</td>
                         <?php 
-                          $CvrTotal = (($productsTotals[0]['total_click'] != 0 )&&($productsTotals[0]['total_cv'] != 0 ))? 
-                          ($productsTotals[0]['total_cv']/$productsTotals[0]['total_click'])*100 : 0 ; 
+                          $CvrTotal = (($products_totals[0]['total_click'] != 0 )&&($products_totals[0]['total_cv'] != 0 ))? 
+                          ($products_totals[0]['total_cv']/$products_totals[0]['total_click'])*100 : 0 ; 
                         ?>
                         <td>{{ number_format($CvrTotal,2) }}</td>
-                        <td>{{ number_format($productsTotals[0]['total_cv']) }}</td>
-                        <td>{{ number_format($productsTotals[0]['total_active'])}}</td>
-                        <td>{{ number_format($productsTotals[0]['total_partnership'])}}</td>
-                        <td>{{ number_format($productsTotals[0]['total_cost'])}}</td>
+                        <td>{{ number_format($products_totals[0]['total_cv']) }}</td>
+                        <td>{{ number_format($products_totals[0]['total_active'])}}</td>
+                        <td>{{ number_format($products_totals[0]['total_partnership'])}}</td>
+                        <td>{{ number_format($products_totals[0]['total_cost'])}}</td>
                         
-                        <td>{{ number_format($productsTotals[0]['total_cpa']) }}</td>
-                        <td>{{ number_format($productsTotals[0]['total_approval'])}}</td>
-                        <td>{{ number_format($productsTotals[0]['total_approval_price'])}}</td>
-                        <td>{{ number_format($productsTotals[0]['total_approval_rate'],2) }}%</td>
-                        <td>{{ number_format($productsTotals[0]['total_last_cv']) }}</td>
+                        <td>{{ number_format($products_totals[0]['total_cpa']) }}</td>
+                        <td>{{ number_format($products_totals[0]['total_approval'])}}</td>
+                        <td>{{ number_format($products_totals[0]['total_approval_price'])}}</td>
+                        <td>{{ number_format($products_totals[0]['total_approval_rate'],2) }}%</td>
+                        <td>{{ number_format($products_totals[0]['total_last_cv']) }}</td>
                     </tr>
                 </tfoot>
             </table>
           </div>
         </div>
-        @if($productsEstimates != 'Empty' )
+        @if($products_estimates != 'Empty' )
         
           <div class="panel panel-default">
             <div class="panel-heading">
@@ -343,20 +342,20 @@
                   </thead>
                 <tbody>
                   <?php $i = 1; ?>
-                    @foreach($productsEstimates as $productsEstimate)
+                    @foreach($products_estimates as $productsEstimate)
                     <tr>
                       
                         <td><?php echo $i; ?></td>
-                        <td>{{ $productsEstimate->name }}</td>
-                        <td>{{ number_format($productsEstimate->estimate_imp) }}</td>
-                        <td>{{ number_format($productsEstimate->estimate_ctr,2) }}</td>
-                        <td>{{ number_format($productsEstimate->estimate_click) }}</td>
-                        <td>{{ number_format($productsEstimate->estimate_cvr,2) }}</td>
-                        <td>{{ number_format($productsEstimate->estimate_cv) }}</td>
-                        <td>{{ number_format($productsEstimate->estimate_cost) }}</td>
-                        <!-- <td>{{ number_format($productsEstimate->estimate_approval_price) }}</td> -->
+                        <td>{{ $p->name }}</td>
+                        <td>{{ number_format($p->estimate_imp) }}</td>
+                        <td>{{ number_format($p->estimate_ctr,2) }}</td>
+                        <td>{{ number_format($p->estimate_click) }}</td>
+                        <td>{{ number_format($p->estimate_cvr,2) }}</td>
+                        <td>{{ number_format($p->estimate_cv) }}</td>
+                        <td>{{ number_format($p->estimate_cost) }}</td>
+                        <!-- <td>{{ number_format($p->estimate_approval_price) }}</td> -->
                         <?php
-                          $t_cpa = (($productsEstimate->estimate_cost != 0 )&&($productsEstimate->estimate_cv != 0 ))? ($productsEstimate->estimate_cost/$productsEstimate->estimate_cv) : 0 ;
+                          $t_cpa = (($p->estimate_cost != 0 )&&($p->estimate_cv != 0 ))? ($p->estimate_cost/$p->estimate_cv) : 0 ;
                         
 
                         ?>
@@ -370,23 +369,23 @@
                     <tr>
                         <td>着地想定</td>
                         <td>合計</td>
-                        <td>{{ number_format($productsEstimateTotals[0]['total_estimate_imp']) }}</td>
+                        <td>{{ number_format($products_estimate_totals[0]['total_estimate_imp']) }}</td>
                         <?php 
-                          $t_imp = $productsEstimateTotals[0]['total_estimate_imp'];
-                          $t_click = $productsEstimateTotals[0]['total_estimate_click'];
-                          $t_cv = $productsEstimateTotals[0]['total_estimate_cv'];
-                          $t_cost = $productsEstimateTotals[0]['total_estimate_cost'];
+                          $t_imp = $products_estimate_totals[0]['total_estimate_imp'];
+                          $t_click = $products_estimate_totals[0]['total_estimate_click'];
+                          $t_cv = $products_estimate_totals[0]['total_estimate_cv'];
+                          $t_cost = $products_estimate_totals[0]['total_estimate_cost'];
                           
                           $t_cvr = (($t_click != 0 )&&($t_cv != 0 ))? ($t_cv/$t_click) * 100 : 0 ;
                           $t_ctr = (($t_click != 0 )&&($t_imp != 0 ))? ($t_click/$t_imp) * 100 : 0 ;
                           $t_cpa = (($t_cv != 0 )&&($t_cost != 0 ))? ($t_cost/$t_cv) : 0 ;
                         ?>
                         <td>{{ number_format($t_cvr,2) }}</td>
-                        <td>{{ number_format($productsEstimateTotals[0]['total_estimate_click']) }}</td>
+                        <td>{{ number_format($products_estimate_totals[0]['total_estimate_click']) }}</td>
 
                         <td>{{ number_format($t_ctr,2) }}</td>
-                        <td>{{ number_format($productsEstimateTotals[0]['total_estimate_cv']) }}</td>
-                        <td>{{ number_format($productsEstimateTotals[0]['total_estimate_cost'])}}</td>
+                        <td>{{ number_format($products_estimate_totals[0]['total_estimate_cv']) }}</td>
+                        <td>{{ number_format($products_estimate_totals[0]['total_estimate_cost'])}}</td>
                         <td>{{ number_format($t_cpa,2) }}</td>
                     </tr>
                 </tfoot>

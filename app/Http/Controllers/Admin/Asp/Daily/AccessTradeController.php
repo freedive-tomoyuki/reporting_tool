@@ -64,25 +64,25 @@ class AccesstradeController extends DailyCrawlerController
                         // /var_dump($product_info->asp);
                         $crawler = $browser->visit( $product_info->asp->login_url )->type( $product_info->asp->login_key, $product_info->login_value )->type( $product_info->asp->password_key, $product_info->password_value )->click( $product_info->asp->login_selector )->visit( $product_info->asp->lp1_url . $product_info->asp_product_id )->crawler();
                         
-                        //X月1日のときのセレクタ変更
+                       //X月1日のときのセレクタ変更
                         if ( date( 'Y/m/d' ) == date( 'Y/m/01' ) ) {
                             $selector = array(
-                                 'imp' => 'body > program-page > div > div > main > program-home > section:nth-child(2) > div > div > div > summary-report > div > table > tbody > tr:nth-child(2) > td:nth-child(2)',
+                                'imp' => 'body > program-page > div > div > main > program-home > section:nth-child(2) > div > div > div > summary-report > div > table > tbody > tr:nth-child(2) > td:nth-child(2)',
                                 'click' => 'body > program-page > div > div > main > program-home > section:nth-child(2) > div > div > div > summary-report > div > table > tbody > tr:nth-child(2) > td:nth-child(3)',
                                 'cv' => 'body > program-page > div > div > main > program-home > section:nth-child(2) > div > div > div > summary-report > div > table > tbody > tr:nth-child(2) > td:nth-child(4)',
                                 'partnership' => $product_info->asp->daily_partnership_selector,
                                 'active' => $product_info->asp->daily_active_selector,
-                                'price' => 'body > program-page > div > div > main > program-home > section:nth-child(2) > div > div > div > summary-report > div > table > tbody > tr:nth-child(2) > td:nth-child(9)' 
+                                //'price' => 'body > program-page > div > div > main > program-home > section:nth-child(2) > div > div > div > summary-report > div > table > tbody > tr:nth-child(2) > td:nth-child(9)' 
                             );
                         } //date( 'Y/m/d' ) == date( 'Y/m/01' )
                         else {
                             $selector = array(
-                                 'imp' => $product_info->asp->daily_imp_selector,
+                                'imp' => $product_info->asp->daily_imp_selector,
                                 'click' => $product_info->asp->daily_click_selector,
                                 'cv' => $product_info->asp->daily_cv_selector,
                                 'partnership' => $product_info->asp->daily_partnership_selector,
                                 'active' => $product_info->asp->daily_active_selector,
-                                'price' => $product_info->asp->daily_price_selector 
+                                //'price' => $product_info->asp->daily_price_selector 
                             );
                         }
                         //var_dump( $crawler );
@@ -90,11 +90,10 @@ class AccesstradeController extends DailyCrawlerController
                         
                         $atdata = $crawler->each( function( Crawler $node ) use ($selector, $product_info)
                         {
-                            
+                            $unit_price = $product_info->price;
                             $data              = array( );
                             $data[ 'asp' ]     = $product_info->asp_id;
                             $data[ 'product' ] = $product_info->id;
-                            
                             $data[ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
                             
                             foreach ( $selector as $key => $value ) {
@@ -114,11 +113,11 @@ class AccesstradeController extends DailyCrawlerController
                                     $data[ $key ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
                                     
                                 }
-                                //echo $data[ $key ];
-                                
                             } //$selector as $key => $value
                             //$data['cpa']= $this->cpa($data['cv'] ,$data['price'] , 2);
                             
+                            $data[ 'price' ] = $data['cv'] * $unit_price;
+
                             $calData = json_decode( json_encode( json_decode( $this->dailySearchService->cpa( $data[ 'cv' ], $data[ 'price' ], 2 ) ) ), True );
                             
                             $data[ 'cpa' ]  = $calData[ 'cpa' ]; //CPA

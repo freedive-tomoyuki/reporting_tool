@@ -63,27 +63,38 @@ class A8Controller extends DailyCrawlerController
                         $s_M = date( 'n' );
                     }
                     foreach ( $product_infos as $product_info ) {
-                        
-                        $crawler_1 = $browser->visit( $product_info->asp->login_url )->type( $product_info->asp->login_key, $product_info->login_value )->type( $product_info->asp->password_key, $product_info->password_value )->click( $product_info->asp->login_selector )->visit( $product_info->asp->lp1_url . $product_info->asp_product_id )->crawler();
-                        
-                        $crawler_2 = $browser->visit( $product_info->asp->lp2_url )->select( '#reportOutAction > table > tbody > tr:nth-child(2) > td > select', '23' )->radio( 'insId', $product_info->asp_product_id )->click( '#reportOutAction > input[type="image"]:nth-child(3)' )->crawler();
-                        
-                        $unit_price = $product_info->price;
+                        //ルート①
+                        $crawler_1 = $browser
+                                ->visit( $product_info->asp->login_url )
+                                ->type( $product_info->asp->login_key,$product_info->login_value )
+                                ->type( $product_info->asp->password_key,$product_info->password_value)
+                                ->click( $product_info->asp->login_selector )
+                                ->visit( $product_info->asp->lp1_url . $product_info->asp_product_id )
+                                ->crawler();
+                        //ルート②
+                        $crawler_2 = $browser
+                                ->visit( $product_info->asp->lp2_url )
+                                ->select( '#reportOutAction > table > tbody > tr:nth-child(2) > td > select', '23' )
+                                ->radio( 'insId', $product_info->asp_product_id )
+                                ->click( '#reportOutAction > input[type="image"]:nth-child(3)' )
+                                ->crawler();
 
+                        //ルート①：アクティブ数／低係数
+                        //毎月1日→TRUE／毎月1日以外→False
+                        //TRUE:管理画面で先月の1日〜末日まで数値の取得を行う。
                         if ( date( 'Y/m/d' ) == date( 'Y/m/01' ) ) {
                             $selector_1 = array(
                                 'active' => '#element > tbody > tr:nth-child(2) > td:nth-child(3)',
-                                #element > tbody > tr:nth-child(1) > td:nth-child(3)
                                 'partnership' => '#element > tbody > tr:nth-child(2) > td:nth-child(2)' 
                             );
-                        } //date( 'Y/m/d' ) == date( 'Y/m/01' )
+                        }
                         else {
                             $selector_1 = array(
                                 'active' => $product_info->asp->daily_active_selector,
                                 'partnership' => $product_info->asp->daily_partnership_selector 
                             );
                         }
-                        //
+                        //ルート②：インプレッション／クリック数／CV数
                         $selector_2 = array(
                             'imp' => '#ReportList > tbody > tr:nth-child(1) > td:nth-child(2)',
                             'click' => '#ReportList > tbody > tr:nth-child(1) > td:nth-child(3)',
@@ -91,9 +102,9 @@ class A8Controller extends DailyCrawlerController
                             'cv' => $product_info->asp->daily_cv_selector 
                         );
                         
+                        //ルート①：+ASPID／案件ID追加 且つ　セレクタをもとに抽出
                         $a8data_1 = $crawler_1->each( function( Crawler $node ) use ($selector_1, $product_info)
                         {
-                            
                             $data              = array( );
                             $data[ 'asp' ]     = $product_info->asp_id;
                             $data[ 'product' ] = $product_info->id;
@@ -104,33 +115,43 @@ class A8Controller extends DailyCrawlerController
                             return $data;
                         } );
                         //var_dump( $a8data_1 );
+
+                        //ルート②：セレクタをもとに抽出
                         $a8data_2 = $crawler_2->each( function( Crawler $node ) use ($selector_2)
-                        {
-                            
+                        {        
                             foreach ( $selector_2 as $key => $value ) {
                                 $data[ $key ] = trim( $node->filter( $value )->text() );
-                            } //$selector_2 as $key => $value
+                            }
                             return $data;
                         } );
-                        var_dump( $a8data_2 );
+
+                        //var_dump( $a8data_2 );
+
+                        $unit_price = $product_info->price;
                         
+                        //数値変換
                         $a8data_1[ 0 ][ 'cv' ]    = trim( preg_replace( '/[^0-9]/', '', $a8data_2[ 0 ][ "cv" ] ) );
                         $a8data_1[ 0 ][ 'click' ] = trim( preg_replace( '/[^0-9]/', '', $a8data_2[ 0 ][ "click" ] ) );
                         $a8data_1[ 0 ][ 'imp' ]   = trim( preg_replace( '/[^0-9]/', '', $a8data_2[ 0 ][ "imp" ] ) );
-                        // $a8data_1[ 0 ][ 'price' ] = trim( preg_replace( '/[^0-9]/', '', $a8data_2[ 0 ][ "price" ] ) );
                         $a8data_1[ 0 ][ 'price' ] = $a8data_1[ 0 ][ 'cv' ] * $unit_price;
-                        echo "合計<br>";
-                        echo $a8data_1[ 0 ][ 'cv' ]."<br>";
-                        echo $unit_price."<br>";
-                        echo $a8data_1[ 0 ][ 'price' ];
+                        // $a8data_1[ 0 ][ 'price' ] = trim( preg_replace( '/[^0-9]/', '', $a8data_2[ 0 ][ "price" ] ) );
 
+                        // echo "合計<br>";
+                        // echo $a8data_1[ 0 ][ 'cv' ]."<br>";
+                        // echo $unit_price."<br>";
+                        // echo $a8data_1[ 0 ][ 'price' ];
+                        
+                        //CPA／
                         $calData = json_decode( json_encode( json_decode( $this->dailySearchService->cpa( $a8data_1[ 0 ][ 'cv' ], $a8data_1[ 0 ][ 'price' ], 1 ) ) ), True );
                         
                         $a8data_1[ 0 ][ 'cpa' ]  = $calData[ 'cpa' ]; //CPA
                         $a8data_1[ 0 ][ 'cost' ] = $calData[ 'cost' ]; //獲得単価
                         $a8data_1[ 0 ][ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
                         
-                        $crawler_for_site = $browser->visit('https://adv.a8.net/a8v2/ecAsRankingReportAction.do?reportType=11&insId=' . $product_info->asp_product_id . '&asmstId=&termType=1&d-2037996-p=1&multiSelectFlg=0&year=' . $s_Y . '&month=' . $s_M )->crawler();
+                        $crawler_for_site = $browser
+                                            ->visit('https://adv.a8.net/a8v2/ecAsRankingReportAction.do?reportType=11&insId=' . $product_info->asp_product_id . '&asmstId=&termType=1&d-2037996-p=1&multiSelectFlg=0&year=' . $s_Y . '&month=' . $s_M )
+                                            ->crawler();
+
                         $count_selector   = '#contents1clm > form:nth-child(6) > span.pagebanner';
                         $count_data       = intval( trim( preg_replace( '/[^0-9]/', '', substr( $crawler_for_site->filter( $count_selector )->text(), 0, 7 ) ) ) );
                         

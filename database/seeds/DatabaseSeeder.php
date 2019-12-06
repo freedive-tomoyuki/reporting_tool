@@ -14,6 +14,7 @@ class DatabaseSeeder extends Seeder
         //$this->call(AspTableSeeder::class);
         //$this->call(ProductsTableSeeder::class);
         // $this->call(UsersTableSeeder::class);
-        $this->call(aspsTableSeeder::class);
+        //$this->call(aspsTableSeeder::class);
+        $this->call(SitesTableSeeder::class);
     }
 }

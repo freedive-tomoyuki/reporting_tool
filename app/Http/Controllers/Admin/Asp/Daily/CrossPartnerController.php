@@ -115,7 +115,7 @@ class CrossPartnerController extends DailyCrawlerController
                                         'imp' => 'table.highlight > tbody > tr:nth-child('.$d.') > td:nth-child(2)',
                                         'click' => 'table.highlight > tbody > tr:nth-child('.$d.') > td:nth-child(3)',
                                         'cv' => 'table.highlight > tbody > tr:nth-child('.$d.') > td:nth-child(5)',
-                                        'price' => 'table.highlight > tbody > tr:nth-child('.$d.') > td:nth-child(9)',
+                                    //    'price' => 'table.highlight > tbody > tr:nth-child('.$d.') > td:nth-child(9)',
                                     );
 
                                     foreach($selector_1 as $key => $value){
@@ -135,8 +135,8 @@ class CrossPartnerController extends DailyCrawlerController
                                             $cv += trim(preg_replace('/[^0-9]/', '', $node->filter($value)->text()));
                                             $data['cv'] = $cv;
                                         }else{
-                                            $price += trim(preg_replace('/[^0-9]/', '', $node->filter($value)->text()));
-                                            $data['price'] = $price;
+                                            //$price += trim(preg_replace('/[^0-9]/', '', $node->filter($value)->text()));
+                                            //$data['price'] = $price;
                                         }
                                         $y++ ;
                                     }
@@ -224,6 +224,9 @@ class CrossPartnerController extends DailyCrawlerController
                                     );
                         $crosspartner_data1[0]['cpa']= $calData['cpa']; //CPA
                         $crosspartner_data1[0]['cost']= $calData['cost'];
+
+                        $unit_price = $product_info->price;
+                        $crosspartner_data1[ 0 ][ 'price' ] = $crosspartner_data1[ 0 ][ 'cv' ] * $unit_price;
                         
                         /*
                         サイトデータ・日次データ保存

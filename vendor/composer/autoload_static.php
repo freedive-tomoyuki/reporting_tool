@@ -28,6 +28,7 @@ class ComposerStaticInit17b951e184e5061e46885a751b3be200
         '801c31d8ed748cfa537fa45402288c95' => __DIR__ . '/..' . '/psy/psysh/src/functions.php',
         '4a1f389d6ce373bda9e57857d3b61c84' => __DIR__ . '/..' . '/barryvdh/laravel-debugbar/src/helpers.php',
         'c379e2a4ec3735f6c4915556c8c81813' => __DIR__ . '/..' . '/rap2hpoutre/fast-excel/src/functions/fastexcel.php',
+        '577e8babc5e897de9cab73c9a71fdb59' => __DIR__ . '/../..' . '/app/Helper/helper.php',
     );
 
     public static $prefixLengthsPsr4 = array (
@@ -725,6 +726,7 @@ class ComposerStaticInit17b951e184e5061e46885a751b3be200
         'App\\Http\\Controllers\\Admin\\MonthlyController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/MonthlyController.php',
         'App\\Http\\Controllers\\Admin\\MonthlyCrawlerController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/MonthlyCrawlerController.php',
         'App\\Http\\Controllers\\Admin\\ProductController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/ProductController.php',
+        'App\\Http\\Controllers\\Admin\\SiteController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/SiteController.php',
         'App\\Http\\Controllers\\Admin\\TestController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/TestController.php',
         'App\\Http\\Controllers\\Admin\\YearlyController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/YearlyController.php',
         'App\\Http\\Controllers\\Api\\getAspController' => __DIR__ . '/../..' . '/app/Http/Controllers/Api/getAspController.php',
@@ -771,6 +773,8 @@ class ComposerStaticInit17b951e184e5061e46885a751b3be200
         'App\\Services\\CalculationService' => __DIR__ . '/../..' . '/app/Services/CsvImportService.php',
         'App\\Services\\DailySearchService' => __DIR__ . '/../..' . '/app/Services/DailySearchService.php',
         'App\\Services\\MonthlySearchService' => __DIR__ . '/../..' . '/app/Services/MonthlySearchService.php',
+        'App\\Services\\YearlyDataService' => __DIR__ . '/../..' . '/app/Services/YearlyDataService.php',
+        'App\\Site' => __DIR__ . '/../..' . '/app/Site.php',
         'App\\User' => __DIR__ . '/../..' . '/app/User.php',
         'AspTableSeeder' => __DIR__ . '/../..' . '/database/seeds/AspTableSeeder.php',
         'Barryvdh\\Debugbar\\Console\\ClearCommand' => __DIR__ . '/..' . '/barryvdh/laravel-debugbar/src/Console/ClearCommand.php',
@@ -5502,6 +5506,7 @@ class ComposerStaticInit17b951e184e5061e46885a751b3be200
         'SebastianBergmann\\Timer\\RuntimeException' => __DIR__ . '/..' . '/phpunit/php-timer/src/RuntimeException.php',
         'SebastianBergmann\\Timer\\Timer' => __DIR__ . '/..' . '/phpunit/php-timer/src/Timer.php',
         'SebastianBergmann\\Version' => __DIR__ . '/..' . '/sebastian/version/src/Version.php',
+        'SitesTableSeeder' => __DIR__ . '/../..' . '/database/seeds/SitesTableSeeder.php',
         'Staudenmeir\\DuskUpdater\\DetectsChromeVersion' => __DIR__ . '/..' . '/staudenmeir/dusk-updater/src/DetectsChromeVersion.php',
         'Staudenmeir\\DuskUpdater\\DuskServiceProvider' => __DIR__ . '/..' . '/staudenmeir/dusk-updater/src/DuskServiceProvider.php',
         'Staudenmeir\\DuskUpdater\\UpdateCommand' => __DIR__ . '/..' . '/staudenmeir/dusk-updater/src/UpdateCommand.php',

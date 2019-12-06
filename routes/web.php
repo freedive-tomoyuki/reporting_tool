@@ -65,6 +65,10 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth:admin'], function() {
     //マンスリーレポート一覧
     Route::get('monthly_result','Admin\MonthlyController@monthlyResult');
     Route::post('monthly_result','Admin\MonthlyController@monthlyResultSearch');
+    
+    //月次編集
+    Route::get('monthly/edit/{id}','Admin\MonthlyController@edit');
+    Route::post('monthly/edit/{id}','Admin\MonthlyController@update');
 
     //マンスリーレポート（サイト別）一覧
     Route::get( 'monthly_result_site','Admin\MonthlyController@monthlyResultSite')->name('admin.monthly_result_site');
@@ -77,6 +81,10 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth:admin'], function() {
     //ASP一覧・詳細
     Route::get('asp_list','Admin\AspController@list')->name('admin.asp_list');
     Route::get('asp_detail/{id}','Admin\AspController@detail');
+
+    //サイト一覧・詳細
+    Route::get('site_list','Admin\SiteController@list')->name('admin.site_list');
+    Route::post('site_list','Admin\SiteController@search');
 
     //案件一覧・登録
     Route::get('product_list','Admin\ProductController@list')->name('admin.product_list');
