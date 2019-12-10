@@ -101,14 +101,13 @@ class SCANController extends DailyCrawlerController
                         selector 設定
                         */
                         $selector1 = array(
-                             'imp' => '#report_clm > div > div.report_table > table > tbody > tr.tr_sum > td:nth-child(2)',
+                            'imp' => '#report_clm > div > div.report_table > table > tbody > tr.tr_sum > td:nth-child(2)',
                             'click' => '#report_clm > div > div.report_table > table > tbody > tr.tr_sum > td:nth-child(3)',
                             'cv' => '#report_clm > div > div.report_table > table > tbody > tr.tr_sum > td:nth-child(6)' 
                             
                         );
                         $selector2 = array(
                             'partnership' => '#report_clm > div > div.report_table > table > tbody > tr.tr_even > td:nth-child(4)',
-                            
                             'active' => '#report_clm > div > div.report_table > table > tbody > tr.tr_even > td:nth-child(5)',
                             
                             //'price' => '#report_clm > div > div.report_table > table > tbody > tr.tr_even > td:nth-child(12)' 
@@ -213,7 +212,7 @@ class SCANController extends DailyCrawlerController
                                                             json_encode( 
                                                                 json_decode( 
                                                                     $this->dailySearchService
-                                                                                    ->cpa( $scan_data[ 0 ][ 'cv' ], $scan_data2[ 0 ][ 'price' ], 7 ) 
+                                                                                    ->cpa( $scan_data[ 0 ][ 'cv' ], $scan_data[ 0 ][ 'price' ], 7 ) 
                                                                 ) ), True );
                         $scan_data[ 0 ][ 'cpa' ]  = $calculated[ 'cpa' ]; //CPA
                         $scan_data[ 0 ][ 'cost' ] = $calculated[ 'cost' ];
