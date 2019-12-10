@@ -65,7 +65,7 @@ class FelmatController extends MonthlyCrawlerController
         {
             try{
                     $product_infos = \App\Product::all()->where( 'id', $product_id );
-                    $array = array();
+                    $felmat_data = array();
 
                     foreach ( $product_infos as $product_info ) {
                         $crawler = $browser->visit($product_info->asp->login_url)
@@ -135,7 +135,7 @@ class FelmatController extends MonthlyCrawlerController
                         }
 
                         foreach ($felmat_data as $value){
-                            array_push($array , $value[0]);
+                            array_push($felmat_data , $value[0]);
                         }
                         /*
                           $crawler サイト用　をフィルタリング
@@ -161,12 +161,12 @@ class FelmatController extends MonthlyCrawlerController
 
                             //アクティブ件数取得
                             $crawler = $browser->visit("https://www.felmat.net/advertiser/report/partnersite") //->crawler();
-                            ->type('#search > div > div:nth-child(2) > div.col-sm-4.form-inline > div > input:nth-child(1)', $first)
-                            ->type('#search > div > div:nth-child(2) > div.col-sm-4.form-inline > div > input:nth-child(3)', $end)
-                            ->click('#sel_promotion_id_chosen')
-                            ->click('#sel_promotion_id_chosen > div > ul > li:nth-child(2)')
-                            ->click('#view > div > button.btn.btn-primary.btn-sm')
-                            ->crawler();
+                                            ->type('#search > div > div:nth-child(2) > div.col-sm-4.form-inline > div > input:nth-child(1)', $first)
+                                            ->type('#search > div > div:nth-child(2) > div.col-sm-4.form-inline > div > input:nth-child(3)', $end)
+                                            ->click('#sel_promotion_id_chosen')
+                                            ->click('#sel_promotion_id_chosen > div > ul > li:nth-child(2)')
+                                            ->click('#view > div > button.btn.btn-primary.btn-sm')
+                                            ->crawler();
                             $selector ='body > div.wrapper > div.page-content.no-left-sidebar > div > div:nth-child(5) > div > div:nth-child(2) > div:nth-child(1) > div:nth-child(3) > div';
                             
                             //echo "アクティブ数";
@@ -228,14 +228,14 @@ class FelmatController extends MonthlyCrawlerController
                         }
 
                         // echo "<pre>";
-                        // var_dump($array);
+                        // var_dump($felmat_data);
                         // var_dump($felmat_site);
                         // echo "</pre>";
                         /*
                         サイトデータ・日次データ保存
                         */
                         $this->monthlySearchService->save_site( json_encode( $felmat_site ) );
-                        $this->monthlySearchService->save_monthly( json_encode( $array ) );
+                        $this->monthlySearchService->save_monthly( json_encode( $felmat_data ) );
                     
                     }
             }

@@ -233,7 +233,7 @@ Route::get('check',function(){
 //CSV出力
 Route::get('csv/{id}/{s_date?}/{e_date?}','DailyController@downloadCSV');
 Route::get('csv_site/{id}/{s_date?}/{e_date?}','DailyController@downloadSiteCSV');
-Route::get('dailycal','EstimateController@dailyCal');
+// Route::get('dailycal','EstimateController@dailyCal');
 
 /*
 //ASP一覧・詳細
@@ -273,12 +273,12 @@ Route::get('/at', 'DailydataController@at');
 Route::get('/vc', 'DailydataController@vc');
 Route::get('/test','ScrapingController@index');
 */
-Route::get('s8/{id}','Admin\Asp\Daily\S8Controller@s8');
+// Route::get('s8/{id}','Admin\Asp\Daily\S8Controller@s8');
 Route::get('test1','Admin\DailyCrawlerController@dailytimer');
 Route::get('test2','Admin\MonthlyCrawlerController@monthlytimer');
 //Route::get('check','CheckController@check');
 Route::get('diff/{id?}','Admin\TestController@run');
-Route::get('diff_site','DailyCrawlerController@diff_site');
+// Route::get('diff_site','DailyCrawlerController@diff_site');
 Route::get('calChart/{id?}','Admin\YearlyController@calChart' );
 Route::get('siteCreate/{name?}/{seed}','Admin\Asp\Daily\FelmatController@siteCreate' );
 

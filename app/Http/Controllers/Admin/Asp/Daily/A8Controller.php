@@ -106,7 +106,7 @@ class A8Controller extends DailyCrawlerController
                         );
                         
                         //ルート①：+ASPID／案件ID追加 且つ　セレクタをもとに抽出
-                        $a8data_1 = $crawler_1->each( function( Crawler $node ) use ($selector_1, $product_info)
+                        $a8_data_1 = $crawler_1->each( function( Crawler $node ) use ($selector_1, $product_info)
                         {
                             $data              = array( );
                             $data[ 'asp' ]     = $product_info->asp_id;
@@ -117,10 +117,10 @@ class A8Controller extends DailyCrawlerController
                             } //$selector_1 as $key => $value
                             return $data;
                         } );
-                        //var_dump( $a8data_1 );
+                        //var_dump( $a8_data_1 );
 
                         //ルート②：セレクタをもとに抽出
-                        $a8data_2 = $crawler_2->each( function( Crawler $node ) use ($selector_2)
+                        $a8_data_2 = $crawler_2->each( function( Crawler $node ) use ($selector_2)
                         {        
                             foreach ( $selector_2 as $key => $value ) {
                                 $data[ $key ] = trim( $node->filter( $value )->text() );
@@ -128,28 +128,34 @@ class A8Controller extends DailyCrawlerController
                             return $data;
                         } );
 
-                        //var_dump( $a8data_2 );
+                        //var_dump( $a8_data_2 );
 
                         $unit_price = $product_info->price;
                         
                         //数値変換
-                        $a8data_1[ 0 ][ 'cv' ]    = trim( preg_replace( '/[^0-9]/', '', $a8data_2[ 0 ][ "cv" ] ) );
-                        $a8data_1[ 0 ][ 'click' ] = trim( preg_replace( '/[^0-9]/', '', $a8data_2[ 0 ][ "click" ] ) );
-                        $a8data_1[ 0 ][ 'imp' ]   = trim( preg_replace( '/[^0-9]/', '', $a8data_2[ 0 ][ "imp" ] ) );
-                        $a8data_1[ 0 ][ 'price' ] = $a8data_1[ 0 ][ 'cv' ] * $unit_price;
-                        // $a8data_1[ 0 ][ 'price' ] = trim( preg_replace( '/[^0-9]/', '', $a8data_2[ 0 ][ "price" ] ) );
+                        $a8_data_1[ 0 ][ 'cv' ]    = trim( preg_replace( '/[^0-9]/', '', $a8_data_2[ 0 ][ "cv" ] ) );
+                        $a8_data_1[ 0 ][ 'click' ] = trim( preg_replace( '/[^0-9]/', '', $a8_data_2[ 0 ][ "click" ] ) );
+                        $a8_data_1[ 0 ][ 'imp' ]   = trim( preg_replace( '/[^0-9]/', '', $a8_data_2[ 0 ][ "imp" ] ) );
+                        $a8_data_1[ 0 ][ 'price' ] = $a8_data_1[ 0 ][ 'cv' ] * $unit_price;
+                        // $a8_data_1[ 0 ][ 'price' ] = trim( preg_replace( '/[^0-9]/', '', $a8_data_2[ 0 ][ "price" ] ) );
 
                         // echo "合計<br>";
-                        // echo $a8data_1[ 0 ][ 'cv' ]."<br>";
+                        // echo $a8_data_1[ 0 ][ 'cv' ]."<br>";
                         // echo $unit_price."<br>";
-                        // echo $a8data_1[ 0 ][ 'price' ];
+                        // echo $a8_data_1[ 0 ][ 'price' ];
                         
                         //CPA／
-                        $calData = json_decode( json_encode( json_decode( $this->dailySearchService->cpa( $a8data_1[ 0 ][ 'cv' ], $a8data_1[ 0 ][ 'price' ], 1 ) ) ), True );
+                        $calculated = json_decode( 
+                                        json_encode( 
+                                            json_decode( 
+                                                $this->dailySearchService
+                                                    ->cpa( $a8_data_1[ 0 ][ 'cv' ], $a8_data_1[ 0 ][ 'price' ], 1 ) 
+                                            ) 
+                                        ), True );
                         
-                        $a8data_1[ 0 ][ 'cpa' ]  = $calData[ 'cpa' ]; //CPA
-                        $a8data_1[ 0 ][ 'cost' ] = $calData[ 'cost' ]; //獲得単価
-                        $a8data_1[ 0 ][ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
+                        $a8_data_1[ 0 ][ 'cpa' ]  = $calculated[ 'cpa' ]; //CPA
+                        $a8_data_1[ 0 ][ 'cost' ] = $calculated[ 'cost' ]; //獲得単価
+                        $a8_data_1[ 0 ][ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
                         
                         //
                         //サイト単位スクレイピング
@@ -197,33 +203,39 @@ class A8Controller extends DailyCrawlerController
                                 );
                                 
                                 foreach ( $selector_for_site as $key => $value ) {
-                                    $data[ $count ][ $key ] = trim( $crawler_for_site->filter( $value )->text() );
+                                    $a8_site[ $count ][ $key ] = trim( $crawler_for_site->filter( $value )->text() );
                                 } //$selector_for_site as $key => $value
                                 
                                 $unit_price = $product_info->price;
-                                $data[ $count ][ 'price' ] = $unit_price * $data[ $count ][ 'cv' ];
+                                $a8_site[ $count ][ 'price' ] = $unit_price * $a8_site[ $count ][ 'cv' ];
                                 
-                                $calData = json_decode( json_encode( json_decode( $this->dailySearchService->cpa( $data[ $count ][ 'cv' ], $data[ $count ][ 'price' ], 1 ) ) ), True );
+                                $calculated = json_decode( 
+                                                json_encode( 
+                                                    json_decode( 
+                                                        $this->dailySearchService
+                                                            ->cpa( $a8_site[ $count ][ 'cv' ], $a8_site[ $count ][ 'price' ], 1 ) 
+                                                        ) 
+                                                ), True );
                                 
-                                //$data[$count]['product'] = $product_info->id;
-                                $data[ $count ][ 'product' ] = $product_info->id;
-                                $data[ $count ][ 'date' ]    = date( 'Y-m-d', strtotime( '-1 day' ) );
+                                //$a8_site[$count]['product'] = $product_info->id;
+                                $a8_site[ $count ][ 'product' ] = $product_info->id;
+                                $a8_site[ $count ][ 'date' ]    = date( 'Y-m-d', strtotime( '-1 day' ) );
                                 
-                                $data[ $count ][ 'cpa' ]  = $calData[ 'cpa' ]; //CPA
-                                $data[ $count ][ 'cost' ] = $calData[ 'cost' ]; //獲得単価
+                                $a8_site[ $count ][ 'cpa' ]  = $calculated[ 'cpa' ]; //CPA
+                                $a8_site[ $count ][ 'cost' ] = $calculated[ 'cost' ]; //獲得単価
                                 
                                 //echo '<pre>';
                                 //echo $i;
-                                //var_dump( $data );
+                                //var_dump( $a8_site );
                                 //echo '</pre>';
                             } //$i = 1; $i <= $count_deff; $i++
                         } //$page = 0; $page < $page_count; $page++
-                        //var_dump( $data );
-                        //var_dump( $a8data_1 );
+                        //var_dump( $a8_site );
+                        //var_dump( $a8_data_1 );
                         
                         //１サイトずつサイト情報の登録を実行
-                        $this->dailySearchService->save_site( json_encode( $data ) );
-                        $this->dailySearchService->save_daily( json_encode( $a8data_1 ) );
+                        $this->dailySearchService->save_site( json_encode( $a8_site ) );
+                        $this->dailySearchService->save_daily( json_encode( $a8_data_1 ) );
                         
                         
                     } //$product_infos as $product_info

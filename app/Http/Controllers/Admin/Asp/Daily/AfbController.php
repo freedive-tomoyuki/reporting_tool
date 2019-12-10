@@ -141,7 +141,7 @@ class AfbController extends DailyCrawlerController
                              'active' => $product_info->asp->daily_active_selector 
                         );
                         
-                        $afbdata = $crawler->each( function( Crawler $node ) use ($selector_crawler, $product_info)
+                        $afb_data = $crawler->each( function( Crawler $node ) use ($selector_crawler, $product_info)
                         {
                             
                             $data              = array( );
@@ -159,9 +159,9 @@ class AfbController extends DailyCrawlerController
                             $unit_price = $product_info->price;
                             $data[ 'price' ] = $data[ 'cv' ] * $unit_price;
 
-                            $calData        = json_decode( json_encode( json_decode( $this->dailySearchService->cpa( $data[ 'cv' ], $data[ 'price' ], 4 ) ) ), True );
-                            $data[ 'cpa' ]  = $calData[ 'cpa' ]; //CPA
-                            $data[ 'cost' ] = $calData[ 'cost' ]; //獲得単価
+                            $calculated        = json_decode( json_encode( json_decode( $this->dailySearchService->cpa( $data[ 'cv' ], $data[ 'price' ], 4 ) ) ), True );
+                            $data[ 'cpa' ]  = $calculated[ 'cpa' ]; //CPA
+                            $data[ 'cost' ] = $calculated[ 'cost' ]; //獲得単価
                             return $data;
                             
                         } );
@@ -182,14 +182,14 @@ class AfbController extends DailyCrawlerController
                         } );
                         
                         $count_data = $active[ 0 ];
-                        $afbdata[ 0 ][ 'active' ]      = $count_data;
-                        $afbdata[ 0 ][ 'partnership' ] = $partnership[ 0 ];
+                        $afb_data[ 0 ][ 'active' ]      = $count_data;
+                        $afb_data[ 0 ][ 'partnership' ] = $partnership[ 0 ];
 
-                        $afbsite    = array( );
+                        $afb_site    = array( );
                         //echo $count_data;
                         
                         for ( $i = 1; $count_data >= $i; $i++ ) {
-                            $afbsite[ $i ][ 'product' ] = $product_info->id;
+                            $afb_site[ $i ][ 'product' ] = $product_info->id;
                             
                             $selector_for_site = array(
                                 'media_id' => '#reportTable > tbody > tr:nth-child(' . $i . ') > td.maxw150',
@@ -210,35 +210,35 @@ class AfbController extends DailyCrawlerController
                                     $sid      = trim( $crawler3->filter( $value )->attr( 'title' ) );
                                     preg_match( '/SID：(\d+)/', $sid, $media_id );
                                     
-                                    $afbsite[ $i ][ $key ] = $media_id[ 1 ];
+                                    $afb_site[ $i ][ $key ] = $media_id[ 1 ];
                                     
                                 } //$key == 'media_id'
                                 elseif ( $key == 'site_name' ) {
                                     
-                                    $afbsite[ $i ][ $key ] = trim( $crawler3->filter( $value )->text() );
+                                    $afb_site[ $i ][ $key ] = trim( $crawler3->filter( $value )->text() );
                                     
                                 } //$key == 'site_name'
                                 else {
                                     
-                                    $afbsite[ $i ][ $key ] = trim( preg_replace( '/[^0-9]/', '', $crawler3->filter( $value )->text() ) );
+                                    $afb_site[ $i ][ $key ] = trim( preg_replace( '/[^0-9]/', '', $crawler3->filter( $value )->text() ) );
                                     
                                 }
                                 
                             }
                             
                             $unit_price = $product_info->price;
-                            $afbsite[ $i ][ 'price' ] = $unit_price * $afbsite[ $i ][ 'cv' ];
+                            $afb_site[ $i ][ 'price' ] = $unit_price * $afb_site[ $i ][ 'cv' ];
 
-                            $calData                 = json_decode( json_encode( json_decode( $this->dailySearchService->cpa( $afbsite[ $i ][ 'cv' ], $afbsite[ $i ][ 'price' ], 4 ) ) ), True );
-                            $afbsite[ $i ][ 'cpa' ]  = $calData[ 'cpa' ]; //CPA
-                            $afbsite[ $i ][ 'cost' ] = $calData[ 'cost' ]; //獲得単価
+                            $calculated                 = json_decode( json_encode( json_decode( $this->dailySearchService->cpa( $afb_site[ $i ][ 'cv' ], $afb_site[ $i ][ 'price' ], 4 ) ) ), True );
+                            $afb_site[ $i ][ 'cpa' ]  = $calculated[ 'cpa' ]; //CPA
+                            $afb_site[ $i ][ 'cost' ] = $calculated[ 'cost' ]; //獲得単価
                             
-                            $afbsite[ $i ][ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
+                            $afb_site[ $i ][ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
                         }
                         
                         
-                        $this->dailySearchService->save_daily( json_encode( $afbdata ) );
-                        $this->dailySearchService->save_site( json_encode( $afbsite ) );
+                        $this->dailySearchService->save_daily( json_encode( $afb_data ) );
+                        $this->dailySearchService->save_site( json_encode( $afb_site ) );
                         
                     }
             }

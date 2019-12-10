@@ -72,11 +72,11 @@ class AccesstradeController extends MonthlyCrawlerController
                             $row_before = 2;
                         }
                         $selector_this   = array(
-                             'approval' => 'body > report-page > div > div > main > ng-component > section > div > div > div > display > div > table > tbody > tr:nth-child(' . $row_this . ') > td:nth-child(4)',
+                            'approval' => 'body > report-page > div > div > main > ng-component > section > div > div > div > display > div > table > tbody > tr:nth-child(' . $row_this . ') > td:nth-child(4)',
                             'approval_price' => 'body > report-page > div > div > main > ng-component > section > div > div > div > display > div > table > tbody > tr:nth-child(' . $row_this . ') > td:nth-child(7)' 
                         );
                         $selector_before = array(
-                             'approval' => 'body > report-page > div > div > main > ng-component > section > div > div > div > display > div > table > tbody > tr:nth-child(' . $row_before . ') > td:nth-child(4)',
+                            'approval' => 'body > report-page > div > div > main > ng-component > section > div > div > div > display > div > table > tbody > tr:nth-child(' . $row_before . ') > td:nth-child(4)',
                             'approval_price' => 'body > report-page > div > div > main > ng-component > section > div > div > div > display > div > table > tbody > tr:nth-child(' . $row_before . ') > td:nth-child(7)' 
                         );
                         
@@ -85,7 +85,7 @@ class AccesstradeController extends MonthlyCrawlerController
                         /**
                         今月用のデータ取得selector
                         */
-                        $atdata = $crawler->each( function( Crawler $node ) use ($selector_this, $selector_before, $product_info)
+                        $accesstrade_data = $crawler->each( function( Crawler $node ) use ($selector_this, $selector_before, $product_info)
                         {
                             
                             $data              = array( );
@@ -130,7 +130,7 @@ class AccesstradeController extends MonthlyCrawlerController
                         } );
                         
                         $array_site = array( );
-                        
+                        $accesstrade_site = array( );
                         $x = 0;
                         
                         for ( $i = 0; $i < 2; $i++ ) {
@@ -168,12 +168,12 @@ class AccesstradeController extends MonthlyCrawlerController
                             
                             
                             foreach ( $array_sites as $site ) {
-                                $data[ $x ][ 'product' ]        = $product_info->id;
-                                $data[ $x ][ 'date' ]           = $end;
-                                $data[ $x ][ 'media_id' ]       = $site[ "partnerSiteId" ];
-                                $data[ $x ][ 'site_name' ]      = $site[ "partnerSiteName" ];
-                                $data[ $x ][ 'approval' ]       = $site[ "approvedCount" ];
-                                $data[ $x ][ 'approval_price' ] = $this->monthlySearchService->calc_approval_price($site[ "approvedTotalReward" ] ,2);
+                                $accesstrade_site[ $x ][ 'product' ]        = $product_info->id;
+                                $accesstrade_site[ $x ][ 'date' ]           = $end;
+                                $accesstrade_site[ $x ][ 'media_id' ]       = $site[ "partnerSiteId" ];
+                                $accesstrade_site[ $x ][ 'site_name' ]      = $site[ "partnerSiteName" ];
+                                $accesstrade_site[ $x ][ 'approval' ]       = $site[ "approvedCount" ];
+                                $accesstrade_site[ $x ][ 'approval_price' ] = $this->monthlySearchService->calc_approval_price($site[ "approvedTotalReward" ] ,2);
                                 
                                 $x++;
                                 
@@ -181,8 +181,8 @@ class AccesstradeController extends MonthlyCrawlerController
                             
                         } //$i = 0; $i < 2; $i++
                         
-                        $this->monthlySearchService->save_site( json_encode( $data ) );
-                        $this->monthlySearchService->save_monthly( json_encode( $atdata ) );
+                        $this->monthlySearchService->save_site( json_encode( $accesstrade_site ) );
+                        $this->monthlySearchService->save_monthly( json_encode( $accesstrade_data ) );
                     } //$product_infos as $product_info
             }
             catch(\Exception $e){

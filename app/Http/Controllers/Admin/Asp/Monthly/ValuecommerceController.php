@@ -94,7 +94,7 @@ class ValuecommerceController extends MonthlyCrawlerController
                         /**
                         セレクターからフィルタリング
                         */
-                        $vcdata = $crawler->each( function( Crawler $node ) use ($selector_this, $selector_before, $product_info)
+                        $valuecommerce_data = $crawler->each( function( Crawler $node ) use ($selector_this, $selector_before, $product_info)
                         {
                             $data              = array( );
                             $data[ 'asp' ]     = $product_info->asp_id;
@@ -139,21 +139,21 @@ class ValuecommerceController extends MonthlyCrawlerController
                             return $data;
                         } );
                         
-                        //var_dump( $vcdata );
+                        //var_dump( $valuecommerce_data );
                         //１ページ目クロール
                         //$pagination_page = $product_info->asp->lp2_url;
                         //$crawler_for_site = $browser->visit($pagination_page)->crawler();
                         
                         /**
-                        サイト取得用クロール
+                        *   サイト取得用クロール
                         */
                         
                         //$x = 0; 
                         //$addtion = 0 ;
                         $count = 0;
                         /**
-                            今月：$x = 0
-                            先月：$x = 1
+                        *    今月：$x = 0
+                        *    先月：$x = 1
                         */
                         for ( $x = 0; $x < 2; $x++ ) {
                             
@@ -212,7 +212,7 @@ class ValuecommerceController extends MonthlyCrawlerController
                                 
                                 //echo $target_page . "ページ目のcrawler_count＞＞" . $crawler_count . "</br>";
                                 /**
-                                １行ごと　クロール
+                                *１行ごと　クロール
                                 */
                                 for ( $i = 1; $i <= $crawler_count; $i++ ) {
                                     //while(
@@ -223,12 +223,12 @@ class ValuecommerceController extends MonthlyCrawlerController
                                     //1ページMAXの件数は４０件
                                     //$count = ($page*40)+$i+$addtion;
                                     //echo "count→" . $count . "←count";
-                                    $data[ $count ][ 'product' ] = $product_info->id;
+                                    $valuecommerce_site[ $count ][ 'product' ] = $product_info->id;
                                     
                                     //if($crawler_for_site->filter('#all > div.tablerline > table > tbody > tr:nth-child('.$i.') > td:nth-child(2)')->count() != 0){
                                     
                                     $selector_for_site = array(
-                                         'media_id' => '#all > div.tablerline > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(2)',
+                                        'media_id' => '#all > div.tablerline > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(2)',
                                         'site_name' => '#all > div.tablerline > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(3) > a',
                                         'approval' => '#all > div.tablerline > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(10)',
                                         'approval_price' => '#all > div.tablerline > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(21)' 
@@ -237,20 +237,20 @@ class ValuecommerceController extends MonthlyCrawlerController
                                     foreach ( $selector_for_site as $key => $value ) {
                                         
                                         if ( $x == 0 ) {
-                                            $data[ $count ][ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
+                                            $valuecommerce_site[ $count ][ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
                                         } //$x == 0
                                         else {
                                             if ( date( 'Y/m/d' ) == date( 'Y/m/01' ) ) {
-                                                $data[ $count ][ 'date' ] = date( 'Y-m-t', strtotime( '-2 month' ) );
+                                                $valuecommerce_site[ $count ][ 'date' ] = date( 'Y-m-t', strtotime( '-2 month' ) );
                                             } //date( 'Y/m/d' ) == date( 'Y/m/01' )
                                             else {
-                                                $data[ $count ][ 'date' ] = date( 'Y-m-d', strtotime( 'last day of previous month' ) );
+                                                $valuecommerce_site[ $count ][ 'date' ] = date( 'Y-m-d', strtotime( 'last day of previous month' ) );
                                             }
                                         }
                                         
                                         if ( $key == 'site_name' ) {
                                             
-                                            $data[ $count ][ $key ] = trim( $crawler_for_site->filter( $value )->text() );
+                                            $valuecommerce_site[ $count ][ $key ] = trim( $crawler_for_site->filter( $value )->text() );
                                             
                                         } //$key == 'site_name'
                                         elseif ( $key == 'approval' ) {
@@ -258,16 +258,16 @@ class ValuecommerceController extends MonthlyCrawlerController
                                             $approval_array = array();
                                             $approval       = trim( $crawler_for_site->filter( $value )->text() );
                                             preg_match( '/(\d+)/', $approval, $approval_array );
-                                            $data[ $count ][ $key ] = $approval_array[ 1 ];
+                                            $valuecommerce_site[ $count ][ $key ] = $approval_array[ 1 ];
                                             
                                         } //$key == 'approval'
                                         elseif ($key == 'approval_price') {
-                                            $data[ $count ][ $key ] = $this->monthlySearchService->calc_approval_price(
+                                            $valuecommerce_site[ $count ][ $key ] = $this->monthlySearchService->calc_approval_price(
                                                 trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) ), 3);
                                         }
                                         else {
                                             
-                                            $data[ $count ][ $key ] = trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) );
+                                            $valuecommerce_site[ $count ][ $key ] = trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) );
                                             
                                         }
                                     } 
@@ -278,8 +278,8 @@ class ValuecommerceController extends MonthlyCrawlerController
                             } 
                         } 
 
-                        $this->monthlySearchService->save_monthly( json_encode( $vcdata ) );
-                        $this->monthlySearchService->save_site( json_encode( $data ) );
+                        $this->monthlySearchService->save_monthly( json_encode( $valuecommerce_data ) );
+                        $this->monthlySearchService->save_site( json_encode( $valuecommerce_site ) );
                         
                     } //$product_infos as $product_info
             }

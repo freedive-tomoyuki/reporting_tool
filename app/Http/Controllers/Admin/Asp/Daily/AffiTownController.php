@@ -184,9 +184,9 @@ class AffiTownController extends DailyCrawlerController
                             $unit_price = $product_info->price;
                             $affitown_site[ $i ][ 'price' ] = $unit_price * $affitown_site[ $i ][ 'cv' ];
 
-                            $calData                       = json_decode( json_encode( json_decode( $this->dailySearchService->cpa( $affitown_site[ $i ][ 'cv' ], $affitown_site[ $i ][ 'price' ], 7 ) ) ), True );
-                            $affitown_site[ $i ][ 'cpa' ]  = $calData[ 'cpa' ]; //CPA
-                            $affitown_site[ $i ][ 'cost' ] = $calData[ 'cost' ];
+                            $calculated                       = json_decode( json_encode( json_decode( $this->dailySearchService->cpa( $affitown_site[ $i ][ 'cv' ], $affitown_site[ $i ][ 'price' ], 7 ) ) ), True );
+                            $affitown_site[ $i ][ 'cpa' ]  = $calculated[ 'cpa' ]; //CPA
+                            $affitown_site[ $i ][ 'cost' ] = $calculated[ 'cost' ];
                             $affitown_site[ $i ][ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
                             
                             $i++;
@@ -199,9 +199,9 @@ class AffiTownController extends DailyCrawlerController
                         $affitown_data[ 0 ][ 'active' ] = $i;
                         $affitown_data[ 0 ][ 'imp' ] = $affitown_data_imp[ 0 ][ 'imp' ];
 
-                        $calData                      = json_decode( json_encode( json_decode( $this->dailySearchService->cpa( $affitown_data[ 0 ][ 'cv' ], $affitown_data[ 0 ][ 'price' ], 7 ) ) ), True );
-                        $affitown_data[ 0 ][ 'cpa' ]  = $calData[ 'cpa' ]; //CPA
-                        $affitown_data[ 0 ][ 'cost' ] = $calData[ 'cost' ];
+                        $calculated                      = json_decode( json_encode( json_decode( $this->dailySearchService->cpa( $affitown_data[ 0 ][ 'cv' ], $affitown_data[ 0 ][ 'price' ], 7 ) ) ), True );
+                        $affitown_data[ 0 ][ 'cpa' ]  = $calculated[ 'cpa' ]; //CPA
+                        $affitown_data[ 0 ][ 'cost' ] = $calculated[ 'cost' ];
 
 
                         //echo "<pre>";

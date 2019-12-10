@@ -88,7 +88,7 @@ class AccesstradeController extends DailyCrawlerController
                         //var_dump( $crawler );
                         //$crawler->each(function (Crawler $node) use ( $selector ){
                         
-                        $atdata = $crawler->each( function( Crawler $node ) use ($selector, $product_info)
+                        $accesstrade_data = $crawler->each( function( Crawler $node ) use ($selector, $product_info)
                         {
                             $unit_price = $product_info->price;
                             $data              = array( );
@@ -118,10 +118,10 @@ class AccesstradeController extends DailyCrawlerController
                             
                             $data[ 'price' ] = $data['cv'] * $unit_price;
 
-                            $calData = json_decode( json_encode( json_decode( $this->dailySearchService->cpa( $data[ 'cv' ], $data[ 'price' ], 2 ) ) ), True );
+                            $calculated = json_decode( json_encode( json_decode( $this->dailySearchService->cpa( $data[ 'cv' ], $data[ 'price' ], 2 ) ) ), True );
                             
-                            $data[ 'cpa' ]  = $calData[ 'cpa' ]; //CPA
-                            $data[ 'cost' ] = $calData[ 'cost' ]; //獲得単価
+                            $data[ 'cpa' ]  = $calculated[ 'cpa' ]; //CPA
+                            $data[ 'cost' ] = $calculated[ 'cost' ]; //獲得単価
                             
                             //var_dump($data);
                             return $data;
@@ -142,31 +142,38 @@ class AccesstradeController extends DailyCrawlerController
                         
                         foreach ( $array_sites as $site ) {
 
-                            $data[ $x ][ 'product' ]   = $product_info->id;
-                            $data[ $x ][ 'media_id' ]  = $site[ "partnerSiteId" ];
-                            $data[ $x ][ 'site_name' ] = $site[ "partnerSiteName" ];
-                            $data[ $x ][ 'imp' ]       = $site[ "impressionCount" ];
-                            $data[ $x ][ 'click' ]     = $site[ "clickCount" ];
-                            $data[ $x ][ 'cv' ]        = $site[ "actionCount" ];
+                            $accesstrade_site[ $x ][ 'product' ]   = $product_info->id;
+                            $accesstrade_site[ $x ][ 'media_id' ]  = $site[ "partnerSiteId" ];
+                            $accesstrade_site[ $x ][ 'site_name' ] = $site[ "partnerSiteName" ];
+                            $accesstrade_site[ $x ][ 'imp' ]       = $site[ "impressionCount" ];
+                            $accesstrade_site[ $x ][ 'click' ]     = $site[ "clickCount" ];
+                            $accesstrade_site[ $x ][ 'cv' ]        = $site[ "actionCount" ];
                             //$data[ $x ][ 'price' ]     = $site[ "occurredTotalReward" ];
                             
                             $unit_price = $product_info->price;
-                            $data[ $x ][ 'price' ] = $unit_price * $data[ $x ][ 'cv' ];
+                            $accesstrade_site[ $x ][ 'price' ] = $unit_price * $accesstrade_site[ $x ][ 'cv' ];
 
                             //$data[$x]['cpa']= $this->cpa($site['occurredTotalReward'] ,$site["actionCount"] , 1)
-                            $calData              = json_decode( json_encode( json_decode( $this->dailySearchService->cpa( $site[ "actionCount" ], $site[ 'occurredTotalReward' ], 1 ) ) ), True );
-                            $data[ $x ][ 'cpa' ]  = $calData[ 'cpa' ]; //CPA
-                            $data[ $x ][ 'cost' ] = $calData[ 'cost' ]; //獲得単価
+                            $calculated              = json_decode( 
+                                                        json_encode( 
+                                                            json_decode( 
+                                                                $this->dailySearchService
+                                                                    ->cpa( $site[ "actionCount" ], $accesstrade_site[ $x ][ "price" ], 1 ) 
+                                                            ) 
+                                                        ), True );
+
+                            $accesstrade_site[ $x ][ 'cpa' ]  = $calculated[ 'cpa' ]; //CPA
+                            $accesstrade_site[ $x ][ 'cost' ] = $calculated[ 'cost' ]; //獲得単価
                             
-                            $data[ $x ][ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
+                            $accesstrade_site[ $x ][ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
                             
                             $x++;
                             
                         } //$array_sites as $site
                         //var_dump( $data );
                         
-                        $this->dailySearchService->save_site( json_encode( $data ) );
-                        $this->dailySearchService->save_daily( json_encode( $atdata ) );
+                        $this->dailySearchService->save_site( json_encode( $accesstrade_site ) );
+                        $this->dailySearchService->save_daily( json_encode( $accesstrade_data ) );
                     } //$product_infos as $product_info
                 }
                 catch(\Exception $e){

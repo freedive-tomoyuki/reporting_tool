@@ -119,7 +119,7 @@ class RentracksController extends MonthlyCrawlerController
                         /*
                         $crawler　をフィルタリング
                         */
-                        $rtdata = $crawler->each( function( Crawler $node ) use ($selector_this, $selector_before, $product_info)
+                        $rentrack_data = $crawler->each( function( Crawler $node ) use ($selector_this, $selector_before, $product_info)
                         {
                             
                             $data              = array( );
@@ -158,11 +158,11 @@ class RentracksController extends MonthlyCrawlerController
                             return $data;
                             
                         } );
-                        //var_dump( $rtdata );
+                        //var_dump( $rentrack_data );
                         /*
                         サイト抽出　
                         */
-                        $rtsite = array( );
+                        $rentrack_site = array( );
                         
                         //$x = 0; 
                         $y = 1;
@@ -223,22 +223,22 @@ class RentracksController extends MonthlyCrawlerController
                             
                             for ( $i = 1; $active_partner >= $i; $i++ ) {
                                 
-                                $rtsite[ $y ][ 'product' ] = $product_info->id;
+                                $rentrack_site[ $y ][ 'product' ] = $product_info->id;
                                 //1周目
                                 if ( $x == 0 ) {
-                                    $rtsite[ $y ][ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
+                                    $rentrack_site[ $y ][ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
                                 } //$x == 0
                                 else { //2周目
                                     if ( date( 'Y/m/d' ) == date( 'Y/m/01' ) ) {
-                                        $rtsite[ $y ][ 'date' ] = date( 'Y-m-t', strtotime( '-2 month' ) );
+                                        $rentrack_site[ $y ][ 'date' ] = date( 'Y-m-t', strtotime( '-2 month' ) );
                                     } //date( 'Y/m/d' ) == date( 'Y/m/01' )
                                     else {
-                                        $rtsite[ $y ][ 'date' ] = date( 'Y-m-d', strtotime( 'last day of previous month' ) );
+                                        $rentrack_site[ $y ][ 'date' ] = date( 'Y-m-d', strtotime( 'last day of previous month' ) );
                                     }
                                 }
                                 
                                 
-                                //echo $rtsite[$y]['date'];
+                                //echo $rentrack_site[$y]['date'];
                                 $iPlus                  = $i + 1;
                                 //月内の場合は、「承認」先月のものに関しては、「請求済」からデータを取得
                                 $approval_selector      = ( $x == 0 ) ? '#main > table > tbody > tr:nth-child(' . $iPlus . ') > td.c13' : '#main > table > tbody > tr:nth-child(' . $iPlus . ') > td.c14';
@@ -255,18 +255,18 @@ class RentracksController extends MonthlyCrawlerController
                                 foreach ( $selector_for_site as $key => $value ) {
                                     if ( $key == 'site_name' ) {
                                         
-                                        $rtsite[ $y ][ $key ] = trim( $crawler_for_site->filter( $value )->text() );
+                                        $rentrack_site[ $y ][ $key ] = trim( $crawler_for_site->filter( $value )->text() );
                                         
                                     } //$key == 'site_name'
                                     elseif($key == 'approval_price'){
 
-                                        $rtsite[ $y ][ $key ] = $this->monthlySearchService->calc_approval_price(
+                                        $rentrack_site[ $y ][ $key ] = $this->monthlySearchService->calc_approval_price(
                                             trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) ), 5);
                                         
                                     }
                                     else {
                                         
-                                        $rtsite[ $y ][ $key ] = trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) );
+                                        $rentrack_site[ $y ][ $key ] = trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) );
                                     }
                                     
                                 }
@@ -277,8 +277,8 @@ class RentracksController extends MonthlyCrawlerController
                         /*
                         サイトデータ・月次データ保存
                         */
-                        $this->monthlySearchService->save_site( json_encode( $rtsite ) );
-                        $this->monthlySearchService->save_monthly( json_encode( $rtdata ) );
+                        $this->monthlySearchService->save_site( json_encode( $rentrack_site ) );
+                        $this->monthlySearchService->save_monthly( json_encode( $rentrack_data ) );
                         
                         //var_dump($crawler_for_site);
                     } //$product_infos as $product_info

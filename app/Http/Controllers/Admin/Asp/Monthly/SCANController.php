@@ -35,11 +35,11 @@ class SCANController extends MonthlyCrawlerController
         } );
         
         $options = [
-        '--window-size=1920,1080',
-        '--start-maximized',
-        '--headless',
-        '--disable-gpu',
-        '--no-sandbox'
+            '--window-size=1920,1080',
+            '--start-maximized',
+            '--headless',
+            '--disable-gpu',
+            '--no-sandbox'
         ];
         
         $product_id = $this->monthlySearchService->BasetoProduct( 9, $product_base_id );
@@ -60,11 +60,11 @@ class SCANController extends MonthlyCrawlerController
                         */
                         //$crawler = $browser->visit("https://www.nursejinzaibank.com/glp")->crawler();
                         $crawler = $browser->visit( $product_info->asp->login_url )
-                        ->type( $product_info->asp->login_key, $product_info->login_value )
-                        ->type( $product_info->asp->password_key, $product_info->password_value )
-                        ->click( $product_info->asp->login_selector )
-                        ->visit( "https://www.scadnet.com/merchant/report/monthly.php?s=" . $product_info->asp_sponsor_id . "&c_id=" . $product_info->asp_product_id )
-                        ->crawler();
+                                            ->type( $product_info->asp->login_key, $product_info->login_value )
+                                            ->type( $product_info->asp->password_key, $product_info->password_value )
+                                            ->click( $product_info->asp->login_selector )
+                                            ->visit( "https://www.scadnet.com/merchant/report/monthly.php?s=" . $product_info->asp_sponsor_id . "&c_id=" . $product_info->asp_product_id )
+                                            ->crawler();
                         //var_dump( $crawler );
                         /**
                         先月・今月のセレクタ
@@ -78,11 +78,11 @@ class SCANController extends MonthlyCrawlerController
                             $row_before = 4;
                         }
                         $selector_this   = array(
-                             'approval' => '#report_clm > div > div.report_table > table > tbody > tr:nth-child(' . $row_this . ') > td:nth-child(13)',
+                            'approval' => '#report_clm > div > div.report_table > table > tbody > tr:nth-child(' . $row_this . ') > td:nth-child(13)',
                             'approval_price' => '#report_clm > div > div.report_table > table > tbody > tr:nth-child(' . $row_this . ') > td:nth-child(14)' 
                         );
                         $selector_before = array(
-                             'approval' => '#report_clm > div > div.report_table > table > tbody > tr:nth-child(' . $row_before . ') > td:nth-child(13)',
+                            'approval' => '#report_clm > div > div.report_table > table > tbody > tr:nth-child(' . $row_before . ') > td:nth-child(13)',
                             'approval_price' => '#report_clm > div > div.report_table > table > tbody > tr:nth-child(' . $row_before . ') > td:nth-child(14)' 
                         );
                         /**
@@ -202,7 +202,7 @@ class SCANController extends MonthlyCrawlerController
                                 
                                 $selector_for_site = array(
                                     #reportTable > tbody > tr:nth-child(6) > td.maxw150
-                                     'media_id' => '#report_clm > div > div.report_table > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(2)',
+                                    'media_id' => '#report_clm > div > div.report_table > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(2)',
                                     'site_name' => '#report_clm > div > div.report_table > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(4)',
                                     'approval' => '#report_clm > div > div.report_table > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(12)',
                                     'approval_price' => '#report_clm > div > div.report_table > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(13)' 

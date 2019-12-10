@@ -97,7 +97,7 @@ class AfbController extends MonthlyCrawlerController
                             'approval_price' => '#reportTable > tbody > tr:nth-child(1) > td:nth-child(13) > p' 
                         );
                         //セレクターからフィルタリング
-                        $afbdata = $crawler->each( function( Crawler $node ) use ($selector_this, $selector_before, $product_info)
+                        $afb_data = $crawler->each( function( Crawler $node ) use ($selector_this, $selector_before, $product_info)
                         {
                             
                             $data              = array( );
@@ -135,7 +135,7 @@ class AfbController extends MonthlyCrawlerController
                         
                         //サイト取得用クロール
                         $y       = 0;
-                        $afbsite = array( );
+                        $afb_site = array( );
                         
                         // x = 0:今月
                         // x = 1:前月
@@ -181,20 +181,20 @@ class AfbController extends MonthlyCrawlerController
                             
                             //サイト一覧　１ページ分のクロール
                             while ( $crawler_for_site->filter( '#reportTable > tbody > tr:nth-child(' . $i . ') > td.maxw150' )->count() > 0 ) {
-                                $afbsite[ $y ][ 'product' ] = $product_info->id;
+                                $afb_site[ $y ][ 'product' ] = $product_info->id;
                                 
                                 if ( $x == 0 ) {
                                     
-                                    $afbsite[ $y ][ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
+                                    $afb_site[ $y ][ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
                                     
                                 } //$x == 0
                                 else {
                                     
                                     if ( date( 'Y/m/d' ) == date( 'Y/m/01' ) ) {
-                                        $afbsite[ $y ][ 'date' ] = date( 'Y-m-t', strtotime( '-2 month' ) );
+                                        $afb_site[ $y ][ 'date' ] = date( 'Y-m-t', strtotime( '-2 month' ) );
                                     } //date( 'Y/m/d' ) == date( 'Y/m/01' )
                                     else {
-                                        $afbsite[ $y ][ 'date' ] = date( 'Y-m-d', strtotime( 'last day of previous month' ) );
+                                        $afb_site[ $y ][ 'date' ] = date( 'Y-m-d', strtotime( 'last day of previous month' ) );
                                     }
                                     
                                 }
@@ -213,24 +213,24 @@ class AfbController extends MonthlyCrawlerController
                                         $media_id = array( );
                                         $sid      = trim( $crawler_for_site->filter( $value )->attr( 'title' ) );
                                         preg_match( '/SID：(\d+)/', $sid, $media_id );
-                                        $afbsite[ $y ][ $key ] = $media_id[ 1 ];
+                                        $afb_site[ $y ][ $key ] = $media_id[ 1 ];
                                         
                                     } //$key == 'media_id'
                                     elseif ( $key == 'site_name' ) {
                                         
-                                        $afbsite[ $y ][ $key ] = trim( $crawler_for_site->filter( $value )->text() );
+                                        $afb_site[ $y ][ $key ] = trim( $crawler_for_site->filter( $value )->text() );
                                         
                                     } //$key == 'site_name'
                                     elseif($key == 'approval_price'){
 
-                                        $afbsite[ $y ][ $key ] = 
+                                        $afb_site[ $y ][ $key ] = 
                                             $this->monthlySearchService->calc_approval_price(
                                                 trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) )
                                             , 4);
                                     }
                                     else {
                                         
-                                        $afbsite[ $y ][ $key ] = trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) );
+                                        $afb_site[ $y ][ $key ] = trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) );
                                         
                                     }
                                     
@@ -240,8 +240,8 @@ class AfbController extends MonthlyCrawlerController
                             } // endfor
                         } //$x = 0; $x < 2; $x++
                         
-                        $this->monthlySearchService->save_monthly( json_encode( $afbdata ) );
-                        $this->monthlySearchService->save_site( json_encode( $afbsite ) );
+                        $this->monthlySearchService->save_monthly( json_encode( $afb_data ) );
+                        $this->monthlySearchService->save_site( json_encode( $afb_site ) );
                         
                     } //$product_infos as $product_info
             }

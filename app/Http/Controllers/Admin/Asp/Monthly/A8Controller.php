@@ -71,7 +71,7 @@ class A8Controller extends MonthlyCrawlerController
                             'approval_price' => '#element > tbody > tr:nth-child(1) > td:nth-child(13)' 
                         );
                         
-                        $a8data = $crawler->each( function( Crawler $node ) use ($selector_this, $selector_before, $product_info)
+                        $a8_data = $crawler->each( function( Crawler $node ) use ($selector_this, $selector_before, $product_info)
                         {
                             $data              = array( );
                             $data[ 'asp' ]     = $product_info->asp_id;
@@ -110,9 +110,9 @@ class A8Controller extends MonthlyCrawlerController
                             
                         } );
                         
-                        //var_dump( $a8data );
+                        //var_dump( $a8_data );
                         
-                        $this->monthlySearchService->save_monthly( json_encode( $a8data ) );
+                        $this->monthlySearchService->save_monthly( json_encode( $a8_data ) );
                     } //$product_infos as $product_info
             }
             catch(\Exception $e){

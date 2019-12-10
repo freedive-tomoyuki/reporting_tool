@@ -155,7 +155,7 @@ class TrafficGateController extends DailyCrawlerController
                                     'imp' => '#container-big2 > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(8)',
                                     'click' => '#container-big2 > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(9)',
                                     'cv' => '#container-big2 > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(10)',
-                                    'price' => '#container-big2 > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(11)' 
+                                    //'price' => '#container-big2 > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(11)' 
                                 );
                                 
                                 foreach ( $selector_for_site as $key => $value ) {
@@ -174,17 +174,17 @@ class TrafficGateController extends DailyCrawlerController
                                 $unit_price = $product_info->price;
                                 $trafficgate_site[ $active_count ][ 'price' ] = $unit_price * $trafficgate_site[ $active_count ][ 'cv' ];
 
-                                $calData                                     = json_decode( 
+                                $calculated                                     = json_decode( 
                                                                                 json_encode( 
                                                                                     json_decode( 
                                                                                         $this->dailySearchService
                                                                                             ->cpa( $trafficgate_site[ $active_count ][ 'cv' ], $trafficgate_site[ $active_count ][ 'price' ], 7 ) 
                                                                                     ) 
                                                                                 ), True );
-                                $trafficgate_site[ $active_count ][ 'cpa' ]  = $calData[ 'cpa' ]; //CPA
-                                $trafficgate_site[ $active_count ][ 'cost' ] = $calData[ 'cost' ];
+                                $trafficgate_site[ $active_count ][ 'cpa' ]  = $calculated[ 'cpa' ]; //CPA
+                                $trafficgate_site[ $active_count ][ 'cost' ] = $calculated[ 'cost' ];
                                 $trafficgate_site[ $active_count ][ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
-                                var_dump( $trafficgate_site[ $active_count ] );
+                                // var_dump( $trafficgate_site[ $active_count ] );
                                 $i++;
                                 $active_count++;
                             } //行単位
@@ -197,9 +197,15 @@ class TrafficGateController extends DailyCrawlerController
                         $trafficgate_data[ 0 ][ 'partnership' ] = $trafficgate_data2[ 0 ][ "partnership" ];
                         $trafficgate_data[ 0 ][ 'active' ]      = $active_count;
                         
-                        $calData                         = json_decode( json_encode( json_decode( $this->dailySearchService->cpa( $trafficgate_data[ 0 ][ 'cv' ], $trafficgate_data[ 0 ][ 'price' ], 7 ) ) ), True );
-                        $trafficgate_data[ 0 ][ 'cpa' ]  = $calData[ 'cpa' ]; //CPA
-                        $trafficgate_data[ 0 ][ 'cost' ] = $calData[ 'cost' ];
+                        $calculated                         = json_decode( 
+                                                                json_encode( 
+                                                                    json_decode( 
+                                                                        $this->dailySearchService
+                                                                            ->cpa( $trafficgate_data[ 0 ][ 'cv' ], $trafficgate_data[ 0 ][ 'price' ], 7 ) 
+                                                                    ) 
+                                                                ), True );
+                        $trafficgate_data[ 0 ][ 'cpa' ]  = $calculated[ 'cpa' ]; //CPA
+                        $trafficgate_data[ 0 ][ 'cost' ] = $calculated[ 'cost' ];
                         
                         
                         //サイトデータ・日次データ保存

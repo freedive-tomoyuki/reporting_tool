@@ -186,7 +186,7 @@ class AffiTownController extends MonthlyCrawlerController
                                 
                                 $selector_for_site = array(
                                     
-                                     'media_id' => '#all_display > table > tbody > tr:nth-child(' . $i . ') > td.underline',
+                                    'media_id' => '#all_display > table > tbody > tr:nth-child(' . $i . ') > td.underline',
                                     'site_name' => '#all_display > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(2) > a',
                                     'approval' => '#all_display > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(7) > p',
                                     'approval_price' => '#all_display > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(8) > p' 

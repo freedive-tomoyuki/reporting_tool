@@ -185,15 +185,15 @@ class SCANController extends DailyCrawlerController
                             $unit_price = $product_info->price;
                             $scan_site[ $y ][ 'price' ] = $unit_price * $scan_site[ $y ][ 'cv' ];
 
-                            $calData                   = json_decode( 
+                            $calculated                   = json_decode( 
                                                             json_encode( 
                                                                 json_decode( 
                                                                     $this->dailySearchService
                                                                         ->cpa( $scan_site[ $y ][ 'cv' ], $scan_site[ $y ][ 'price' ], 7 ) 
                                                                 ) 
                                                             ), True );
-                            $scan_site[ $y ][ 'cpa' ]  = $calData[ 'cpa' ]; //CPA
-                            $scan_site[ $y ][ 'cost' ] = $calData[ 'cost' ];
+                            $scan_site[ $y ][ 'cpa' ]  = $calculated[ 'cpa' ]; //CPA
+                            $scan_site[ $y ][ 'cost' ] = $calculated[ 'cost' ];
                             $scan_site[ $y ][ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
                             
                             $i++;
@@ -209,9 +209,14 @@ class SCANController extends DailyCrawlerController
                         
                         //$scan_data[ 0 ][ 'price' ] = $scan_data2[ 0 ][ 'price' ];
                         
-                        $calData                  = json_decode( json_encode( json_decode( $this->dailySearchService->cpa( $scan_data[ 0 ][ 'cv' ], $scan_data2[ 0 ][ 'price' ], 7 ) ) ), True );
-                        $scan_data[ 0 ][ 'cpa' ]  = $calData[ 'cpa' ]; //CPA
-                        $scan_data[ 0 ][ 'cost' ] = $calData[ 'cost' ];
+                        $calculated                  = json_decode( 
+                                                            json_encode( 
+                                                                json_decode( 
+                                                                    $this->dailySearchService
+                                                                                    ->cpa( $scan_data[ 0 ][ 'cv' ], $scan_data2[ 0 ][ 'price' ], 7 ) 
+                                                                ) ), True );
+                        $scan_data[ 0 ][ 'cpa' ]  = $calculated[ 'cpa' ]; //CPA
+                        $scan_data[ 0 ][ 'cost' ] = $calculated[ 'cost' ];
                         
                         /*
                         サイトデータ・日次データ保存

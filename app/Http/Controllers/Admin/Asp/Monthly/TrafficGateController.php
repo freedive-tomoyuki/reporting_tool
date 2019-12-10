@@ -51,14 +51,14 @@ class TrafficGateController extends MonthlyCrawlerController
                     foreach ( $product_infos as $product_info ) {
                         
                         $crawler = $browser->visit( $product_info->asp->login_url )
-                        ->type( $product_info->asp->login_key, $product_info->login_value )
-                        ->type( $product_info->asp->password_key, $product_info->password_value )
-                        ->click( $product_info->asp->login_selector )
-                        ->visit( "https://www.trafficgate.net/merchant/sales/" )->crawler();
+                                            ->type( $product_info->asp->login_key, $product_info->login_value )
+                                            ->type( $product_info->asp->password_key, $product_info->password_value )
+                                            ->click( $product_info->asp->login_selector )
+                                            ->visit( "https://www.trafficgate.net/merchant/sales/" )->crawler();
                         //echo $crawler->html();
                         
                         /**
-                        先月・今月のセレクタ
+                        * 先月・今月のセレクタ
                         */
                         if ( date( 'Y/m/d' ) == date( 'Y/m/01' ) ) {
                             $row_this   = 2;
@@ -69,12 +69,12 @@ class TrafficGateController extends MonthlyCrawlerController
                             $row_before = 4;
                         }
                         $selector_this = array(
-                             'approval' => '#container > table:nth-child(4) > tbody > tr:nth-child(3) > td:nth-child(' . $row_this . ')',
+                            'approval' => '#container > table:nth-child(4) > tbody > tr:nth-child(3) > td:nth-child(' . $row_this . ')',
                             'approval_price' => '#container > table:nth-child(4) > tbody > tr:nth-child(4) > td:nth-child(' . $row_this . ')' 
                         );
                         
                         $selector_before = array(
-                             'approval' => '#container > table:nth-child(4) > tbody > tr:nth-child(3) > td:nth-child(' . $row_before . ')',
+                            'approval' => '#container > table:nth-child(4) > tbody > tr:nth-child(3) > td:nth-child(' . $row_before . ')',
                             'approval_price' => '#container > table:nth-child(4) > tbody > tr:nth-child(4) > td:nth-child(' . $row_before . ')' 
                         );
                         
@@ -135,8 +135,8 @@ class TrafficGateController extends MonthlyCrawlerController
                         $active_count = 0;
                         
                         /**
-                        $x = 0：今月
-                        $x = 1：先月
+                        *    $x = 0：今月
+                        *    $x = 1：先月
                         */
                         for ( $x = 0; $x < 2; $x++ ) {
                             $page = 0;
@@ -207,7 +207,7 @@ class TrafficGateController extends MonthlyCrawlerController
                                     $approvalprice_selector = '#container-big2 > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(15)';
                                     
                                     $selector_for_site = array(
-                                         'media_id' => '#container-big2 > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(3)',
+                                        'media_id' => '#container-big2 > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(3)',
                                         'site_name' => '#container-big2 > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(4)',
                                         'approval' => $approval_selector,
                                         'approval_price' => $approvalprice_selector 
@@ -224,7 +224,6 @@ class TrafficGateController extends MonthlyCrawlerController
 
                                             $trafficgate_site[ $active_count ][ $key ] = $this->monthlySearchService->calc_approval_price(
                                                     trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) ) , 8);
-                                                
                                         }
                                         else {
                                             

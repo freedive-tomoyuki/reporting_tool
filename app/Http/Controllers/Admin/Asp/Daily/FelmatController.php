@@ -239,7 +239,7 @@ class FelmatController extends DailyCrawlerController
                                     'imp' => '#report > div > table > tbody > tr:nth-child(' . $x . ') > td:nth-child(2)',
                                     'click' => '#report > div > table > tbody > tr:nth-child(' . $x . ') > td:nth-child(3)',
                                     'cv' => '#report > div > table > tbody > tr:nth-child(' . $x . ') > td:nth-child(5)',
-                                    'price' => '#report > div > table > tbody > tr:nth-child(' . $x . ') > td:nth-child(6)'
+                                    //'price' => '#report > div > table > tbody > tr:nth-child(' . $x . ') > td:nth-child(6)'
                                 );
                                 
                                 foreach ($selector_for_site as $key => $value) {
@@ -256,7 +256,7 @@ class FelmatController extends DailyCrawlerController
                                 $unit_price = $product_info->price;
                                 $felmat_site[ $count ][ 'price' ] = $unit_price * $felmat_site[ $count ][ 'cv' ];
 
-                                $calData                     = json_decode(
+                                $calculated                     = json_decode(
                                                                     json_encode(
                                                                         json_decode(
                                                                             $this->dailySearchService
@@ -264,8 +264,8 @@ class FelmatController extends DailyCrawlerController
                                                                         )
                                                                     ), 
                                                                 True);
-                                $felmat_site[$count]['cpa']  = $calData['cpa']; //CPA
-                                $felmat_site[$count]['cost'] = $calData['cost'];
+                                $felmat_site[$count]['cpa']  = $calculated['cpa']; //CPA
+                                $felmat_site[$count]['cost'] = $calculated['cost'];
                                 $felmat_site[$count]['date'] = date('Y-m-d', strtotime('-1 day'));
                                 $count++;
                                 
@@ -280,9 +280,9 @@ class FelmatController extends DailyCrawlerController
                         $felmat_data[0]['active']      = $felmat_data2[0]['active'];
                         $felmat_data[0]['partnership'] = $felmat_data3[0]['partnership'];
                         
-                        $calData                = json_decode(json_encode(json_decode($this->dailySearchService->cpa($felmat_data[0]['cv'], $felmat_data[0]['price'], 5))), True);
-                        $felmat_data[0]['cpa']  = $calData['cpa']; //CPA
-                        $felmat_data[0]['cost'] = $calData['cost'];
+                        $calculated                = json_decode(json_encode(json_decode($this->dailySearchService->cpa($felmat_data[0]['cv'], $felmat_data[0]['price'], 5))), True);
+                        $felmat_data[0]['cpa']  = $calculated['cpa']; //CPA
+                        $felmat_data[0]['cost'] = $calculated['cost'];
 
                         //echo "<pre>";
                         //var_dump($felmat_data);

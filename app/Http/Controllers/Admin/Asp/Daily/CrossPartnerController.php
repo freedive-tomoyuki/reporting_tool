@@ -203,13 +203,13 @@ class CrossPartnerController extends DailyCrawlerController
                                         $unit_price = $product_info->price;
                                         $crosspartner_site[ $count ][ 'price' ] = $unit_price * $crosspartner_site[ $count ][ 'cv' ];
 
-                                        $calData = json_decode(
+                                        $calculated = json_decode(
                                                     json_encode(
                                                       json_decode($this->dailySearchService->cpa($crosspartner_site[$count]['cv'] ,$crosspartner_site[$count]['price'] , 5))
                                                     ), True
                                                   );
-                                        $crosspartner_site[$count]['cpa']= $calData['cpa']; //CPA
-                                        $crosspartner_site[$count]['cost']= $calData['cost'];
+                                        $crosspartner_site[$count]['cpa']= $calculated['cpa']; //CPA
+                                        $crosspartner_site[$count]['cost']= $calculated['cost'];
                                         $crosspartner_site[$count]['date'] = date('Y-m-d', strtotime('-1 day'));
                                         
                                         $count++;
@@ -222,11 +222,11 @@ class CrossPartnerController extends DailyCrawlerController
                         $crosspartner_data1[0]['active'] = $iPlus ;
                         $crosspartner_data1[0]['partnership'] = $crosspartner_data2[0]['partnership'];
 
-                        $calData = json_decode(
+                        $calculated = json_decode(
                                           json_encode(json_decode($this->dailySearchService->cpa($crosspartner_data1[0]['cv'] ,$crosspartner_data1[0]['price'] , 5))), True
                                     );
-                        $crosspartner_data1[0]['cpa']= $calData['cpa']; //CPA
-                        $crosspartner_data1[0]['cost']= $calData['cost'];
+                        $crosspartner_data1[0]['cpa']= $calculated['cpa']; //CPA
+                        $crosspartner_data1[0]['cost']= $calculated['cost'];
 
 
                         /*

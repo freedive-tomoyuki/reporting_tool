@@ -87,7 +87,7 @@ class ValuecommerceController extends DailyCrawlerController
                         
                         
                         
-                        $vcdata = $crawler->each( function( Crawler $node ) use ($selector_crawler, $product_info)
+                        $valuecommerce_data = $crawler->each( function( Crawler $node ) use ($selector_crawler, $product_info)
                         {
                             $data = array( );
                             //echo $node->html();
@@ -99,13 +99,19 @@ class ValuecommerceController extends DailyCrawlerController
                             //$data['cpa']= $this->cpa($data['cv'] ,$data['price'] , 1);
 
                             //CPAとASPフィー込みの価格を計算
-                            $calData = json_decode( json_encode( json_decode( $this->dailySearchService->cpa( $data[ 'cv' ], $data[ 'price' ], 3 ) ) ), True );
+                            $calculated = json_decode( 
+                                        json_encode( 
+                                            json_decode( 
+                                                $this->dailySearchService
+                                                    ->cpa( $data[ 'cv' ], $data[ 'price' ], 3 ) 
+                                            ) 
+                                        ), True );
                             
                             $unit_price = $product_info->price;
                             $data[ 'price' ] = $data[ 'cv' ] * $unit_price;
 
-                            $data[ 'cpa' ]     = $calData[ 'cpa' ]; //CPA
-                            $data[ 'cost' ]    = $calData[ 'cost' ]; //獲得単価
+                            $data[ 'cpa' ]     = $calculated[ 'cpa' ]; //CPA
+                            $data[ 'cost' ]    = $calculated[ 'cost' ]; //獲得単価
                             $data[ 'asp' ]     = $product_info->asp_id;
                             $data[ 'product' ] = $product_info->id;
                             $data[ 'date' ]    = date( 'Y-m-d', strtotime( '-1 day' ) );
@@ -122,7 +128,7 @@ class ValuecommerceController extends DailyCrawlerController
                         $count_page     = ( $active[ 1 ] > 40 ) ? ceil( $active[ 1 ] / 40 ) : 1;
                         
                         //アクティブ数　格納
-                        $vcdata[ 0 ][ 'active' ] = $active[ 1 ]; //trim(preg_replace('/[^0-9]/', '', $active_data[0]));
+                        $valuecommerce_data[ 0 ][ 'active' ] = $active[ 1 ]; //trim(preg_replace('/[^0-9]/', '', $active_data[0]));
                         
                         //echo "active件数→".$active[1]."←active件数";
                         
@@ -141,7 +147,7 @@ class ValuecommerceController extends DailyCrawlerController
                                 
                                 $count = ( $page * 40 ) + $i;
                                 
-                                $data[ $count ][ 'product' ] = $product_info->id;
+                                $valuecommerce_site[ $count ][ 'product' ] = $product_info->id;
                                 
                                 if ( $crawler_for_site->filter( '#all > div.tablerline > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(2)' )->count() != 0 ) {
                                     //echo $target_page."ページの i＞＞".$i."番目</br>" ;
@@ -159,26 +165,32 @@ class ValuecommerceController extends DailyCrawlerController
                                         
                                         if ( $key == 'site_name' ) {
                                             
-                                            $data[ $count ][ $key ] = trim( $crawler_for_site->filter( $value )->text() );
+                                            $valuecommerce_site[ $count ][ $key ] = trim( $crawler_for_site->filter( $value )->text() );
                                             
                                         }
                                         else {
                                             
-                                            $data[ $count ][ $key ] = trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) );
+                                            $valuecommerce_site[ $count ][ $key ] = trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) );
                                             
                                         }
                                     }
                                     
                                     $unit_price = $product_info->price;
-                                    $data[ $count ][ 'price' ] = $unit_price * $data[ $count ][ 'cv' ];
+                                    $valuecommerce_site[ $count ][ 'price' ] = $unit_price * $valuecommerce_site[ $count ][ 'cv' ];
 
                                     //CPAとASPフィーの考慮した数値を算出
-                                    $calData = json_decode( json_encode( json_decode( $this->dailySearchService->cpa( $data[ $count ][ 'cv' ], $data[ $count ][ 'price' ], 3 ) ) ), True );
+                                    $calculated = json_decode( 
+                                                    json_encode( 
+                                                        json_decode( 
+                                                            $this->dailySearchService
+                                                                ->cpa( $valuecommerce_site[ $count ][ 'cv' ], $valuecommerce_site[ $count ][ 'price' ], 3 ) 
+                                                        ) 
+                                                    ), True );
                                     
                                     //各サイトのデータ保存
-                                    $data[ $count ][ 'cpa' ]  = $calData[ 'cpa' ]; //CPA
-                                    $data[ $count ][ 'cost' ] = $calData[ 'cost' ]; //獲得単価
-                                    $data[ $count ][ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
+                                    $valuecommerce_site[ $count ][ 'cpa' ]  = $calculated[ 'cpa' ]; //CPA
+                                    $valuecommerce_site[ $count ][ 'cost' ] = $calculated[ 'cost' ]; //獲得単価
+                                    $valuecommerce_site[ $count ][ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
                                     
                                 }
 
@@ -188,8 +200,8 @@ class ValuecommerceController extends DailyCrawlerController
 
                         //クロールデータの保存
                         //$client->quit();
-                        $this->dailySearchService->save_daily( json_encode( $vcdata ) );
-                        $this->dailySearchService->save_site( json_encode( $data ) );
+                        $this->dailySearchService->save_daily( json_encode( $valuecommerce_data ) );
+                        $this->dailySearchService->save_site( json_encode( $valuecommerce_site ) );
                         
                     } 
             }

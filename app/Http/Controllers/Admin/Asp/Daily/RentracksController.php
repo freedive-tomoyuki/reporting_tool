@@ -122,7 +122,7 @@ class RentracksController extends DailyCrawlerController
                         /*
                         $crawler　をフィルタリング
                         */
-                        $rtdata = $crawler->each( function( Crawler $node ) use ($selector1, $product_info)
+                        $rentracks_data = $crawler->each( function( Crawler $node ) use ($selector1, $product_info)
                         {
                             
                             $data              = array( );
@@ -141,7 +141,7 @@ class RentracksController extends DailyCrawlerController
                         /*
                         $crawler2　をフィルタリング
                         */
-                        $rtdata2 = $crawler2->each( function( Crawler $node ) use ($selector2, $product_info)
+                        $rentracks_data2 = $crawler2->each( function( Crawler $node ) use ($selector2, $product_info)
                         {
                             
                             $data = array( );
@@ -156,7 +156,7 @@ class RentracksController extends DailyCrawlerController
                         /*
                         $crawler3　をフィルタリング
                         */
-                        $rtdata3 = $crawler3->each( function( Crawler $node ) use ($selector3, $product_info)
+                        $rentracks_data3 = $crawler3->each( function( Crawler $node ) use ($selector3, $product_info)
                         {
                             
                             $data = array( );
@@ -168,7 +168,7 @@ class RentracksController extends DailyCrawlerController
                             return $data;
                             
                         } );
-                        //var_dump($rtdata3);
+                        //var_dump($rentracks_data3);
                         /*
                         サイト抽出　
                         */
@@ -181,7 +181,7 @@ class RentracksController extends DailyCrawlerController
                         //echo $active_partner;
                         
                         for ( $i = 1; $active_partner >= $i; $i++ ) {
-                            $rtsite[ $i ][ 'product' ] = $product_info->id;
+                            $rentracks_site[ $i ][ 'product' ] = $product_info->id;
                             
                             $iPlus = $i + 1;
                             //echo 'iPlus' . $iPlus;
@@ -192,58 +192,58 @@ class RentracksController extends DailyCrawlerController
                                 'imp' => '#main > table > tbody > tr:nth-child(' . $iPlus . ') > td.c05',
                                 'click' => '#main > table > tbody > tr:nth-child(' . $iPlus . ') > td.c06',
                                 'cv' => '#main > table > tbody > tr:nth-child(' . $iPlus . ') > td.c10',
-                                'price' => '#main > table > tbody > tr:nth-child(' . $iPlus . ') > td.c15' 
+                                //'price' => '#main > table > tbody > tr:nth-child(' . $iPlus . ') > td.c15' 
                             );
                             
                             foreach ( $selector_for_site as $key => $value ) {
                                 if ( $key == 'site_name' ) {
                                     
-                                    $rtsite[ $i ][ $key ] = trim( $crawler_for_site->filter( $value )->text() );
+                                    $rentracks_site[ $i ][ $key ] = trim( $crawler_for_site->filter( $value )->text() );
                                     
                                 } //$key == 'site_name'
                                 else {
                                     
-                                    $rtsite[ $i ][ $key ] = trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) );
+                                    $rentracks_site[ $i ][ $key ] = trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) );
                                 }
                                 
                             }
                             $unit_price = $product_info->price;
-                            $rtsite[ $i ][ 'price' ] = $unit_price * $rtsite[ $i ][ 'cv' ];
+                            $rentracks_site[ $i ][ 'price' ] = $unit_price * $rentracks_site[ $i ][ 'cv' ];
 
-                            $calData                = json_decode( 
+                            $calculated                = json_decode( 
                                                         json_encode( 
                                                             json_decode( 
                                                                 $this->dailySearchService
-                                                                    ->cpa( $rtsite[ $i ][ 'cv' ], $rtsite[ $i ][ 'price' ], 5 ) 
+                                                                    ->cpa( $rentracks_site[ $i ][ 'cv' ], $rentracks_site[ $i ][ 'price' ], 5 ) 
                                                             ) 
                                                         ), True );
-                            $rtsite[ $i ][ 'cpa' ]  = $calData[ 'cpa' ]; //CPA
-                            $rtsite[ $i ][ 'cost' ] = $calData[ 'cost' ];
-                            $rtsite[ $i ][ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
+                            $rentracks_site[ $i ][ 'cpa' ]  = $calculated[ 'cpa' ]; //CPA
+                            $rentracks_site[ $i ][ 'cost' ] = $calculated[ 'cost' ];
+                            $rentracks_site[ $i ][ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
                         }
                         
-                        //$rtdata[ 0 ][ 'price' ] = trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( '#main > table > tbody > tr.total > td:nth-child(15)' )->text() ) );
+                        //$rentracks_data[ 0 ][ 'price' ] = trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( '#main > table > tbody > tr.total > td:nth-child(15)' )->text() ) );
                         $unit_price = $product_info->price;
-                        $rtdata[ 0 ][ 'price' ] = $rtdata[ 0 ][ 'cv' ] * $unit_price;
+                        $rentracks_data[ 0 ][ 'price' ] = $rentracks_data[ 0 ][ 'cv' ] * $unit_price;
 
-                        $rtdata[ 0 ][ 'partnership' ] = $rtdata2[ 0 ][ 'partnership' ];
-                        $rtdata[ 0 ][ 'active' ]      = $rtdata3[ 0 ][ 'active' ];
+                        $rentracks_data[ 0 ][ 'partnership' ] = $rentracks_data2[ 0 ][ 'partnership' ];
+                        $rentracks_data[ 0 ][ 'active' ]      = $rentracks_data3[ 0 ][ 'active' ];
                         
-                        $calData               = json_decode( json_encode( json_decode( $this->dailySearchService->cpa( $rtdata[ 0 ][ 'cv' ], $rtdata[ 0 ][ 'price' ], 5 ) ) ), True );
-                        $rtdata[ 0 ][ 'cpa' ]  = $calData[ 'cpa' ]; //CPA
-                        $rtdata[ 0 ][ 'cost' ] = $calData[ 'cost' ];
+                        $calculated               = json_decode( json_encode( json_decode( $this->dailySearchService->cpa( $rentracks_data[ 0 ][ 'cv' ], $rentracks_data[ 0 ][ 'price' ], 5 ) ) ), True );
+                        $rentracks_data[ 0 ][ 'cpa' ]  = $calculated[ 'cpa' ]; //CPA
+                        $rentracks_data[ 0 ][ 'cost' ] = $calculated[ 'cost' ];
                         
 
                         
                         //echo "<pre>";
-                        //var_dump( $rtdata );
-                        //var_dump( $rtsite );
+                        //var_dump( $rentracks_data );
+                        //var_dump( $rentracks_site );
                         //echo "</pre>";
                         /*
                         サイトデータ・日次データ保存
                         */
-                        $this->dailySearchService->save_site( json_encode( $rtsite ) );
-                        $this->dailySearchService->save_daily( json_encode( $rtdata ) );
+                        $this->dailySearchService->save_site( json_encode( $rentracks_site ) );
+                        $this->dailySearchService->save_daily( json_encode( $rentracks_data ) );
                         
                         //var_dump($crawler_for_site);
                     } //$product_infos as $product_info

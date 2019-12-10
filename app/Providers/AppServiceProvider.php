@@ -16,7 +16,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->bind('App\Services\CalculationService');
         $this->app->bind('App\Services\DailySearchService');
         $this->app->bind('App\Services\MonthlySearchService');
     }
