@@ -253,7 +253,17 @@ class FelmatController extends DailyCrawlerController
                                     }
                                     
                                 }
-                                $calData                     = json_decode(json_encode(json_decode($this->dailySearchService->cpa($felmat_site[$count]['cv'], $felmat_site[$count]['price'], 5))), True);
+                                $unit_price = $product_info->price;
+                                $felmat_site[ $count ][ 'price' ] = $unit_price * $felmat_site[ $count ][ 'cv' ];
+
+                                $calData                     = json_decode(
+                                                                    json_encode(
+                                                                        json_decode(
+                                                                            $this->dailySearchService
+                                                                                ->cpa($felmat_site[$count]['cv'], $felmat_site[$count]['price'], 5)
+                                                                        )
+                                                                    ), 
+                                                                True);
                                 $felmat_site[$count]['cpa']  = $calData['cpa']; //CPA
                                 $felmat_site[$count]['cost'] = $calData['cost'];
                                 $felmat_site[$count]['date'] = date('Y-m-d', strtotime('-1 day'));
@@ -266,15 +276,13 @@ class FelmatController extends DailyCrawlerController
                         //$felmat_data[0]['price'] = trim(preg_replace('/[^0-9]/', '', $crawler_for_site->filter('#main > table > tbody > tr.total > td:nth-child(15)')->text()));
                         $unit_price = $product_info->price;
                         $felmat_data[ 0 ][ 'price' ] = $felmat_data[ 0 ][ 'cv' ] * $unit_price;
-                                                
+
                         $felmat_data[0]['active']      = $felmat_data2[0]['active'];
                         $felmat_data[0]['partnership'] = $felmat_data3[0]['partnership'];
                         
                         $calData                = json_decode(json_encode(json_decode($this->dailySearchService->cpa($felmat_data[0]['cv'], $felmat_data[0]['price'], 5))), True);
                         $felmat_data[0]['cpa']  = $calData['cpa']; //CPA
                         $felmat_data[0]['cost'] = $calData['cost'];
-
-
 
                         //echo "<pre>";
                         //var_dump($felmat_data);

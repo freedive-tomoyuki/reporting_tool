@@ -169,8 +169,18 @@ class TrafficGateController extends DailyCrawlerController
                                         $trafficgate_site[ $active_count ][ $key ] = trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) );
                                     }
                                     
-                                } //$selector_for_site as $key => $value
-                                $calData                                     = json_decode( json_encode( json_decode( $this->dailySearchService->cpa( $trafficgate_site[ $active_count ][ 'cv' ], $trafficgate_site[ $active_count ][ 'price' ], 7 ) ) ), True );
+                                }
+                                
+                                $unit_price = $product_info->price;
+                                $trafficgate_site[ $active_count ][ 'price' ] = $unit_price * $trafficgate_site[ $active_count ][ 'cv' ];
+
+                                $calData                                     = json_decode( 
+                                                                                json_encode( 
+                                                                                    json_decode( 
+                                                                                        $this->dailySearchService
+                                                                                            ->cpa( $trafficgate_site[ $active_count ][ 'cv' ], $trafficgate_site[ $active_count ][ 'price' ], 7 ) 
+                                                                                    ) 
+                                                                                ), True );
                                 $trafficgate_site[ $active_count ][ 'cpa' ]  = $calData[ 'cpa' ]; //CPA
                                 $trafficgate_site[ $active_count ][ 'cost' ] = $calData[ 'cost' ];
                                 $trafficgate_site[ $active_count ][ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );

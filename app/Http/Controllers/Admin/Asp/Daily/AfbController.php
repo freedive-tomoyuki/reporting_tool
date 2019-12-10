@@ -182,6 +182,9 @@ class AfbController extends DailyCrawlerController
                         } );
                         
                         $count_data = $active[ 0 ];
+                        $afbdata[ 0 ][ 'active' ]      = $count_data;
+                        $afbdata[ 0 ][ 'partnership' ] = $partnership[ 0 ];
+
                         $afbsite    = array( );
                         //echo $count_data;
                         
@@ -221,18 +224,18 @@ class AfbController extends DailyCrawlerController
                                     
                                 }
                                 
-                            } //$selector_for_site as $key => $value
+                            }
+                            
+                            $unit_price = $product_info->price;
+                            $afbsite[ $i ][ 'price' ] = $unit_price * $afbsite[ $i ][ 'cv' ];
+
                             $calData                 = json_decode( json_encode( json_decode( $this->dailySearchService->cpa( $afbsite[ $i ][ 'cv' ], $afbsite[ $i ][ 'price' ], 4 ) ) ), True );
                             $afbsite[ $i ][ 'cpa' ]  = $calData[ 'cpa' ]; //CPA
                             $afbsite[ $i ][ 'cost' ] = $calData[ 'cost' ]; //獲得単価
                             
                             $afbsite[ $i ][ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
-                        } //$i = 1; $count_data >= $i; $i++
-
-                        //var_dump($afbsite);
-
-                        $afbdata[ 0 ][ 'active' ]      = $active[ 0 ];
-                        $afbdata[ 0 ][ 'partnership' ] = $partnership[ 0 ];
+                        }
+                        
                         
                         $this->dailySearchService->save_daily( json_encode( $afbdata ) );
                         $this->dailySearchService->save_site( json_encode( $afbsite ) );

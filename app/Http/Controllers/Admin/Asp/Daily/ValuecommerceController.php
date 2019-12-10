@@ -152,7 +152,7 @@ class ValuecommerceController extends DailyCrawlerController
                                         'imp' => '#all > div.tablerline > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(7)',
                                         'click' => '#all > div.tablerline > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(8)',
                                         'cv' => '#all > div.tablerline > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(19)',
-                                        'price' => '#all > div.tablerline > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(21)' 
+                                        //'price' => '#all > div.tablerline > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(21)' 
                                     );
                                     
                                     foreach ( $selector_for_site as $key => $value ) {
@@ -161,14 +161,17 @@ class ValuecommerceController extends DailyCrawlerController
                                             
                                             $data[ $count ][ $key ] = trim( $crawler_for_site->filter( $value )->text() );
                                             
-                                        } //$key == 'site_name'
+                                        }
                                         else {
                                             
                                             $data[ $count ][ $key ] = trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) );
                                             
                                         }
-                                    } //$selector_for_site as $key => $value
+                                    }
                                     
+                                    $unit_price = $product_info->price;
+                                    $data[ $count ][ 'price' ] = $unit_price * $data[ $count ][ 'cv' ];
+
                                     //CPAとASPフィーの考慮した数値を算出
                                     $calData = json_decode( json_encode( json_decode( $this->dailySearchService->cpa( $data[ $count ][ 'cv' ], $data[ $count ][ 'price' ], 3 ) ) ), True );
                                     

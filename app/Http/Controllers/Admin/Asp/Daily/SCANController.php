@@ -164,7 +164,7 @@ class SCANController extends DailyCrawlerController
                                 'click' => '#report_clm > div > div.report_table > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(7)',
                                 'approval' => '#report_clm > div > div.report_table > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(12)',
                                 'cv' => '#report_clm > div > div.report_table > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(10)',
-                                'price' => '#report_clm > div > div.report_table > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(13)' 
+                                //'price' => '#report_clm > div > div.report_table > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(13)' 
                             );
                             
                             foreach ( $selector_for_site as $key => $value ) {
@@ -180,9 +180,18 @@ class SCANController extends DailyCrawlerController
                                 
                             } //$selector_for_site as $key => $value
                             
-                            $scan_site[ $y ][ 'price' ] = ($scan_site[ $y ][ 'price' ] != 0 && $scan_site[ $y ][ 'approval' ] != 0  )? round (( $scan_site[ $y ][ 'price' ] / $scan_site[ $y ][ 'approval' ] ) * $scan_site[ $y ][ 'cv' ]) : 0 ;
+                            //$scan_site[ $y ][ 'price' ] = ($scan_site[ $y ][ 'price' ] != 0 && $scan_site[ $y ][ 'approval' ] != 0  )? round (( $scan_site[ $y ][ 'price' ] / $scan_site[ $y ][ 'approval' ] ) * $scan_site[ $y ][ 'cv' ]) : 0 ;
+                            
+                            $unit_price = $product_info->price;
+                            $scan_site[ $y ][ 'price' ] = $unit_price * $scan_site[ $y ][ 'cv' ];
 
-                            $calData                   = json_decode( json_encode( json_decode( $this->dailySearchService->cpa( $scan_site[ $y ][ 'cv' ], $scan_site[ $y ][ 'price' ], 7 ) ) ), True );
+                            $calData                   = json_decode( 
+                                                            json_encode( 
+                                                                json_decode( 
+                                                                    $this->dailySearchService
+                                                                        ->cpa( $scan_site[ $y ][ 'cv' ], $scan_site[ $y ][ 'price' ], 7 ) 
+                                                                ) 
+                                                            ), True );
                             $scan_site[ $y ][ 'cpa' ]  = $calData[ 'cpa' ]; //CPA
                             $scan_site[ $y ][ 'cost' ] = $calData[ 'cost' ];
                             $scan_site[ $y ][ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );

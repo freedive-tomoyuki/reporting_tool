@@ -62,6 +62,9 @@ class A8Controller extends DailyCrawlerController
                         $s_Y = date( 'Y' );
                         $s_M = date( 'n' );
                     }
+
+                    //案件IDごとにスクレイピング
+                    //
                     foreach ( $product_infos as $product_info ) {
                         //ルート①
                         $crawler_1 = $browser
@@ -148,6 +151,9 @@ class A8Controller extends DailyCrawlerController
                         $a8data_1[ 0 ][ 'cost' ] = $calData[ 'cost' ]; //獲得単価
                         $a8data_1[ 0 ][ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
                         
+                        //
+                        //サイト単位スクレイピング
+                        //
                         $crawler_for_site = $browser
                                             ->visit('https://adv.a8.net/a8v2/ecAsRankingReportAction.do?reportType=11&insId=' . $product_info->asp_product_id . '&asmstId=&termType=1&d-2037996-p=1&multiSelectFlg=0&year=' . $s_Y . '&month=' . $s_M )
                                             ->crawler();
@@ -158,7 +164,8 @@ class A8Controller extends DailyCrawlerController
                         //echo 'count_data＞'.$count_data;
                         $page_count = ceil( $count_data / 500 );
                         //echo 'page_count' . $page_count;
-                        
+
+                        //ページ数毎にfor文を回す
                         for ( $page = 0; $page < $page_count; $page++ ) {
                             
                             $target_page = $page + 1;
@@ -186,12 +193,15 @@ class A8Controller extends DailyCrawlerController
                                     'imp' => '#ReportList > tbody > tr:nth-child(' . $i . ') > td:nth-child(5)',
                                     'click' => '#ReportList > tbody > tr:nth-child(' . $i . ') > td:nth-child(6)',
                                     'cv' => '#ReportList > tbody > tr:nth-child(' . $i . ') > td:nth-child(10)',
-                                    'price' => '#ReportList > tbody > tr:nth-child(' . $i . ') > td:nth-child(13)' 
+                                    //'price' => '#ReportList > tbody > tr:nth-child(' . $i . ') > td:nth-child(13)' 
                                 );
                                 
                                 foreach ( $selector_for_site as $key => $value ) {
                                     $data[ $count ][ $key ] = trim( $crawler_for_site->filter( $value )->text() );
                                 } //$selector_for_site as $key => $value
+                                
+                                $unit_price = $product_info->price;
+                                $data[ $count ][ 'price' ] = $unit_price * $data[ $count ][ 'cv' ];
                                 
                                 $calData = json_decode( json_encode( json_decode( $this->dailySearchService->cpa( $data[ $count ][ 'cv' ], $data[ $count ][ 'price' ], 1 ) ) ), True );
                                 
@@ -210,9 +220,8 @@ class A8Controller extends DailyCrawlerController
                         } //$page = 0; $page < $page_count; $page++
                         //var_dump( $data );
                         //var_dump( $a8data_1 );
-                        /**
-                        １サイトずつサイト情報の登録を実行
-                        */
+                        
+                        //１サイトずつサイト情報の登録を実行
                         $this->dailySearchService->save_site( json_encode( $data ) );
                         $this->dailySearchService->save_daily( json_encode( $a8data_1 ) );
                         

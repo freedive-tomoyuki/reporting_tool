@@ -141,14 +141,18 @@ class AccesstradeController extends DailyCrawlerController
                         $x = 0;
                         
                         foreach ( $array_sites as $site ) {
+
                             $data[ $x ][ 'product' ]   = $product_info->id;
                             $data[ $x ][ 'media_id' ]  = $site[ "partnerSiteId" ];
                             $data[ $x ][ 'site_name' ] = $site[ "partnerSiteName" ];
                             $data[ $x ][ 'imp' ]       = $site[ "impressionCount" ];
                             $data[ $x ][ 'click' ]     = $site[ "clickCount" ];
                             $data[ $x ][ 'cv' ]        = $site[ "actionCount" ];
-                            $data[ $x ][ 'price' ]     = $site[ "occurredTotalReward" ];
+                            //$data[ $x ][ 'price' ]     = $site[ "occurredTotalReward" ];
                             
+                            $unit_price = $product_info->price;
+                            $data[ $x ][ 'price' ] = $unit_price * $data[ $x ][ 'cv' ];
+
                             //$data[$x]['cpa']= $this->cpa($site['occurredTotalReward'] ,$site["actionCount"] , 1)
                             $calData              = json_decode( json_encode( json_decode( $this->dailySearchService->cpa( $site[ "actionCount" ], $site[ 'occurredTotalReward' ], 1 ) ) ), True );
                             $data[ $x ][ 'cpa' ]  = $calData[ 'cpa' ]; //CPA
@@ -164,18 +168,18 @@ class AccesstradeController extends DailyCrawlerController
                         $this->dailySearchService->save_site( json_encode( $data ) );
                         $this->dailySearchService->save_daily( json_encode( $atdata ) );
                     } //$product_infos as $product_info
-            }
-            catch(\Exception $e){
-                $sendData = [
-                            'message' => $e->getMessage(),
-                            'datetime' => date('Y-m-d H:i:s'),
-                            'product_id' => $product_id,
-                            'type' => 'Daily',
-                            ];
-                            //echo $e->getMessage();
-                Mail::to('t.sato@freedive.co.jp')->send(new Alert($sendData));
-                            throw $e;
-            }
+                }
+                catch(\Exception $e){
+                    $sendData = [
+                                    'message' => $e->getMessage(),
+                                    'datetime' => date('Y-m-d H:i:s'),
+                                    'product_id' => $product_id,
+                                    'type' => 'Daily',
+                                ];
+                                //echo $e->getMessage();
+                    Mail::to('t.sato@freedive.co.jp')->send(new Alert($sendData));
+                                throw $e;
+                }
         } );
         
     }

@@ -206,8 +206,17 @@ class RentracksController extends DailyCrawlerController
                                     $rtsite[ $i ][ $key ] = trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) );
                                 }
                                 
-                            } //$selector_for_site as $key => $value
-                            $calData                = json_decode( json_encode( json_decode( $this->dailySearchService->cpa( $rtsite[ $i ][ 'cv' ], $rtsite[ $i ][ 'price' ], 5 ) ) ), True );
+                            }
+                            $unit_price = $product_info->price;
+                            $rtsite[ $i ][ 'price' ] = $unit_price * $rtsite[ $i ][ 'cv' ];
+
+                            $calData                = json_decode( 
+                                                        json_encode( 
+                                                            json_decode( 
+                                                                $this->dailySearchService
+                                                                    ->cpa( $rtsite[ $i ][ 'cv' ], $rtsite[ $i ][ 'price' ], 5 ) 
+                                                            ) 
+                                                        ), True );
                             $rtsite[ $i ][ 'cpa' ]  = $calData[ 'cpa' ]; //CPA
                             $rtsite[ $i ][ 'cost' ] = $calData[ 'cost' ];
                             $rtsite[ $i ][ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
@@ -216,7 +225,7 @@ class RentracksController extends DailyCrawlerController
                         //$rtdata[ 0 ][ 'price' ] = trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( '#main > table > tbody > tr.total > td:nth-child(15)' )->text() ) );
                         $unit_price = $product_info->price;
                         $rtdata[ 0 ][ 'price' ] = $rtdata[ 0 ][ 'cv' ] * $unit_price;
-                                                
+
                         $rtdata[ 0 ][ 'partnership' ] = $rtdata2[ 0 ][ 'partnership' ];
                         $rtdata[ 0 ][ 'active' ]      = $rtdata3[ 0 ][ 'active' ];
                         

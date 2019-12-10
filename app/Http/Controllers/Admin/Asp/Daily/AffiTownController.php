@@ -170,7 +170,7 @@ class AffiTownController extends DailyCrawlerController
                                 'site_name' => '#all_display > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(2) > a',
                                 'click' => '#all_display > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(4) > p',
                                 'cv' => '#all_display > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(5) > p',
-                                'price' => '#all_display > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(6) > p' 
+                                //'price' => '#all_display > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(6) > p' 
                             );
                             
                             foreach ( $selector_for_site as $key => $value ) {
@@ -181,6 +181,9 @@ class AffiTownController extends DailyCrawlerController
                                     $affitown_site[ $i ][ $key ] = trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) );
                                 }
                             }
+                            $unit_price = $product_info->price;
+                            $affitown_site[ $i ][ 'price' ] = $unit_price * $affitown_site[ $i ][ 'cv' ];
+
                             $calData                       = json_decode( json_encode( json_decode( $this->dailySearchService->cpa( $affitown_site[ $i ][ 'cv' ], $affitown_site[ $i ][ 'price' ], 7 ) ) ), True );
                             $affitown_site[ $i ][ 'cpa' ]  = $calData[ 'cpa' ]; //CPA
                             $affitown_site[ $i ][ 'cost' ] = $calData[ 'cost' ];
@@ -188,15 +191,18 @@ class AffiTownController extends DailyCrawlerController
                             
                             $i++;
                         } 
+
+                        $unit_price = $product_info->price;
+                        $affitown_data[ 0 ][ 'price' ] = $affitown_data[ 0 ][ 'cv' ] * $unit_price;
+
                         $affitown_data[ 0 ][ 'partnership' ] = $site_count;
                         $affitown_data[ 0 ][ 'active' ] = $i;
                         $affitown_data[ 0 ][ 'imp' ] = $affitown_data_imp[ 0 ][ 'imp' ];
+
                         $calData                      = json_decode( json_encode( json_decode( $this->dailySearchService->cpa( $affitown_data[ 0 ][ 'cv' ], $affitown_data[ 0 ][ 'price' ], 7 ) ) ), True );
                         $affitown_data[ 0 ][ 'cpa' ]  = $calData[ 'cpa' ]; //CPA
                         $affitown_data[ 0 ][ 'cost' ] = $calData[ 'cost' ];
 
-                        $unit_price = $product_info->price;
-                        $affitown_data[ 0 ][ 'price' ] = $affitown_data[ 0 ][ 'cv' ] * $unit_price;
 
                         //echo "<pre>";
                         //var_dump( $affitown_data );

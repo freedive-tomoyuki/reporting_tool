@@ -181,7 +181,7 @@ class CrossPartnerController extends DailyCrawlerController
                                             'imp'       =>'table.highlight > tbody > tr:nth-child('.$iPlus.') > td:nth-child(3)',
                                             'click'     =>'table.highlight > tbody > tr:nth-child('.$iPlus.') > td:nth-child(4)',
                                             'cv'        =>'table.highlight > tbody > tr:nth-child('.$iPlus.') > td:nth-child(6)',
-                                            'price'     =>'table.highlight > tbody > tr:nth-child('.$iPlus.') > td:nth-child(10)',
+                                            //'price'     =>'table.highlight > tbody > tr:nth-child('.$iPlus.') > td:nth-child(10)',
                                         );
 
                                         foreach($selector_for_site as $key => $value){
@@ -200,7 +200,8 @@ class CrossPartnerController extends DailyCrawlerController
                                             }
 
                                         }
-                                        
+                                        $unit_price = $product_info->price;
+                                        $crosspartner_site[ $count ][ 'price' ] = $unit_price * $crosspartner_site[ $count ][ 'cv' ];
 
                                         $calData = json_decode(
                                                     json_encode(
