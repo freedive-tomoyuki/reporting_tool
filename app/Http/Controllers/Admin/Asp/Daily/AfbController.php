@@ -131,7 +131,7 @@ class AfbController extends DailyCrawlerController
                             'imp' => '#reportTable > tfoot > tr > td:nth-child(3) > p',
                             'click' => '#reportTable > tfoot > tr > td:nth-child(4) > p',
                             'cv' => '#reportTable > tfoot > tr > td:nth-child(7) > p',
-                            'price' => '#reportTable > tfoot > tr > td:nth-child(10) > p' 
+                            //'price' => '#reportTable > tfoot > tr > td:nth-child(10) > p' 
                         );
                         $selector_crawler2 = array(
                              'partnership' => '#main > div.wrap > div.section33 > div.section_inner.positionr.positionr > table > tbody > tr:nth-child(13) > td:nth-child(2)' 

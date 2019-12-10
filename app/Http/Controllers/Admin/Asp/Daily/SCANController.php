@@ -107,11 +107,11 @@ class SCANController extends DailyCrawlerController
                             
                         );
                         $selector2 = array(
-                             'partnership' => '#report_clm > div > div.report_table > table > tbody > tr.tr_even > td:nth-child(4)',
+                            'partnership' => '#report_clm > div > div.report_table > table > tbody > tr.tr_even > td:nth-child(4)',
                             
                             'active' => '#report_clm > div > div.report_table > table > tbody > tr.tr_even > td:nth-child(5)',
                             
-                            'price' => '#report_clm > div > div.report_table > table > tbody > tr.tr_even > td:nth-child(12)' 
+                            //'price' => '#report_clm > div > div.report_table > table > tbody > tr.tr_even > td:nth-child(12)' 
                         );
                         
                         
@@ -148,8 +148,6 @@ class SCANController extends DailyCrawlerController
                         /*
                         サイト抽出　
                         */
-                        
-                        
                         $crawler_for_site = $browser->visit( "https://www.scadnet.com/merchant/report/site.php?s=" . $product_info->asp_sponsor_id . "&s_yy=" . $s_Y . "&s_mm=" . $s_M . "&s_dd=" . $s_D . "&e_yy=" . $e_Y . "&e_mm=" . $e_M . "&e_dd=" . $e_D )->crawler();
                         $y                = 0;
                         $i                = 3;
@@ -193,11 +191,14 @@ class SCANController extends DailyCrawlerController
                             $y++;
                         } //$crawler_for_site->filter( '#report_clm > div > div.report_table > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(2)' )->count() > 0
                         
+                        $unit_price = $product_info->price;
+                        $scan_data[ 0 ][ 'price' ] = $scan_data[ 0 ][ 'cv' ] * $unit_price;
+                        
                         $scan_data[ 0 ][ 'partnership' ] = $scan_data2[ 0 ][ 'partnership' ];
                         
                         $scan_data[ 0 ][ 'active' ] = $scan_data2[ 0 ][ 'active' ];
                         
-                        $scan_data[ 0 ][ 'price' ] = $scan_data2[ 0 ][ 'price' ];
+                        //$scan_data[ 0 ][ 'price' ] = $scan_data2[ 0 ][ 'price' ];
                         
                         $calData                  = json_decode( json_encode( json_decode( $this->dailySearchService->cpa( $scan_data[ 0 ][ 'cv' ], $scan_data2[ 0 ][ 'price' ], 7 ) ) ), True );
                         $scan_data[ 0 ][ 'cpa' ]  = $calData[ 'cpa' ]; //CPA

@@ -13,9 +13,9 @@
          <form role="form" action="{{ url('admin/daily_result_site')}}" method="post" >
             @csrf
             <div class="panel-body ">
-              <div class="col-md-10 col-md-offset-2">
+              <div class="col-md-9 col-md-offset-1">
                 <div class="col-md-12">
-                  <div class="form-group col-md-6">
+                  <div class="form-group col-md-4">
                       <label class="control-label">ASP</label>
                       <div>
                          <select class="form-control" name="asp_id" >
@@ -31,7 +31,7 @@
                         </select>
                       </div>
                   </div>
-                  <div class="form-group col-md-6">
+                  <div class="form-group col-md-8">
                     <label class="center-block">Date</label>
                        <input type="date" name="searchdate_start" class="datepicker form-control date-style" id="datepicker_start" max='{{ date("Y-m-d",strtotime('-1 day')) }}' value=@if( old('searchdate_start')) 
                          {{ old('searchdate_start') }}
@@ -91,7 +91,7 @@
          <form role="form" action="{{ url('admin/daily_result_site')}}" method="post" >
             @csrf
             <div class="panel-body ">
-              <div class="col-md-7 col-md-offset-2">
+              <div class="col-md-9 col-md-offset-1">
                 <div class="col-md-12">
                   <div class="form-group col-md-6">
                       <label class="control-label">ASP</label>

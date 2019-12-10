@@ -107,7 +107,7 @@ class RentracksController extends DailyCrawlerController
                         selector 設定
                         */
                         $selector1 = array(
-                             'imp' => $product_info->asp->daily_imp_selector,
+                            'imp' => $product_info->asp->daily_imp_selector,
                             'click' => $product_info->asp->daily_click_selector,
                             'cv' => $product_info->asp->daily_cv_selector 
                             
@@ -211,11 +211,12 @@ class RentracksController extends DailyCrawlerController
                             $rtsite[ $i ][ 'cpa' ]  = $calData[ 'cpa' ]; //CPA
                             $rtsite[ $i ][ 'cost' ] = $calData[ 'cost' ];
                             $rtsite[ $i ][ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
-                        } //$i = 1; $active_partner >= $i; $i++
+                        }
                         
-                        
-                        $rtdata[ 0 ][ 'price' ] = trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( '#main > table > tbody > tr.total > td:nth-child(15)' )->text() ) );
-                        
+                        //$rtdata[ 0 ][ 'price' ] = trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( '#main > table > tbody > tr.total > td:nth-child(15)' )->text() ) );
+                        $unit_price = $product_info->price;
+                        $rtdata[ 0 ][ 'price' ] = $rtdata[ 0 ][ 'cv' ] * $unit_price;
+                                                
                         $rtdata[ 0 ][ 'partnership' ] = $rtdata2[ 0 ][ 'partnership' ];
                         $rtdata[ 0 ][ 'active' ]      = $rtdata3[ 0 ][ 'active' ];
                         
@@ -223,7 +224,7 @@ class RentracksController extends DailyCrawlerController
                         $rtdata[ 0 ][ 'cpa' ]  = $calData[ 'cpa' ]; //CPA
                         $rtdata[ 0 ][ 'cost' ] = $calData[ 'cost' ];
                         
-                        
+
                         
                         //echo "<pre>";
                         //var_dump( $rtdata );

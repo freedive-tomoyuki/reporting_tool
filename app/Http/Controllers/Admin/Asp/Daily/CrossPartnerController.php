@@ -215,7 +215,9 @@ class CrossPartnerController extends DailyCrawlerController
                                         $iPlus++;
                                     //}
                         }
-                        
+                        $unit_price = $product_info->price;
+                        $crosspartner_data1[ 0 ][ 'price' ] = $crosspartner_data1[ 0 ][ 'cv' ] * $unit_price;
+                                                
                         $crosspartner_data1[0]['active'] = $iPlus ;
                         $crosspartner_data1[0]['partnership'] = $crosspartner_data2[0]['partnership'];
 
@@ -225,9 +227,7 @@ class CrossPartnerController extends DailyCrawlerController
                         $crosspartner_data1[0]['cpa']= $calData['cpa']; //CPA
                         $crosspartner_data1[0]['cost']= $calData['cost'];
 
-                        $unit_price = $product_info->price;
-                        $crosspartner_data1[ 0 ][ 'price' ] = $crosspartner_data1[ 0 ][ 'cv' ] * $unit_price;
-                        
+
                         /*
                         サイトデータ・日次データ保存
                         */

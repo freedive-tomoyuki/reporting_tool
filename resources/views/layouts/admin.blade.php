@@ -16,7 +16,9 @@
 	<link href="https://fonts.googleapis.com/css?family=Montserrat:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
 	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-
+	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+	<script src="https://unpkg.com/vue"></script>
+	
 	<!--[if lt IE 9]>
 	<script src="js/html5shiv.js"></script>
 	<script src="js/respond.min.js"></script>
@@ -169,7 +171,10 @@
 	<script src="{{ asset('js/custom.js')}}"></script>
 	<script src="{{ asset('js/addons/datatables.min.js')}}"></script>
 	<script src="{{ asset('js/loading.js')}}"></script>
+	
+	@yield('script')
 
+	
 
 	<script>
 		/*window.onload = function () {

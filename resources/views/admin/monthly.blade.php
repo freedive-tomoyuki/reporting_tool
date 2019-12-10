@@ -13,7 +13,7 @@
          <form role="form" action="{{ url('admin/monthly_result')}}" method="post" >
             @csrf
             <div class="panel-body ">
-              <div class="col-md-7 col-md-offset-2">
+              <div class="col-md-9 col-md-offset-1">
                   <div class="form-group col-md-6">
                       <label class="control-label">Month</label>
                       <div>
@@ -70,7 +70,7 @@
          <form role="form" action="{{ url('admin/monthly_result')}}" method="post" >
             @csrf
             <div class="panel-body ">
-              <div class="col-md-7 col-md-offset-2">
+              <div class="col-md-9 col-md-offset-1">
                   <div class="col-md-12">
                      <div class="form-group col-md-6">
                         <label class="control-label">Month</label>
@@ -122,7 +122,7 @@
               <div class="panel-heading">検索条件
               
 
-                </a>
+                </<a>
               </div>
                   <div class="panel-body">
 

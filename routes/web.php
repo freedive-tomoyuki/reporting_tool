@@ -62,6 +62,13 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth:admin'], function() {
     Route::get( 'daily_result_site','Admin\DailyController@dailyResultSite')->name('admin.daily_result_site');
     Route::post( 'daily_result_site','Admin\DailyController@dailyResultSiteSearch');
 
+    //日次編集
+    Route::get('daily/edit/{id}/{month?}','Admin\DailyController@edit');
+    Route::post('daily/edit/{id}/{month?}','Admin\DailyController@update');
+    
+    //日次追加
+    Route::post('daily/add','Admin\DailyController@add');
+
     //マンスリーレポート一覧
     Route::get('monthly_result','Admin\MonthlyController@monthlyResult');
     Route::post('monthly_result','Admin\MonthlyController@monthlyResultSearch');

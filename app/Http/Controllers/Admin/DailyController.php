@@ -9,7 +9,9 @@ use App\Http\Controllers\Controller;
 use App\Product;
 use App\ProductBase;
 use App\Asp;
+use App\DailyDiff;
 use App\Services\DailyDataService;
+use App\Http\Requests\DailyDiffRequest;
 use App\Http\Requests\SearchDailyRequest;
 use App\Http\Requests\SearchDailySiteRequest;
 use Illuminate\Support\Facades\Auth; 
@@ -166,6 +168,118 @@ class DailyController extends Controller
             return view('admin.daily_site', compact('products', 'product_bases', 'asps', 'site_ranking', 'user'));
         }
     }
+    /**
+     * 編集画面
+     */
+    public function edit( $id , $month ='' ){
+        // $i = 30;
+        $asps = Asp::where('killed_flag','=', 0)->get();
+        $start = (!$month)? date('Y-m-01') : date('Y-m-d', strtotime('first day of ' . $month)) ;
+        $end = (!$month)? date('Y-m-d' ,strtotime('-1 day')) : date('Y-m-d', strtotime('last day of ' . $month));;
+        // $target_array = array();
+
+        // while(date("Y-m-t",strtotime('-1 month') ) != $target){
+        //     $target = date("Y-m-t",strtotime('-'.$i.' month'));
+        //     array_push($target_array, $target);
+        //     $i--;
+        // }
+        $user = Auth::user();
+        $products = Product::select('id')
+                    ->where('product_base_id',$id)
+                    ->where('killed_flag', '==' ,0 )
+                    ->get();
+
+        $daily = DailyDiff::whereIn("product_id",$products)
+                ->where('date', '>=' , $start)
+                ->where('date', '<=' , $end)        
+                ->where('killed_flag', '==' ,0 )
+                ->orderBy('date', 'asc')
+                ->get();
+
+        // echo "<pre>";
+        // // var_dump($products);
+        // var_dump($daily);
+        // echo "</pre>";
+        
+        return view('admin.daily.edit',compact('daily','user','asps'));
+    }
+    /**
+     * 追加実行
+     */
+    public function add(DailyDiffRequest $request ){
+    
+        DailyDiff::updateOrCreate(
+            ['date' => $request->date, 'product_id' => $request->product_id ],
+            [
+                'imp' => $request->imp0,
+                'ctr' => $request->ctr0,
+                'click' => $request->click0,
+                'cvr' => $request->cvr0,
+                'cv' => $request->cv0,
+                'active' => $request->active0,
+                'partnership' => $request->partnership0,
+                'cost' => $request->cost0,
+                'price' => $request->price0,
+                'asp_id' => $request->asp_id0
+            ]
+        );
+        return view('admin.',compact('monthly','user'));
+        // $add_daily = DailyDiff::find($p->id) ;
+        // $add_daily->imp = $request->imp0;
+        // $add_daily->ctr = $request->ctr0;
+        // $add_daily->click = $request->click0;
+        // $add_daily->cvr = $request->cvr0;
+        // $add_daily->cv = $request->cv0;
+        // $add_daily->active = $request->active0;
+        // $add_daily->partnership = $request->partner0;
+        // $add_daily->cost = $request->cost0;
+        // $add_daily->price = $request->price0;
+        // $add_daily->asp_id = $request->asp_id;
+        // $add_daily->product_id = $request->product_id;
+        // $add_daily->date = $request->date;
+        // $add_daily->save();
+    }
+    /**
+     * 編集実行
+     */
+    public function update(DailyDiffRequest $request, $id){
+        //  var_dump($request);
+        $i = 30;
+        $target ='';
+        $target_array = array();
+        $user = Auth::user();
+
+        while(date("Y-m-t",strtotime('-1 month') ) != $target){
+            $target = date("Y-m-t",strtotime('-'.$i.' month'));
+            array_push($target_array, $target);
+            $i--;
+        }
+        $products = Product::select('id')->where('product_base_id',$id)->where('killed_flag', '==' ,0 )->get();
+
+        
+        $monthly = DailyData::whereIn("product_id",$products)->whereIn("date",$target_array)->get();
+        
+        foreach($monthly as $p){
+            $update_daily = DailyData::find($p->id) ;
+            $update_daily->imp = $request->{"imp".$p->id};
+            $update_daily->ctr = $request->{"ctr".$p->id};
+            $update_daily->click = $request->{"click".$p->id};
+            $update_daily->cvr = $request->{"cvr".$p->id};
+            $update_daily->cv = $request->{"cv".$p->id};
+            $update_daily->active = $request->{"active".$p->id};
+            $update_daily->partnership = $request->{"partner".$p->id};
+            $update_daily->cost = $request->{"cost".$p->id};
+            $update_daily->price = $request->{"price".$p->id};
+            if($request->{"delete".$p->id} == 'on' ){
+                $update_daily->killed_flag = 1;
+            }
+            $update_daily->save();
+            
+        }
+        
+        return view('admin.monthly.edit',compact('monthly','user'));
+    }
+
 
     /**
         デイリーレポートの一覧のCSV出力用の関数

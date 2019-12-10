@@ -166,7 +166,7 @@ class AffiTownController extends DailyCrawlerController
                             $affitown_site[ $i ][ 'imp' ]     = 0;
                             
                             $selector_for_site = array(
-                                 'media_id' => '#all_display > table > tbody > tr:nth-child(' . $i . ') > td.underline',
+                                'media_id' => '#all_display > table > tbody > tr:nth-child(' . $i . ') > td.underline',
                                 'site_name' => '#all_display > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(2) > a',
                                 'click' => '#all_display > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(4) > p',
                                 'cv' => '#all_display > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(5) > p',
@@ -202,8 +202,7 @@ class AffiTownController extends DailyCrawlerController
                         //var_dump( $affitown_data );
                         //var_dump( $affitown_site );
                         //echo "</pre>";
-                        
-                        
+
                         /*
                         サイトデータ・日次データ保存
                         */

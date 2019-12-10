@@ -8,15 +8,20 @@
       <li class="active">日次レポート（案件別）</li>
    </ol>
    <div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">
-      <h3>日次レポート（案件別）</h3>
+      <h3>日次レポート（案件別）
+         @if(old('product') )
+         <a class="btn btn-info pull-right" href="{{ url('admin/daily/edit/'.old('product'))}}">編集</a> 
+         @endif
+      </h3>
+      <!-- <div class="d-inline text-right"><button class="btn btn-info">編集</button></div> -->
       <div class="panel panel-default">
          <div class="panel-heading text-center">検索する</div>
          <form role="form" action="{{ url('admin/daily_result')}}" method="post" >
             @csrf
             <div class="panel-body ">
-              <div class="col-md-7 col-md-offset-2">
+              <div class="col-md-9 col-md-offset-1">
                 <div class="col-md-12">
-                   <div class="form-group col-md-6">
+                   <div class="form-group col-md-4">
                       <label class="control-label">ASP</label>
                       <div>
                          <select class="form-control" name="asp_id" >
@@ -31,7 +36,7 @@
                          </select>
                       </div>
                    </div>
-                   <div class="form-group col-md-6 ">
+                   <div class="form-group col-md-8 ">
                     <label class="center-block">Date</label>
                        <input type="date" name="searchdate_start" class="datepicker form-control date-style" id="datepicker_start" max='{{ date("Y-m-d",strtotime('-1 day')) }}' value=@if( old('searchdate_start')) 
                          {{ old('searchdate_start') }}
@@ -83,7 +88,7 @@
             @endforeach
          </div>
       @endif
-   </div>
+   </>
 </div>
 
 <!--現在の検索条件を表示する-->
@@ -93,7 +98,7 @@
          <div class="panel-heading text-center">現在の検索条件を表示する</div>
          <form role="form" action="{{ url('admin/daily_result')}}" method="post" >
             <div class="panel-body ">
-              <div class="col-md-7 col-md-offset-2">
+              <div class="col-md-9 col-md-offset-1">
                 <div class="col-md-12">
                    <div class="form-group col-md-6">
                       <label class="control-label">ASP</label>

@@ -91,10 +91,10 @@ class TrafficGateController extends DailyCrawlerController
                         selector 設定
                         */
                         $selector1 = array(
-                             'imp' => '#container > form > table > tbody > tr > td.report-total:nth-child(2)',
+                            'imp' => '#container > form > table > tbody > tr > td.report-total:nth-child(2)',
                             'click' => '#container > form > table > tbody > tr > td.report-total:nth-child(3)',
                             'cv' => '#container > form > table > tbody > tr > td.report-total:nth-child(4)',
-                            'price' => '#container > form > table > tbody > tr > td.report-total:nth-child(6)'
+                            //'price' => '#container > form > table > tbody > tr > td.report-total:nth-child(6)'
                             
                         );
                         $selector2 = array(
@@ -180,6 +180,9 @@ class TrafficGateController extends DailyCrawlerController
                             } //行単位
                             $page++;
                         } //Page単位
+                                                
+                        $unit_price = $product_info->price;
+                        $trafficgate_data[ 0 ][ 'price' ] = $trafficgate_data[ 0 ][ 'cv' ] * $unit_price;
                         
                         $trafficgate_data[ 0 ][ 'partnership' ] = $trafficgate_data2[ 0 ][ "partnership" ];
                         $trafficgate_data[ 0 ][ 'active' ]      = $active_count;

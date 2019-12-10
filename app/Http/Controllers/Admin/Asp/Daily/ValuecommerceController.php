@@ -73,7 +73,7 @@ class ValuecommerceController extends DailyCrawlerController
                                 'click'     => '#report > tbody > tr:nth-child(4) > td:nth-child(8)',
                                 'cv'        => '#report > tbody > tr:nth-child(4) > td:nth-child(11)',
                                 'partnership' => '#report > tbody > tr:nth-child(4) > td:nth-child(2)',
-                                'price'     => '#report > tbody > tr:nth-child(4) > td:nth-child(14)', 
+                            //    'price'     => '#report > tbody > tr:nth-child(4) > td:nth-child(14)', 
                             );
                         }else{
                             $selector_crawler = array(
@@ -81,7 +81,7 @@ class ValuecommerceController extends DailyCrawlerController
                                 'click'     => $product_info->asp->daily_click_selector,
                                 'cv'        => $product_info->asp->daily_cv_selector,
                                 'partnership' => $product_info->asp->daily_partnership_selector,
-                                'price'     => $product_info->asp->daily_price_selector,
+                            //    'price'     => $product_info->asp->daily_price_selector,
                             );
                         }
                         
@@ -94,11 +94,16 @@ class ValuecommerceController extends DailyCrawlerController
                             foreach ( $selector_crawler as $key => $value ) {
                                 $data[ $key ] = array( );
                                 $data[ $key ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
-                            } //$selector_crawler as $key => $value
-                            //$data['cpa']= $this->cpa($data['cv'] ,$data['price'] , 1); 
+                            } 
+                            //$selector_crawler as $key => $value
+                            //$data['cpa']= $this->cpa($data['cv'] ,$data['price'] , 1);
+
                             //CPAとASPフィー込みの価格を計算
                             $calData = json_decode( json_encode( json_decode( $this->dailySearchService->cpa( $data[ 'cv' ], $data[ 'price' ], 3 ) ) ), True );
                             
+                            $unit_price = $product_info->price;
+                            $data[ 'price' ] = $data[ 'cv' ] * $unit_price;
+
                             $data[ 'cpa' ]     = $calData[ 'cpa' ]; //CPA
                             $data[ 'cost' ]    = $calData[ 'cost' ]; //獲得単価
                             $data[ 'asp' ]     = $product_info->asp_id;
@@ -142,7 +147,7 @@ class ValuecommerceController extends DailyCrawlerController
                                     //echo $target_page."ページの i＞＞".$i."番目</br>" ;
                                     
                                     $selector_for_site = array(
-                                         'media_id' => '#all > div.tablerline > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(2)',
+                                        'media_id' => '#all > div.tablerline > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(2)',
                                         'site_name' => '#all > div.tablerline > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(3) > a',
                                         'imp' => '#all > div.tablerline > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(7)',
                                         'click' => '#all > div.tablerline > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(8)',

@@ -130,7 +130,7 @@ class FelmatController extends DailyCrawlerController
                             'imp' => '#report > div > table > tfoot > tr > th:nth-child(2)', //$product_info->asp->daily_imp_selector,
                             'click' => '#report > div > table > tfoot > tr > th:nth-child(3)', //$product_info->asp->daily_click_selector,
                             'cv' => '#report > div > table > tfoot > tr > th:nth-child(5)', //$product_info->asp->daily_cv_selector,
-                            'price' => '#report > div > table > tfoot > tr > th:nth-child(6)'
+                            //'price' => '#report > div > table > tfoot > tr > th:nth-child(6)'
                             
                         );
                         $selector2 = array(
@@ -264,14 +264,18 @@ class FelmatController extends DailyCrawlerController
                         
                         
                         //$felmat_data[0]['price'] = trim(preg_replace('/[^0-9]/', '', $crawler_for_site->filter('#main > table > tbody > tr.total > td:nth-child(15)')->text()));
-                        
+                        $unit_price = $product_info->price;
+                        $felmat_data[ 0 ][ 'price' ] = $felmat_data[ 0 ][ 'cv' ] * $unit_price;
+                                                
                         $felmat_data[0]['active']      = $felmat_data2[0]['active'];
                         $felmat_data[0]['partnership'] = $felmat_data3[0]['partnership'];
                         
                         $calData                = json_decode(json_encode(json_decode($this->dailySearchService->cpa($felmat_data[0]['cv'], $felmat_data[0]['price'], 5))), True);
                         $felmat_data[0]['cpa']  = $calData['cpa']; //CPA
                         $felmat_data[0]['cost'] = $calData['cost'];
-                        
+
+
+
                         //echo "<pre>";
                         //var_dump($felmat_data);
                         //var_dump($felmat_site);

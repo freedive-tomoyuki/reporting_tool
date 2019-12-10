@@ -29,11 +29,11 @@
           <div class="panel-body">
           <form role="form" action="{{ url(request()->path()) }}" method="post" >
                 @csrf
-              <div class="col-md-7 col-md-offset-2">
+              <div class="col-md-9 col-md-offset-1">
                 <div class="col-md-12">
                   @if( strpos(request()->path(),'monthly_result_site') !== false ||
                          strpos(request()->path(),'daily') !== false )
-                   <div class="form-group col-md-6">
+                   <div class="form-group col-md-4">
                       <label class="control-label">ASP</label>
                       <div>
                          <select class="form-control" name="asp_id" >
@@ -51,7 +51,7 @@
                   @endif
 
                   @if( strpos(request()->path(),'daily') !== false )
-                   <div class="form-group col-md-6 ">
+                   <div class="form-group col-md-8 ">
                     <label class="center-block">Date</label>
                        <input type="date" name="searchdate_start" class="datepicker form-control date-style" id="datepicker_start" max='{{ date("Y-m-d",strtotime('-1 day')) }}' value=@if( old('searchdate_start')) 
                          {{ old('searchdate_start') }}
@@ -145,7 +145,7 @@
 
               </div>
               <div class="panel-body">
-              <div class="col-md-7 col-md-offset-2">
+              <div class="col-md-9 col-md-offset-1">
                 <div class="col-md-12">
                   @if( strpos(request()->path(),'monthly_result_site') !== false ||
                          strpos(request()->path(),'daily') !== false )
