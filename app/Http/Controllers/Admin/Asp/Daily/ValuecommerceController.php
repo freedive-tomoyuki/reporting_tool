@@ -98,6 +98,9 @@ class ValuecommerceController extends DailyCrawlerController
                             //$selector_crawler as $key => $value
                             //$data['cpa']= $this->cpa($data['cv'] ,$data['price'] , 1);
 
+                            $unit_price = $product_info->price;
+                            $data[ 'price' ] = $data[ 'cv' ] * $unit_price;
+                            
                             //CPAとASPフィー込みの価格を計算
                             $calculated = json_decode( 
                                         json_encode( 
@@ -106,9 +109,6 @@ class ValuecommerceController extends DailyCrawlerController
                                                     ->cpa( $data[ 'cv' ], $data[ 'price' ], 3 ) 
                                             ) 
                                         ), True );
-                            
-                            $unit_price = $product_info->price;
-                            $data[ 'price' ] = $data[ 'cv' ] * $unit_price;
 
                             $data[ 'cpa' ]     = $calculated[ 'cpa' ]; //CPA
                             $data[ 'cost' ]    = $calculated[ 'cost' ]; //獲得単価
