@@ -166,7 +166,7 @@ class AffiTownController extends DailyCrawlerController
                         while ( $crawler_for_count_site->filter( '#form_link_approval > table > tbody > tr:nth-child(' . $site_count . ') > td:nth-child(2)' )->count() == 1 ) {
                             $site_count++;
                         }
-                        echo 'サイト件数：'.$site_count->html();
+                        echo 'サイト件数：'.$site_count;
                         $site_count--;
                         //echo "カウントここ" . $site_count . "カウントここ";
                         
