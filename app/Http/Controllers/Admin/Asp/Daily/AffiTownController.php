@@ -138,6 +138,8 @@ class AffiTownController extends DailyCrawlerController
                             return $data;
                             
                         } );
+                        var_dump( $affitown_data );
+
                         /*
                         $crawler(Imp)　をフィルタリング
                         */
@@ -152,7 +154,7 @@ class AffiTownController extends DailyCrawlerController
                             return $data;
                             
                         } );
-                        //var_dump( $affitown_data_imp );
+                        var_dump( $affitown_data_imp );
                         
                         /*
                         サイト抽出　
@@ -163,18 +165,17 @@ class AffiTownController extends DailyCrawlerController
                         
                         while ( $crawler_for_count_site->filter( '#form_link_approval > table > tbody > tr:nth-child(' . $site_count . ') > td:nth-child(2)' )->count() == 1 ) {
                             $site_count++;
-                        } //$crawler_for_count_site->filter( '#form_link_approval > table > tbody > tr:nth-child(' . $site_count . ') > td:nth-child(2)' )->count() == 1
+                        }
+                        echo 'サイト件数：'.$site_count->html();
                         $site_count--;
-                        #all_display > table > tbody > tr.last > td:nth-child(4)
-                        
                         //echo "カウントここ" . $site_count . "カウントここ";
                         
                         $crawler_for_site = $browser->visit( "https://affi.town/adserver/report/mc/site.af?advertiseId=" . $product_info->asp_product_id . "&fromDate=" . $s_date . "&toDate=" . $e_date )->crawler();
                             // ->type( '#all_display > p > input[type=search]', '合計' )->crawler();
-                        //for( $i = 1 ; 20 >= $i ; $i++ ){
                         $i                = 1;
                         //$selector_end = ;
-                        
+                        echo $crawler_for_site->html();
+                        /*
                         while ( trim( $crawler_for_site->filter( '#all_display > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(2) > a' )->text() ) != "合計" ) {
                             
                             $affitown_site[ $i ][ 'product' ] = $product_info->id;
@@ -199,13 +200,18 @@ class AffiTownController extends DailyCrawlerController
                             $unit_price = $product_info->price;
                             $affitown_site[ $i ][ 'price' ] = $unit_price * $affitown_site[ $i ][ 'cv' ];
 
-                            $calculated                       = json_decode( json_encode( json_decode( $this->dailySearchService->cpa( $affitown_site[ $i ][ 'cv' ], $affitown_site[ $i ][ 'price' ], 7 ) ) ), True );
+                            $calculated                       = json_decode( 
+                                                                    json_encode( 
+                                                                        json_decode( 
+                                                                            $this->dailySearchService->cpa( $affitown_site[ $i ][ 'cv' ], $affitown_site[ $i ][ 'price' ], 7 ) 
+                                                                        ) 
+                                                                    ), True );
                             $affitown_site[ $i ][ 'cpa' ]  = $calculated[ 'cpa' ]; //CPA
                             $affitown_site[ $i ][ 'cost' ] = $calculated[ 'cost' ];
                             $affitown_site[ $i ][ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
                             
                             $i++;
-                        } 
+                        } */
 
                         $unit_price = $product_info->price;
                         $affitown_data[ 0 ][ 'price' ] = $affitown_data[ 0 ][ 'cv' ] * $unit_price;
@@ -227,7 +233,7 @@ class AffiTownController extends DailyCrawlerController
                         /*
                         サイトデータ・日次データ保存
                         */
-                        $this->dailySearchService->save_site( json_encode( $affitown_site ) );
+                        //$this->dailySearchService->save_site( json_encode( $affitown_site ) );
                         $this->dailySearchService->save_daily( json_encode( $affitown_data ) );
                         
                         //var_dump($crawler_for_site);
