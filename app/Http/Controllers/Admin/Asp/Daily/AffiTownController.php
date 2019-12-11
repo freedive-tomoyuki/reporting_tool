@@ -210,9 +210,9 @@ class AffiTownController extends DailyCrawlerController
                                                                                    ->cpa( $affitown_site[ $i ][ 'cv' ], $affitown_site[ $i ][ 'price' ], 7 ) 
                                                                         ) 
                                                                     ), True );
-                            // $affitown_site[ $i ][ 'cpa' ]  = $calculated[ 'cpa' ]; //CPA
-                            // $affitown_site[ $i ][ 'cost' ] = $calculated[ 'cost' ];
-                            // $affitown_site[ $i ][ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
+                            $affitown_site[ $i ][ 'cpa' ]  = $calculated[ 'cpa' ]; //CPA
+                            $affitown_site[ $i ][ 'cost' ] = $calculated[ 'cost' ];
+                            $affitown_site[ $i ][ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
                             
                             $i++;
                             
@@ -243,7 +243,7 @@ class AffiTownController extends DailyCrawlerController
                         /*
                         サイトデータ・日次データ保存
                         */
-                        //this->dailySearchService->save_site( json_encode( $affitown_site ) );
+                        $this->dailySearchService->save_site( json_encode( $affitown_site ) );
                         $this->dailySearchService->save_daily( json_encode( $affitown_data ) );
                         
                         //var_dump($crawler_for_site);
