@@ -192,14 +192,14 @@ class AffiTownController extends DailyCrawlerController
                                 //'price' => '#all_display > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(6) > p' 
                             );
                             
-                            // foreach ( $selector_for_site as $key => $value ) {
-                            //     if ( $key == 'site_name' ) {
-                            //         $affitown_site[ $i ][ $key ] = trim( $crawler_for_site->filter( $value )->text() );
-                            //     }
-                            //     else {
-                            //         $affitown_site[ $i ][ $key ] = trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) );
-                            //     }
-                            // }
+                            foreach ( $selector_for_site as $key => $value ) {
+                                if ( $key == 'site_name' ) {
+                                    $affitown_site[ $i ][ $key ] = trim( $crawler_for_site->filter( $value )->text() );
+                                }
+                                else {
+                                    $affitown_site[ $i ][ $key ] = trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) );
+                                }
+                            }
                             // $unit_price = $product_info->price;
                             // $affitown_site[ $i ][ 'price' ] = $unit_price * $affitown_site[ $i ][ 'cv' ];
 
