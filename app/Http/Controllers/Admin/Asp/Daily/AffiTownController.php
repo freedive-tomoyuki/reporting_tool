@@ -192,26 +192,26 @@ class AffiTownController extends DailyCrawlerController
                                 //'price' => '#all_display > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(6) > p' 
                             );
                             
-                            foreach ( $selector_for_site as $key => $value ) {
-                                if ( $key == 'site_name' ) {
-                                    $affitown_site[ $i ][ $key ] = trim( $crawler_for_site->filter( $value )->text() );
-                                }
-                                else {
-                                    $affitown_site[ $i ][ $key ] = trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) );
-                                }
-                            }
-                            $unit_price = $product_info->price;
-                            $affitown_site[ $i ][ 'price' ] = $unit_price * $affitown_site[ $i ][ 'cv' ];
+                            // foreach ( $selector_for_site as $key => $value ) {
+                            //     if ( $key == 'site_name' ) {
+                            //         $affitown_site[ $i ][ $key ] = trim( $crawler_for_site->filter( $value )->text() );
+                            //     }
+                            //     else {
+                            //         $affitown_site[ $i ][ $key ] = trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) );
+                            //     }
+                            // }
+                            // $unit_price = $product_info->price;
+                            // $affitown_site[ $i ][ 'price' ] = $unit_price * $affitown_site[ $i ][ 'cv' ];
 
-                            $calculated                       = json_decode( 
-                                                                    json_encode( 
-                                                                        json_decode( 
-                                                                            $this->dailySearchService->cpa( $affitown_site[ $i ][ 'cv' ], $affitown_site[ $i ][ 'price' ], 7 ) 
-                                                                        ) 
-                                                                    ), True );
-                            $affitown_site[ $i ][ 'cpa' ]  = $calculated[ 'cpa' ]; //CPA
-                            $affitown_site[ $i ][ 'cost' ] = $calculated[ 'cost' ];
-                            $affitown_site[ $i ][ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
+                            // $calculated                       = json_decode( 
+                            //                                         json_encode( 
+                            //                                             json_decode( 
+                            //                                                 $this->dailySearchService->cpa( $affitown_site[ $i ][ 'cv' ], $affitown_site[ $i ][ 'price' ], 7 ) 
+                            //                                             ) 
+                            //                                         ), True );
+                            // $affitown_site[ $i ][ 'cpa' ]  = $calculated[ 'cpa' ]; //CPA
+                            // $affitown_site[ $i ][ 'cost' ] = $calculated[ 'cost' ];
+                            // $affitown_site[ $i ][ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
                             
                             $i++;
                             
@@ -221,10 +221,15 @@ class AffiTownController extends DailyCrawlerController
                         $affitown_data[ 0 ][ 'price' ] = $affitown_data[ 0 ][ 'cv' ] * $unit_price;
 
                         $affitown_data[ 0 ][ 'partnership' ] = $site_count;
-                        $affitown_data[ 0 ][ 'active' ] = $i;
+                        $affitown_data[ 0 ][ 'active' ] = $i; //一覧をクロールした行数をサイト数としてカウント
                         $affitown_data[ 0 ][ 'imp' ] = $affitown_data_imp[ 0 ][ 'imp' ];
 
-                        $calculated                      = json_decode( json_encode( json_decode( $this->dailySearchService->cpa( $affitown_data[ 0 ][ 'cv' ], $affitown_data[ 0 ][ 'price' ], 7 ) ) ), True );
+                        $calculated                      = json_decode( 
+                                                                json_encode( 
+                                                                    json_decode( 
+                                                                        $this->dailySearchService
+                                                                            ->cpa( $affitown_data[ 0 ][ 'cv' ], $affitown_data[ 0 ][ 'price' ], 7 ) 
+                                                                        ) ), True );
                         $affitown_data[ 0 ][ 'cpa' ]  = $calculated[ 'cpa' ]; //CPA
                         $affitown_data[ 0 ][ 'cost' ] = $calculated[ 'cost' ];
 
@@ -237,7 +242,7 @@ class AffiTownController extends DailyCrawlerController
                         /*
                         サイトデータ・日次データ保存
                         */
-                        //$this->dailySearchService->save_site( json_encode( $affitown_site ) );
+                        //this->dailySearchService->save_site( json_encode( $affitown_site ) );
                         $this->dailySearchService->save_daily( json_encode( $affitown_data ) );
                         
                         //var_dump($crawler_for_site);
