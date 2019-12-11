@@ -49,7 +49,7 @@ class DailyCrawlerController extends Controller
 
           $this->dailySearchService->startFunc($request->product);
 
-          return redirect()->to('/admin/daily_report', $status = 302, $headers = [], $secure = null);
+          //return redirect()->to('/admin/daily_report', $status = 302, $headers = [], $secure = null);
     }
 
     //バッチ実装
