@@ -84,12 +84,25 @@ class AffiTownController extends DailyCrawlerController
                         /*
                         クロール：ログイン＝＞[日別売上検索]より検索
                         */
+                        \Log::info($product_info->asp_product_id);
+                        \Log::info($s_date);
+                        \Log::info($e_date);
                         
-                        $crawler = $browser->visit( $product_info->asp->login_url )->type( $product_info->asp->login_key, $product_info->login_value )->type( $product_info->asp->password_key, $product_info->password_value )->click( $product_info->asp->login_selector )->visit( "https://affi.town/adserver/merchant/report/dailysales.af" )->visit( "https://affi.town/adserver/merchant/report/dailysales.af?advertiseId=" . $product_info->asp_product_id . "&mediaId=&since=" . $s_date . "&until=" . $e_date )->type( '#all_display > p > input[type=search]', '合計' )->crawler();
-                        //echo $crawler->html();
+                        $crawler = $browser->visit( $product_info->asp->login_url )
+                                            ->type( $product_info->asp->login_key, $product_info->login_value )
+                                            ->type( $product_info->asp->password_key, $product_info->password_value )
+                                            ->click( $product_info->asp->login_selector )
+                                            ->visit( "https://affi.town/adserver/merchant/report/dailysales.af" )
+                                            ->visit( "https://affi.town/adserver/merchant/report/dailysales.af?advertiseId=" . $product_info->asp_product_id . "&mediaId=&since=" . $s_date . "&until=" . $e_date )
+                                            ->type( '#all_display > p > input[type=search]', '合計' )
+                                            ->crawler();
+                        echo $crawler->html();
 
-                        $crawler2 = $browser->visit( "https://affi.town/adserver/report/mc/impression.af" )->visit( "https://affi.town/adserver/report/mc/impression.af?advertiseId=" . $product_info->asp_product_id . "&mediaId=&fromDate=" . $s_date . "&toDate=" . $e_date )->type( '#all_display > p > input[type=search]', '合計' )->crawler();
-                        //echo $crawler2->html();
+                        $crawler2 = $browser->visit( "https://affi.town/adserver/report/mc/impression.af" )
+                                            ->visit( "https://affi.town/adserver/report/mc/impression.af?advertiseId=" . $product_info->asp_product_id . "&mediaId=&fromDate=" . $s_date . "&toDate=" . $e_date )
+                                            ->type( '#all_display > p > input[type=search]', '合計' )
+                                            ->crawler();
+                        echo $crawler2->html();
                         //https://affi.town/adserver/report/mc/impression.af?advertiseId=4316&mediaId=&since=2019-07-01&until=2019-07-27
                         /*
                         selector 設定
