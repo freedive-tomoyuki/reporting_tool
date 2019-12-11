@@ -176,8 +176,9 @@ class AffiTownController extends DailyCrawlerController
                         //$selector_end = ;
                         echo $crawler_for_site->html();
                         // #all_display > table > tbody > tr.last > td:nth-child(2) > a
-                        while ( $crawler_for_site->filter( '#all_display > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(2)' )->count() > 0 ) {
+                        while ( ($crawler_for_site->filter( '#all_display > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(1)' )->text()) !== '' ) {
                             echo $i;
+                            
                             /*
                             $affitown_site[ $i ][ 'product' ] = $product_info->id;
                             $affitown_site[ $i ][ 'imp' ]     = 0;
