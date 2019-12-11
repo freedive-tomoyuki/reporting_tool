@@ -176,18 +176,19 @@ class AffiTownController extends DailyCrawlerController
                         //$selector_end = ;
                         echo $crawler_for_site->html();
                         // #all_display > table > tbody > tr.last > td:nth-child(2) > a
+
+                        // サイト一覧の「合計」以外の前列を1列目から最終列まで一行一行スクレイピング
                         while ( ($crawler_for_site->filter( '#all_display > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(1)' )->text()) !== '' ) {
                             echo $i;
                             
-                            /*
                             $affitown_site[ $i ][ 'product' ] = $product_info->id;
                             $affitown_site[ $i ][ 'imp' ]     = 0;
                             
                             $selector_for_site = array(
-                                'media_id' => '#all_display > table > tbody > tr:nth-child(' . $i . ') > td.underline',
+                                'media_id'  => '#all_display > table > tbody > tr:nth-child(' . $i . ') > td.underline',
                                 'site_name' => '#all_display > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(2) > a',
-                                'click' => '#all_display > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(4) > p',
-                                'cv' => '#all_display > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(5) > p',
+                                'click'     => '#all_display > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(4) > p',
+                                'cv'        => '#all_display > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(5) > p',
                                 //'price' => '#all_display > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(6) > p' 
                             );
                             
@@ -211,11 +212,11 @@ class AffiTownController extends DailyCrawlerController
                             $affitown_site[ $i ][ 'cpa' ]  = $calculated[ 'cpa' ]; //CPA
                             $affitown_site[ $i ][ 'cost' ] = $calculated[ 'cost' ];
                             $affitown_site[ $i ][ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
-                            */
+                            
                             $i++;
                             
                         } 
-
+                        var_dump($affitown_site);
                         $unit_price = $product_info->price;
                         $affitown_data[ 0 ][ 'price' ] = $affitown_data[ 0 ][ 'cv' ] * $unit_price;
 
