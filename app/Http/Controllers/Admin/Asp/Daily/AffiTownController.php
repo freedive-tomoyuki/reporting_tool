@@ -84,10 +84,10 @@ class AffiTownController extends DailyCrawlerController
                         /*
                         クロール：ログイン＝＞[日別売上検索]より検索
                         */
+                        
                         \Log::info($product_info->asp_product_id);
                         \Log::info($s_date);
                         \Log::info($e_date);
-                        
                         $crawler = $browser->visit( $product_info->asp->login_url )
                                             ->type( $product_info->asp->login_key, $product_info->login_value )
                                             ->type( $product_info->asp->password_key, $product_info->password_value )
@@ -165,10 +165,12 @@ class AffiTownController extends DailyCrawlerController
                             $site_count++;
                         } //$crawler_for_count_site->filter( '#form_link_approval > table > tbody > tr:nth-child(' . $site_count . ') > td:nth-child(2)' )->count() == 1
                         $site_count--;
+                        #all_display > table > tbody > tr.last > td:nth-child(4)
                         
                         //echo "カウントここ" . $site_count . "カウントここ";
                         
-                        $crawler_for_site = $browser->visit( "https://affi.town/adserver/report/mc/site.af?advertiseId=" . $product_info->asp_product_id . "&fromDate=" . $s_date . "&toDate=" . $e_date )->type( '#all_display > p > input[type=search]', '合計' )->crawler();
+                        $crawler_for_site = $browser->visit( "https://affi.town/adserver/report/mc/site.af?advertiseId=" . $product_info->asp_product_id . "&fromDate=" . $s_date . "&toDate=" . $e_date )->crawler();
+                            // ->type( '#all_display > p > input[type=search]', '合計' )->crawler();
                         //for( $i = 1 ; 20 >= $i ; $i++ ){
                         $i                = 1;
                         //$selector_end = ;
