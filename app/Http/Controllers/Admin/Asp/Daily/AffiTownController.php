@@ -187,8 +187,8 @@ class AffiTownController extends DailyCrawlerController
                             $selector_for_site = array(
                                 'media_id'  => '#all_display > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(1)',
                                 'site_name' => '#all_display > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(2) > a',
-                                'click'     => '#all_display > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(4) > p',
-                                'cv'        => '#all_display > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(5) > p',
+                                'click'     => '#all_display > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(4)',
+                                'cv'        => '#all_display > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(5)',
                                 //'price' => '#all_display > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(6) > p' 
                             );
                             
