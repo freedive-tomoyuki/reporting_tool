@@ -70,6 +70,7 @@ class CrossPartnerController extends Controller
             //var_dump($crawler);
         });
         //var_dump($result);
-        return $crawler;
+        \Log::debug($result);
+        return $result;
     }
 }
