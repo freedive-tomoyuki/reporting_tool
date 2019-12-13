@@ -54,7 +54,7 @@ class CrossPartnerController extends Controller
                         ->visit( $asp_info[0]['lp1_url'] )
                         ->crawler();
                         $crawler = $crawler->getUri();
-                        Log::debug($crawler);
+                        //Log::debug($crawler);
                     if (strpos($crawler,'tops') !== false ){
                         $result = 1;
                         //var_dump($result);
