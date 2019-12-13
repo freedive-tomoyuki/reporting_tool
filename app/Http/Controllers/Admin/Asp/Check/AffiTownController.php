@@ -56,7 +56,7 @@ class AffiTownController extends Controller
                         ->crawler();
 
                         $text = $crawler->filter('title')->text();
-
+                        \Log::debug($text);
                     if (strpos($text,'広告主管理画面') !== false ){
                         $result = 1;
                         //var_dump($result);
@@ -64,6 +64,7 @@ class AffiTownController extends Controller
                         $result = 0;
                         //var_dump($result);
                     }
+                    \Log::debug($result);
                     return $result;
 
             }catch ( Exception $ex ) {
@@ -71,6 +72,7 @@ class AffiTownController extends Controller
             }
             //var_dump($crawler);
         });
+        \Log::debug($result);
         //var_dump($result);
         return $result;
     }
