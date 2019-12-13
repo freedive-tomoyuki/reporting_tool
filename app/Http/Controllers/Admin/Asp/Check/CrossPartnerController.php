@@ -27,7 +27,7 @@ class CrossPartnerController extends Controller
         $options = [
                 '--window-size=1920,3000',
                 '--start-maximized',
-                //'--headless',
+                '--headless',
                 '--disable-gpu',
                 '--no-sandbox',
                 '--lang=ja_JP',
