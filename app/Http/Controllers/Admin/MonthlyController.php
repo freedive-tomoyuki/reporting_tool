@@ -10,6 +10,7 @@ use App\ProductBase;
 use App\Product;
 use App\Asp;
 use App\Monthlydata;
+use App\Http\Requests\MonthlyRequest;
 use App\Http\Requests\SearchMonthlyRequest;
 use App\Http\Requests\SearchMonthlySiteRequest;
 //use App\MonthlyTotal;
@@ -72,67 +73,129 @@ class MonthlyController extends Controller
     /**
      * 編集画面
      */
-    public function edit( $id ){
-        $i = 30;
-        $target ='';
-        $target_array = array();
-
-        while(date("Y-m-t",strtotime('-1 month') ) != $target){
-            $target = date("Y-m-t",strtotime('-'.$i.' month'));
-            array_push($target_array, $target);
-            $i--;
-        }
+    public function show( Request $request , $id ){
+        $i = 1;
+        
+        $request->flash();
         $user = Auth::user();
-        $products = Product::select('id')->where('product_base_id',$id)->where('killed_flag', '==' ,0 )->get();
+        $array_product_id = array();
+        
+        $asps = new Asp();
+        $asps = $asps->target_asp($id);
 
-        $monthly = MonthlyData::whereIn("product_id",$products)->whereIn("date",$target_array)->get();
+        $end_of_month = (!$request->input('search_date'))? date('Y-m-d' ,strtotime('-1 day')) : date('Y-m-d', strtotime('last day of ' . $request->input('search_date')));
 
-        return view('admin.monthly.edit',compact('monthly','user'));
+        $selected_asp = (!$request->input('search_asp'))? '' : $request->input('search_asp');
+
+        $products = Product::where('product_base_id',$id)->where('killed_flag', '==' ,0 )->get();
+        
+        foreach($products as $p){
+           array_push($array_product_id, $p->id );
+        }
+
+        $monthly = MonthlyData::whereIn("product_id",$array_product_id);
+        if($end_of_month){
+            $monthly->where('date', '=' , $end_of_month);
+        }
+        if($selected_asp){
+            $monthly->where('asp_id', '=' , $selected_asp);
+        }
+        $monthly = $monthly->get();
+
+        // echo $monthly;
+        return view('admin.monthly.edit',compact('monthly','user','asps' ,'products','end_of_month','selected_asp'));
+    }
+
+    /**
+     * 追加実行
+     */
+    public function add(MonthlyRequest $request ){
+
+        $product_id = Product::where('product_base_id',$request->product[0])
+                            ->where('asp_id',$request->asp[0])
+                            ->get()->toArray();
+        $month = date('Y-m-t', strtotime($request->date[0]));
+
+        Monthlydata::updateOrCreate(
+            ['date' =>  $month , 'product_id' => $product_id[0]['id'] ],
+            [
+                'asp_id' => $request->asp[0],
+                'imp' => $request->imp[0],
+                'ctr' => $request->ctr[0],
+                'click' => $request->click[0],
+                'cvr' => $request->cvr[0],
+                'cv' => $request->cv[0],
+                'active' => $request->active[0],
+                'partnership' => $request->partner[0],
+                'cost' => $request->cost[0],
+                'price' => $request->price[0],
+                'approval' => $request->approval[0],
+                'approval_price' => $request->approval_price[0],
+                'approval_rate' => $request->approval_rate[0]
+
+            ]
+        );
+        return redirect('admin/monthly_result');
     }
     /**
      * 編集実行
      */
-    public function update(Request $request, $id ){
+    public function update(MonthlyRequest $request, $id ){
         //  var_dump($request);
-        $i = 30;
-        $target ='';
-        $target_array = array();
-        $user = Auth::user();
 
-        while(date("Y-m-t",strtotime('-1 month') ) != $target){
-            $target = date("Y-m-t",strtotime('-'.$i.' month'));
-            array_push($target_array, $target);
-            $i--;
-        }
-        $products = Product::select('id')->where('product_base_id',$id)->where('killed_flag', '==' ,0 )->get();
+        // if($request->month){
+        //     $end_of_month = date('Y-m-d', strtotime('last day of ' . $request->input('search_date')));
+        //     $search_date = $request->input('search_date');
+        // }else{
+        //     $end_of_month = date('Y-m-d' ,strtotime('-1 day')) ;
+        //     $search_date = date('Y-m' ,strtotime('-1 day'));
+        // }
+        $end_of_month = (!$request->month)? '' : $request->month;
+        $selected_asp = (!$request->asp)? '' : $request->asp;
 
-        
-        $monthly = MonthlyData::whereIn("product_id",$products)->whereIn("date",$target_array)->get();
-        
+        $products = Product::select('id')
+                            ->where('product_base_id',$id) 
+                            ->where('killed_flag', '==' ,0 )
+                            ->get();
+
+        $monthly = MonthlyData::whereIn("product_id",$products);
+                            // ->whereIn("date",$target_array)
+                            if($end_of_month){
+                                $monthly->where('date', '=' , $end_of_month);
+                            }
+                            if($selected_asp){
+                                $monthly->where('asp_id', '=' , $selected_asp);
+                            }
+                            $monthly = $monthly->get();
+
         foreach($monthly as $p){
-            $u_monthly = MonthlyData::find($p->id) ;
-            $u_monthly->imp = $request->{"imp".$p->id};
-            $u_monthly->ctr = $request->{"ctr".$p->id};
-            $u_monthly->click = $request->{"click".$p->id};
-            $u_monthly->cvr = $request->{"cvr".$p->id};
-            $u_monthly->cv = $request->{"cv".$p->id};
-            $u_monthly->active = $request->{"active".$p->id};
-            $u_monthly->partnership = $request->{"partner".$p->id};
-            $u_monthly->cost = $request->{"cost".$p->id};
-            $u_monthly->price = $request->{"price".$p->id};
-            $u_monthly->approval = $request->{"approval".$p->id};
-            $u_monthly->approval_price = $request->{"approval_price".$p->id};
-            $u_monthly->approval_rate = $request->{"approval_rate".$p->id};
-            if($request->{"delete".$p->id} == 'on' ){
-                $u_monthly->killed_flag = 1;
+            //var_dump($p) ;
+            $update_monthly = MonthlyData::find($p->id) ;
+            $request_key = hash('md5',$p->id);
+            $update_monthly->imp = $request->imp[$request_key];
+            $update_monthly->ctr = $request->ctr[$request_key];
+            $update_monthly->click = $request->click[$request_key];
+            $update_monthly->cvr = $request->cvr[$request_key];
+            $update_monthly->cv = $request->cv[$request_key];
+            $update_monthly->active = $request->active[$request_key];
+            $update_monthly->partnership = $request->partner[$request_key];
+            $update_monthly->cost = $request->cost[$request_key];
+            $update_monthly->price = $request->price[$request_key];
+            $update_monthly->approval = $request->approval[$request_key];
+            $update_monthly->approval_price = $request->approval_price[$request_key];
+            $update_monthly->approval_rate = $request->approval_rate[$request_key];
+
+            if($request->delete[$request_key] == 'on' ){
+                $update_monthly->killed_flag = 1;
             }
-            $u_monthly->save();
+
+            $update_monthly->save();
             
         }
-        
-        return view('admin.monthly.edit',compact('monthly','user'));
-    }
 
+        return redirect('admin/monthly_result');
+        //return view('admin.monthly.edit',compact('monthly','user', 'asps'));
+    }
     /**
     *サイト別デイリーレポートのデフォルトページを表示。
     *表示データがない場合、エラーページを表示する。

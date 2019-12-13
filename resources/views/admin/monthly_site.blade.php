@@ -7,7 +7,10 @@
       <li class="active">月次レポート(サイト別)</li>
    </ol>
    <div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">
-      <h3>月次レポート(サイト別) </h3>
+      <h3>月次レポート(サイト別) 
+        @php $product_id = (old('product'))? old('product'):'3' @endphp
+        <a class="btn btn-info pull-right" href="{{ url('admin/monthly/site/edit/'.$product_id) }}">編集</a> 
+      </h3>
       <div class="panel panel-default">
          <div class="panel-heading text-center">検索する</div>
          <form role="form" action="{{ url('admin/monthly_result_site')}}" method="post" >

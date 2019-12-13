@@ -171,113 +171,118 @@ class DailyController extends Controller
     /**
      * 編集画面
      */
-    public function edit( $id , $month ='' ){
-        // $i = 30;
-        $asps = Asp::where('killed_flag','=', 0)->get();
-        $start = (!$month)? date('Y-m-01') : date('Y-m-d', strtotime('first day of ' . $month)) ;
-        $end = (!$month)? date('Y-m-d' ,strtotime('-1 day')) : date('Y-m-d', strtotime('last day of ' . $month));;
-        // $target_array = array();
-
-        // while(date("Y-m-t",strtotime('-1 month') ) != $target){
-        //     $target = date("Y-m-t",strtotime('-'.$i.' month'));
-        //     array_push($target_array, $target);
-        //     $i--;
-        // }
+    public function show( Request $request , $id){
+        
+        $request->flash();
         $user = Auth::user();
-        $products = Product::select('id')
-                    ->where('product_base_id',$id)
+        $array_product_id = array();
+        
+        $asps = new Asp();
+        $asps = $asps->target_asp($id);
+        
+        $month = ($request->input('search_date'))? $request->input('search_date') : '';
+        $start = (!$request->input('search_date'))? date('Y-m-01') : date('Y-m-d', strtotime('first day of ' . $request->input('search_date'))) ;
+        $end = (!$request->input('search_date'))? date('Y-m-d' ,strtotime('-1 day')) : date('Y-m-d', strtotime('last day of ' . $request->input('search_date')));
+        
+        $selected_asp = (!$request->input('search_asp'))? '' : $request->input('search_asp');
+
+        $products = Product::where('product_base_id',$id)
                     ->where('killed_flag', '==' ,0 )
                     ->get();
-
-        $daily = DailyDiff::whereIn("product_id",$products)
-                ->where('date', '>=' , $start)
-                ->where('date', '<=' , $end)        
-                ->where('killed_flag', '==' ,0 )
-                ->orderBy('date', 'asc')
-                ->get();
-
-        // echo "<pre>";
-        // // var_dump($products);
-        // var_dump($daily);
-        // echo "</pre>";
         
-        return view('admin.daily.edit',compact('daily','user','asps'));
+        foreach($products as $p){
+            array_push($array_product_id, $p->id );
+        }
+        
+        $daily = new DailyDiff;
+                
+        $daily->whereIn("product_id",$products);
+        if($start){
+            $daily = $daily->where('date', '>=' , $start);
+        }
+        if($end){
+            $daily = $daily->where('date', '<=' , $end) ;
+        }
+        if($selected_asp){
+            $daily = $daily->where('asp_id', '=' , $selected_asp);
+        }
+        $daily = $daily->where('killed_flag', '=' ,0)->orderBy('date', 'asc')->get();
+        
+        return view('admin.daily.edit',compact('daily','user','asps','products','month','selected_asp'));
     }
     /**
      * 追加実行
      */
     public function add(DailyDiffRequest $request ){
-    
+
+        $product_id = Product::where('product_base_id',$request->product[0])
+                            ->where('asp_id',$request->asp[0])
+                            ->get()->toArray();
+        
         DailyDiff::updateOrCreate(
-            ['date' => $request->date, 'product_id' => $request->product_id ],
+            ['date' => $request->date[0], 'product_id' => $product_id[0]['id'] ],
             [
-                'imp' => $request->imp0,
-                'ctr' => $request->ctr0,
-                'click' => $request->click0,
-                'cvr' => $request->cvr0,
-                'cv' => $request->cv0,
-                'active' => $request->active0,
-                'partnership' => $request->partnership0,
-                'cost' => $request->cost0,
-                'price' => $request->price0,
-                'asp_id' => $request->asp_id0
+                'imp' => $request->imp[0],
+                'ctr' => $request->ctr[0],
+                'click' => $request->click[0],
+                'cvr' => $request->cvr[0],
+                'cv' => $request->cv[0],
+                'active' => $request->active[0],
+                'partnership' => $request->partner[0],
+                'cost' => $request->cost[0],
+                'price' => $request->price[0],
+                'asp_id' => $request->asp[0]
             ]
         );
-        return view('admin.',compact('monthly','user'));
-        // $add_daily = DailyDiff::find($p->id) ;
-        // $add_daily->imp = $request->imp0;
-        // $add_daily->ctr = $request->ctr0;
-        // $add_daily->click = $request->click0;
-        // $add_daily->cvr = $request->cvr0;
-        // $add_daily->cv = $request->cv0;
-        // $add_daily->active = $request->active0;
-        // $add_daily->partnership = $request->partner0;
-        // $add_daily->cost = $request->cost0;
-        // $add_daily->price = $request->price0;
-        // $add_daily->asp_id = $request->asp_id;
-        // $add_daily->product_id = $request->product_id;
-        // $add_daily->date = $request->date;
-        // $add_daily->save();
+
     }
     /**
      * 編集実行
      */
     public function update(DailyDiffRequest $request, $id){
         //  var_dump($request);
-        $i = 30;
-        $target ='';
-        $target_array = array();
-        $user = Auth::user();
 
-        while(date("Y-m-t",strtotime('-1 month') ) != $target){
-            $target = date("Y-m-t",strtotime('-'.$i.' month'));
-            array_push($target_array, $target);
-            $i--;
-        }
+        $start = (!$request->month)? date('Y-m-01') : date('Y-m-d', strtotime('first day of ' . $request->month)) ;
+        $end = (!$request->month)? date('Y-m-d' ,strtotime('-1 day')) : date('Y-m-d', strtotime('last day of ' . $request->month));
+
+        $selected_asp = (!$request->asp)? '' : $request->asp;
+
         $products = Product::select('id')->where('product_base_id',$id)->where('killed_flag', '==' ,0 )->get();
-
         
-        $monthly = DailyData::whereIn("product_id",$products)->whereIn("date",$target_array)->get();
+        $daily = DailyData::whereIn("product_id", $products);
+                            if($start){
+                                $daily->where('date', '>=' , $start);
+                            }
+                            if($end){
+                                $daily->where('date', '<=' , $end);
+                            }
+                            if($selected_asp){
+                                $daily->where('asp_id', '=' , $selected_asp);
+                            }
         
-        foreach($monthly as $p){
+                            $daily = $daily->get();
+        
+        foreach($daily as $p){
             $update_daily = DailyData::find($p->id) ;
-            $update_daily->imp = $request->{"imp".$p->id};
-            $update_daily->ctr = $request->{"ctr".$p->id};
-            $update_daily->click = $request->{"click".$p->id};
-            $update_daily->cvr = $request->{"cvr".$p->id};
-            $update_daily->cv = $request->{"cv".$p->id};
-            $update_daily->active = $request->{"active".$p->id};
-            $update_daily->partnership = $request->{"partner".$p->id};
-            $update_daily->cost = $request->{"cost".$p->id};
-            $update_daily->price = $request->{"price".$p->id};
-            if($request->{"delete".$p->id} == 'on' ){
+            $request_key = hash('md5',$p->id);
+
+            $update_daily->imp = $request->imp[$request_key];
+            $update_daily->ctr = $request->ctr[$request_key];
+            $update_daily->click = $request->click[$request_key];
+            $update_daily->cvr = $request->cvr[$request_key];
+            $update_daily->cv = $request->cv[$request_key];
+            $update_daily->active = $request->active[$request_key];
+            $update_daily->partnership = $request->partner[$request_key];
+            $update_daily->cost = $request->cost[$request_key];
+            $update_daily->price = $request->price[$request_key];
+            if($request->delete[$request_key] == 'on' ){
                 $update_daily->killed_flag = 1;
             }
             $update_daily->save();
             
         }
-        
-        return view('admin.monthly.edit',compact('monthly','user'));
+        return redirect('admin/daily_result');
+        //return view('admin.monthly.edit',compact('monthly','user'));
     }
 
 

@@ -9,9 +9,9 @@
    </ol>
    <div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">
       <h3>日次レポート（案件別）
-         @if(old('product') )
-         <a class="btn btn-info pull-right" href="{{ url('admin/daily/edit/'.old('product'))}}">編集</a> 
-         @endif
+         
+         @php $product_id = (old('product'))? old('product'):'3' @endphp
+         <a class="btn btn-info pull-right" href="{{ url('admin/daily/edit/'.$product_id) }}">編集</a> 
       </h3>
       <!-- <div class="d-inline text-right"><button class="btn btn-info">編集</button></div> -->
       <div class="panel panel-default">
@@ -88,8 +88,9 @@
             @endforeach
          </div>
       @endif
-   </>
+   </div>
 </div>
+
 
 <!--現在の検索条件を表示する-->
 <div class="row">
@@ -191,7 +192,8 @@
    </div>
 </div>
 <!--/.row-->
-    <div class="col-md-12 ">
+<div class="row">
+   <div class="col-md-12 ">
         <div class="table-responsive">
                 <table id="dtBasicExample" class="table table-striped table-bordered table-hover table-sm sp-wide-tabel" cellspacing="0" width="100%">
                   <thead>
@@ -264,6 +266,7 @@
 
       </div>
   </div>
+</div>
 <script>
       //google.charts.load('current', {'packages':['line']});
       google.load("visualization", "1", {

@@ -8,19 +8,27 @@
        </ol>
     <div class="col-lg-12">
         <h1 class="page-header text-center">結果一覧</h1>
-
+        @php $product_id = (old('product'))? old('product'):'3' @endphp
         @if( strpos(request()->path(),'daily_result') !== false )
           @if( strpos(request()->path(),'site') !== false )
-            <h3>日次(サイト別) </h3> 
+            <h3>日次(サイト別) 
+              <a class="btn btn-info pull-right" href="{{ url('admin/daily/site/edit/'.$product_id) }}">編集</a> 
+            </h3> 
           @else
-            <h3>日次(案件別) </h3> 
+            <h3>日次(案件別) 
+              <a class="btn btn-info pull-right" href="{{ url('admin/daily/edit/'.$product_id) }}">編集</a>
+            </h3> 
           @endif
         @endif
         @if( strpos(request()->path(),'monthly_result') !== false )
           @if( strpos(request()->path(),'site') !== false )
-            <h3>月別(サイト別) </h3> 
+            <h3>月別(サイト別) 
+              <a class="btn btn-info pull-right" href="{{ url('admin/monthly/site/edit/'.$product_id) }}">編集</a>
+            </h3> 
           @else
-            <h3>月別(案件別) </h3> 
+            <h3>月別(案件別) 
+              <a class="btn btn-info pull-right" href="{{ url('admin/monthly/edit/'.$product_id) }}">編集</a>
+            </h3> 
           @endif
         @endif
         <div class="panel panel-default ">

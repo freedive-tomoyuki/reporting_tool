@@ -3,7 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-class DailyDiffRequest extends FormRequest
+class MonthlyRequest extends FormRequest
 {
     /**
     * Determine if the user is authorized to make this request.
@@ -22,7 +22,7 @@ class DailyDiffRequest extends FormRequest
     public function rules()
     {
         return [
-            'date.*' => 'required|numeric',
+            'date.*' => 'required|date',
             'asp.*' => 'required|numeric',
             'product.*' => 'required|numeric',
             'imp.*' => 'required|numeric',
@@ -34,6 +34,10 @@ class DailyDiffRequest extends FormRequest
             'partner.*' => 'required|numeric',
             'cost.*' => 'nullable|numeric',
             'price.*' => 'nullable|numeric',
+            'approval.*' => 'nullable|numeric',
+            'approval_price.*' => 'nullable|numeric',
+            'approval_rate.*' => 'nullable|numeric',
+            
         ];
     }
     public function attributes()
@@ -50,8 +54,11 @@ class DailyDiffRequest extends FormRequest
             'active.*' => 'アクティブ数',
             'partner.*' => '提携数',
             'cost.*' => 'ASP単価',
-            'price.*' => 'FD単価'
+            'price.*' => 'FD単価',
+            'approval.*' => '承認件数',
+            'approval_price.*' => '承認金額',
+            'approval_rate.*' => '承認率',
             
         ];
-    }  
+    }   
 }
