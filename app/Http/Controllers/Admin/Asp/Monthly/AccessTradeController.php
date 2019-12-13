@@ -17,6 +17,7 @@ use App\Monthlydata;
 use App\Monthlysite;
 use App\Schedule;
 use App\Mail\Alert;
+use Mail;
 use DB;
 //header('Content-Type: text/html; charset=utf-8');
 

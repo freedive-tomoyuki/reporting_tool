@@ -74,7 +74,6 @@ class MonthlyController extends Controller
      * 編集画面
      */
     public function show( Request $request , $id ){
-        $i = 1;
         
         $request->flash();
         $user = Auth::user();
