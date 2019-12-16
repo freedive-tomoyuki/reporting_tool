@@ -96,46 +96,59 @@ class SCANController extends MonthlyCrawlerController
                             $data[ 'asp' ]     = $product_info->asp_id;
                             $data[ 'product' ] = $product_info->id;
                             
-                            foreach ( $selector_this as $key => $value ) {
-                                $data[ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
-                                
-                                if($key == 'approval_price'){
-                                    $data[ $key ]   = $this->monthlySearchService->calc_approval_price(
-                                        trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) ), 9);
-
-                                }else{
-                                    $data[ $key ]   = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
-                                
-                                }
+                            $unit_price = $product_info->price;
                             
-                            } //$selector_this as $key => $value
-                            foreach ( $selector_before as $key => $value ) {
-                                //$data[ 'last_date' ]    = date( 'Y-m-d', strtotime( 'last day of previous month' ) );
+                            $data[ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
+                            $data[ 'approval' ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $selector_this['approval'] )->text() ) );
+                            $data[ 'approval_price' ] = $data[ 'approval' ] * $unit_price;
+                            if ( date( 'Y/m/d' ) == date( 'Y/m/01' ) ) {
+                                $data[ 'last_date' ] = date( 'Y-m-t', strtotime( '-2 month' ) );
+                            } 
+                            else {
+                                $data[ 'last_date' ] = date( 'Y-m-d', strtotime( 'last day of previous month' ) );
+                            }
+                            $data[ 'last_approval' ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $selector_before['approval']  )->text() ) );
+                            $data[ 'last_approval_price' ] = $data[ 'last_approval' ] * $unit_price;
+
+
+                            // foreach ( $selector_this as $key => $value ) {
+                            //     $data[ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
                                 
-                                if ( date( 'Y/m/d' ) == date( 'Y/m/01' ) ) {
-                                    $data[ 'last_date' ] = date( 'Y-m-t', strtotime( '-2 month' ) );
-                                } //date( 'Y/m/d' ) == date( 'Y/m/01' )
-                                else {
-                                    $data[ 'last_date' ] = date( 'Y-m-d', strtotime( 'last day of previous month' ) );
-                                }
+                            //     if($key == 'approval_price'){
+                            //         $data[ $key ]   = $this->monthlySearchService->calc_approval_price(
+                            //             trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) ), 9);
 
-                                if($key == 'approval_price'){
-                                    $data[ 'last_' . $key ] = $this->monthlySearchService->calc_approval_price(
-                                        trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) ), 9);
+                            //     }else{
+                            //         $data[ $key ]   = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
+                                
+                            //     }
+                            
+                            // } //$selector_this as $key => $value
+                            // foreach ( $selector_before as $key => $value ) {
+                            //     //$data[ 'last_date' ]    = date( 'Y-m-d', strtotime( 'last day of previous month' ) );
+                                
+                            //     if ( date( 'Y/m/d' ) == date( 'Y/m/01' ) ) {
+                            //         $data[ 'last_date' ] = date( 'Y-m-t', strtotime( '-2 month' ) );
+                            //     } //date( 'Y/m/d' ) == date( 'Y/m/01' )
+                            //     else {
+                            //         $data[ 'last_date' ] = date( 'Y-m-d', strtotime( 'last day of previous month' ) );
+                            //     }
+
+                            //     if($key == 'approval_price'){
+                            //         $data[ 'last_' . $key ] = $this->monthlySearchService->calc_approval_price(
+                            //             trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) ), 9);
                                         
-                                }else{
-                                    $data[ 'last_' . $key ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
-                                }
+                            //     }else{
+                            //         $data[ 'last_' . $key ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
+                            //     }
 
-                            } //$selector_before as $key => $value
+                            // } //$selector_before as $key => $value
                             return $data;
                         } );
                         
                         //var_dump( $afbdata);
                         
-                        /**
-                        サイト取得用クロール
-                        */
+                        //サイト取得用クロール
                         
                         $count_site = 0;
                         
@@ -206,21 +219,24 @@ class SCANController extends MonthlyCrawlerController
                                     'media_id' => '#report_clm > div > div.report_table > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(2)',
                                     'site_name' => '#report_clm > div > div.report_table > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(4)',
                                     'approval' => '#report_clm > div > div.report_table > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(12)',
-                                    'approval_price' => '#report_clm > div > div.report_table > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(13)' 
+                                    //'approval_price' => '#report_clm > div > div.report_table > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(13)' 
                                 );
                                 //  サイト一覧　１行ずつクロール
                                 foreach ( $selector_for_site as $key => $value ) {
                                     if ( $key == 'site_name' || $key == 'media_id' ) {
                                         $scan_site[ $count_site ][ $key ] = trim( $crawler_for_site->filter( $value )->text() );
                                     } //$key == 'site_name' || $key == 'media_id'
-                                    elseif($key == 'approval_price'){
-                                        $scan_site[ $count_site ][ $key ] = $this->monthlySearchService->calc_approval_price(
-                                            trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) ) , 9);
-                                    }
+                                    // elseif($key == 'approval_price'){
+                                    //     $scan_site[ $count_site ][ $key ] = $this->monthlySearchService->calc_approval_price(
+                                    //         trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) ) , 9);
+                                    // }
                                     else {
                                         $scan_site[ $count_site ][ $key ] = trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) );
                                     }
-                                } // endforeach 
+                                } // endforeach
+                                
+                                $scan_site[ $count_site ][ 'approval_price' ] = $scan_site[ $count_site ][ 'approval' ] * $product_info->price;
+
                                 $count_site++;
                                 $i++;
                             } // endfor

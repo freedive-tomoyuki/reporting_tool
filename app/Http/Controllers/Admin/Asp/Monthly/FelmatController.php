@@ -69,16 +69,16 @@ class FelmatController extends MonthlyCrawlerController
                     $felmat_data = array();
 
                     foreach ( $product_infos as $product_info ) {
-                        $crawler = $browser->visit($product_info->asp->login_url)
-                                ->type($product_info->asp->login_key, $product_info->login_value)
-                                ->type($product_info->asp->password_key, $product_info->password_value)
-                                ->click($product_info->asp->login_selector);
+                        // $crawler = $browser->visit($product_info->asp->login_url)
+                        //         ->type($product_info->asp->login_key, $product_info->login_value)
+                        //         ->type($product_info->asp->password_key, $product_info->password_value)
+                        //         ->click($product_info->asp->login_selector);
                         
                         for ( $x = 0; $x < 2; $x++ ) {
                                 if ( $x == 0 ) {
                                     $first = date( 'Y-m-01', strtotime( '-1 day' ) );
                                     $end = date( 'Y-m-d', strtotime( '-1 day' ) );
-                                } //$x == 0
+                                }
                                 else {
                                     
                                     if ( date( 'Y/m/d' ) == date( 'Y/m/01' ) ) {
@@ -92,45 +92,55 @@ class FelmatController extends MonthlyCrawlerController
                                     
                                 }
                             
-                            $crawler = $browser
+                            $crawler = $browser->visit($product_info->asp->login_url)
+                                ->type($product_info->asp->login_key, $product_info->login_value)
+                                ->type($product_info->asp->password_key, $product_info->password_value)
+                                ->click($product_info->asp->login_selector)
                                 ->visit("https://www.felmat.net/advertiser/report/daily")
                                 ->type('#search > div > div:nth-child(2) > div.col-sm-4.form-inline > div > input:nth-child(1)', $first)
                                 ->type('#search > div > div:nth-child(2) > div.col-sm-4.form-inline > div > input:nth-child(3)', $end)
                                 ->click('#sel_promotion_id_chosen')
-                                ->click('#sel_promotion_id_chosen > div > ul > li:nth-child(2)')
-                                //->select('adv_id', '1050' )
-                                ->click('#view > div > button.btn.btn-primary.btn-sm')->crawler();
+                                ->click($product_info->product_order)
+                                // ->click('#sel_promotion_id_chosen > div > ul > li:nth-child(2)')
+                                // ->select('adv_id', '1050' )
+                                ->click('#view > div > button.btn.btn-primary.btn-sm')
+                                ->crawler();
 
 
                             $selector   = array(
                                     'approval' => '#report > div > table > tfoot > tr > th:nth-child(8)', 
-                                    'approval_price' => '#report > div > table > tfoot > tr > th:nth-child(9)'
+                                    // 'approval_price' => '#report > div > table > tfoot > tr > th:nth-child(9)'
                             );
 
 
-                            /**
-                            今月・先月用のデータ取得selector
-                            */
+                            //今月・先月用のデータ取得selector
                             $felmat_data[$x] = $crawler->each( function( Crawler $node ) use ($selector, $product_info, $end){
                                 
                                 $data              = array( );
                                 $data[ 'asp' ]     = $product_info->asp_id;
                                 $data[ 'product' ] = $product_info->id;
 
-                                foreach ( $selector as $key => $value ) {
-                                    $data[ 'date' ] = $end;
 
-                                    if($key == 'approval_price'){
-                                        $data[ $key ]   = 
-                                            $this->monthlySearchService->calc_approval_price(
-                                                trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) ) ,2
-                                            );
-                                    }
-                                    else{
-                                        $data[ $key ]   = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
-                                    }
+                                $unit_price = $product_info->price;
+                                
+                                $data[ 'date' ] = $end;
+                                $data[ 'approval' ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $selector['approval'] )->text() ) );
+                                $data[ 'approval_price' ] = $data[ 'approval' ] * $unit_price;
 
-                                }
+                                // foreach ( $selector as $key => $value ) {
+                                //     $data[ 'date' ] = $end;
+
+                                //     if($key == 'approval_price'){
+                                //         $data[ $key ]   = 
+                                //             $this->monthlySearchService->calc_approval_price(
+                                //                 trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) ) ,2
+                                //             );
+                                //     }
+                                //     else{
+                                //         $data[ $key ]   = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
+                                //     }
+
+                                // }
                                 return $data;
                             });
                         }
@@ -138,22 +148,20 @@ class FelmatController extends MonthlyCrawlerController
                         foreach ($felmat_data as $value){
                             array_push($felmat_data , $value[0]);
                         }
-                        /*
-                          $crawler サイト用　をフィルタリング
-                        */
-                        //$count      = 0;
+                        // $crawler サイト用　をフィルタリング
+                        
                         $count           = 0;
 
                         for ( $y = 0; $y < 2; $y++ ) {
                             if ( $y == 0 ) {
                                 $first = date( 'Y-m-01', strtotime( '-1 day' ) );
                                 $end = date( 'Y-m-d', strtotime( '-1 day' ) );
-                            } //$x == 0
+                            } 
                             else {
                                 if ( date( 'Y/m/d' ) == date( 'Y/m/01' ) ) {
                                     $first = date( 'Y-m-01', strtotime( '-2 month' ) );
                                     $end = date( 'Y-m-t', strtotime( '-2 month' ) );
-                                } //date( 'Y/m/d' ) == date( 'Y/m/01' )
+                                }
                                 else {
                                     $first = date( 'Y-m-01', strtotime( 'first day of previous month' ) );
                                     $end = date( 'Y-m-t', strtotime( 'last day of previous month' ) );
@@ -162,12 +170,13 @@ class FelmatController extends MonthlyCrawlerController
 
                             //アクティブ件数取得
                             $crawler = $browser->visit("https://www.felmat.net/advertiser/report/partnersite") //->crawler();
-                                            ->type('#search > div > div:nth-child(2) > div.col-sm-4.form-inline > div > input:nth-child(1)', $first)
-                                            ->type('#search > div > div:nth-child(2) > div.col-sm-4.form-inline > div > input:nth-child(3)', $end)
-                                            ->click('#sel_promotion_id_chosen')
-                                            ->click('#sel_promotion_id_chosen > div > ul > li:nth-child(2)')
-                                            ->click('#view > div > button.btn.btn-primary.btn-sm')
-                                            ->crawler();
+                                                ->type('#search > div > div:nth-child(2) > div.col-sm-4.form-inline > div > input:nth-child(1)', $first)
+                                                ->type('#search > div > div:nth-child(2) > div.col-sm-4.form-inline > div > input:nth-child(3)', $end)
+                                                ->click('#sel_promotion_id_chosen')
+                                                ->click('#sel_promotion_id_chosen > div > ul > li:nth-child(2)')
+                                                ->click('#view > div > button.btn.btn-primary.btn-sm')
+                                                ->crawler();
+
                             $selector ='body > div.wrapper > div.page-content.no-left-sidebar > div > div:nth-child(5) > div > div:nth-child(2) > div:nth-child(1) > div:nth-child(3) > div';
                             
                             //echo "アクティブ数";
@@ -184,12 +193,22 @@ class FelmatController extends MonthlyCrawlerController
                                 
                                 //最後のページ
                                 if ($i > 1) {
-                                    $crawler_for_site = $browser->visit("https://www.felmat.net/advertiser/report/partnersite") ->type('#search > div > div:nth-child(2) > div.col-sm-4.form-inline > div > input:nth-child(1)', $first)->type('#search > div > div:nth-child(2) > div.col-sm-4.form-inline > div > input:nth-child(3)', $end)->click('#sel_promotion_id_chosen')->click('#sel_promotion_id_chosen > div > ul > li:nth-child(2)')->click('#view > div > button.btn.btn-primary.btn-sm');
+                                    $crawler_for_site = $browser->visit("https://www.felmat.net/advertiser/report/partnersite")
+                                                                ->type('#search > div > div:nth-child(2) > div.col-sm-4.form-inline > div > input:nth-child(1)', $first)
+                                                                ->type('#search > div > div:nth-child(2) > div.col-sm-4.form-inline > div > input:nth-child(3)', $end)
+                                                                ->click('#sel_promotion_id_chosen')
+                                                                ->click('#sel_promotion_id_chosen > div > ul > li:nth-child(2)')
+                                                                ->click('#view > div > button.btn.btn-primary.btn-sm');
                                     $p = $i + 1;
                                     
                                     $crawler_for_site->click('div.wrapper > div.page-content.no-left-sidebar > div > div:nth-child(5) > div > div:nth-child(2) > div:nth-child(1) > div:nth-child(2) > div > ul > li:nth-child(' . $p . ') > a');
                                 }else{
-                                    $crawler_for_site = $browser->visit("https://www.felmat.net/advertiser/report/partnersite") ->type('#search > div > div:nth-child(2) > div.col-sm-4.form-inline > div > input:nth-child(1)', $first)->type('#search > div > div:nth-child(2) > div.col-sm-4.form-inline > div > input:nth-child(3)', $end)->click('#sel_promotion_id_chosen')->click('#sel_promotion_id_chosen > div > ul > li:nth-child(2)')->click('#view > div > button.btn.btn-primary.btn-sm');
+                                    $crawler_for_site = $browser->visit("https://www.felmat.net/advertiser/report/partnersite")
+                                                                ->type('#search > div > div:nth-child(2) > div.col-sm-4.form-inline > div > input:nth-child(1)', $first)
+                                                                ->type('#search > div > div:nth-child(2) > div.col-sm-4.form-inline > div > input:nth-child(3)', $end)
+                                                                ->click('#sel_promotion_id_chosen')
+                                                                ->click('#sel_promotion_id_chosen > div > ul > li:nth-child(2)')
+                                                                ->click('#view > div > button.btn.btn-primary.btn-sm');
                                 }
                                 
                                 $crawler_for_site = $crawler_for_site->crawler();
@@ -205,7 +224,7 @@ class FelmatController extends MonthlyCrawlerController
                                     $selector_for_site = array(
                                         'site_name' => '#report > div > table > tbody > tr:nth-child(' . $x . ') > td.left',
                                         'approval' => '#report > div > table > tbody > tr:nth-child(' . $x . ') > td:nth-child(8)',
-                                        'approval_price' => '#report > div > table > tbody > tr:nth-child(' . $x . ') > td:nth-child(9)',
+                                        //'approval_price' => '#report > div > table > tbody > tr:nth-child(' . $x . ') > td:nth-child(9)',
                                     );
 
                                     $felmat_site[$count]['date'] = $end;
@@ -221,6 +240,8 @@ class FelmatController extends MonthlyCrawlerController
                                         }
                                         
                                     }
+                                    $felmat_site[ $count ][ 'approval_price' ] = $felmat_site[ $count ][ 'approval' ] * $product_info->price;
+
                                     $count++;
                                     
                                 }

@@ -127,35 +127,50 @@ class RentracksController extends MonthlyCrawlerController
                             $data[ 'asp' ]     = $product_info->asp_id;
                             $data[ 'product' ] = $product_info->id;
                             
-                            foreach ( $selector_this as $key => $value ) {
+                            $unit_price = $product_info->price;
+                            
+                            $data[ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
+                            // $data[ $key ]   = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
+                            $data[ 'approval' ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $selector_this['approval'] )->text() ) );
+                            $data[ 'approval_price' ] = $data[ 'approval' ] * $unit_price;
+                            if ( date( 'Y/m/d' ) == date( 'Y/m/01' ) ) {
+                                $data[ 'last_date' ] = date( 'Y-m-t', strtotime( '-2 month' ) );
+                            } //date( 'Y/m/d' ) == date( 'Y/m/01' )
+                            else {
+                                $data[ 'last_date' ] = date( 'Y-m-d', strtotime( 'last day of previous month' ) );
+                            }
+                            $data[ 'last_approval' ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $selector_before['approval']  )->text() ) );
+                            $data[ 'last_approval_price' ] = $data[ 'last_approval' ] * $unit_price;
 
-                                if($key == 'approval_price'){
-                                    $data[ $key ]   = $this->monthlySearchService->calc_approval_price(
-                                        trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) ), 5);
-                                }else{
-                                    $data[ $key ]   = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
-                                }
+                            // foreach ( $selector_this as $key => $value ) {
 
-                                $data[ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
-                            } //$selector_this as $key => $value
-                            foreach ( $selector_before as $key => $value ) {
+                            //     if($key == 'approval_price'){
+                            //         $data[ $key ]   = $this->monthlySearchService->calc_approval_price(
+                            //             trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) ), 5);
+                            //     }else{
+                            //         $data[ $key ]   = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
+                            //     }
 
-                                if($key == 'approval_price'){
-                                    $data[ 'last_' . $key ] = $this->monthlySearchService->calc_approval_price(
-                                        trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) ), 5);
-                                }else{
-                                    $data[ 'last_' . $key ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
-                                }
+                            //     $data[ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
+                            // } //$selector_this as $key => $value
+                            // foreach ( $selector_before as $key => $value ) {
+
+                            //     if($key == 'approval_price'){
+                            //         $data[ 'last_' . $key ] = $this->monthlySearchService->calc_approval_price(
+                            //             trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) ), 5);
+                            //     }else{
+                            //         $data[ 'last_' . $key ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
+                            //     }
                                 
-                                //$data['last_date'] = date('Y-m-d', strtotime('last day of previous month'));
-                                if ( date( 'Y/m/d' ) == date( 'Y/m/01' ) ) {
-                                    $data[ 'last_date' ] = date( 'Y-m-t', strtotime( '-2 month' ) );
-                                } //date( 'Y/m/d' ) == date( 'Y/m/01' )
-                                else {
-                                    $data[ 'last_date' ] = date( 'Y-m-d', strtotime( 'last day of previous month' ) );
-                                }
+                            //     //$data['last_date'] = date('Y-m-d', strtotime('last day of previous month'));
+                            //     if ( date( 'Y/m/d' ) == date( 'Y/m/01' ) ) {
+                            //         $data[ 'last_date' ] = date( 'Y-m-t', strtotime( '-2 month' ) );
+                            //     } //date( 'Y/m/d' ) == date( 'Y/m/01' )
+                            //     else {
+                            //         $data[ 'last_date' ] = date( 'Y-m-d', strtotime( 'last day of previous month' ) );
+                            //     }
                                 
-                            } //$selector_before as $key => $value
+                            // } //$selector_before as $key => $value
                             return $data;
                             
                         } );
@@ -243,13 +258,13 @@ class RentracksController extends MonthlyCrawlerController
                                 $iPlus                  = $i + 1;
                                 //月内の場合は、「承認」先月のものに関しては、「請求済」からデータを取得
                                 $approval_selector      = ( $x == 0 ) ? '#main > table > tbody > tr:nth-child(' . $iPlus . ') > td.c13' : '#main > table > tbody > tr:nth-child(' . $iPlus . ') > td.c14';
-                                $approvalprice_selector = ( $x == 0 ) ? '#main > table > tbody > tr:nth-child(' . $iPlus . ') > td.c18' : '#main > table > tbody > tr:nth-child(' . $iPlus . ') > td.c19';
+                                // $approvalprice_selector = ( $x == 0 ) ? '#main > table > tbody > tr:nth-child(' . $iPlus . ') > td.c18' : '#main > table > tbody > tr:nth-child(' . $iPlus . ') > td.c19';
                                 
                                 $selector_for_site = array(
                                     'media_id' => '#main > table > tbody > tr:nth-child(' . $iPlus . ') > td.c03',
                                     'site_name' => '#main > table > tbody > tr:nth-child(' . $iPlus . ') > td.c04',
                                     'approval' => $approval_selector,
-                                    'approval_price' => $approvalprice_selector 
+                                    // 'approval_price' => $approvalprice_selector 
                                     
                                 );
                                 
@@ -259,18 +274,20 @@ class RentracksController extends MonthlyCrawlerController
                                         $rentrack_site[ $y ][ $key ] = trim( $crawler_for_site->filter( $value )->text() );
                                         
                                     } //$key == 'site_name'
-                                    elseif($key == 'approval_price'){
+                                    // elseif($key == 'approval_price'){
 
-                                        $rentrack_site[ $y ][ $key ] = $this->monthlySearchService->calc_approval_price(
-                                            trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) ), 5);
+                                    //     $rentrack_site[ $y ][ $key ] = $this->monthlySearchService->calc_approval_price(
+                                    //         trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) ), 5);
                                         
-                                    }
+                                    // }
                                     else {
                                         
                                         $rentrack_site[ $y ][ $key ] = trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) );
                                     }
                                     
                                 }
+                                $rentrack_site[ $y ][ 'approval_price' ] = $rentrack_site[ $y ][ 'approval' ] * $product_info->price;
+
                                 $y++;
                             }
 

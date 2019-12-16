@@ -92,12 +92,11 @@ class AffiTownController extends MonthlyCrawlerController
                             $unit_price = $product_info->price;
                             
                             $data[ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
-                            // $data[ $key ]   = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
                             $data[ 'approval' ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $selector_this['approval'] )->text() ) );
                             $data[ 'approval_price' ] = $data[ 'approval' ] * $unit_price;
                             if ( date( 'Y/m/d' ) == date( 'Y/m/01' ) ) {
                                 $data[ 'last_date' ] = date( 'Y-m-t', strtotime( '-2 month' ) );
-                            } //date( 'Y/m/d' ) == date( 'Y/m/01' )
+                            }
                             else {
                                 $data[ 'last_date' ] = date( 'Y-m-d', strtotime( 'last day of previous month' ) );
                             }
@@ -183,11 +182,11 @@ class AffiTownController extends MonthlyCrawlerController
                                 $affitown_site[ $active_count ][ 'product' ] = $product_info->id;
                                 if ( $x == 0 ) {
                                     $affitown_site[ $active_count ][ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
-                                } //$x == 0
+                                }
                                 else {
                                     if ( date( 'Y/m/d' ) == date( 'Y/m/01' ) ) {
                                         $affitown_site[ $active_count ][ 'date' ] = date( 'Y-m-t', strtotime( '-2 month' ) );
-                                    } //date( 'Y/m/d' ) == date( 'Y/m/01' )
+                                    }
                                     else {
                                         $affitown_site[ $active_count ][ 'date' ] = date( 'Y-m-d', strtotime( 'last day of previous month' ) );
                                     }
@@ -217,11 +216,10 @@ class AffiTownController extends MonthlyCrawlerController
                                         $affitown_site[ $active_count ][ $key ] = trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) );
                                     
                                     }
-                                    $affitown_site[ $active_count ][ 'approval_price' ] = $affitown_site[ $active_count ][ 'approval' ] * $product_info->price;
-
-                                    
+                                 
                                 } //$selector_for_site as $key => $value
-                                
+                                $affitown_site[ $active_count ][ 'approval_price' ] = $affitown_site[ $active_count ][ 'approval' ] * $product_info->price;
+
                                 $i++;
                                 $active_count++;
                             } //trim( $crawler_for_site->filter( '#all_display > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(2) > a' )->text() ) != "合計"

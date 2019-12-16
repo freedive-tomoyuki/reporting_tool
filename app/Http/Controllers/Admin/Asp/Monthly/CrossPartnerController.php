@@ -77,11 +77,11 @@ class CrossPartnerController extends MonthlyCrawlerController
 
                         $selector_this   = array(
                                 'approval' => 'table.highlight > tbody > tr:nth-child(2) > td:nth-child(11)',
-                                'approval_price' => 'table.highlight > tbody > tr:nth-child(2) > td:nth-child(12)'
+                                //'approval_price' => 'table.highlight > tbody > tr:nth-child(2) > td:nth-child(12)'
                         );
                         $selector_before   = array(
                                 'approval' => 'table.highlight > tbody > tr:nth-child(1) > td:nth-child(11)',
-                                'approval_price' => 'table.highlight > tbody > tr:nth-child(1) > td:nth-child(12)'
+                                //'approval_price' => 'table.highlight > tbody > tr:nth-child(1) > td:nth-child(12)'
                         );
 
                         /**
@@ -94,39 +94,56 @@ class CrossPartnerController extends MonthlyCrawlerController
                             $data[ 'asp' ]     = $product_info->asp_id;
                             $data[ 'product' ] = $product_info->id;
 
-                            foreach ( $selector_this as $key => $value ) {
-                                $data[ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
+                            $unit_price = $product_info->price;
+                            
+                            $data[ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
 
-                                if($key == 'approval_price'){
-                                    $data[ $key ]   = 
-                                        $this->monthlySearchService->calc_approval_price(
-                                            trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) ) ,2
-                                        );
-                                }
-                                else{
-                                    $data[ $key ]   = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
-                                }
+                            $data[ 'approval' ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $selector_this['approval'] )->text() ) );
+                            $data[ 'approval_price' ] = $data[ 'approval' ] * $unit_price;
 
-                            } 
-                            //先月分の承認件数と承認金額
-                            foreach ( $selector_before as $key => $value ) {
-                                //$data['last_date'] = date('Y-m-d', strtotime('last day of previous month'));
-                                if ( date( 'Y/m/d' ) == date( 'Y/m/01' ) ) {
-                                    $data[ 'last_date' ] = date( 'Y-m-t', strtotime( '-2 month' ) );
-                                } //date( 'Y/m/d' ) == date( 'Y/m/01' )
-                                else {
-                                    $data[ 'last_date' ] = date( 'Y-m-d', strtotime( 'last day of previous month' ) );
-                                }
+                            if ( date( 'Y/m/d' ) == date( 'Y/m/01' ) ) {
+                                $data[ 'last_date' ] = date( 'Y-m-t', strtotime( '-2 month' ) );
+                            }
+                            else {
+                                $data[ 'last_date' ] = date( 'Y-m-d', strtotime( 'last day of previous month' ) );
+                            }
+                            $data[ 'last_approval' ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $selector_before['approval']  )->text() ) );
+                            $data[ 'last_approval_price' ] = $data[ 'last_approval' ] * $unit_price;
+
+
+                            // foreach ( $selector_this as $key => $value ) {
+                            //     $data[ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
+
+                            //     if($key == 'approval_price'){
+                            //         $data[ $key ]   = 
+                            //             $this->monthlySearchService->calc_approval_price(
+                            //                 trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) ) ,2
+                            //             );
+                            //     }
+                            //     else{
+                            //         $data[ $key ]   = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
+                            //     }
+
+                            // } 
+                            // //先月分の承認件数と承認金額
+                            // foreach ( $selector_before as $key => $value ) {
+                            //     //$data['last_date'] = date('Y-m-d', strtotime('last day of previous month'));
+                            //     if ( date( 'Y/m/d' ) == date( 'Y/m/01' ) ) {
+                            //         $data[ 'last_date' ] = date( 'Y-m-t', strtotime( '-2 month' ) );
+                            //     } //date( 'Y/m/d' ) == date( 'Y/m/01' )
+                            //     else {
+                            //         $data[ 'last_date' ] = date( 'Y-m-d', strtotime( 'last day of previous month' ) );
+                            //     }
                                 
-                                //$data[ 'last_' . $key ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
-                                if($key == 'approval_price'){
-                                    $data[ 'last_' . $key ] = $this->monthlySearchService->calc_approval_price(trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) ) ,2);
-                                }
-                                else{
-                                    $data[ 'last_' . $key ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
-                                }
+                            //     //$data[ 'last_' . $key ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
+                            //     if($key == 'approval_price'){
+                            //         $data[ 'last_' . $key ] = $this->monthlySearchService->calc_approval_price(trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) ) ,2);
+                            //     }
+                            //     else{
+                            //         $data[ 'last_' . $key ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
+                            //     }
 
-                            } //$selector_before as $key => $value
+                            // } //$selector_before as $key => $value
                             return $data;
                         } );
 
@@ -171,11 +188,11 @@ class CrossPartnerController extends MonthlyCrawlerController
                                 $selector_for_site = array(
                                         'media_id'  =>'table.highlight > tbody > tr:nth-child('.$iPlus.')',
                                         'approval'       =>'table.highlight > tbody > tr:nth-child('.$iPlus.') > td:nth-child(8)',
-                                        'approval_price'     =>'table.highlight > tbody > tr:nth-child('.$iPlus.') > td:nth-child(13)',
+                                        //'approval_price'     =>'table.highlight > tbody > tr:nth-child('.$iPlus.') > td:nth-child(13)',
                                 );
 
                                 foreach($selector_for_site as $key => $value){
-                                    $crosspartner_site[$count]['date'] = $date ;
+                                    
 
                                     if($key == 'media_id' ){
                                         $member_id_array = array( );
@@ -189,6 +206,8 @@ class CrossPartnerController extends MonthlyCrawlerController
                                     }
 
                                 }
+                                $crosspartner_site[ $count ][ 'approval_price' ] = $crosspartner_site[ $count ][ 'approval' ] * $product_info->price;
+                                $crosspartner_site[ $count ][ 'date' ] = $date ;
 
                                 $count++;
                                 $iPlus++;
