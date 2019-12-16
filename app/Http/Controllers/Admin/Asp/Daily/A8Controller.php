@@ -121,7 +121,7 @@ class A8Controller extends DailyCrawlerController
 
                         //ルート②：セレクタをもとに抽出
                         $a8_data_2 = $crawler_2->each( function( Crawler $node ) use ($selector_2)
-                        {        
+                        {
                             foreach ( $selector_2 as $key => $value ) {
                                 $data[ $key ] = trim( $node->filter( $value )->text() );
                             }

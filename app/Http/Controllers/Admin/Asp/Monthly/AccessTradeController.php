@@ -74,11 +74,11 @@ class AccesstradeController extends MonthlyCrawlerController
                         }
                         $selector_this   = array(
                             'approval' => 'body > report-page > div > div > main > ng-component > section > div > div > div > display > div > table > tbody > tr:nth-child(' . $row_this . ') > td:nth-child(4)',
-                            'approval_price' => 'body > report-page > div > div > main > ng-component > section > div > div > div > display > div > table > tbody > tr:nth-child(' . $row_this . ') > td:nth-child(7)' 
+                            //'approval_price' => 'body > report-page > div > div > main > ng-component > section > div > div > div > display > div > table > tbody > tr:nth-child(' . $row_this . ') > td:nth-child(7)' 
                         );
                         $selector_before = array(
                             'approval' => 'body > report-page > div > div > main > ng-component > section > div > div > div > display > div > table > tbody > tr:nth-child(' . $row_before . ') > td:nth-child(4)',
-                            'approval_price' => 'body > report-page > div > div > main > ng-component > section > div > div > div > display > div > table > tbody > tr:nth-child(' . $row_before . ') > td:nth-child(7)' 
+                            //'approval_price' => 'body > report-page > div > div > main > ng-component > section > div > div > div > display > div > table > tbody > tr:nth-child(' . $row_before . ') > td:nth-child(7)' 
                         );
                         
                         //var_dump( $crawler );
@@ -92,40 +92,61 @@ class AccesstradeController extends MonthlyCrawlerController
                             $data              = array( );
                             $data[ 'asp' ]     = $product_info->asp_id;
                             $data[ 'product' ] = $product_info->id;
+                            $unit_price = $product_info->price;
                             //$data['date'] = date('Y-m-d', strtotime('-1 day'));
+
                             
-                            foreach ( $selector_this as $key => $value ) {
+                            // foreach ( $selector_this as $key => $value ) {
                                 $data[ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
 
-                                if($key == 'approval_price'){
-                                    $data[ $key ]   = 
-                                        $this->monthlySearchService->calc_approval_price(
-                                            trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) ) ,2
-                                        );
-                                }
-                                else{
-                                    $data[ $key ]   = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
-                                }
+                                // if($key == 'approval_price'){
+                                //     $data[ $key ]   = 
+                                //         $this->monthlySearchService->calc_approval_price(
+                                //             trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) ) ,2
+                                //         );
+                                // }
+                                // else{ 
+                                $value = $selector_this[ 'approval' ];
+                                $data[ 'approval' ]   = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
+                                // }
+                                $data[ 'approval_price' ] = $data[ 'approval' ] * $unit_price;
 
-                            } //$selector_this as $key => $value
-                            foreach ( $selector_before as $key => $value ) {
-                                //$data['last_date'] = date('Y-m-d', strtotime('last day of previous month'));
-                                if ( date( 'Y/m/d' ) == date( 'Y/m/01' ) ) {
-                                    $data[ 'last_date' ] = date( 'Y-m-t', strtotime( '-2 month' ) );
-                                } //date( 'Y/m/d' ) == date( 'Y/m/01' )
-                                else {
-                                    $data[ 'last_date' ] = date( 'Y-m-d', strtotime( 'last day of previous month' ) );
-                                }
+                            // }
+
+                            // foreach ( $selector_before as $key => $value ) {
+                            //     //$data['last_date'] = date('Y-m-d', strtotime('last day of previous month'));
+                            //     if ( date( 'Y/m/d' ) == date( 'Y/m/01' ) ) {
+                            //         $data[ 'last_date' ] = date( 'Y-m-t', strtotime( '-2 month' ) );
+                            //     } //date( 'Y/m/d' ) == date( 'Y/m/01' )
+                            //     else {
+                            //         $data[ 'last_date' ] = date( 'Y-m-d', strtotime( 'last day of previous month' ) );
+                            //     }
                                 
                                 //$data[ 'last_' . $key ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
-                                if($key == 'approval_price'){
-                                    $data[ 'last_' . $key ] = $this->monthlySearchService->calc_approval_price(trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) ) ,2);
-                                }
-                                else{
-                                    $data[ 'last_' . $key ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
-                                }
+                                // if($key == 'approval_price'){
+                                //     $data[ 'last_' . $key ] = $this->monthlySearchService
+                                //                                     ->calc_approval_price(
+                                //                                         trim( 
+                                //                                             preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) 
+                                //                                         ) 
+                                //                                     ,2);
+                                // }
+                                // else{
+                                // $data[ 'last_' . $key ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
+                                // }
+                            //     $data[ 'last_approval' ]
 
-                            } //$selector_before as $key => $value
+                            // }
+                            if ( date( 'Y/m/d' ) == date( 'Y/m/01' ) ) {
+                                $data[ 'last_date' ] = date( 'Y-m-t', strtotime( '-2 month' ) );
+                            } //date( 'Y/m/d' ) == date( 'Y/m/01' )
+                            else {
+                                $data[ 'last_date' ] = date( 'Y-m-d', strtotime( 'last day of previous month' ) );
+                            }
+                            $selector = $selector_before['approval'];
+                            $data[ 'last_approval' ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $selector )->text() ) );
+                            $data[ 'last_approval_price' ] = $data[ 'last_approval' ] * $unit_price;
+
                             return $data;
                             
                         } );
@@ -174,7 +195,8 @@ class AccesstradeController extends MonthlyCrawlerController
                                 $accesstrade_site[ $x ][ 'media_id' ]       = $site[ "partnerSiteId" ];
                                 $accesstrade_site[ $x ][ 'site_name' ]      = $site[ "partnerSiteName" ];
                                 $accesstrade_site[ $x ][ 'approval' ]       = $site[ "approvedCount" ];
-                                $accesstrade_site[ $x ][ 'approval_price' ] = $this->monthlySearchService->calc_approval_price($site[ "approvedTotalReward" ] ,2);
+                                // $accesstrade_site[ $x ][ 'approval_price' ] = $this->monthlySearchService->calc_approval_price($site[ "approvedTotalReward" ] ,2);
+                                $accesstrade_site[ $x ][ 'approval_price' ] = $product_info->price * $site[ "approvedCount" ];
                                 
                                 $x++;
                                 
