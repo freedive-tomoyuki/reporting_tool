@@ -250,10 +250,10 @@ class AfbController extends MonthlyCrawlerController
                                         $afb_site[ $y ][ $key ] = trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) );
                                         
                                     }
-
-                                    $afb_site[ $y ][ 'approval_price' ] = $afb_site[ $y ][ 'approval' ] * $product_info->price;
-                                
                                 } // endforeach 
+                                
+                                $afb_site[ $y ][ 'approval_price' ] = $afb_site[ $y ][ 'approval' ] * $product_info->price;
+
                                 $y++;
                                 $i++;
                             } // endfor
