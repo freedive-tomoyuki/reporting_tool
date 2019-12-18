@@ -184,6 +184,7 @@ return [
          * Package Service Providers...
          */
         //Maatwebsite\Excel\ExcelServiceProvider::class,
+        App\Providers\RepositoryServiceProvider::class,
     ],
 
     /*

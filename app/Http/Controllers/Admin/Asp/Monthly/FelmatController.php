@@ -144,7 +144,7 @@ class FelmatController extends MonthlyCrawlerController
                                 return $data;
                             });
                         }
-
+                        var_dump($felmat_data);
                         foreach ($felmat_data as $value){
                             array_push($felmat_data , $value[0]);
                         }
