@@ -216,22 +216,22 @@
                 <tbody>
                     <?php 
                       $i = 1; 
-                                      ?>
-                                    @foreach($products as $product)
+                     ?>
+                      @foreach($daily_data as $d)
                     <tr>
                         <td><?php echo $i; ?></td>
-                        <td>{{ $product->name }}</td>
-                        <td>{{ $product->date }}</td>
-                        <td>{{ number_format($product->imp) }}</td>
-                        <td>{{ number_format($product->ctr) }}</td>
-                        <td>{{ number_format($product->click) }}</td>
-                        <td>{{ number_format($product->cvr) }}</td>
-                        <td>{{ number_format($product->cv) }}</td>
-                        <td>{{ number_format($product->estimate_cv)  }}</td>
-                        <td>{{ number_format($product->active) }}</td>
-                        <td>{{ number_format($product->partnership) }}</td>
-                        <td>{{ number_format($product->cost) }}</td>
-                        <td>{{ number_format($product->cpa) }}</td>
+                        <td>{{ $d->name }}</td>
+                        <td>{{ $d->date }}</td>
+                        <td>{{ number_format($d->imp) }}</td>
+                        <td>{{ number_format($d->ctr) }}</td>
+                        <td>{{ number_format($d->click) }}</td>
+                        <td>{{ number_format($d->cvr) }}</td>
+                        <td>{{ number_format($d->cv) }}</td>
+                        <td>{{ number_format($d->estimate_cv)  }}</td>
+                        <td>{{ number_format($d->active) }}</td>
+                        <td>{{ number_format($d->partnership) }}</td>
+                        <td>{{ number_format($d->cost) }}</td>
+                        <td>{{ number_format($d->cpa) }}</td>
                         <?php $i++; ?>
                     </tr>
                     @endforeach

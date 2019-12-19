@@ -59,8 +59,8 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth:admin'], function() {
     Route::post( 'daily_result','Admin\DailyController@dailyResultSearch');
 
     //デイリーレポート（サイト別）一覧
-    Route::get( 'daily_result_site','Admin\DailyController@dailyResultSite')->name('admin.daily_result_site');
-    Route::post( 'daily_result_site','Admin\DailyController@dailyResultSiteSearch');
+    Route::get( 'daily_result_site','Admin\DailySiteController@dailyResultSite')->name('admin.daily_result_site');
+    Route::post( 'daily_result_site','Admin\DailySiteController@dailyResultSiteSearch');
 
     //日次編集
     Route::get('daily/edit/{id}','Admin\DailyController@show');

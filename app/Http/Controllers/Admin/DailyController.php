@@ -24,10 +24,10 @@ class DailyController extends Controller
 {
     private $dailyDataService;
 
-    public function __construct()
+    public function __construct(DailyDataService $dailyDataService)
     {
         $this->middleware('auth:admin');
-        $this->dailyDataService = new DailyDataService();
+        $this->dailyDataService = $dailyDataService;
     }
 
     /**
@@ -50,16 +50,16 @@ class DailyController extends Controller
         $asp_id = '';
         
         //Eloquentを利用して、dailydatasテーブルから案件ID＝１の昨日データ取得する。
-        $searchdate_start   = date("Y-m-1",strtotime('-1 day'));
-        $searchdate_end     = date("Y-m-d",strtotime('-1 day'));
+        $start   = date("Y-m-1",strtotime('-1 day'));
+        $end     = date("Y-m-d",strtotime('-1 day'));
 
-        [$products ,$daily_ranking , $total , $total_chart ] = $this->dailyDataService->showList( 3 , $searchdate_start , $searchdate_end, $asp_id );
+        [$daily_data ,$daily_ranking , $total , $total_chart ] = $this->dailyDataService->showList($asp_id , 3 , $start , $end );
 
         //VIEWを表示する。
-        if( $products->isEmpty() ){
+        if( !isset($daily_data) ){
             return view('admin.daily_error',compact('product_bases','asps','user','total'));
         }else{
-            return view('admin.daily',compact('products','product_bases','asps','daily_ranking','user','total','total_chart'));
+            return view('admin.daily',compact('daily_data','product_bases','asps','daily_ranking','user','total','total_chart'));
         }
     }
     /**
@@ -82,19 +82,19 @@ class DailyController extends Controller
         // $i = 0;
         $id = ($request->product != null)? $request->product : 1 ;
 
-        $searchdate_start =($request->searchdate_start != null)? $request->searchdate_start : date("Y-m-d",strtotime('-1 day'));
+        $start =($request->searchdate_start != null)? $request->searchdate_start : date("Y-m-d",strtotime('-1 day'));
         
-        $searchdate_end =($request->searchdate_end != null)? $request->searchdate_end : date("Y-m-d",strtotime('-1 day'));
+        $end =($request->searchdate_end != null)? $request->searchdate_end : date("Y-m-d",strtotime('-1 day'));
         
         $asp_id = ($request->asp_id != null)? $request->asp_id : "" ;
         
-        [$products ,$daily_ranking , $total , $total_chart ] = $this->dailyDataService->showList($id, $searchdate_start, $searchdate_end, $asp_id );
+        [$daily_data ,$daily_ranking , $total , $total_chart ] = $this->dailyDataService->showList($asp_id , $id, $start , $end  );
 
         //VIEWを表示する。
-        if( $products->isEmpty() ){
+        if( !isset($daily_data) ){
             return view('admin.daily_error',compact('product_bases','asps','user'));
         }else{
-            return view('admin.daily',compact('products','product_bases','asps','daily_ranking','user','total','total_chart'));
+            return view('admin.daily',compact('daily_data','product_bases','asps','daily_ranking','user','total','total_chart'));
         }
     }
     /**
@@ -105,37 +105,37 @@ class DailyController extends Controller
     *
     */
 
-    public function dailyResultSite() {
-        $user = Auth::user();
-        $asp_id = '';
+    // public function dailyResultSite() {
+    //     $user = Auth::user();
+    //     $asp_id = '';
 
-        //$month = date('Ym',strtotime('-1 day'));
-        $daily_site_diffs_table = date('Ym',strtotime('-1 day')).'_daily_site_diffs';
+    //     //$month = date('Ym',strtotime('-1 day'));
+    //     $daily_site_diffs_table = date('Ym',strtotime('-1 day')).'_daily_site_diffs';
 
-        /**
-        * プロダクト一覧を全て取得
-        */
-        $product_bases = ProductBase::where('killed_flag', '==' ,0 )->get();
-        /**
-        * ASP一覧を全て取得
-        */  
-        $asps = Asp::where('killed_flag', '==' ,0 )->get();
+    //     /**
+    //     * プロダクト一覧を全て取得
+    //     */
+    //     $product_bases = ProductBase::where('killed_flag', '==' ,0 )->get();
+    //     /**
+    //     * ASP一覧を全て取得
+    //     */  
+    //     $asps = Asp::where('killed_flag', '==' ,0 )->get();
 
-        $searchdate_start = date("Y-m-01",strtotime('-1 day'));
+    //     $searchdate_start = date("Y-m-01",strtotime('-1 day'));
         
-        $searchdate_end = date("Y-m-d",strtotime('-1 day'));
+    //     $searchdate_end = date("Y-m-d",strtotime('-1 day'));
 
-        [ $products ,$site_ranking  ] = $this->dailyDataService->showSiteList( 3, $searchdate_start, $searchdate_end, $asp_id );
+    //     [ $products ,$site_ranking  ] = $this->dailyDataService->showSiteList( 3, $searchdate_start, $searchdate_end, $asp_id );
         
-        //var_dump($products);
+    //     //var_dump($products);
         
-        //VIEWを表示する。
-        if( $products->isEmpty() ){
-           return view('admin.daily_error',compact('product_bases','asps','user'));
-        }else{
-           return view('admin.daily_site',compact('products','product_bases','asps','site_ranking','user'));
-        }
-    }
+    //     //VIEWを表示する。
+    //     if( $products->isEmpty() ){
+    //        return view('admin.daily_error',compact('product_bases','asps','user'));
+    //     }else{
+    //        return view('admin.daily_site',compact('products','product_bases','asps','site_ranking','user'));
+    //     }
+    // }
     /**
     *サイト別デイリーレポートの検索結果ページを表示。
     *表示データがない場合、エラーページを表示する。
@@ -144,30 +144,30 @@ class DailyController extends Controller
     *
     */
 
-    public function dailyResultSiteSearch(SearchDailySiteRequest $request) {
-        $user = Auth::user();
-        $request->flash();
-        $table2 = ''; //初期値
+    // public function dailyResultSiteSearch(SearchDailySiteRequest $request) {
+    //     $user = Auth::user();
+    //     $request->flash();
+    //     $table2 = ''; //初期値
 
-        $id = ($request->product != null)? $request->product : 1 ;
-        $searchdate_start =($request->searchdate_start != null)? $request->searchdate_start : date("Y-m-d", strtotime('-1 day'));
-        $searchdate_end =($request->searchdate_end != null)? $request->searchdate_end : date("Y-m-d", strtotime('-1 day'));
-        $asp_id = ($request->asp_id != null)? $request->asp_id : "" ;
+    //     $id = ($request->product != null)? $request->product : 1 ;
+    //     $searchdate_start =($request->searchdate_start != null)? $request->searchdate_start : date("Y-m-d", strtotime('-1 day'));
+    //     $searchdate_end =($request->searchdate_end != null)? $request->searchdate_end : date("Y-m-d", strtotime('-1 day'));
+    //     $asp_id = ($request->asp_id != null)? $request->asp_id : "" ;
 
-        //プロダクト一覧を全て取得
-        $product_bases = ProductBase::where('killed_flag', '==', 0)->get();
+    //     //プロダクト一覧を全て取得
+    //     $product_bases = ProductBase::where('killed_flag', '==', 0)->get();
         
-        //ASP一覧を全て取得
-        $asps = Asp::where('killed_flag', '==', 0)->get();
+    //     //ASP一覧を全て取得
+    //     $asps = Asp::where('killed_flag', '==', 0)->get();
 
-        [ $products ,$site_ranking  ] = $this->dailyDataService->showSiteList($id, $searchdate_start, $searchdate_end, $asp_id );
-        //VIEWを表示する。
-        if ($products->isEmpty()) {
-            return view('admin.daily_error', compact('product_bases', 'asps', 'user'));
-        } else {
-            return view('admin.daily_site', compact('products', 'product_bases', 'asps', 'site_ranking', 'user'));
-        }
-    }
+    //     [ $products ,$site_ranking  ] = $this->dailyDataService->showSiteList($id, $searchdate_start, $searchdate_end, $asp_id );
+    //     //VIEWを表示する。
+    //     if ($products->isEmpty()) {
+    //         return view('admin.daily_error', compact('product_bases', 'asps', 'user'));
+    //     } else {
+    //         return view('admin.daily_site', compact('products', 'product_bases', 'asps', 'site_ranking', 'user'));
+    //     }
+    // }
     /**
      * 編集画面
      */
@@ -215,25 +215,45 @@ class DailyController extends Controller
      */
     public function add(DailyDiffRequest $request ){
 
-        $product_id = Product::where('product_base_id',$request->product[0])
-                            ->where('asp_id',$request->asp[0])
-                            ->get()->toArray();
+        // $product_id = Product::where('product_base_id',$request->product[0])
+        //                     ->where('asp_id',$request->asp[0])
+        //                     ->get()->toArray();
         
-        DailyDiff::updateOrCreate(
-            ['date' => $request->date[0], 'product_id' => $product_id[0]['id'] ],
-            [
-                'imp' => $request->imp[0],
-                'ctr' => $request->ctr[0],
-                'click' => $request->click[0],
-                'cvr' => $request->cvr[0],
-                'cv' => $request->cv[0],
-                'active' => $request->active[0],
-                'partnership' => $request->partner[0],
-                'cost' => $request->cost[0],
-                'price' => $request->price[0],
-                'asp_id' => $request->asp[0]
-            ]
-        );
+        // DailyDiff::updateOrCreate(
+        //     ['date' => $request->date[0], 'product_id' => $product_id[0]['id'] ],
+        //     [
+        //         'imp' => $request->imp[0],
+        //         'ctr' => $request->ctr[0],
+        //         'click' => $request->click[0],
+        //         'cvr' => $request->cvr[0],
+        //         'cv' => $request->cv[0],
+        //         'active' => $request->active[0],
+        //         'partnership' => $request->partner[0],
+        //         'cost' => $request->cost[0],
+        //         'price' => $request->price[0],
+        //         'asp_id' => $request->asp[0]
+        //     ]
+        // );
+
+        $product_id = Product::where('product_base_id',$request->product[0])->where('asp_id',$request->asp[0])->get()->toArray();
+        
+        $date = $request->date[0];
+        $imp = $request->imp[0];
+        $ctr = $request->ctr[0];
+        $click = $request->click[0];
+        $cvr = $request->cvr[0];
+        $cv = $request->cv[0];
+        $cost = $request->cost[0];
+        $price = $request->price[0];
+        $asp = $request->asp[0];
+        $active = $request->active[0];
+        $partner = $request->partner[0];
+
+
+        //var_dump($product_id[0]["id"]);
+        $this->dailyDataService->addData( $date , $product_id[0]["id"] , $imp, $ctr, $click, $cvr, $cv ,$cost, $price ,$asp ,$active ,$partner);
+
+        return redirect('admin/daily_result');
 
     }
     /**

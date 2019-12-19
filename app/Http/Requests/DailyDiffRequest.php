@@ -22,7 +22,7 @@ class DailyDiffRequest extends FormRequest
     public function rules()
     {
         return [
-            'date.*' => 'required|numeric',
+            'date.*' => 'required|date',
             'asp.*' => 'required|numeric',
             'product.*' => 'required|numeric',
             'imp.*' => 'required|numeric',
