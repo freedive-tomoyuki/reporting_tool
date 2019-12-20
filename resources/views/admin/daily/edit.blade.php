@@ -90,7 +90,8 @@
 							</div>		
 						</div>
 					</form>
-			</div>			
+			</div>
+			@if(!$daily->isEmpty())
 			<div class="panel panel-default ">
 					<form action="{{ url('admin/daily/update/'.$products[0]->product_base_id ) }}" method="post" >
 						<div class="panel-heading">　日次データ修正　<input type="submit" class="btn btn-success pull-right" value="編集" ></div>
@@ -140,6 +141,7 @@
 						</div>		
 					</form>
 				</div>
+				@endif
 	</div>
 </div>
 @endsection

@@ -63,18 +63,18 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth:admin'], function() {
     Route::post( 'daily_result_site','Admin\DailySiteController@dailyResultSiteSearch');
 
     //日次編集
-    Route::get('daily/edit/{id}','Admin\DailyController@show');
-    Route::post('daily/update/{id}','Admin\DailyController@update');
+    Route::get('daily/edit/{id}','Admin\DailyController@dailyModify');
+    Route::post('daily/update/{id}','Admin\DailyController@dailyUpdate');
     
     //日次追加
-    Route::post('daily/add','Admin\DailyController@add');
+    Route::post('daily/add','Admin\DailyController@dailyAddition');
 
     //日次サイト編集
-    Route::get('daily/site/edit/{id?}','Admin\DailySiteController@show');
-    Route::post('daily/site/update/{id?}','Admin\DailySiteController@update');
+    Route::get('daily/site/edit/{id?}','Admin\DailySiteController@dailySiteModify');
+    Route::post('daily/site/update/{id?}','Admin\DailySiteController@dailySiteUpdate');
 
     //日次サイト追加
-    Route::post('daily/site/add','Admin\DailySiteController@add');
+    Route::post('daily/site/add','Admin\DailySiteController@dailySiteAddition');
 
     //マンスリーレポート一覧
     Route::get('monthly_result','Admin\MonthlyController@monthlyResult');
@@ -82,18 +82,18 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth:admin'], function() {
 
 
     //月次編集
-    Route::get('monthly/edit/{id?}','Admin\MonthlyController@show');
-    Route::post('monthly/update/{id?}','Admin\MonthlyController@update');
+    Route::get('monthly/edit/{id?}','Admin\MonthlyController@monthlyModify');
+    Route::post('monthly/update/{id?}','Admin\MonthlyController@monthlyUpdate');
 
     //月次追加
-    Route::post('monthly/add','Admin\MonthlySiteController@add');
+    Route::post('monthly/add','Admin\MonthlySiteController@monthlyAddition');
 
     //月次サイト編集
-    Route::get('monthly/site/edit/{id?}','Admin\MonthlySiteController@show');
-    Route::post('monthly/site/update/{id?}','Admin\MonthlySiteController@update');
+    Route::get('monthly/site/edit/{id?}','Admin\MonthlySiteController@monthlySiteModify');
+    Route::post('monthly/site/update/{id?}','Admin\MonthlySiteController@monthlySiteUpdate');
 
     //月次サイト追加
-    Route::post('monthly/site/add','Admin\MonthlySiteController@add');
+    Route::post('monthly/site/add','Admin\MonthlySiteController@monthlySiteAddition');
 
     // Route::post('monthly/edit','Admin\MonthlyController@search');
 

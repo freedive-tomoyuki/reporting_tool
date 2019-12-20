@@ -95,7 +95,7 @@
 						</div>
 					</form>
 			</div>	
-
+			@if(!$monthly->isEmpty())
 			<div class="panel panel-default ">
 			<form action="{{ url('admin/monthly/update/'. $products[0]->product_base_id ) }}" method="post" >
 				<div class="panel-heading">　月次データ修正<input type="submit" class="btn btn-success pull-right" value="編集" ></div>
@@ -103,7 +103,7 @@
 						<div class="table-responsive">
 							
 							@csrf
-							<input type="hidden" value="{{ $end_of_month }}" name="month">
+							<input type="hidden" value="{{ $selected_month }}" name="month">
 							<input type="hidden" value="{{ $selected_asp }}" name="asp">
 							<table class="table table-striped table-bordered table-hover table-sm sp-wide-tabel">
 								<thead>
@@ -153,6 +153,7 @@
 					</div>
 				</form>
 			</div>
+			@endif
 		</div>
 </div>
 @endsection

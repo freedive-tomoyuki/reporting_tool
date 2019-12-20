@@ -25,7 +25,9 @@ h2 {
   margin-bottom: 20px; }
 
 h3, h4 {
-  font-weight: 300; }
+  font-weight: 300;
+  margin-bottom: 24px;
+}
 
 .large {
   font-size: 2em; }

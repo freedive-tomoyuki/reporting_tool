@@ -20,17 +20,17 @@ class MonthlyController extends Controller
 {
     private $monthlyDataService;
     /**
-    　認証確認
+    *　認証確認
     */
-    public function __construct()
+    public function __construct(MonthlyDataService $monthlyDataService)
     {
         //$this->middleware('guest');
         $this->middleware('auth:admin');
-        $this->monthlyDataService = new MonthlyDataService();
+        $this->monthlyDataService = $monthlyDataService;
     }
 
     /**
-        月次の基本データ表示（デフォルト）
+     *   月次の基本データ表示（デフォルト）
     */
     public function monthlyResult() {
         $user = Auth::user();
@@ -40,7 +40,7 @@ class MonthlyController extends Controller
         $product_bases = ProductBase::where('killed_flag', '==' ,0 )->get();
         $asps = Asp::where('killed_flag', '==' ,0 )->get();
         
-        [ $products, $products_totals, $products_estimates, $products_estimate_totals, $chart_data]= $this->monthlyDataService->showList(3,$month);
+        [ $products, $products_totals, $products_estimates, $products_estimate_totals, $chart_data]= $this->monthlyDataService->showDataOfEdit(3,$month);
 
         if( $products->isEmpty() ){
         	return view('admin.daily_error',compact('product_bases','asps','user'));
@@ -49,8 +49,8 @@ class MonthlyController extends Controller
         }
     }
     /**
-    *    月次の基本データ表示（検索後）
-    */
+     *    月次の基本データ表示（検索後）
+     */
 	public function monthlyResultSearch(SearchMonthlyRequest $request) {
 
         $user = Auth::user();
@@ -62,6 +62,7 @@ class MonthlyController extends Controller
 
         $product_bases = ProductBase::where('killed_flag', '==' ,0 )->get();
         $asps = Asp::where('killed_flag', '==' ,0 )->get();
+
         [ $products, $products_totals, $products_estimates, $products_estimate_totals, $chart_data]= $this->monthlyDataService->showList($id,$month);
 
         if( $products->isEmpty() ){
@@ -73,7 +74,7 @@ class MonthlyController extends Controller
     /**
      * 編集画面
      */
-    public function show( Request $request , $id ){
+    public function monthlyModify( Request $request , $id ){
         
         $request->flash();
         $user = Auth::user();
@@ -82,7 +83,7 @@ class MonthlyController extends Controller
         $asps = new Asp();
         $asps = $asps->target_asp($id);
 
-        $end_of_month = (!$request->input('search_date'))? date('Y-m-d' ,strtotime('-1 day')) : date('Y-m-d', strtotime('last day of ' . $request->input('search_date')));
+        $selected_month = (!$request->input('search_date'))? date('Y-m-d' ,strtotime('-1 day')) : date('Y-m-d', strtotime('last day of ' . $request->input('search_date')));
 
         $selected_asp = (!$request->input('search_asp'))? '' : $request->input('search_asp');
 
@@ -93,8 +94,8 @@ class MonthlyController extends Controller
         }
 
         $monthly = MonthlyData::whereIn("product_id",$array_product_id);
-        if($end_of_month){
-            $monthly->where('date', '=' , $end_of_month);
+        if($selected_month){
+            $monthly->where('date', '=' , $selected_month);
         }
         if($selected_asp){
             $monthly->where('asp_id', '=' , $selected_asp);
@@ -102,13 +103,13 @@ class MonthlyController extends Controller
         $monthly = $monthly->get();
 
         // echo $monthly;
-        return view('admin.monthly.edit',compact('monthly','user','asps' ,'products','end_of_month','selected_asp'));
+        return view('admin.monthly.edit',compact('monthly','user','asps' ,'products','selected_month','selected_asp'));
     }
 
     /**
      * 追加実行
      */
-    public function add(MonthlyRequest $request ){
+    public function monthlyAddition(MonthlyRequest $request ){
 
         $product_id = Product::where('product_base_id',$request->product[0])
                             ->where('asp_id',$request->asp[0])
@@ -136,10 +137,11 @@ class MonthlyController extends Controller
         );
         return redirect('admin/monthly_result');
     }
+    
     /**
      * 編集実行
      */
-    public function update(MonthlyRequest $request, $id ){
+    public function monthlyUpdate(MonthlyRequest $request, $id ){
         //  var_dump($request);
 
         // if($request->month){
@@ -195,88 +197,6 @@ class MonthlyController extends Controller
         return redirect('admin/monthly_result');
         //return view('admin.monthly.edit',compact('monthly','user', 'asps'));
     }
-    /**
-    *サイト別デイリーレポートのデフォルトページを表示。
-    *表示データがない場合、エラーページを表示する。
-    *
-    *@return view
-    *
-    */
 
-    public function monthlyResultSite() {
-
-        $user = Auth::user();
-        
-        $month = date("Y-m-d", strtotime('-1 day'));
-        $monthly_sites_table = date('Ym',strtotime('-1 day')).'_monthlysites';
-        
-        // $products = DB::table($monthly_sites_table)
-        //             ->select(['name', 'imp', 'click','cv', 'cvr', 'ctr', 'media_id','site_name','products.product','products.id',DB::raw($monthly_sites_table.'.price'),'cpa','cost','estimate_cv','date','approval','approval_price','approval_rate'])
-        //             ->join('products',DB::raw($monthly_sites_table.'.product_id'),'=','products.id')
-        //             ->join('asps','products.asp_id','=','asps.id')
-        //             ->where('product_base_id', 3)
-        //             ->where('date', 'LIKE' , "%".date("Y-m-d", strtotime('-1 day'))."%")
-        //             ->get();
-        
-        //プロダクト一覧を全て取得
-        $product_bases = ProductBase::where('killed_flag', '==' ,0 )->get();
-        $asp_id = '';
-
-        //ASP一覧を全て取得
-        $asps = Asp::where('killed_flag', '==' ,0 )->get();
-        //var_dump($products);
-        
-        //日次のグラフ用データの一覧を取得する。
-        //$site_ranking = $this->monthlyRankingSite(3,date("Y-m-d", strtotime('-1 day')));
-        
-        [ $products , $site_ranking ] = $this->monthlyDataService->showSiteList( 3 , $month , $asp_id);
-
-
-        //VIEWを表示する。
-        if( $products->isEmpty() ){
-            return view('admin.daily_error',compact('product_bases','asps','user'));
-        }else{
-            return view('admin.monthly_site',compact('products','product_bases','asps','site_ranking','user'));
-        }
-    }
-
-    /**
-    *サイト別デイリーレポートの検索結果ページを表示。
-    *表示データがない場合、エラーページを表示する。
-    *@param request $request 検索データ（ASPID、日時（はじめ、おわり）案件ID）
-    *@return view
-    *
-    */
-
-    public function monthlyResultSiteSearch(SearchMonthlySiteRequest $request) {
-        $user = Auth::user();
-        $id = ($request->product != null)? $request->product : 3 ;
-
-        $month =($request->month != null)? $request->month : date("Y-m-d", strtotime('-1 day'));
-
-        $asp_id = ($request->asp_id != null)? $request->asp_id : "" ;
-
-        //echo $searchdate;
-                
-        //プロダクト一覧を全て取得
-        $product_bases = ProductBase::where('killed_flag', '==' ,0 )->get();
-
-        //ASP一覧を全て取得
-        $asps = Asp::where('killed_flag', '==' ,0 )->get();
-
-        $request->flash();
-
-        [ $products , $site_ranking ] = $this->monthlyDataService->showSiteList($id,$month,$asp_id);
-
-        
-        //VIEWを表示する。
-        if( $products->isEmpty() ){
-            return view('admin.daily_error',compact('product_bases','asps','user'));
-        }else{
-            return view('admin.monthly_site',compact('products','product_bases','asps','site_ranking','user'));
-        }
-
-
-    }
 
 }
