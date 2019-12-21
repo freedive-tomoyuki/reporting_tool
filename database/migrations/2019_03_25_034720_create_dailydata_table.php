@@ -24,7 +24,7 @@ class CreateDailydataTable extends Migration
             $table->Integer('partnership');
             $table->Integer('asp_id');
             $table->Integer('product_id');
-            $table->Integer('killed_flag');
+            $table->Integer('killed_flag')->nullable()->default(0);
             $table->timestamps();
         });
     }
