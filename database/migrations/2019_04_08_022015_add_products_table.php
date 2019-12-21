@@ -19,7 +19,7 @@ class AddProductsTable extends Migration
             $table->Integer('asp_product_id')->after('password_value')->nullable();
             $table->Integer('asp_sponsor_id')->after('asp_product_id')->nullable();
             $table->Integer('product_order')->after('asp_sponsor_id')->nullable();
-            $table->Integer('price')->nullable()->default(0);
+            $table->Integer('price')->nullable()->default(0)->unsigned();
 
         });
     }
