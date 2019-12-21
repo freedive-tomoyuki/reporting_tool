@@ -17,7 +17,8 @@ class AddProductsTable extends Migration
             $table->BigInteger('product_base_id')->unsigned();
             $table->foreign('product_base_id')->references('id')->on('product_bases');
             $table->Integer('asp_product_id')->after('password_value')->nullable();
-            $table->Integer('asp_sponsor_id')->after('password_value')->nullable();
+            $table->Integer('asp_sponsor_id')->after('asp_product_id')->nullable();
+            $table->Integer('product_order')->after('asp_sponsor_id')->nullable();
             $table->Integer('price')->nullable()->default(0);
 
         });
