@@ -16,7 +16,7 @@ class CreateProductsAspTable extends Migration
         Schema::create('products_asp', function (Blueprint $table) {
             $table->increments('id');
             $table->Integer('asp_id')->unsigned();
-            $table->foreign('asp_id')->references('id')->on('asp');
+            $table->foreign('asp_id')->references('id')->on('asps');
             $table->Integer('product_id')->unsigned();
             $table->foreign('product_id')->references('id')->on('products');
             $table->timestamps();
