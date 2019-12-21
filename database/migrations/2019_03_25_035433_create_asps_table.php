@@ -13,7 +13,7 @@ class CreateAspTable extends Migration
      */
     public function up()
     {
-        Schema::create('asp', function (Blueprint $table) {
+        Schema::create('asps', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
             $table->Integer('killed_flag');
@@ -28,6 +28,6 @@ class CreateAspTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('asp');
+        Schema::dropIfExists('asps');
     }
 }
