@@ -249,10 +249,10 @@ class FelmatController extends MonthlyCrawlerController
                             
                         }
 
-                        // echo "<pre>";
-                        // var_dump($felmat_data);
-                        // var_dump($felmat_site);
-                        // echo "</pre>";
+                        echo "<pre>";
+                        var_dump($felmat_data);
+                        var_dump($felmat_site);
+                        echo "</pre>";
                         /*
                         サイトデータ・日次データ保存
                         */
