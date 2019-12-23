@@ -114,7 +114,7 @@ class FelmatController extends MonthlyCrawlerController
 
 
                             //今月・先月用のデータ取得selector
-                            $felmat_data[$x] = $crawler->each( function( Crawler $node ) use ($selector, $product_info, $end){
+                            $crawler_data[$x] = $crawler->each( function( Crawler $node ) use ($selector, $product_info, $end){
                                 
                                 $data              = array( );
                                 $data[ 'asp' ]     = $product_info->asp_id;
@@ -144,8 +144,8 @@ class FelmatController extends MonthlyCrawlerController
                                 return $data;
                             });
                         }
-                        var_dump($felmat_data);
-                        foreach ($felmat_data as $value){
+                        var_dump($crawler_data);
+                        foreach ($crawler_data as $value){
                             array_push($felmat_data , $value[0]);
                         }
                         // $crawler サイト用　をフィルタリング
