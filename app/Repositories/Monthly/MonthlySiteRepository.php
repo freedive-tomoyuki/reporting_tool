@@ -31,7 +31,7 @@ class MonthlySiteRepository implements MonthlySiteRepositoryInterface
         $monthly_sites_table = date('Ym',strtotime($selected_date)).'_monthlysites';
 
         $this->monthly_site = DB::table($monthly_sites_table)
-                ->select(['name', 'imp', 'click','cv', 'cvr', 'ctr', 'media_id','site_name','products.product','products.id',DB::raw($monthly_sites_table.'.price'),'cpa','cost','estimate_cv','date','approval','approval_price','approval_rate','products.asp_id'])
+                ->select([DB::raw($monthly_sites_table.'.id as mid'),'name', 'imp', 'click','cv', 'cvr', 'ctr', 'media_id','site_name','products.product','products.id',DB::raw($monthly_sites_table.'.price'),'cpa','cost','estimate_cv','date','approval','approval_price','approval_rate','products.asp_id'])
                 ->join('products',DB::raw($monthly_sites_table.'.product_id'),'=','products.id')
                 ->join('asps','products.asp_id','=','asps.id');
 
@@ -50,6 +50,95 @@ class MonthlySiteRepository implements MonthlySiteRepositoryInterface
         $monthly_site = $this->monthly_site->get();//->toArray();
         return $monthly_site;   
     }
+    /**
+     * Undocumented function
+     *
+     * @param [type] $date
+     * @param [type] $product_id
+     * @param [type] $imp
+     * @param [type] $ctr
+     * @param [type] $click
+     * @param [type] $cvr
+     * @param [type] $cv
+     * @param [type] $cost
+     * @param [type] $price
+     * @param [type] $asp
+     * @param [type] $media_id
+     * @param [type] $site_name
+     * @return void
+     */
+    public function addData($date , $product_id , $imp, $ctr, $click, $cvr, $cv ,$cost, $price ,$asp ,$media_id,$site_name ,$approval,$approval_price ,$approval_rate)
+    {
+        $month = date('Ym',strtotime($date));
+        $monthly_site_table = $month.'_monthlysites';
+
+        return DB::table($monthly_site_table)
+        ->updateOrInsert(
+            [
+                'product_id' => $product_id ,
+                'media_id' => $media_id ,
+                'date' => $date 
+            ],
+            [
+                'site_name' => $site_name,
+                'imp' => $imp,
+                'ctr' => $ctr,
+                'click' => $click,
+                'cvr' => $cvr,
+                'cv' => $cv,
+                'cost' => $cost,
+                'price' => $price,
+                'cost' => $cost,
+                'price' => $price,
+                'approval' => $approval,
+                'approval_price' => $approval_price,
+                'approval_rate' => $approval_rate
+            ]);
+        
+    }
+    public function updateData($selected_month , $all_post_data)
+    {
+        $month = date('Ym',strtotime($selected_month));
+        $monthly_site_table = $month.'_monthlysites';
+
+        // DB::table($monthly_site_table)
+
+        $monthly = DB::table($monthly_site_table)
+                    ->whereIn("id", $all_post_data->media_array)->get();
+ 
+        foreach ($monthly as $p) {
+            $key = hash('md5', $p->id);
+            $killed_flag = ($all_post_data->delete[$key] == 'on')? 1 : 0 ;
+
+            $monthly = DB::table($monthly_site_table)
+            ->updateOrInsert(
+                [
+                    'id' => $p->id ,
+                ],
+                [
+                    'media_id' => $all_post_data->media_id[$key] ,
+                    'site_name' => $all_post_data->site_name[$key],
+                    'imp' => $all_post_data->imp[$key],
+                    'ctr' => $all_post_data->ctr[$key],
+                    'click' => $all_post_data->click[$key],
+                    'cvr' => $all_post_data->cvr[$key],
+                    'cv' => $all_post_data->cv[$key],
+                    'cost' => $all_post_data->cost[$key],
+                    'price' => $all_post_data->price[$key],
+                    'cost' => $all_post_data->cost[$key],
+                    'price' => $all_post_data->price[$key],
+                    'approval' => $all_post_data->approval[$key],
+                    'approval_price' => $all_post_data->approval_price[$key],
+                    'approval_rate' => $all_post_data->approval_rate[$key],
+                    'killed_flag' => $killed_flag ,
+                    
+                ]);
+
+        }
+        return false; 
+    }
+    
+
     /**
      * 月別ランキング一覧取得
      *

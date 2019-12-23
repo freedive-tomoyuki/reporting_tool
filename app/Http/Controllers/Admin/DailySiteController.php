@@ -177,48 +177,12 @@ class DailySiteController extends Controller
      */
     public function dailySiteUpdate(DailySiteDiffRequest $request, $id){
         //  var_dump($request);
+        $all_post_data = (isset($request))? $request : '' ;
 
-        $start = (!$request->month)? date('Y-m-01') : date('Y-m-d', strtotime('first day of ' . $request->month)) ;
-        $end = (!$request->month)? date('Y-m-d' ,strtotime('-1 day')) : date('Y-m-d', strtotime('last day of ' . $request->month));
+        $this->dailySiteDataService->updateSiteData( $id , $all_post_data ); 
 
-        $selected_asp = (!$request->asp)? '' : $request->asp;
-
-        $products = Product::select('id')->where('product_base_id',$id)->where('killed_flag', '==' ,0 )->get();
-        
-        $daily = DailyData::whereIn("product_id", $products);
-                            if($start){
-                                $daily->where('date', '>=' , $start);
-                            }
-                            if($end){
-                                $daily->where('date', '<=' , $end);
-                            }
-                            if($selected_asp){
-                                $daily->where('asp_id', '=' , $selected_asp);
-                            }
-        
-                            $daily = $daily->get();
-        
-        foreach($daily as $p){
-            $update_daily = DailyData::find($p->id) ;
-            $request_key = hash('md5',$p->id);
-
-            $update_daily->imp = $request->imp[$request_key];
-            $update_daily->ctr = $request->ctr[$request_key];
-            $update_daily->click = $request->click[$request_key];
-            $update_daily->cvr = $request->cvr[$request_key];
-            $update_daily->cv = $request->cv[$request_key];
-            $update_daily->active = $request->active[$request_key];
-            $update_daily->partnership = $request->partner[$request_key];
-            $update_daily->cost = $request->cost[$request_key];
-            $update_daily->price = $request->price[$request_key];
-            if($request->delete[$request_key] == 'on' ){
-                $update_daily->killed_flag = 1;
-            }
-            $update_daily->save();
-            
-        }
         return redirect('admin/daily_result');
-        //return view('admin.monthly.edit',compact('monthly','user'));
+
     }
 
 

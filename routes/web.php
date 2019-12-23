@@ -47,11 +47,11 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth:admin'], function() {
     //Route::get('daily_result',      'Admin\DailyController@index')->name('admin.daily_result');
 
     //デイリーレポート実行画面
-    Route::get('daily_report','Admin\DailyCrawlerController@index')->name('admin.crawlerdaily');
+    Route::get('exec','Admin\DailyCrawlerController@index')->name('admin.crawlerdaily');
     Route::get('daily_report_comp','Admin\DailyCrawlerController@complete')->name('admin.crawlerdaily_com');
 
     //デイリーレポート実行
-    Route::post('daily_report','Admin\DailyCrawlerController@run');
+    Route::post('exec','Admin\DailyCrawlerController@run');
     Route::post('monthly_report','Admin\MonthlyCrawlerController@run')->name('admin.crawlermonthly');
 
     //デイリーレポート一覧
@@ -86,7 +86,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth:admin'], function() {
     Route::post('monthly/update/{id?}','Admin\MonthlyController@monthlyUpdate');
 
     //月次追加
-    Route::post('monthly/add','Admin\MonthlySiteController@monthlyAddition');
+    Route::post('monthly/add','Admin\MonthlyController@monthlyAddition');
 
     //月次サイト編集
     Route::get('monthly/site/edit/{id?}','Admin\MonthlySiteController@monthlySiteModify');

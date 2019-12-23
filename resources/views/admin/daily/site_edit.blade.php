@@ -125,8 +125,9 @@
 								<tbody>
 								@if(isset($daily_sites))
 									@foreach($daily_sites as $s)
+									<input type="hidden" name="media_array[]" class="form-control" value="{{ $s->mid }}" >
 										<tr>
-											@php $str = hash('md5', $s->id) @endphp
+											@php $str = hash('md5', $s->mid) @endphp
 											<td>{{ $s->date }}</td>
 											<td><input type="text" id="media_id-{{ $str}}" name="media_id[{{ $str }}]" class="form-control" value="{{ $s->media_id }}" ></td>
 											<td><input type="text" id="site_name-{{ $str}}" name="site_name[{{ $str }}]" class="form-control" value="{{ $s->site_name }}"></td>

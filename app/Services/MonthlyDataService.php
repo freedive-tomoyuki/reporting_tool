@@ -62,5 +62,27 @@ class MonthlyDataService
             
         return [ $products, $products_totals, $estimates, $estimate_totals, $chart_data];
     }
+    public function addData(  $month , $product_id , $imp, $ctr, $click, $cvr, $cv ,$cost, $price ,$asp ,$active ,$partnership, $approval ,$approval_price ,$approval_rate)
+    {
+
+        $daily_data = $this->monthly_repo->addData($month , $product_id , $imp, $ctr, $click, $cvr, $cv ,$cost, $price ,$asp ,$active ,$partnership, $approval ,$approval_price ,$approval_rate);
+        
+        // 日次のグラフ用データの一覧を取得する。
+        //$site_ranking = $this->dailyRankingSite($id, $searchdate_start, $searchdate_end, $asp_id);
+
+        return $daily_data;
+    }
+    public function updateData( $id , $all_post_data )
+    {
+        $products = Product::select('id')->where('product_base_id', $id)->where('killed_flag', '==', 0)->get();
+
+        $month = (!$all_post_data->month)? '' : $all_post_data->month;
+
+        $selected_asp = (!$all_post_data->asp)? '' : $all_post_data->asp;
+
+        // $this->daily_repo->updateData( $start , $end , $selected_asp , $id , $all_post_data, $products);
+        return $this->monthly_repo->updateData( $month , $selected_asp , $all_post_data, $products);
+
+    }
 
 }

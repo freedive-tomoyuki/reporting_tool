@@ -116,25 +116,26 @@ class MonthlyController extends Controller
                             ->get()->toArray();
         $month = date('Y-m-t', strtotime($request->date[0]));
 
-        Monthlydata::updateOrCreate(
-            ['date' =>  $month , 'product_id' => $product_id[0]['id'] ],
-            [
-                'asp_id' => $request->asp[0],
-                'imp' => $request->imp[0],
-                'ctr' => $request->ctr[0],
-                'click' => $request->click[0],
-                'cvr' => $request->cvr[0],
-                'cv' => $request->cv[0],
-                'active' => $request->active[0],
-                'partnership' => $request->partner[0],
-                'cost' => $request->cost[0],
-                'price' => $request->price[0],
-                'approval' => $request->approval[0],
-                'approval_price' => $request->approval_price[0],
-                'approval_rate' => $request->approval_rate[0]
+        $asp_id = $request->asp[0];
+        //$date = $request->date[0];
+        $imp = $request->imp[0];
+        $ctr = $request->ctr[0];
+        $click = $request->click[0];
+        $cvr = $request->cvr[0];
+        $cv = $request->cv[0];
+        $active = $request->active[0];
+        $partnership = $request->partner[0];
+        $cost = $request->cost[0];
+        $price = $request->price[0];
+        $asp = $request->asp[0];
+        $approval = $request->approval[0];
+        $approval_price = $request->approval_price[0];
+        $approval_rate = $request->approval_rate[0];
 
-            ]
-        );
+        $this->monthlyDataService->addData( 
+            $month , $product_id[0]["id"] , $imp, $ctr, $click, $cvr, $cv ,$cost, $price ,$asp ,$active ,$partnership, $approval ,$approval_price, $approval_rate);
+            
+        
         return redirect('admin/monthly_result');
     }
     
@@ -142,57 +143,11 @@ class MonthlyController extends Controller
      * 編集実行
      */
     public function monthlyUpdate(MonthlyRequest $request, $id ){
-        //  var_dump($request);
 
-        // if($request->month){
-        //     $end_of_month = date('Y-m-d', strtotime('last day of ' . $request->input('search_date')));
-        //     $search_date = $request->input('search_date');
-        // }else{
-        //     $end_of_month = date('Y-m-d' ,strtotime('-1 day')) ;
-        //     $search_date = date('Y-m' ,strtotime('-1 day'));
-        // }
-        $end_of_month = (!$request->month)? '' : $request->month;
-        $selected_asp = (!$request->asp)? '' : $request->asp;
+        $all_post_data = (isset($request))? $request : '' ;
 
-        $products = Product::select('id')
-                            ->where('product_base_id',$id) 
-                            ->where('killed_flag', '==' ,0 )
-                            ->get();
 
-        $monthly = MonthlyData::whereIn("product_id",$products);
-                            // ->whereIn("date",$target_array)
-                            if($end_of_month){
-                                $monthly->where('date', '=' , $end_of_month);
-                            }
-                            if($selected_asp){
-                                $monthly->where('asp_id', '=' , $selected_asp);
-                            }
-                            $monthly = $monthly->get();
-
-        foreach($monthly as $p){
-            //var_dump($p) ;
-            $update_monthly = MonthlyData::find($p->id) ;
-            $request_key = hash('md5',$p->id);
-            $update_monthly->imp = $request->imp[$request_key];
-            $update_monthly->ctr = $request->ctr[$request_key];
-            $update_monthly->click = $request->click[$request_key];
-            $update_monthly->cvr = $request->cvr[$request_key];
-            $update_monthly->cv = $request->cv[$request_key];
-            $update_monthly->active = $request->active[$request_key];
-            $update_monthly->partnership = $request->partner[$request_key];
-            $update_monthly->cost = $request->cost[$request_key];
-            $update_monthly->price = $request->price[$request_key];
-            $update_monthly->approval = $request->approval[$request_key];
-            $update_monthly->approval_price = $request->approval_price[$request_key];
-            $update_monthly->approval_rate = $request->approval_rate[$request_key];
-
-            if($request->delete[$request_key] == 'on' ){
-                $update_monthly->killed_flag = 1;
-            }
-
-            $update_monthly->save();
-            
-        }
+        $this->monthlyDataService->updateData( $id , $all_post_data);
 
         return redirect('admin/monthly_result');
         //return view('admin.monthly.edit',compact('monthly','user', 'asps'));

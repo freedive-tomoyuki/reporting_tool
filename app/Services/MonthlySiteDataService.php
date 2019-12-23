@@ -68,5 +68,28 @@ class MonthlySiteDataService
 
     }
 
+    public function addSiteData($date , $product_id , $imp, $ctr, $click, $cvr, $cv ,$cost, $price ,$asp ,$media_id,$site_name ,$approval,$approval_price ,$approval_rate) {
+        //echo $date;
+        $this->monthly_site_repo->addData($date , $product_id , $imp, $ctr, $click, $cvr, $cv ,$cost, $price ,$asp ,$media_id,$site_name ,$approval,$approval_price ,$approval_rate);
+
+        return false;
+
+    }
+    public function updateSiteData($id , $all_post_data ) {
+ 
+        // $products = Product::select('id')
+        //                 ->where('product_base_id', $id)
+        //                 ->where('killed_flag', '==', 0)
+        //                 ->get();
+
+        $selected_month = (!$all_post_data->month)? '' : $all_post_data->month;
+        // $selected_asp   = (!$all_post_data->asp)? '' : $all_post_data->asp;
+
+        
+        $this->monthly_site_repo->updateData( $selected_month , $all_post_data);
+
+        return false;
+    }
+
 
 }

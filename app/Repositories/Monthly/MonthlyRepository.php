@@ -182,4 +182,65 @@ class MonthlyRepository implements MonthlyRepositoryInterface
         $chart_data = $chart_data->get();
         return $chart_data;
     }
+
+    public function addData($month , $product_id , $imp, $ctr, $click, $cvr, $cv ,$cost, $price ,$asp ,$active ,$partner, $approval ,$approval_price ,$approval_rate)
+    {
+        return $this->monthlyModel->updateOrCreate(
+            ['date' =>  $month , 'product_id' => $product_id ],
+            [
+                'asp_id' => $asp,
+                'imp' => $imp,
+                'ctr' => $ctr,
+                'click' => $click,
+                'cvr' => $cvr,
+                'cv' => $cv,
+                'active' => $active,
+                'partnership' => $partner,
+                'cost' => $cost,
+                'price' => $price,
+                'approval' => $approval,
+                'approval_price' => $approval_price,
+                'approval_rate' => $approval_rate
+
+            ]
+        );
+    }
+    public function updateData($month , $selected_asp , $all_post_data, $products)
+    {
+       $update =  $this->monthlyModel->whereIn("product_id",$products);
+                // ->whereIn("date",$target_array)
+                if($month){
+                    $update->where('date', '=' , $month);
+                }
+                if($selected_asp){
+                    $update->where('asp_id', '=' , $selected_asp);
+                }
+                $update = $update->get();
+
+        foreach ($update as $p) {
+            //var_dump($p) ;
+            $update_monthly = $this->monthlyModel->find($p->id) ;
+            $key = hash('md5', $p->id);
+            $update_monthly->imp = $all_post_data->imp[$key];
+            $update_monthly->ctr = $all_post_data->ctr[$key];
+            $update_monthly->click = $all_post_data->click[$key];
+            $update_monthly->cvr = $all_post_data->cvr[$key];
+            $update_monthly->cv = $all_post_data->cv[$key];
+            $update_monthly->active = $all_post_data->active[$key];
+            $update_monthly->partnership = $all_post_data->partner[$key];
+            $update_monthly->cost = $all_post_data->cost[$key];
+            $update_monthly->price = $all_post_data->price[$key];
+            $update_monthly->approval = $all_post_data->approval[$key];
+            $update_monthly->approval_price = $all_post_data->approval_price[$key];
+            $update_monthly->approval_rate = $all_post_data->approval_rate[$key];
+
+            if ($all_post_data->delete[$key] == 'on') {
+                $update_monthly->killed_flag = 1;
+            }
+
+            $update_monthly->save();
+        }
+        return false;
+    }
+
 }

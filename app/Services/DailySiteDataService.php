@@ -86,4 +86,20 @@ class DailySiteDataService
 
                 return $daily_sites_data;
             }
+
+            public function updateSiteData($id , $all_post_data ) {
+ 
+                // $products = Product::select('id')
+                //                 ->where('product_base_id', $id)
+                //                 ->where('killed_flag', '==', 0)
+                //                 ->get();
+        
+                $selected_month = (!$all_post_data->month)? '' : $all_post_data->month;
+                // $selected_asp   = (!$all_post_data->asp)? '' : $all_post_data->asp;
+        
+                
+                $this->daily_site_repo->updateData( $selected_month , $all_post_data);
+        
+                return false;
+            }
 }

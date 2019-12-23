@@ -59,7 +59,7 @@ class DailySiteRepository implements DailySiteRepositoryInterface
         
                 //開始月の検索　クエリビルダ
                 $daily_site = DB::table($daily_site_diffs_table)
-                                    ->select(['name', 'imp', 'click','cv', 'cvr', 'ctr', 'media_id','site_name','date','products.product','products.id',DB::raw($daily_site_diffs_table.'.price'),'cpa','cost','estimate_cv','products.asp_id'])
+                                    ->select([DB::raw($daily_site_diffs_table.'.id as mid'),'name', 'imp', 'click','cv', 'cvr', 'ctr', 'media_id','site_name','date','products.product','products.id',DB::raw($daily_site_diffs_table.'.price'),'cpa','cost','estimate_cv','products.asp_id'])
                                     ->join('products', DB::raw($daily_site_diffs_table.'.product_id'), '=', 'products.id')
                                     ->join('asps', 'products.asp_id', '=', 'asps.id');
         
@@ -110,6 +110,45 @@ class DailySiteRepository implements DailySiteRepositoryInterface
                 'price' => $price
             ]);
         
+    }
+
+    public function updateData($selected_month , $all_post_data)
+    {
+        $month = date('Ym',strtotime($selected_month));
+        $daily_site_diffs_table = $month.'_daily_site_diffs';
+
+        // DB::table($monthly_site_table)
+
+        $daily = DB::table($daily_site_diffs_table)
+                    ->whereIn("id", $all_post_data->media_array)->get();
+ 
+        foreach ($daily as $p) {
+            $key = hash('md5', $p->id);
+            $killed_flag = ($all_post_data->delete[$key] == 'on')? 1 : 0 ;
+
+            $daily = DB::table($daily_site_diffs_table)
+            ->updateOrInsert(
+                [
+                    'id' => $p->id ,
+                ],
+                [
+                    'media_id' => $all_post_data->media_id[$key] ,
+                    'site_name' => $all_post_data->site_name[$key],
+                    'imp' => $all_post_data->imp[$key],
+                    'ctr' => $all_post_data->ctr[$key],
+                    'click' => $all_post_data->click[$key],
+                    'cvr' => $all_post_data->cvr[$key],
+                    'cv' => $all_post_data->cv[$key],
+                    'cost' => $all_post_data->cost[$key],
+                    'price' => $all_post_data->price[$key],
+                    'cost' => $all_post_data->cost[$key],
+                    'price' => $all_post_data->price[$key],
+                    'killed_flag' => $killed_flag ,
+                    
+                ]);
+
+        }
+        return false; 
     }
 
     public function getRanking($selected_asp, $id, $start, $end )

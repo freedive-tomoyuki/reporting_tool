@@ -3,7 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-class DailySiteDiffRequest extends FormRequest
+class MonthlySiteRequest extends FormRequest
 {
     /**
     * Determine if the user is authorized to make this request.
@@ -34,9 +34,6 @@ class DailySiteDiffRequest extends FormRequest
             'cv.*' => 'required|numeric',
             'cost.*' => 'nullable|numeric',
             'price.*' => 'nullable|numeric',
-            'approval.*' => 'nullable|numeric',
-            'approval_price.*' => 'nullable|numeric',
-            'approval_rate.*' => 'nullable|numeric',
         ];
     }
     public function attributes()
@@ -53,10 +50,7 @@ class DailySiteDiffRequest extends FormRequest
             'cvr.*' => 'CVR',
             'cv.*' => 'CV',
             'cost.*' => 'ASP単価',
-            'price.*' => 'FD単価',
-            'approval.*' => '承認件数',
-            'approval_price.*' => '承認金額',
-            'approval_rate.*' => '承認率',
+            'price.*' => 'FD単価'
             
         ];
     }  

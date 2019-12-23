@@ -47,7 +47,7 @@ class DailyRepository implements DailyRepositoryInterface
         if(!empty($end)){
             $daily_data->where('daily_diffs.date', '<=' , $end );
         }
-        $daily_data = $daily_data->get()->toArray();
+        $daily_data = $daily_data->get();
 
         return $daily_data;
     }
@@ -205,7 +205,44 @@ class DailyRepository implements DailyRepositoryInterface
                 ]
             );
     }
+    public function updateData($start , $end , $selected_asp , $id , $all_post_data, $products)
+    {
+       $update =  $this->dailyModel->whereIn("product_id", $products);
+                if ($start) {
+                    $update->where('date', '>=', $start);
+                }
+                if ($end) {
+                    $update->where('date', '<=', $end);
+                }
+                if ($selected_asp) {
+                    $update->where('asp_id', '=', $selected_asp);
+                }
+                
+                $update = $update->get();
+        //var_dump($all_post_data);      
 
+        foreach ($update as $p) {
+
+                $update_daily = $this->dailyModel->find($p->id) ;
+                $key = hash('md5', $p->id);
+                $update_daily->imp = $all_post_data->imp[$key];
+                $update_daily->ctr = $all_post_data->ctr[$key];
+                $update_daily->click = $all_post_data->click[$key];
+                $update_daily->cvr = $all_post_data->cvr[$key];
+                $update_daily->cv = $all_post_data->cv[$key];
+                $update_daily->active = $all_post_data->active[$key];
+                $update_daily->partnership = $all_post_data->partner[$key];
+                $update_daily->cost = $all_post_data->cost[$key];
+                $update_daily->price = $all_post_data->price[$key];
+
+                if ($all_post_data->delete[$key] == 'on') {
+                    $update_daily->killed_flag = 1;
+                }
+                
+                $update_daily->save();
+        }
+        return false;
+    }
     public function getRanking($selected_asp, $id, $start, $end )
     {
         $i = 0;
