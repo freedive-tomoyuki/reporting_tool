@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddDailyEstimateTotalsTable extends Migration
+class AddProductsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,14 @@ class AddDailyEstimateTotalsTable extends Migration
      */
     public function up()
     {
-        Schema::table('daily_estimate_totals', function (Blueprint $table) {
+        Schema::table('products', function (Blueprint $table) {
             $table->BigInteger('product_base_id')->unsigned();
             $table->foreign('product_base_id')->references('id')->on('product_bases');
+            $table->Integer('asp_product_id')->after('password_value')->nullable();
+            $table->Integer('asp_sponsor_id')->after('asp_product_id')->nullable();
+            $table->Integer('product_order')->after('asp_sponsor_id')->nullable();
+            $table->Integer('price')->nullable()->default(0)->unsigned();
+
         });
     }
 
@@ -26,8 +31,6 @@ class AddDailyEstimateTotalsTable extends Migration
      */
     public function down()
     {
-        Schema::table('daily_estimate_totals', function (Blueprint $table) {
-            //
-        });
+ 
     }
 }

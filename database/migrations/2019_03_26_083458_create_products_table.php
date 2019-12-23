@@ -18,7 +18,7 @@ class CreateProductsTable extends Migration
             $table->increments('id');
             $table->String('product');
             $table->Integer('asp_id')->unsigned();
-            $table->foreign('asp_id')->references('id')->on('asp');
+            $table->foreign('asp_id')->references('id')->on('asps');
             $table->String('login_key');
             $table->String('login_value');
             $table->String('password_key');
