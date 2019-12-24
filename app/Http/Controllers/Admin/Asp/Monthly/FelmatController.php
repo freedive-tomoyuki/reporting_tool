@@ -69,10 +69,6 @@ class FelmatController extends MonthlyCrawlerController
                     $felmat_data = array();
 
                     foreach ( $product_infos as $product_info ) {
-                        // $crawler = $browser->visit($product_info->asp->login_url)
-                        //         ->type($product_info->asp->login_key, $product_info->login_value)
-                        //         ->type($product_info->asp->password_key, $product_info->password_value)
-                        //         ->click($product_info->asp->login_selector);
                         
                         for ( $x = 0; $x < 2; $x++ ) {
                                 if ( $x == 0 ) {
@@ -127,24 +123,10 @@ class FelmatController extends MonthlyCrawlerController
                                 $data[ 'approval' ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $selector['approval'] )->text() ) );
                                 $data[ 'approval_price' ] = $data[ 'approval' ] * $unit_price;
 
-                                // foreach ( $selector as $key => $value ) {
-                                //     $data[ 'date' ] = $end;
-
-                                //     if($key == 'approval_price'){
-                                //         $data[ $key ]   = 
-                                //             $this->monthlySearchService->calc_approval_price(
-                                //                 trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) ) ,2
-                                //             );
-                                //     }
-                                //     else{
-                                //         $data[ $key ]   = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
-                                //     }
-
-                                // }
                                 return $data;
                             });
                         }
-                        var_dump($crawler_data);
+                        //var_dump($crawler_data);
                         foreach ($crawler_data as $value){
                             array_push($felmat_data , $value[0]);
                         }
@@ -249,10 +231,10 @@ class FelmatController extends MonthlyCrawlerController
                             
                         }
 
-                        echo "<pre>";
-                        var_dump($felmat_data);
-                        var_dump($felmat_site);
-                        echo "</pre>";
+                        // echo "<pre>";
+                        // var_dump($felmat_data);
+                        // var_dump($felmat_site);
+                        // echo "</pre>";
                         /*
                         サイトデータ・日次データ保存
                         */
