@@ -45,7 +45,7 @@
           <div class="panel-heading">検索</div>
           <div class="panel-body">
             <div class="col-md-6">
-              <form role="form" action="/{{ request()->path() }}" method="post" class="form-horizontal">
+              <form role="form" action="{{ url( request()->path()) }}" method="post" class="form-horizontal">
                 @csrf
                   @if( request()->path() != 'monthly_result' )
                   <div class="form-group">

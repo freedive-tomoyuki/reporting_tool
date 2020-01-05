@@ -15,9 +15,9 @@
           <div class="panel-heading">検索</div>
           <div class="panel-body">
             <div class="col-md-6">
-              <form role="form" action="/monthly_result_site" method="post" class="form-horizontal">
+              <form role="form" action="{{url('monthly_result_site')}}" method="post" class="form-horizontal">
                 @csrf
-                <div class="form-group">
+                <div class="form-group ">
                   <label class="col-sm-2 control-label">ASP</label>
                   <div class="col-sm-10">
                     <select class="form-control" name="asp_id" >
@@ -33,13 +33,14 @@
                     </select>
                   </div>
                 </div>
-                <div class="form-group">
+                <div class="form-group form-inline ">
                   <label class="col-sm-2 control-label">Month</label>
                   <div class="col-sm-10">
-                    <input id="month" type="month" name="month" class="form-control" value=@if( old('month')) 
-                      {{ old('month') }}
+                    <input id="month" type="month" name="month" class="form-control" 
+                    @if( old('month')) 
+                    value="{{ old('month') }}"
                     @else
-                      {{ date('Y-m',strtotime('-1 day')) }}
+                    value="{{ date('Y-m',strtotime('-1 day')) }}"
                     @endif>
                   </div>
                 </div>
@@ -58,7 +59,7 @@
             <div class="panel panel-default">
               <div class="panel-heading">検索条件
                 <button class="btn btn-success btn-md pull-right">
-                <a href='/csv_site/{{ $products[0]->id }}/{{ $products[0]->date }}' class='d-block text-info'>
+                <a href="{{ url('csv_site/'. $products[0]->id .'/'. $products[0]->date) }}" class='d-block text-info'>
                   ＣＳＶ
                 </a>
                 </button>

@@ -57,7 +57,6 @@ class DailyDataService
                 //var_dump($daily_ranking);
                 return [$daily_data  ,$daily_ranking , $total , $total_chart ];
             }
-
             /**
              * 日次データ登録
              *
@@ -117,7 +116,16 @@ class DailyDataService
                 //     $update_daily->save();
                 // }
             }
+            public function showCsv($selected_asp , $id, $start, $end ): array
+            {
+                //日次データ一覧取得
+                // $daily_data = $this->daily_repo->getList($id, $start, $end, $asp_id );
+                $csv_data = $this->daily_repo->getCsv($selected_asp , $id, $start, $end);
 
+                // $total = $this->daily_repo->getTotal($id, $start, $end, $asp_id );
+        
+                return $csv_data ;
+            }
 
            
 }

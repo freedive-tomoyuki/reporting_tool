@@ -48,6 +48,16 @@ interface MonthlySiteRepositoryInterface
      * @return void
      */
     public function updateData($selected_month , $all_post_data);
+    
+    /**
+     * サイト別月次データCSV出力
+     *
+     * @param [type] $id
+     * @param [type] $date
+     * @param [type] $asp
+     * @return void
+     */
+    public function getCsv($id , $date , $asp);
 
 
 }

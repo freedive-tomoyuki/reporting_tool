@@ -76,6 +76,87 @@ class MonthlyRepository implements MonthlyRepositoryInterface
         return $monthly_data;
     }
     /**
+     *　月次CSVデータ一覧取得
+     * @var string $selected_asp 
+     * @var string $id 
+     * @var string $monthly 
+     * @return object
+     */
+    public function getCsv( $id , $date ,$last_date)
+    {
+        
+        $csvData = $this->monthlyModel->select([
+            'asps.name',
+            'products.id',
+            'products.product',
+            'imp',
+            'ctr',
+            'click', 
+            'cvr',
+            'cv', 
+            'active', 
+            'partnership',
+            'monthlydatas.price',
+            'cpa',
+            'approval',
+            'approval_price',
+            'approval_rate',
+            'last_cv'
+        ])
+        ->join('products','monthlydatas.product_id','=','products.id')
+        ->join('asps','products.asp_id','=','asps.id')
+        ->leftjoin(DB::raw("(select `cv` as last_cv, `product_id` from `monthlydatas` inner join `products` on `monthlydatas`.`product_id` = `products`.`id` where `product_base_id` = ".$id." and `monthlydatas`.`date` like '".$last_date."') AS last_month"), 'monthlydatas.product_id','=','last_month.product_id');
+
+        if(!empty($id)){
+            $csvData->where('products.product_base_id', $id);
+        }
+        if(!empty($date)){
+            $csvData->where('monthlydatas.date', 'LIKE' , "%".$date."%");
+        }
+        $csvData = $csvData->get()->toArray();
+
+        // 当月の実績値トータル
+        $productsTotals =  $this->monthlyModel->select(DB::raw("
+                '合計',
+                products.id,
+                products.product,
+                sum(imp) as total_imp,
+                sum(click) as total_click,
+                sum(cv) as total_cv,
+                sum(active) as total_active,
+                sum(partnership) as total_partnership,
+                sum(monthlydatas.price) as total_price ,
+                sum(approval) as total_approval, 
+                sum(approval_price) as total_approval_price,
+                '承認率',
+                sum(last_cv) as total_last_cv
+                "))
+        ->join('products','monthlydatas.product_id','=','products.id')
+        ->join('asps','products.asp_id','=','asps.id')
+        ->leftjoin(DB::raw("(select `cv` as last_cv, `product_id` from `monthlydatas` inner join `products` on `monthlydatas`.`product_id` = `products`.`id` where `product_base_id` = ".$id." and `monthlydatas`.`date` like '".$last_date."') AS last_month"), 'monthlydatas.product_id','=','last_month.product_id');
+            if(!empty($id)){
+                $productsTotals->where('products.product_base_id', $id);
+            }
+            if(!empty($date)){
+                $productsTotals->where('monthlydatas.date', 'LIKE' , "%".$date."%");
+            }
+            $productsTotals = $productsTotals->get()->toArray();
+
+            $ctr = ($productsTotals[0]['total_imp'] != 0 || $productsTotals[0]['total_click'] != 0)?$productsTotals[0]['total_click']/$productsTotals[0]['total_imp'] * 100 : 0 ;
+            $cvr = ($productsTotals[0]['total_cv'] != 0 || $productsTotals[0]['total_click'] != 0)?$productsTotals[0]['total_cv']/$productsTotals[0]['total_click'] * 100 : 0 ;
+            $cpa = ($productsTotals[0]['total_approval_price'] != 0 || $productsTotals[0]['total_cv'] != 0)?$productsTotals[0]['total_approval_price']/$productsTotals[0]['total_cv']  : 0 ;
+            
+            array_splice($productsTotals[0], 4, 0, $ctr);
+            array_splice($productsTotals[0], 6, 0, $cvr);
+            array_splice($productsTotals[0], 11, 0, $cpa);
+
+            $csv_data = array_merge($csvData ,$productsTotals);
+
+        return $csv_data;
+    }
+
+
+    /**
      *　月次データ各項目の合計取得
      * @param Integer $id
      * @param String $search_date

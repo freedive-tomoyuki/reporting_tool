@@ -11,6 +11,9 @@ interface DailyRepositoryInterface
      * @return object
      */
     public function getList($selected_asp, $id, $start, $end);
+
+    public function getCsv($selected_asp, $id, $start, $end);
+
     public function getTotal($selected_asp, $id, $start, $end);
     public function getChartDataTotalOfThreeItem($selected_asp, $id, $start, $end);
     public function getRankingEachOfAsp($selected_asp, $id, $start, $end );

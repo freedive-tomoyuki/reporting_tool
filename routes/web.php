@@ -146,12 +146,21 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth:admin'], function() {
     Route::post('csv_site/daily/import','Admin\CsvImportController@store_daily_site');
     Route::get('showApproval','Admin\MonthlyCrawlerController@calc_approval_rate');
     Route::get('showApprovalSite','Admin\MonthlyCrawlerController@calc_approval_rate_site');
+    
     //CSVエクスポート
-    Route::get('csv/{id}/{s_date?}/{e_date?}','Admin\CsvExportController@downloadDaily');
-    Route::get('csv_site/{id}/{s_date?}/{e_date?}','Admin\CsvExportController@downloadSiteDaily');
-    Route::get('csv_monthly/{id}/{month?}','Admin\CsvExportController@downloadMonthly');
+    Route::get('daily/csv','Admin\CsvExportController@downloadDaily');
+    Route::get('monthly/csv','Admin\CsvExportController@downloadMonthly');
+
+    Route::get('daily/site/csv','Admin\CsvExportController@downloadSiteDaily');
+    Route::get('monthly/site/csv','Admin\CsvExportController@downloadSiteMonthly');
+
+    // Route::get('csv/{id}/{s_date?}/{e_date?}','Admin\CsvExportController@downloadDaily');
+    // Route::get('csv_site/{id}/{s_date?}/{e_date?}','Admin\CsvExportController@downloadSiteDaily');
+    
+    // Route::get('csv_monthly/{id}/{month?}','Admin\CsvExportController@downloadMonthly');
     Route::get('csv_monthly_estimate/{id}','Admin\CsvExportController@downloadMonthlyEstimate');
-    Route::get('csv_monthly_site/{id}/{month?}','Admin\CsvExportController@downloadSiteMonthly');
+    // Route::get('csv_monthly_site/{id}/{month?}','Admin\CsvExportController@downloadSiteMonthly');
+
 
     Route::get('DownloadTemplateCsvSite',
     function() {
@@ -190,18 +199,21 @@ Route::group(['middleware' => 'auth:user'], function() {
     Route::post( 'daily_result','DailyController@daily_result_search');
 
     //デイリーレポート（サイト別）一覧
-    Route::get( 'daily_result_site','DailyController@daily_result_site')->name('daily_result_site');
-    Route::post( 'daily_result_site','DailyController@daily_result_site_search');
+    Route::get( 'daily_result_site','DailySiteController@daily_result_site')->name('daily_result_site');
+    Route::post( 'daily_result_site','DailySiteController@daily_result_site_search');
 
     //マンスリーレポート一覧
     Route::get('monthly_result','MonthlyController@monthly_result');
     Route::post('monthly_result','MonthlyController@monthly_result_search');
 
     //マンスリーレポート（サイト別）一覧
-    Route::get( 'monthly_result_site','MonthlyController@monthly_result_site')->name('monthly_result_site');
-    Route::post( 'monthly_result_site','MonthlyController@monthly_result_site_search');
+    Route::get( 'monthly_result_site','MonthlySiteController@monthly_result_site')->name('monthly_result_site');
+    Route::post( 'monthly_result_site','MonthlySiteController@monthly_result_site_search');
 
-    
+    //イヤーリーレポート一覧
+    Route::get( 'yearly_result','YearlyController@yearlyResult')->name('yearly_result');
+    Route::post( 'yearly_result','YearlyController@yearlyResultSearch');
+
     //CSVエクスポート
     Route::get('csv/{id}/{s_date?}/{e_date?}','CsvExportController@downloadDaily');
     Route::get('csv_site/{id}/{s_date?}/{e_date?}','CsvExportController@downloadSiteDaily');

@@ -111,6 +111,74 @@ class DailySiteRepository implements DailySiteRepositoryInterface
             ]);
         
     }
+    /**
+     *　日次CSVサイトデータ一覧取得
+     * @var string $selected_asp 
+     * @var string $id 
+     * @var string $monthly 
+     * @return object
+     */
+    public function getCsv($asp, $id, $start, $end)
+    {
+         
+        //開始月と終了月が同月の場合
+        if(date('m',strtotime($start)) == date('m',strtotime($end))) {
+            $month_1 = date('Ym',strtotime($start));
+        //月を跨いでいる場合
+        }else{
+            
+            $month_1 = date('Ym',strtotime($start));
+            $month_2 = date('Ym',strtotime($end));
+            
+            $daily_site_diffs_table2 = $month_2.'_daily_site_diffs';
+            //終了月の検索　クエリビルダ
+            $table2 = DB::table($daily_site_diffs_table2)
+                    ->select(['date','name', 'media_id','site_name', 'products.product','products.id','imp', 'ctr', 'click', 'cvr','cv','cost','cpa','estimate_cv'])
+                    ->join('products',DB::raw($daily_site_diffs_table2.'.product_id'),'=','products.id')
+                    ->join('asps','products.asp_id','=','asps.id');
+                    if(!empty($id)){
+                        $table2->where('product_base_id', $id);
+                    }
+                    
+                    if(!empty($start)){
+                        $table2->where('date', '>=' , $start );
+                    }
+                    if(!empty($end)){
+                        $table2->where('date', '<=' , $end );
+                    }
+        }
+        
+
+        $daily_site_diffs_table = $month_1.'_daily_site_diffs';
+
+        //開始月の検索　クエリビルダ
+        $csv_data = DB::table($daily_site_diffs_table)
+                    ->select(['date','name', 'media_id','site_name', 'products.product','products.id','imp', 'ctr', 'click', 'cvr','cv','cost','cpa','estimate_cv'])
+                    
+                    ->join('products',DB::raw($daily_site_diffs_table.'.product_id'),'=','products.id')
+                    ->join('asps','products.asp_id','=','asps.id');
+
+                    if(!empty($id)){
+                        $csv_data->where('product_base_id', $id);
+                        
+                    }
+                    if(!empty($start)){
+                        $csv_data->where('date', '>=' , $start );
+                    }
+                    if(!empty($asp)){
+                        $csv_data->where('products.asp_id', $asp);
+                    }
+                    if(!empty($end)){
+                        $csv_data->where('date', '<=' , $end );
+                    }
+                    if(!empty($table2)){
+                        $csv_data->union($table2);
+                    }
+                    $csv_data = $csv_data->get()->toArray();
+                    $csv_data = json_decode(json_encode($csv_data), true);
+
+        return $csv_data;
+    }
 
     public function updateData($selected_month , $all_post_data)
     {

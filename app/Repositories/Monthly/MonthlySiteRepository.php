@@ -182,4 +182,30 @@ class MonthlySiteRepository implements MonthlySiteRepositoryInterface
             return $monthly_site;
 
     }
+
+    public function getCsv($id , $date , $asp)
+    {
+        $month = date('Ym',strtotime($date));
+        $monthlysites_table = $month.'_monthlysites';
+
+        //開始月の検索　クエリビルダ
+        $csv_data = DB::table($monthlysites_table)
+                    ->select(['date','name', 'media_id','site_name', 'products.product','products.id','imp', 'ctr', 'click', 'cvr','cv','cost','cpa','estimate_cv'])
+                    ->join('products', DB::raw($monthlysites_table.'.product_id'), '=', 'products.id')
+                    ->join('asps', 'products.asp_id', '=', 'asps.id');
+
+        if (!empty($id)) {
+            $csv_data->where('product_base_id', $id);
+        }
+        if(!empty($asp)){
+            $csv_data->where('products.asp_id', $asp);
+        }
+        if (!empty($date)) {
+            $csv_data->where('date', '=', $date);
+        }
+
+        $csv_data = $csv_data->get()->toArray();
+        $csv_data = json_decode(json_encode($csv_data), true);
+        return $csv_data;
+    }
 }

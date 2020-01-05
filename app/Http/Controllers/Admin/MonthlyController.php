@@ -40,7 +40,7 @@ class MonthlyController extends Controller
         $product_bases = ProductBase::where('killed_flag', '==' ,0 )->get();
         $asps = Asp::where('killed_flag', '==' ,0 )->get();
         
-        [ $products, $products_totals, $products_estimates, $products_estimate_totals, $chart_data]= $this->monthlyDataService->showDataOfEdit(3,$month);
+        [ $products, $products_totals, $products_estimates, $products_estimate_totals, $chart_data]= $this->monthlyDataService->showList(3,$month);
 
         if( $products->isEmpty() ){
         	return view('admin.daily_error',compact('product_bases','asps','user'));

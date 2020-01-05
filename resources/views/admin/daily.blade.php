@@ -105,13 +105,13 @@
                       <label class="control-label">ASP</label>
                         <p class="form-control-static">
                            @if( old('asp_id')  )
-                           @foreach($asps as $asp)
-                           @if( old('asp_id') == $asp->id  )
-                           {{ $asp -> name }}
-                           @endif
-                           @endforeach
+                              @foreach($asps as $asp)
+                                 @if( old('asp_id') == $asp->id  )
+                                    {{ $asp -> name }}
+                                 @endif
+                              @endforeach
                            @else
-                           すべてのASP
+                              すべてのASP
                            @endif
                         </p>
                    </div>
@@ -149,17 +149,18 @@
 
 
               <div class="form-group col-md-12 col-sm-12 col-xs-12 col-lg-12">
-                <button class="btn btn-success btn-md col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1 col-xs-10 col-xs-offset-1">
-                <?php
+                <button type="button" class="btn btn-success btn-md col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1 col-xs-10 col-xs-offset-1">
+                  <?php
                    $s_date = (old("searchdate_start"))? old("searchdate_start"): date("Y-m-01",strtotime('-1 day'));
                    $e_date = (old("searchdate_end"))? old("searchdate_end"):date("Y-m-d",strtotime('-1 day'));
-                   if( old('product')){
-                       $product_base = old('product') ;
-                   }else{
-                       $product_base =  3 ;
-                   }
-                                     ?>
-                <a href='/admin/csv/{{ $product_base }}/{{ urlencode($s_date) }}/{{  urlencode($e_date) }}' class='d-block'>
+                   $asp = ( old('asp_id'))? old('asp_id') : '';
+                   $product_base = ( old('product'))? old('product') : 3; 
+                  //      $product_base = old('product') ;
+                  //  }else{
+                  //      $product_base =  3 ;
+                  //  }
+                  ?>
+                <a href="{{ url('admin/daily/csv?p='. $product_base .'&s_date='. urlencode($s_date) .'&e_date='. urlencode($e_date).'&asp='. $asp) }}" class='d-block'>
                 <i class="fas fa-file-download"></i> CSV
                 </a>
                 </button>

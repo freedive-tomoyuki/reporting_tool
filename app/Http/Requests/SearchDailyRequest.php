@@ -45,7 +45,7 @@ class SearchDailyRequest extends FormRequest
                         }
                     }
                 ],
-                'product' => 'required|integer',
+                //'product' => 'required|integer',
         ];
     }
     /**

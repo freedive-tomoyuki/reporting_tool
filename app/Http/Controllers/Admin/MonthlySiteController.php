@@ -41,10 +41,8 @@ class MonthlySiteController extends Controller
     public function monthlyResultSite() {
 
         $user = Auth::user();
-        
+        $selected_site_name = '';
         $month = date("Y-m-d", strtotime('-1 day'));
-        $monthly_sites_table = date('Ym',strtotime('-1 day')).'_monthlysites';
-
         
         //プロダクト一覧を全て取得
         $product_bases = ProductBase::where('killed_flag', '==' ,0 )->get();
@@ -57,8 +55,8 @@ class MonthlySiteController extends Controller
         //日次のグラフ用データの一覧を取得する。
         //$site_ranking = $this->monthlyRankingSite(3,date("Y-m-d", strtotime('-1 day')));
         
-        $products = $this->monthlySiteDataService->showSiteList( 3 , $month , $asp_id);
-
+        $products = $this->monthlySiteDataService->showSiteList($asp_id ,  3 , $month , $selected_site_name);
+        
         $site_ranking = $this->monthlySiteDataService->monthlyRankingSite( 3 , $month , $asp_id);
 
         //VIEWを表示する。
@@ -79,6 +77,8 @@ class MonthlySiteController extends Controller
 
     public function monthlyResultSiteSearch(SearchMonthlySiteRequest $request) {
         $user = Auth::user();
+        $selected_site_name = '';
+
         $id = ($request->product != null)? $request->product : 3 ;
 
         $month =($request->month != null)? $request->month : date("Y-m-d", strtotime('-1 day'));
@@ -97,8 +97,8 @@ class MonthlySiteController extends Controller
 
         //[ $products , $site_ranking ] = $this->monthlySiteDataService->showSiteList($id,$month,$asp_id);
         
-        $products = $this->monthlySiteDataService->showSiteList( $id , $month , $asp_id);
-
+        $products = $this->monthlySiteDataService->showSiteList( $asp_id , $id , $month , $selected_site_name);
+        
         $site_ranking = $this->monthlySiteDataService->monthlyRankingSite( $id , $month , $asp_id);
 
         

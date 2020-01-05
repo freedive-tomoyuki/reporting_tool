@@ -144,8 +144,12 @@
                           $product_base =  3 ;
                       }
                   ?>                
-                  <button class="btn btn-success col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1 col-xs-10 col-xs-offset-1"><i class='fas fa-file-download'></i>
-                    <a href='/admin/csv_monthly_site/{{ $product_base }}/{{ $products[0]->date }}' class='d-block'>
+                  <button type="button" class="btn btn-success col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1 col-xs-10 col-xs-offset-1"><i class='fas fa-file-download'></i>
+                    <?php
+                      $month = (old("month"))? old("month"): date('Y-m',strtotime('-1 day'));
+                      $product_base = ( old('product'))? old('product') : 3; 
+                    ?>
+                    <a href="{{ url('admin/monthly/site/csv?p='. $product_base .'&month='. $month )}}" class='d-block'>
                       ＣＳＶ
                     </a>
                   </button>

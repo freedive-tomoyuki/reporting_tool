@@ -223,9 +223,11 @@
               実績値
                 <button class="btn btn-success btn-md pull-right">
                 <i class='fas fa-file-download'></i>
-                <a href="/admin/csv_monthly/@if( old('product')){{ old('product') }}@else{{ 3 }}@endif/@if( old('month')){{ old('month') }}
-                  @else{{ date('Y-m',strtotime('-1 day'))}}@endif">
-                  
+                <?php
+                   $month = (old("month"))? old("month"): date('Y-m',strtotime('-1 day'));
+                   $product_base = ( old('product'))? old('product') : 3; 
+                ?>
+                <a href="{{ url('admin/monthly/csv?p='.$product_base.'&month='.$month ) }}">
                     CSV
                 </a>
                 </button>

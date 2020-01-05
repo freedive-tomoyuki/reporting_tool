@@ -14,7 +14,7 @@
           <div class="panel-heading">検索</div>
           <div class="panel-body">
             <div class="col-md-6">
-              <form role="form" action="/daily_result_site" method="post" class="form-horizontal">
+              <form role="form" action="{{ url('daily_result_site')}}" method="post" class="form-horizontal">
                 @csrf
                 <div class="form-group">
                   <label class="col-sm-2 control-label">ASP</label>
@@ -80,7 +80,7 @@
                   }
                   
                 ?>
-                <a href='csv_site/{{ $product_base }}/{{ urlencode($s_date) }}/{{  urlencode($e_date) }}' class='d-block text-info'>
+                <a href="{{ url('csv_site/'. $product_base .'/'. urlencode($s_date) .'/'.  urlencode($e_date)) }}" class='d-block text-info'>
                   ＣＳＶ
                 </a>
                 </button>

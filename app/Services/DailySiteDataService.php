@@ -86,7 +86,9 @@ class DailySiteDataService
 
                 return $daily_sites_data;
             }
-
+            /**
+             * 
+             */
             public function updateSiteData($id , $all_post_data ) {
  
                 // $products = Product::select('id')
@@ -101,5 +103,15 @@ class DailySiteDataService
                 $this->daily_site_repo->updateData( $selected_month , $all_post_data);
         
                 return false;
+            }
+            /**
+             * 
+             * 
+             */
+            public function showCsv($asp_id , $id, $start, $end ): array
+            {
+                $csv_data = $this->daily_site_repo->getCsv($asp_id , $id, $start, $end);
+
+                return $csv_data ;
             }
 }

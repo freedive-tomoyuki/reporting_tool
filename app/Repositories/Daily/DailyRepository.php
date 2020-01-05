@@ -52,6 +52,37 @@ class DailyRepository implements DailyRepositoryInterface
         return $daily_data;
     }
     /**
+     *　日次CSVデータ一覧取得
+     * @var string $selected_asp 
+     * @var string $id 
+     * @var string $monthly 
+     * @return object
+     */
+    public function getCsv($selected_asp, $id, $start, $end)
+    {
+        
+        $csv_data = $this->dailyModel->select(['daily_diffs.date','name','products.id','products.product', 'imp', 'ctr', 'click', 'cvr','cv', 'active', 'partnership','daily_diffs.price','cpa','estimate_cv'])
+                    ->join('products','daily_diffs.product_id','=','products.id')
+                    ->join('asps','products.asp_id','=','asps.id');
+                    if(!empty($id)){
+                        $csv_data->where('product_base_id', $id);
+                    }
+                    if(!empty($selected_asp)){
+                        $csv_data->where('products.asp_id', $selected_asp);
+                    }
+                    if(!empty($start)){
+                        $csv_data->where('daily_diffs.date', '>=' , $start);
+                    }
+                    if(!empty($end)){
+                        $csv_data->where('daily_diffs.date', '<=' , $end);
+                    }
+                    
+                    $csvData =$csv_data->get()->toArray();
+
+        return $csvData;
+    }
+
+    /**
      *　日次データ各項目の合計取得
      * @var string $selected_asp 
      * @var string $id 
@@ -121,6 +152,7 @@ class DailyRepository implements DailyRepositoryInterface
         }
         $sql = $sql.$sql_select_asp;
         $sql .= ' From daily_diffs ';
+        $where = '';
         if($id != '' ){
             $where = " where ";
 

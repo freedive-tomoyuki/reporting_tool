@@ -34,7 +34,7 @@ class SearchMonthlySiteRequest extends FormRequest
                         }
                     }
                 ],
-                'product' => 'required|integer',
+                //'product' => 'required|integer',
         ];
     }
 

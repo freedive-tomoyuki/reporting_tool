@@ -14,48 +14,44 @@
           <div class="panel-heading">検索</div>
           <div class="panel-body">
             <div class="col-md-6">
-              <form role="form" action="/daily_result" method="post" class="form-horizontal">
+              <form role="form" action="{{ url('daily_result')}}" method="post" class="form-horizontal" >
                 @csrf
-                
-                <div class="form-group">
-                  <label class="col-sm-2 control-label">ASP</label>
-                  <div class="col-sm-10">
-                    <select class="form-control" name="asp_id" >
-                      <option value=""> すべてのASP </option>
-                                @foreach($asps as $asp)
-                                  <option value="{{ $asp -> id }}"
-                                    @if( old('asp_id') == $asp->id  )
-                                      selected
-                                    @endif
-                                    >{{ $asp -> name }}</option>
-                                    
-                                @endforeach
-                    </select>
-                  </div>
-                </div>
-                <div class="form-group form-inline" >
-                  <label class="col-sm-2 control-label">Date</label>
-                  <div class="col-sm-10">
-                    <input type="date" name="searchdate_start" class="datepicker form-control" id="datepicker_start" max='{{ date("Y-m-d",strtotime('-1 day')) }}' value=@if( old('searchdate_start')) 
-                      {{ old('searchdate_start') }}
-                    @else
-                      {{ date('Y-m-01',strtotime('-1 day')) }} 
-                    @endif>
-                     〜 
-                  <input type="date" name="searchdate_end" class="datepicker form-control" id="datepicker_end" max='{{ date("Y-m-d",strtotime('-1 day')) }}' value=@if( old('searchdate_start')) 
-                      {{ old('searchdate_end') }}
-                    @else
-                      {{ date('Y-m-d',strtotime('-1 day')) }} 
-                    @endif>
-                  </div>
-                </div>
-
+                    <div class="form-group">
+                      <label class="col-sm-2 control-label">ASP</label>
+                      <div class="col-sm-10">
+                        <select class="form-control" name="asp_id" >
+                          <option value=""> すべてのASP </option>
+                                    @foreach($asps as $asp)
+                                      <option value="{{ $asp -> id }}"
+                                        @if( old('asp_id') == $asp->id  )
+                                          selected
+                                        @endif
+                                        >{{ $asp -> name }}</option>
+                                        
+                                    @endforeach
+                        </select>
+                      </div>
+                    </div>
+                    <div class="form-group form-inline" >
+                      <label class="col-sm-2 control-label">Date</label>
+                      <div class="col-sm-10">
+                        <input type="date" name="searchdate_start" class="datepicker form-control" id="datepicker_start" max='{{ date("Y-m-d",strtotime('-1 day')) }}' value=@if( old('searchdate_start')) 
+                          {{ old('searchdate_start') }}
+                        @else
+                          {{ date('Y-m-01',strtotime('-1 day')) }} 
+                        @endif>
+                        〜 <input type="date" name="searchdate_end" class="datepicker form-control form-inline" id="datepicker_end" max='{{ date("Y-m-d",strtotime('-1 day')) }}' value=@if( old('searchdate_start')) 
+                          {{ old('searchdate_end') }}
+                        @else
+                          {{ date('Y-m-d',strtotime('-1 day')) }} 
+                        @endif>
+                      </div>
+                    </div>
                   <button type="submit" class="btn btn-primary">検索</button>
-                  </form>
-                </div>
-              
+              </form>
             </div>
           </div>
+        </div>
           @if (count($errors) > 0)
               <div class="alert alert-danger">
                   <ul>
@@ -86,7 +82,7 @@
                   }
                   
                 ?>
-                <a href='/admin/csv/{{ $product_base }}/{{ urlencode($s_date) }}/{{  urlencode($e_date) }}' class='d-block text-info'>
+                <a href="{{url('csv/'. $product_base .'/'. urlencode($s_date) .'/'.  urlencode($e_date)) }}" class='d-block text-info'>
                   ＣＳＶ
                 </a>
               </button>
@@ -198,21 +194,21 @@
                       
                     ?>
                     
-                    @foreach($products as $product)
+                    @foreach($daily_data as $d)
                     <tr>
                         <td><?php echo $i; ?></td>
-                        <td>{{ $product->name }}</td>
-                        <td>{{ $product->date }}</td>
-                        <td>{{ $product->imp }}</td>
-                        <td>{{ $product->ctr }}</td>
-                        <td>{{ $product->click }}</td>
-                        <td>{{ $product->cvr }}</td>
-                        <td>{{ $product->cv }}</td>
-                        <td>{{ $product->estimate_cv  }}</td>
-                        <td>{{ $product->active }}</td>
-                        <td>{{ $product->partnership }}</td>
-                        <td>{{ $product->cost }}</td>
-                        <td>{{ $product->cpa }}</td>
+                        <td>{{ $d->name }}</td>
+                        <td>{{ $d->date }}</td>
+                        <td>{{ $d->imp }}</td>
+                        <td>{{ $d->ctr }}</td>
+                        <td>{{ $d->click }}</td>
+                        <td>{{ $d->cvr }}</td>
+                        <td>{{ $d->cv }}</td>
+                        <td>{{ $d->estimate_cv  }}</td>
+                        <td>{{ $d->active }}</td>
+                        <td>{{ $d->partnership }}</td>
+                        <td>{{ $d->cost }}</td>
+                        <td>{{ $d->cpa }}</td>
                         <?php $i++; ?>
                     </tr>
                     @endforeach

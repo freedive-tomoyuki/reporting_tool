@@ -90,6 +90,28 @@ class MonthlySiteDataService
 
         return false;
     }
+    /**
+     * Undocumented function
+     *
+     * @param [type] $selected_asp
+     * @param [type] $id
+     * @param [type] $start
+     * @param [type] $end
+     * @return array
+     */
+    public function showCsv($id , $month, $asp ): array
+    {
+        //当月の場合
+        if( $month == date("Y-m", strtotime('-1 day'))|| $month == date("Y-m-d", strtotime('-1 day'))) {
+            $date = date("Y-m-d", strtotime('-1 day'));
+        //当月以外の場合
+        }else{
+            $date = date('Y-m-d', strtotime('last day of ' . $month));
+        }
+        //日次データ一覧取得
+        $csv_data = $this->monthly_site_repo->getCsv( $id , $date , $asp );
 
+        return $csv_data ;
+    }
 
 }

@@ -19,7 +19,7 @@ class MonthlyDataService
       $this->monthly_repo = $monthly_repo;
     }
 
-    public function showDataOfEdit($id,$month): array
+    public function showList($id,$month): array
     {
         //消化率
         $ratio = (date("d")/date("t"));
@@ -44,10 +44,10 @@ class MonthlyDataService
 
         //当月の実績値トータル
         $products_totals = $this->monthly_repo->getTotal($id,$search_date ,$search_last_date);
-
+        
         //今月の検索を行った際に、着地予想を表示
         if( $month == date("Y-m", strtotime('-1 day'))){
-        
+            echo date("Y-m", strtotime('-1 day'));
             //当月の着地想定
             $estimates = $this->monthly_repo->getEstimate($id,$search_date ,$ratio);
             //当月の着地想定トータル
@@ -84,5 +84,24 @@ class MonthlyDataService
         return $this->monthly_repo->updateData( $month , $selected_asp , $all_post_data, $products);
 
     }
+    public function showCsv($p , $month): array
+    {
+        if( $month == date("Y-m")){
+            $date = date("Y-m-d", strtotime('-1 day'));
+            $last_date = date("Y-m-t", strtotime('-1 month'));
+        }else{
+            $date = date('Y-m-d', strtotime('last day of ' . $month));
+            // $last_month = date('Y-m',strtotime('-1 month'));
+            $last_date = date('Y-m-t', strtotime('last day of ' . $month));
+        }
+    
+        $csv_data = $this->monthly_repo->getCsv( $p , $date ,$last_date);
+
+        // $total = $this->daily_repo->getTotal($id, $start, $end, $asp_id );
+
+        return $csv_data ;
+    }
+
+
 
 }

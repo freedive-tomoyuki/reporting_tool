@@ -45,6 +45,12 @@ interface DailySiteRepositoryInterface
      * @return json
      */
     public function getRanking( $selected_asp, $id, $start, $end );
+    
+    /**
+     * 
+     *  
+    */ 
+    public function getCsv($asp, $id, $start, $end);
 
 
 

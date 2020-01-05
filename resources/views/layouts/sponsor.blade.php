@@ -34,30 +34,7 @@
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span></button>
 				<a class="navbar-brand" href="#"><span>Report Tool</span></a>
-				<!-- <a href="/admin/login" class="btn btn-link text-md-right">管理用</a> -->
-				<!-- <ul class="nav navbar-top-links navbar-right">
-					<li class="dropdown"><a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
-						<em class="fa fa-bell"></em><span class="label label-info"></span>
-					</a>
-
-						<ul class="dropdown-menu dropdown-alerts">
-							<li><a href="#">
-								<div><em class="fa fa-envelope"></em> 1 New Message
-									<span class="pull-right text-muted small">3 mins ago</span></div>
-							</a></li>
-							<li class="divider"></li>
-							<li><a href="#">
-								<div><em class="fa fa-heart"></em> 12 New Likes
-									<span class="pull-right text-muted small">4 mins ago</span></div>
-							</a></li>
-							<li class="divider"></li>
-							<li><a href="#">
-								<div><em class="fa fa-user"></em> 5 New Followers
-									<span class="pull-right text-muted small">4 mins ago</span></div>
-							</a></li>
-						</ul> 
-					</li>
-				</ul>-->
+				
 			</div>
 		</div><!-- /.container-fluid -->
 	</nav>
@@ -75,33 +52,39 @@
 		<div class="divider"></div>
 
 		<ul class="nav menu">
-			<li class="parent "><a href="/admin/daily_result" data-toggle="collapse" >
-				<em class="fa fa-list">&nbsp;</em> 結果<span data-toggle="collapse" href="#sub-item-1" class="icon pull-right"><em class="fa fa-plus"></em></span>
+			<li class="parent "><a  data-toggle="collapse" >
+				<em class="far fa-chart-bar">&nbsp;</em> レポート<span data-toggle="collapse" href="#sub-item-1" class="icon pull-right"><em class="fa fa-plus"></em></span>
 				</a>
-				<ul class="children collapse" id="sub-item-1">
+				<ul class="children collapse in" id="sub-item-1">
+					<li
+					@if(strpos( Request::path() , "yearly_result" ) !== false )
+						class="active"
+					@endif><a class="" href="{{ url('yearly_result')}}">
+						<span class="fas fa-angle-right">&nbsp;</span> 年間
+					</a></li>
 					<li 
-					@if( Request::path() ==  "daily_result" )
+					@if(strpos( Request::path() , "daily_result" ) !== false )
 						class="active"
-					@endif><a class="" href="daily_result">
-						<span class="fa fa-arrow-right">&nbsp;</span> 日次（案件別）
+					@endif><a class="" href="{{ url('daily_result')}}">
+						<span class="fa fa-angle-right">&nbsp;</span> 日次（案件別）
 					</a></li>
 					<li
-					@if( Request::path() ==  "daily_result_site" )
+					@if(strpos( Request::path() , "daily_result_site" ) !== false )
 						class="active"
-					@endif><a class="" href="daily_result_site">
-						<span class="fa fa-arrow-right">&nbsp;</span> 日次（サイト別）
+					@endif><a class="" href="{{ url('daily_result_site')}}">
+						<span class="fa fa-angle-right">&nbsp;</span> 日次（サイト別）
 					</a></li>
 					<li
-					@if( Request::path() ==  "monthly_result" )
+					@if(strpos( Request::path() , "monthly_result" ) !== false )
 						class="active"
-					@endif><a class="" href="/monthly_result">
-						<span class="fa fa-arrow-right">&nbsp;</span> 月次（案件別）
+					@endif><a class="" href="{{ url('monthly_result')}}">
+						<span class="fa fa-angle-right">&nbsp;</span> 月次（案件別）
 					</a></li>
 					<li
-					@if( Request::path() ==  "monthly_result_site" )
+					@if(strpos( Request::path() , "monthly_result_site" ) !== false )
 						class="active"
-					@endif><a class="" href="/monthly_result_site">
-						<span class="fa fa-arrow-right">&nbsp;</span> 月次（サイト）
+					@endif><a class="" href="{{ url('monthly_result_site')}}">
+						<span class="fa fa-angle-right">&nbsp;</span> 月次（サイト）
 					</a></li>
 				</ul>
 			</li>

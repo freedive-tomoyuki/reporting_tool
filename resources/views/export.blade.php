@@ -20,7 +20,7 @@
         <div class="panel panel-default">
             <div class="panel-heading">エクスポート</div>
             <div class="panel-body">
-                    <form role="form" enctype="multipart/form-data" method="post" action="/export">
+                    <form role="form" enctype="multipart/form-data" method="post" action="{{ url('export')}}">
                         <div class="form-group form-inline">
                             <label>
                             案件選択
@@ -50,14 +50,14 @@
                     <hr>
                         <div class="form-group form-inline ">
                             <label>
-                                <button class="btn btn-success"><a href='/admin/pdf'><i class="fas fa-download">&nbsp;</i>テンプレート</a></button>
+                                <button class="btn btn-success"><a href="{{ url('admin/pdf')}}"><i class="fas fa-download">&nbsp;</i>テンプレート</a></button>
                             </label>
                         </div>
                         <div class="form-group">
                             <label class="col-sm-3 control-label">年間</label>
                                 <div class="col-sm-9">
                                     <div class="text-left form-control-static">
-                                        <a href='/pdf/yearly/{{ $user->product_base_id }}' class="btn btn-success btn-sm" role="button"><i class="fas fa-download">&nbsp;</i>PDF</a>
+                                        <a href="{{ url('pdf/yearly/'. $user->product_base_id )}}" class="btn btn-success btn-sm" role="button"><i class="fas fa-download">&nbsp;</i>PDF</a>
                                     </div>
                                 </div>
                         </div>
@@ -65,7 +65,7 @@
                             <label class="col-sm-3 control-label">直近３ヶ月</label>
                                 <div class="col-sm-9">
                                     <div class="text-left form-control-static">
-                                        <a href='/pdf/three_month/{{ $user->product_base_id }}/term' class="btn btn-success btn-sm" role="button"><i class="fas fa-download">&nbsp;</i>PDF</a>
+                                        <a href="{{ url('pdf/three_month/'. $user->product_base_id .'/term')}}" class="btn btn-success btn-sm" role="button"><i class="fas fa-download">&nbsp;</i>PDF</a>
                                     </div>
                                 </div>
                         </div>
@@ -73,7 +73,7 @@
                             <label class="col-sm-3 control-label">昨月の全体成果</label>
                                 <div class="col-sm-9">
                                     <div class="text-left form-control-static">
-                                        <a href='/pdf/monthly/{{ $user->product_base_id }}/one_month' class="btn btn-success btn-sm" role="button"><i class="fas fa-download">&nbsp;</i>PDF</a>
+                                        <a href="{{ url('pdf/monthly/'. $user->product_base_id .'/one_month')}}" class="btn btn-success btn-sm" role="button"><i class="fas fa-download">&nbsp;</i>PDF</a>
                                     </div>
                                 </div>
                         </div>
@@ -81,7 +81,7 @@
                             <label class="col-sm-3 control-label">今月の全体成果</label>
                                 <div class="col-sm-9">
                                     <div class="text-left form-control-static">
-                                        <a href='/pdf/monthly/{{ $user->product_base_id }}' class="btn btn-success btn-sm" role="button"><i class="fas fa-download">&nbsp;</i>PDF</a>
+                                        <a href="{{ url('pdf/monthly/'. $user->product_base_id )}}" class="btn btn-success btn-sm" role="button"><i class="fas fa-download">&nbsp;</i>PDF</a>
                                     </div>
                                 </div>
                         </div>
@@ -90,7 +90,7 @@
                             <label class="col-sm-3 control-label">昨月のメディア別成果</label>
                                 <div class="col-sm-9">
                                     <div class="text-left form-control-static">
-                                        <a href='/pdf/media/{{ $user->product_base_id }}/one_month' class="btn btn-success btn-sm" role="button"><i class="fas fa-download">&nbsp;</i>PDF</a>
+                                        <a href="{{ url('pdf/media/'. $user->product_base_id .'/one_month' )}}" class="btn btn-success btn-sm" role="button"><i class="fas fa-download">&nbsp;</i>PDF</a>
                                     </div>
                                 </div>
                         </div>
@@ -99,7 +99,7 @@
                             <label class="col-sm-3 control-label">今月のメディア別成果</label>
                                 <div class="col-sm-9">
                                     <div class="text-left form-control-static">
-                                        <a href='/pdf/media/{{ $user->product_base_id }}' class="btn btn-success btn-sm" role="button"><i class="fas fa-download">&nbsp;</i>PDF</a>
+                                        <a href="{{ url('pdf/media/{{ $user->product_base_id }}' class="btn btn-success btn-sm" role="button"><i class="fas fa-download">&nbsp;</i>PDF</a>
                                     </div>
                                 </div>
                         </div>
