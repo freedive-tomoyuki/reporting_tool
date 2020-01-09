@@ -198,6 +198,7 @@ class DailySiteRepository implements DailySiteRepositoryInterface
             ->updateOrInsert(
                 [
                     'id' => $p->id ,
+                    'date' => $all_post_data->date[$key] ,
                 ],
                 [
                     'media_id' => $all_post_data->media_id[$key] ,

@@ -119,7 +119,7 @@ class DailySiteController extends Controller
         $asps = $asps->target_asp($id);
         
         //検索（日付）
-        $month = ($request->input('search_date'))? $request->input('search_date') : '';
+        $month = ($request->input('search_date'))? $request->input('search_date') : date('Y-m',strtotime('-1 day'));
         $start = (!$request->input('search_date'))? date('Y-m-01') : date('Y-m-d', strtotime('first day of ' . $request->input('search_date'))) ;
         $end = (!$request->input('search_date'))? date('Y-m-d' ,strtotime('-1 day')) : date('Y-m-d', strtotime('last day of ' . $request->input('search_date')));
 
