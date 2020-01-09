@@ -16,7 +16,7 @@ class SiteController extends Controller
     }
     public function list(){
         $user = Auth::user();
-        $sites = Site::paginate(100);
+        $sites = Site::all();
         // var_dump($user);
         return view('admin.site_list',compact('sites','user'));
     }
@@ -32,10 +32,11 @@ class SiteController extends Controller
         }
         if(isset($request->site_name)){
             $site_name = $request->site_name;
-            $sites = $sites->where('site_name', 'like', "%{$site_name}%" );
+            $sites = $sites->where('site_name', 'like', "%{$site_name}%" )->get();
         }
         
-        //$sites = $sites->paginate(100);
+        // $sites = $sites->paginate(100);
+        $sites = $sites->get();
         
         return view('admin.site_list',compact('sites','user'));
 
