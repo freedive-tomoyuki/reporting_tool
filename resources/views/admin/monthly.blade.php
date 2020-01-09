@@ -348,7 +348,7 @@
                   </thead>
                 <tbody>
                   <?php $i = 1; ?>
-                    @foreach($products_estimates as $productsEstimate)
+                    @foreach($products_estimates as $p)
                     <tr>
                       
                         <td><?php echo $i; ?></td>
