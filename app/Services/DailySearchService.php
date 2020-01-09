@@ -141,7 +141,7 @@ class DailySearchService
             $ctr = ($click == 0|| $imp ==0 )? 0 : ( $click / $imp ) * 100 ;
             $ratio = (date("d")/date("t"));
             $estimate_cv = ceil(($cv)/ $ratio);
-            $asp = Product::select('asp_id')->where('id', $data['product'])->get();
+            //$asp = Product::select('asp_id')->where('id', $data['product'])->get();
             \Log::debug($asp);
             // Monthlysite::create(
             //     [
@@ -167,7 +167,7 @@ class DailySearchService
             Site::updateOrCreate(
                 [
                   'media_id' => $data['media_id'],
-                  'asp_id' => $asp->asp_id,
+                  'asp_id' => 1,
                 ],
                 [
                   'product_id' => $data['product'],
@@ -175,7 +175,7 @@ class DailySearchService
                   'created_at' =>  \Carbon\Carbon::now(),
                   'updated_at' => \Carbon\Carbon::now()
                 ]
-              );
+            );
 
             //月次サイトデータ登録
             DB::table($monthlysites_table)->updateOrInsert(
