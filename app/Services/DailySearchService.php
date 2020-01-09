@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use DB;
+use App\Site;
 use App\Product;
 use App\DailyDiff;
 use App\DailySiteDiff;
