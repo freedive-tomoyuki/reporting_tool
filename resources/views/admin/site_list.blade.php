@@ -42,7 +42,7 @@
 							@foreach($sites as $site)
 								<tr>
 									<td>{{ $site->asp->name }}</td>
-									<td>{{ $site->media_id }}</td>
+									<td class="media-id-style">{{ $site->media_id }}</td>
 									<td>{{ $site->site_name }}</td>
 									<td>{{ $site->url }}</td>
 									<td>{{ $site->unit_price }}</td>
@@ -52,9 +52,9 @@
 					</table>
 					</div>
 				</div>
-			<div class="d-flex justify-content-center">
-				{{ $sites->links() }}
-			</div>
+			<!-- <div class="d-flex justify-content-center">
+				{ $sites->links() }
+			</div> -->
 		</div>
 </div>
 @endsection

@@ -35,7 +35,7 @@ class SiteController extends Controller
             $sites = $sites->where('site_name', 'like', "%{$site_name}%" );
         }
         
-        $sites = $sites->paginate(100);
+        //$sites = $sites->paginate(100);
         
         return view('admin.site_list',compact('sites','user'));
 
