@@ -129,9 +129,9 @@ class DailySearchService
         $date = date('d');
         
         $data_array = json_decode(json_encode(json_decode($data)), True );
+        $asp = Product::select('asp_id')->where('id', $data['product'])->get();
 
         foreach($data_array as $data ){
-
 
             $cv = (intval($data['cv']) != "" ) ? intval($data['cv']) : 0 ; 
             $click = (intval($data['click']) != "" ) ? intval($data['click']) : 0 ;
@@ -166,11 +166,11 @@ class DailySearchService
             Site::updateOrCreate(
                 [
                   'media_id' => $data['media_id'],
-                  'product_id' => $data['product']
+                  'asp_id' => $asp->asp_id,
                 ],
                 [
+                  'product_id' => $data['product'],
                   'site_name' => $data['site_name'],
-                  'asp_id' => $data['asp_id'],
                   'created_at' =>  \Carbon\Carbon::now(),
                   'updated_at' => \Carbon\Carbon::now()
                 ]
