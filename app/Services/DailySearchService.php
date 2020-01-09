@@ -129,7 +129,7 @@ class DailySearchService
         $date = date('d');
         
         $data_array = json_decode(json_encode(json_decode($data)), True );
-        $asp = Product::select('asp_id')->where('id', $data['product'])->get();
+        
 
         foreach($data_array as $data ){
 
@@ -141,7 +141,7 @@ class DailySearchService
             $ctr = ($click == 0|| $imp ==0 )? 0 : ( $click / $imp ) * 100 ;
             $ratio = (date("d")/date("t"));
             $estimate_cv = ceil(($cv)/ $ratio);
-
+            $asp = Product::select('asp_id')->where('id', $data['product'])->get();
             // Monthlysite::create(
             //     [
             //       'media_id' => $data['media_id'],
