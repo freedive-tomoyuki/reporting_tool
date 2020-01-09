@@ -210,19 +210,20 @@ class A8Controller extends DailyCrawlerController
                                 $a8_site[ $count ][ 'price' ] = $unit_price * $a8_site[ $count ][ 'cv' ];
                                 
                                 $calculated = json_decode( 
-                                                json_encode( 
-                                                    json_decode( 
-                                                        $this->dailySearchService
-                                                            ->cpa( $a8_site[ $count ][ 'cv' ], $a8_site[ $count ][ 'price' ], 1 ) 
-                                                        ) 
-                                                ), True );
-                                
-                                //$a8_site[$count]['product'] = $product_info->id;
-                                $a8_site[ $count ][ 'product' ] = $product_info->id;
-                                $a8_site[ $count ][ 'date' ]    = date( 'Y-m-d', strtotime( '-1 day' ) );
-                                
-                                $a8_site[ $count ][ 'cpa' ]  = $calculated[ 'cpa' ]; //CPA
-                                $a8_site[ $count ][ 'cost' ] = $calculated[ 'cost' ]; //獲得単価
+                                    json_encode( 
+                                        json_decode( 
+                                            $this->dailySearchService
+                                            ->cpa( $a8_site[ $count ][ 'cv' ], $a8_site[ $count ][ 'price' ], 1 ) 
+                                            ) 
+                                        ), True );
+                                        
+                                        //$a8_site[$count]['product'] = $product_info->id;
+                                        $a8_site[ $count ][ 'asp' ]   = $product_info->asp_id;
+                                        $a8_site[ $count ][ 'product' ] = $product_info->id;
+                                        $a8_site[ $count ][ 'date' ]    = date( 'Y-m-d', strtotime( '-1 day' ) );
+                                        
+                                        $a8_site[ $count ][ 'cpa' ]  = $calculated[ 'cpa' ]; //CPA
+                                        $a8_site[ $count ][ 'cost' ] = $calculated[ 'cost' ]; //獲得単価
                                 
                                 //echo '<pre>';
                                 //echo $i;

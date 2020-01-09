@@ -148,7 +148,8 @@ class ValuecommerceController extends DailyCrawlerController
                                 $count = ( $page * 40 ) + $i;
                                 
                                 $valuecommerce_site[ $count ][ 'product' ] = $product_info->id;
-                                
+                                $valuecommerce_site[ $count ][ 'asp' ]     = $product_info->asp_id;
+
                                 if ( $crawler_for_site->filter( '#all > div.tablerline > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(2)' )->count() != 0 ) {
                                     //echo $target_page."ページの i＞＞".$i."番目</br>" ;
                                     

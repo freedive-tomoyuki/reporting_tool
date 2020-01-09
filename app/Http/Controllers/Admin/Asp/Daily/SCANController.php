@@ -154,6 +154,7 @@ class SCANController extends DailyCrawlerController
                         //echo $crawler_for_site->html();
                         while ( $crawler_for_site->filter( '#report_clm > div > div.report_table > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(2)' )->count() > 0 ) {
                             $scan_site[ $y ][ 'product' ] = $product_info->id;
+                            $scan_site[ $y ][ 'asp' ]     = $product_info->asp_id;
                             $scan_site[ $y ][ 'imp' ]     = 0;
                             
                             $selector_for_site = array(

@@ -179,9 +179,10 @@ class AffiTownController extends DailyCrawlerController
 
                         // サイト一覧の「合計」以外の前列を1列目から最終列まで一行一行スクレイピング
                         while ( ($crawler_for_site->filter( '#all_display > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(1)' )->text()) !== '' ) {
-                            echo $i;
+                            //echo $i;
                             
                             $affitown_site[ $i ][ 'product' ] = $product_info->id;
+                            $affitown_site[ $i ][ 'asp' ]   = $product_info->asp_id;
                             $affitown_site[ $i ][ 'imp' ]     = 0;
                             
                             $selector_for_site = array(
@@ -217,7 +218,7 @@ class AffiTownController extends DailyCrawlerController
                             $i++;
                             
                         } 
-                        var_dump($affitown_site);
+                        //var_dump($affitown_site);
                         $unit_price = $product_info->price;
                         $affitown_data[ 0 ][ 'price' ] = $affitown_data[ 0 ][ 'cv' ] * $unit_price;
 

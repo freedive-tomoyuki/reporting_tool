@@ -167,7 +167,7 @@ class DailySearchService
             Site::updateOrCreate(
                 [
                   'media_id' => $data['media_id'],
-                  'asp_id' => 1,
+                  'asp_id' => $data['asp'],
                 ],
                 [
                   'product_id' => $data['product'],

@@ -182,7 +182,7 @@ class RentracksController extends DailyCrawlerController
                         
                         for ( $i = 1; $active_partner >= $i; $i++ ) {
                             $rentracks_site[ $i ][ 'product' ] = $product_info->id;
-                            
+                            $rentracks_site[ $i ][ 'asp' ]     = $product_info->asp_id;
                             $iPlus = $i + 1;
                             //echo 'iPlus' . $iPlus;
                             

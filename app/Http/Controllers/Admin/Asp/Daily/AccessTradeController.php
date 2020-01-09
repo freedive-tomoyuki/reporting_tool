@@ -143,6 +143,7 @@ class AccesstradeController extends DailyCrawlerController
                         foreach ( $array_sites as $site ) {
 
                             $accesstrade_site[ $x ][ 'product' ]   = $product_info->id;
+                            $accesstrade_site[ $x ][ 'asp' ]       = $product_info->asp_id;
                             $accesstrade_site[ $x ][ 'media_id' ]  = $site[ "partnerSiteId" ];
                             $accesstrade_site[ $x ][ 'site_name' ] = $site[ "partnerSiteName" ];
                             $accesstrade_site[ $x ][ 'imp' ]       = $site[ "impressionCount" ];

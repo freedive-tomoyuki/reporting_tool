@@ -190,7 +190,8 @@ class AfbController extends DailyCrawlerController
                         
                         for ( $i = 1; $count_data >= $i; $i++ ) {
                             $afb_site[ $i ][ 'product' ] = $product_info->id;
-                            
+                            $afb_site[ $i ][ 'asp' ]   = $product_info->asp_id;
+
                             $selector_for_site = array(
                                 'media_id' => '#reportTable > tbody > tr:nth-child(' . $i . ') > td.maxw150',
                                 'site_name' => '#reportTable > tbody > tr:nth-child(' . $i . ') > td.maxw150 > p > a',

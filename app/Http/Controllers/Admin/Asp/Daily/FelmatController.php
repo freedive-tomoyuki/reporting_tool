@@ -229,6 +229,7 @@ class FelmatController extends DailyCrawlerController
                             
                             for ($x = 1; $crawlCountPerOne >= $x; $x++) {
                                 $felmat_site[$count]['product'] = $product_info->id;
+                                $felmat_site[$count][ 'asp' ]   = $product_info->asp_id;
                                 //echo "CountX:" . $x;
                                 
                                 
