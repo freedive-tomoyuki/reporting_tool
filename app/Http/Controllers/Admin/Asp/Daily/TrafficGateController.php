@@ -129,12 +129,9 @@ class TrafficGateController extends DailyCrawlerController
                             
                         } );
                         //var_dump($trafficgate_data2);
-                        /*
-                        サイト抽出　
-                        */
-                        /**
-                        アクティブ数　サイト別データ抽出
-                        */
+                        
+                        // サイト抽出　
+                        // アクティブ数　サイト別データ抽出
                         $active_count      = 0;
                         $page              = 0;
                         

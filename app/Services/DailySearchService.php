@@ -160,7 +160,22 @@ class DailySearchService
             // );
             $monthlysites_table = date('Ym',strtotime('-1 day')).'_monthlysites';
 
+            //サイトデータ登録
 
+            Site::updateOrCreate(
+                [
+                  'media_id' => $data['media_id'],
+                  'product_id' => $data['product']
+                ],
+                [
+                  'site_name' => $data['site_name'],
+                  'asp_id' => $data['asp_id'],
+                  'created_at' =>  \Carbon\Carbon::now(),
+                  'updated_at' => \Carbon\Carbon::now()
+                ]
+              );
+
+            //月次サイトデータ登録
             DB::table($monthlysites_table)->updateOrInsert(
                 [
                   'media_id' => $data['media_id'],
