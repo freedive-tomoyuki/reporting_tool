@@ -142,7 +142,7 @@ class DailySearchService
             $ratio = (date("d")/date("t"));
             $estimate_cv = ceil(($cv)/ $ratio);
             //$asp = Product::select('asp_id')->where('id', $data['product'])->get();
-            \Log::debug($asp);
+            //\Log::debug($asp);
             // Monthlysite::create(
             //     [
             //       'media_id' => $data['media_id'],
