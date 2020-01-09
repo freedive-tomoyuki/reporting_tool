@@ -320,7 +320,8 @@
               想定値
                 <button class="btn btn-success btn-md pull-right">
                 <i class='fas fa-file-download'></i>
-                  <a href="/admin/csv_monthly_estimate/@if( old('product')){{ old('product') }}@else{{ 3 }}@endif">
+                <a href="{{ url('admin/csv_monthly_estimate/'.( old('product'))? old('product') :  3 ) }}">
+
                     CSV
                   </a>
                 </button>

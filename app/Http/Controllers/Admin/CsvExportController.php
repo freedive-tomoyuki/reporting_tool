@@ -58,14 +58,17 @@ class CsvExportController extends Controller
         $start = ($request->s_date) ? urldecode($request->s_date) : '' ; 
         $end =  ($request->e_date) ?  urldecode($request->e_date) : '' ;
 
-        $csvHeader =['日付','ASP', '案件ID', '案件名', 'Imp', 'CTR', 'Click', 'CVR','CV', 'Active', 'Partnership','Price','CPA','予想CV'];
+        $csvHeader =['日付','ASP', '案件ID', '案件名', 'Imp', 'CTR', 'Click', 'CVR','CV', 'Active', 'Partnership','Price','CPA'];
                 //$users = \User::where('type', '=', '1')->get(['name', 'birth_day'])->toArray();
 
         $csvData = $this->dailyDataService->showCsv($asp_id , $p , $start , $end );
         $product = ProductBase::Where('id',$p)->get()->toArray();
         $s_data = str_replace('-', '', $start);
         $e_data = str_replace('-', '', $end);
-            
+        // echo "<pre>";
+        // var_dump($csvData); 
+        // echo "</pre>";
+
         return CSV::download($csvData, $csvHeader, $product[0]['product_name'].'_'.$s_data.'_'.$e_data.'_daily.csv');
     }
     /**
@@ -85,7 +88,7 @@ class CsvExportController extends Controller
         $end =  ($request->e_date) ?  urldecode($request->e_date) : '' ;
 
         $csvHeader= array();
-        $csvHeader = ['日付','ASP', 'MediaID','サイト名', '案件名','案件ID','imp', 'CTR', 'click', 'CVR','CV','FDグロス','CPA','予想CV'];
+        $csvHeader = ['日付','ASP', 'MediaID','サイト名', '案件名','案件ID','imp', 'CTR', 'click', 'CVR','CV','FDグロス','CPA'];
 
         $csvData = $this->dailySiteDataService->showCsv($asp_id , $id , $start , $end );
 
@@ -117,6 +120,8 @@ class CsvExportController extends Controller
             // var_dump($csvData);
             return CSV::download( $csvData , $csvHeader, $product[0]['product_name'].'_'.$month.'_daily.csv');
     }
+
+    
     /**
      * マンスリーレポートの一覧のCSV出力用の関数（想定値）
     */
@@ -198,7 +203,7 @@ class CsvExportController extends Controller
         $product = ProductBase::Where('id', $id)->get()->toArray();
 
         $csvHeader= array();
-        $csvHeader = ['日付','ASP', 'MediaID','サイト名', '案件名','案件ID','imp', 'CTR', 'click', 'CVR','CV','FDグロス','CPA','予想CV'];
+        $csvHeader = ['日付','ASP', 'MediaID','サイト名', '案件名','案件ID','imp', 'CTR', 'click', 'CVR','CV','FDグロス','CPA'];
 
 
         $csvData = $this->monthlySiteDataService->showCsv($id , $date, $asp);

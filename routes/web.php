@@ -305,7 +305,7 @@ Route::get('/at', 'DailydataController@at');
 Route::get('/vc', 'DailydataController@vc');
 Route::get('/test','ScrapingController@index');
 */
-// Route::get('s8/{id}','Admin\Asp\Daily\S8Controller@s8');
+Route::get('s8/{id}','Admin\Asp\Daily\S8Controller@s8');
 Route::get('test1','Admin\DailyCrawlerController@dailytimer');
 Route::get('test2','Admin\MonthlyCrawlerController@monthlytimer');
 //Route::get('check','CheckController@check');

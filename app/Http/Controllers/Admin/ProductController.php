@@ -121,16 +121,16 @@ class ProductController extends Controller
         return redirect('/admin/product_list');
     }
     //各案件の編集画面
-    public function edit($id,Request $request) {
+    public function edit(Request $request) {
 
         $product_bases = ProductBase::where('killed_flag', '==' ,0 )->get();
         $asps = Asp::where('killed_flag', '==' ,0 )->get();
         $user = Auth::user();
 
-        if($id != ''){
+        if($request->id != ''){
             $products = Product::select('products.id','asp_id','login_value','password_value','price','product','asp_product_id','asp_sponsor_id','product_base_id')
                 ->join('asps','products.asp_id','=','asps.id')
-                ->where('products.id',$id)
+                ->where('products.id',$request->id)
                 ->get()
                 ->toArray();
         }else{

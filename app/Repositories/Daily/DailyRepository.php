@@ -61,7 +61,7 @@ class DailyRepository implements DailyRepositoryInterface
     public function getCsv($selected_asp, $id, $start, $end)
     {
         
-        $csv_data = $this->dailyModel->select(['daily_diffs.date','name','products.id','products.product', 'imp', 'ctr', 'click', 'cvr','cv', 'active', 'partnership','daily_diffs.price','cpa','estimate_cv'])
+        $csv_data = $this->dailyModel->select(['daily_diffs.date','name','products.id','products.product', 'imp', 'ctr', 'click', 'cvr','cv', 'active', 'partnership','daily_diffs.price','cpa'])
                     ->join('products','daily_diffs.product_id','=','products.id')
                     ->join('asps','products.asp_id','=','asps.id');
                     if(!empty($id)){

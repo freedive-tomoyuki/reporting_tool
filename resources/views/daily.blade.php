@@ -82,7 +82,7 @@
                   }
                   
                 ?>
-                <a href="{{url('csv/'. $product_base .'/'. urlencode($s_date) .'/'.  urlencode($e_date)) }}" class='d-block text-info'>
+                <a href="{{ url('csv/'. $product_base .'/'. urlencode($s_date) .'/'.  urlencode($e_date)) }}" class='d-block text-info'>
                   ＣＳＶ
                 </a>
               </button>

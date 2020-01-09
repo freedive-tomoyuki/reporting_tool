@@ -133,7 +133,7 @@ class DailySiteRepository implements DailySiteRepositoryInterface
             $daily_site_diffs_table2 = $month_2.'_daily_site_diffs';
             //終了月の検索　クエリビルダ
             $table2 = DB::table($daily_site_diffs_table2)
-                    ->select(['date','name', 'media_id','site_name', 'products.product','products.id','imp', 'ctr', 'click', 'cvr','cv','cost','cpa','estimate_cv'])
+                    ->select(['date','name', 'media_id','site_name', 'products.product','products.id','imp', 'ctr', 'click', 'cvr','cv','cost','cpa'])
                     ->join('products',DB::raw($daily_site_diffs_table2.'.product_id'),'=','products.id')
                     ->join('asps','products.asp_id','=','asps.id');
                     if(!empty($id)){
@@ -153,7 +153,7 @@ class DailySiteRepository implements DailySiteRepositoryInterface
 
         //開始月の検索　クエリビルダ
         $csv_data = DB::table($daily_site_diffs_table)
-                    ->select(['date','name', 'media_id','site_name', 'products.product','products.id','imp', 'ctr', 'click', 'cvr','cv','cost','cpa','estimate_cv'])
+                    ->select(['date','name', 'media_id','site_name', 'products.product','products.id','imp', 'ctr', 'click', 'cvr','cv','cost','cpa'])
                     
                     ->join('products',DB::raw($daily_site_diffs_table.'.product_id'),'=','products.id')
                     ->join('asps','products.asp_id','=','asps.id');

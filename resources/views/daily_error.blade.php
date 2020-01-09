@@ -108,7 +108,7 @@
               @if( request()->path() == 'monthly_result' )
                 
                   <button class="btn btn-md btn-primary">
-                  <a href="/dailycal" target="_blank" >月次：手動実行</a></button>
+                  <a href="{{ url('dailycal')}}" target="_blank" >月次：手動実行</a></button>
                 
               @endif
               </div>

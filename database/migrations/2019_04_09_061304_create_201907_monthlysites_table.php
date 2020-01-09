@@ -26,8 +26,9 @@ class Create201907MonthlysitesTable extends Migration
             $table->float('cpa')->nullable();
             $table->Integer('cost')->nullable();
             $table->Integer('price')->nullable();
-            $table->float('approval')->nullable();
-            $table->float('approval_price')->nullable();
+            $table->Integer('approval')->nullable();
+            $table->Integer('approval_price')->nullable();
+            $table->float('approval_rate')->nullable();
             $table->date('date');
             $table->Integer('killed_flag')->default('0');
             $table->Integer('product_id')->unsigned();

@@ -413,7 +413,7 @@ class CsvImportController extends Controller
 				DB::table('daily_diffs')
 				    ->updateOrInsert(
 			        ['product_id' => $d['product_id'] , 'date' => $d['date'] ,'asp_id' => $d['asp_id']],
-			        ['imp' => $d['imp'],'click' => $d['click'],'cv' => $d['cv'],'active' => $d['active'],'partnership' => $d['partnership'],'cost' => $d['cost'],'price' => $d['price'],'cvr' => $d['cvr'],'ctr' => $d['ctr'], 'created_at' =>  \Carbon\Carbon::now(),'updated_at' => \Carbon\Carbon::now()]
+			        ['imp' => $d['imp'],'click' => $d['click'],'cv' => $d['cv'],'active' => $d['active'],'partnership' => $d['partnership'],'cost' => $d['cost'],'price' => $d['price'],'cvr' => $d['cvr'],'ctr' => $d['ctr'],'cpa' => $d['cpa'], 'created_at' =>  \Carbon\Carbon::now(),'updated_at' => \Carbon\Carbon::now()]
 				    );
 			}
 
@@ -449,7 +449,6 @@ class CsvImportController extends Controller
 
 				//CPA
 					$d['cpa'] = ($d['price'] == 0 || $d['cv'] == 0 )? 0 : $d['price'] / $d['cv'] ;
-
 					DB::table('daily_diffs')
 					    ->updateOrInsert(
 				        ['product_id' => $d['product_id'] , 'date' => $d['date'],'asp_id' => $d['asp_id'] ],
@@ -474,7 +473,7 @@ class CsvImportController extends Controller
 	{
 		$products = Product::all();
 
-		var_dump($request->month);
+		//var_dump($request->month);
 		$month = str_replace('-','',$request->month);
 
 	    // setlocaleを設定
@@ -514,7 +513,7 @@ class CsvImportController extends Controller
 	            $click 		= mb_convert_encoding($row[4], 'UTF-8', 'SJIS');
 	            $cv 		= mb_convert_encoding($row[5], 'UTF-8', 'SJIS');
 	            $media_id 	= mb_convert_encoding($row[6], 'UTF-8', 'SJIS');
-	            $site_name 	= mb_convert_encoding($row[7], 'UTF-8', 'auto');
+	            $site_name 	= mb_convert_encoding($row[7], 'UTF-8', 'ASCII,JIS,UTF-8,EUC-JP,SJIS');
 	            $price 		= mb_convert_encoding($row[8], 'UTF-8', 'SJIS');
 	            $approval 	= mb_convert_encoding($row[9], 'UTF-8', 'SJIS');
 	            $approval_price = mb_convert_encoding($row[10], 'UTF-8', 'SJIS');
@@ -527,7 +526,7 @@ class CsvImportController extends Controller
                     
                 $data[ 'cpa' ]  = $calData[ 'cpa' ]; //CPA
                 $data[ 'cost' ] = $calData[ 'cost' ];
-
+				\Log::debug("run");
                 $ctr = (($click == 0)||($imp == 0))? 0 : round(($click/$imp) * 100,2) ;
                 $cvr = (($cv == 0)||($click == 0))? 0 : round(($cv/$click) * 100,2) ;
                 $approval_rate =(($approval == 0)||($cv == 0))? 0 : round(($approval/$cv) * 100,2) ;
@@ -567,19 +566,19 @@ class CsvImportController extends Controller
 	        }
 	    	$row_count++;
 	    
-	    }
+		}
+		//return redirect('admin/csv/import', 303);
 /*	    echo "test";
 	    echo "<pre>";
 	    var_dump($array);
 	    echo "</pre>";*/
-		
+		\Log::debug("完了１");
 		$monthlysites_table = $month.'_monthlysites';
-
 	    //追加した配列の数を数える
 	    $array_count = count($array);
 	    //もし配列の数が500未満なら
 	    if ($array_count < 500){
-
+			//\Log::debug("完了2");
 			foreach( $array as $d ){
 
 				$d['cvr'] = ($d['click'] == 0 || $d['cv'] == 0 )? 0 : ($d['cv'] / $d['click']) * 100 ;
@@ -599,7 +598,7 @@ class CsvImportController extends Controller
 			        ['imp' => $d['imp'],'click' => $d['click'],'cv' => $d['cv'],'approval' => $d['approval'],'approval_price' => $d['approval_price'],'approval_rate' => $d['approval_rate'],'site_name' => $d['site_name'],'cost' => $d['cost'],'price' => $d['price'],'cvr' => $d['cvr'],'ctr' => $d['ctr'],'cpa' => $d['cpa'], 'created_at' =>  \Carbon\Carbon::now(),'updated_at' => \Carbon\Carbon::now()]
 					);
 			}
-
+			
 	    } else {
         
 	        //追加した配列が500以上なら、array_chunkで500ずつ分割する
@@ -608,14 +607,13 @@ class CsvImportController extends Controller
 	        //分割した数を数えて
 	        $array_partial_count = count($array_partial); //配列の数
 	        $month_array = array();
-	           
+			
         	//分割した数の分だけインポートを繰り替えす
 	        for ($i = 0; $i <= $array_partial_count - 1; $i++){
 	            //CSVimport::insert($array_partial[$i]);
 				foreach( $array_partial[$i] as $d ){
-		            /*echo "<pre>D";
-		            var_dump($d);
-		            echo "</pre>";*/
+
+					
 					$d['cvr'] = ($d['click'] == 0 || $d['cv'] == 0 )? 0 : ($d['cv'] / $d['click']) * 100 ;
 
 					//CTR
@@ -632,14 +630,13 @@ class CsvImportController extends Controller
 				        ['product_id' => $d['product_id'] , 'date' => $d['date'],'media_id' => $d['media_id'] ],
 				        ['imp' => $d['imp'],'click' => $d['click'],'cv' => $d['cv'],'approval' => $d['approval'],'approval_price' => $d['approval_price'],'approval_rate' => $d['approval_rate'],'site_name' => $d['site_name'],'cost' => $d['cost'],'price' => $d['price'],'cvr' => $d['cvr'],'ctr' => $d['ctr'],'cpa' => $d['cpa'], 'created_at' =>  \Carbon\Carbon::now(),'updated_at' => \Carbon\Carbon::now()]
 						);
+						
 		        }
-
-	        }
-	        
-	    }
-
-        return redirect('admin/csv/import', 303);
-	    
+				
+			}
+			
+			return redirect('admin/csv/import', 303);
+		}
 
 	}
 }

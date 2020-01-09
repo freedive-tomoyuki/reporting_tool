@@ -40,3 +40,15 @@ if (! function_exists('get_col_key')) {
     }
 }
 
+if (! function_exists('calc_percent')) {
+    function calc_percent($x,$y)
+    {
+        $ans = 0;
+        if($x!=0 && $y!=0){
+            $ans = number_format(
+                sprintf('%.2f',( $x / $y ) *100)
+            );
+        }
+        return $ans;
+    }
+}

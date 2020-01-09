@@ -23,7 +23,7 @@ class CreateMonthlydatasTable extends Migration
             $table->integer('estimate_cv');
             $table->integer('active');
             $table->integer('partnership');
-            $table->integer('price');
+            $table->integer('price')->nullable();
             $table->float('cpa')->nullable();
             $table->integer('cost')->nullable();
             $table->integer('asp_id');

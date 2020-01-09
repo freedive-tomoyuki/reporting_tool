@@ -26,12 +26,13 @@
 										
 									</div>
 									<div class="col-xs-8 col-md-8">
-										<h4><a href="{{ url('admin/product_detail/ $product->product_base_id ')}}">{{ $product->product }}</a></h4>
+										<h4><a href="{{ url('admin/product_detail/'. $product->product_base_id )}}">{{ $product->product }}</a></h4>
 										<p></p>
 
 									</div>
 									<div class="col-xs-2 col-md-2">
-										<form action="/admin/product_asp" method="get">
+										<form action="{{ url('admin/product_asp')}}" method="get">
+											<input type="hidden" name="id" value="{{ $product->id }}"> 
 											<input type="hidden" name="asp_id" value="{{ $asp[0]->id }}"> 
 											<input type="hidden" name="product_base_id" value="{{ $product->product_base_id }}"> 
 											<button type="submit" class="btn btn-md btn-info">ID/PW編集</button>

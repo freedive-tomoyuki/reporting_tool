@@ -61,9 +61,9 @@ class ExportController extends Controller
         $product_bases = ProductBase::Where('killed_flag',0)->get();
         return view('admin.export',compact('product_bases','user'));
     }
-    /*
-        今月データ　
-    */
+    /**
+     * PDF出力
+     */
     public function pdf($id,$month = null ){
         
         //$pdf = app('dompdf.wrapper');
@@ -88,7 +88,7 @@ class ExportController extends Controller
         /**
             当月の実績値
         */
-        $monthlyDatas = Monthlydata::select(['name', 'imp', 'click','cv', 'cvr', 'ctr', 'active', 'partnership','monthlydatas.created_at','products.product','products.id','price','cpa','cost','approval','approval_price','approval_rate'])
+        $monthlyDatas = Monthlydata::select(['name', 'imp', 'click','cv', 'cvr', 'ctr', 'active', 'partnership','monthlydatas.created_at','products.product','products.id','monthlydatas.price','cpa','cost','approval','approval_price','approval_rate'])
                     ->join('products','monthlydatas.product_id','=','products.id')
                     ->join('asps','products.asp_id','=','asps.id')
                     ->leftjoin(DB::raw("(select `cv` as last_cv, `product_id` from `monthlydatas` inner join `products` on `monthlydatas`.`product_id` = `products`.`id` where `product_base_id` = ".$id." and `monthlydatas`.`date` like '".$enddate."') AS last_month"), 'monthlydatas.product_id','=','last_month.product_id');
@@ -106,7 +106,7 @@ class ExportController extends Controller
             当月の実績値トータル
         */
 
-        $monthlyDataTotals = Monthlydata::select(DB::raw("date, product_id,sum(imp) as total_imp,sum(click) as total_click,sum(cv) as total_cv,sum(active) as total_active,sum(partnership) as total_partnership,sum(price) as total_price ,sum(cost) as total_cost,sum(approval) as total_approval, sum(approval_price) as total_approval_price"))
+        $monthlyDataTotals = Monthlydata::select(DB::raw("date, product_id,sum(imp) as total_imp,sum(click) as total_click,sum(cv) as total_cv,sum(active) as total_active,sum(partnership) as total_partnership,sum(monthlydatas.price) as total_price ,sum(cost) as total_cost,sum(approval) as total_approval, sum(approval_price) as total_approval_price"))
                    ->join('products','monthlydatas.product_id','=','products.id');
                     if(!empty($id)){
                         $monthlyDataTotals->where('products.product_base_id', $id);
@@ -183,7 +183,7 @@ class ExportController extends Controller
         $monthlyCharts = $monthlyCharts->get();
 
 
-        $products = DailyDiff::select(['name', 'imp', 'click','cv', 'cvr', 'ctr', 'active', 'partnership','date','daily_diffs.created_at','products.product','products.id','price','cpa','cost','estimate_cv'])
+        $products = DailyDiff::select(['name', 'imp', 'click','cv', 'cvr', 'ctr', 'active', 'partnership','date','daily_diffs.created_at','products.product','products.id','daily_diffs.price','cpa','cost','estimate_cv'])
                     ->join('products','daily_diffs.product_id','=','products.id')
                     ->join('asps','products.asp_id','=','asps.id')
                     ->where('product_base_id', $id)
@@ -191,7 +191,7 @@ class ExportController extends Controller
                     ->where('daily_diffs.date', '<=' , $enddate)
                     ->get();
                     
-        $total = DailyDiff::select(DB::raw("date,products.id, sum(imp) as total_imp,sum(click) as total_click,sum(cv) as total_cv,sum(estimate_cv) as total_estimate_cv,sum(active) as total_active,sum(partnership) as total_partnership,sum(price) as total_price "))
+        $total = DailyDiff::select(DB::raw("date,products.id, sum(imp) as total_imp,sum(click) as total_click,sum(cv) as total_cv,sum(estimate_cv) as total_estimate_cv,sum(active) as total_active,sum(partnership) as total_partnership,sum(daily_diffs.price) as total_price "))
                     ->join('products','daily_diffs.product_id','=','products.id')
                     ->join('asps','products.asp_id','=','asps.id')
                     ->where('product_base_id', $id)
@@ -268,7 +268,7 @@ class ExportController extends Controller
                   </body>
                 </html>';
 
-        $pdf = PDF::loadView('pdf.pdf', compact('products','product_bases','total','total_chart','daily_ranking','monthlyDatas','monthlyDataTotals','monthlyDataEstimates','monthlyDataEstimateTotals','monthlyCharts'));
+        $pdf = PDF::loadView('pdf.pdf', compact('products','total','total_chart','daily_ranking','monthlyDatas','monthlyDataTotals','monthlyDataEstimates','monthlyDataEstimateTotals','monthlyCharts'));
         $pdf->setOption('enable-javascript', true);
         $pdf->setOption('javascript-delay', 5000);
         $pdf->setOption('enable-smart-shrinking', true);
@@ -644,7 +644,7 @@ class ExportController extends Controller
         $monthlysites_table = $month.'_monthlysites';
 
         $products = DB::table($monthlysites_table)
-                    ->select(['name', 'imp', 'click','cv', 'cvr', 'ctr', 'media_id','site_name','products.product','products.id','price','cpa','cost','estimate_cv','date','approval','approval_price','approval_rate'])
+                    ->select(['name', 'imp', 'click','cv', 'cvr', 'ctr', 'media_id','site_name','products.product','products.id',DB::raw($monthlysites_table.'.price'),'cpa','cost','estimate_cv','date','approval','approval_price','approval_rate'])
                     ->join('products',DB::raw($monthlysites_table.'.product_id'),'=','products.id')
                     ->join('asps','products.asp_id','=','asps.id');
                     
@@ -768,7 +768,7 @@ class ExportController extends Controller
 
             $csvHeader =['日付','ASP', '案件ID', '案件名', 'Imp', 'CTR', 'Click', 'CVR','CV', 'Active', 'Partnership','Price','CPA','予想CV'];
             $csvData= DailyDiff::
-                select(['daily_diffs.date','name','products.id','products.product', 'imp', 'ctr', 'click', 'cvr','cv', 'active', 'partnership','price','cpa','estimate_cv'])
+                select(['daily_diffs.date','name','products.id','products.product', 'imp', 'ctr', 'click', 'cvr','cv', 'active', 'partnership','daily_diffs.price','cpa','estimate_cv'])
                 ->join('products','daily_diffs.product_id','=','products.id')
                 ->join('asps','products.asp_id','=','asps.id');
             if(!empty($id)){
@@ -807,7 +807,7 @@ class ExportController extends Controller
 
                 //array_unshift($data, $csvHeaders);
                 $csvData= DailyDiff::
-                    select(['daily_diffs.date','name','products.id','products.product', 'imp', 'ctr', 'click', 'cvr','cv', 'active', 'partnership','price','cpa','estimate_cv'])
+                    select(['daily_diffs.date','name','products.id','products.product', 'imp', 'ctr', 'click', 'cvr','cv', 'active', 'partnership','daily_diffs.price','cpa','estimate_cv'])
                     ->join('products','daily_diffs.product_id','=','products.id')
                     ->join('asps','products.asp_id','=','asps.id');
                     if(!empty($id)){

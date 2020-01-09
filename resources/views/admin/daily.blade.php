@@ -244,17 +244,9 @@
                         <td>合計</td>
                         <td> -- </td>
                         <td>{{ number_format($t->total_imp) }}</td>
-                        <td>{{
-                           number_format(
-                              sprintf('%.2f',( $t->total_click / $t->total_imp ) *100)
-                           )
-                        }}</td>
+                        <td>{!! calc_percent($t->total_click , $t->total_imp) !!}</td>
                         <td>{{ number_format($t->total_click) }}</td>
-                        <td>{{
-                           number_format(
-                           sprintf('%.2f',( $t->total_cv / $t->total_click ) *100)
-                           )
-                        }}</td>
+                        <td>{!! calc_percent( $t->total_cv , $t->total_click ) !!}</td>
                         <td>{{ number_format($t->total_cv) }}</td>
                         <td>{{ number_format($t->total_estimate_cv) }}</td>
                         <td>{{ number_format($t->total_active) }}</td>

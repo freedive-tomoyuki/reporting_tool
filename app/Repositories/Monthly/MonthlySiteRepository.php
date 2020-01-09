@@ -190,7 +190,7 @@ class MonthlySiteRepository implements MonthlySiteRepositoryInterface
 
         //開始月の検索　クエリビルダ
         $csv_data = DB::table($monthlysites_table)
-                    ->select(['date','name', 'media_id','site_name', 'products.product','products.id','imp', 'ctr', 'click', 'cvr','cv','cost','cpa','estimate_cv'])
+                    ->select(['date','name', 'media_id','site_name', 'products.product','products.id','imp', 'ctr', 'click', 'cvr','cv','cost','cpa'])
                     ->join('products', DB::raw($monthlysites_table.'.product_id'), '=', 'products.id')
                     ->join('asps', 'products.asp_id', '=', 'asps.id');
 
