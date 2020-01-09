@@ -93,7 +93,7 @@ class MonthlyController extends Controller
            array_push($array_product_id, $p->id );
         }
 
-        $monthly = MonthlyData::whereIn("product_id",$array_product_id);
+        $monthly = Monthlydata::whereIn("product_id",$array_product_id);
         if($selected_month){
             $monthly->where('date', '=' , $selected_month);
         }
