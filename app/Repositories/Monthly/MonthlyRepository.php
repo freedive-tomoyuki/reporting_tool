@@ -2,7 +2,7 @@
 
 namespace App\Repositories\Monthly;
 
-use App\MonthlyData;
+use App\Monthlydata;
 use App\Product;
 use App\Repositories\Monthly\MonthlyRepositoryInterface;
 use DB;
