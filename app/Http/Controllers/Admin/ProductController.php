@@ -75,12 +75,16 @@ class ProductController extends Controller
         $product_order = '';
         
         if($request->product_order){
-            $num = $request->product_order + 1 ;
-            $product_order =  '#sel_promotion_id_chosen > div > ul > li:nth-child('.$num.')' ;
+            if($request->asp_id == 6){
+                $num = $request->product_order + 1 ;
+                $product_order =  '#sel_promotion_id_chosen > div > ul > li:nth-child('.intval($num).')' ;
+            }else{
+                $product_order =  '#adv_id_daily_chzn_o_'.intval($request->product_order) ;
+            }
             $product->product_order = $product_order;
         }
         $product->save();
- 
+        
         return redirect('/admin/product_list');
         
     }
