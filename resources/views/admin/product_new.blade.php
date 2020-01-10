@@ -139,7 +139,7 @@
                             <div class="col-md-6">
                                 <select class="form-control" name='product_order'>
                                 
-                                    <option v-for="n in 3" v-bind:value="n" > @{{ n }}番目</option>
+                                    <option v-for="n in 5" v-bind:value="n" > @{{ n }}番目</option>
                                 
                                 </select>
                             </div>
@@ -208,7 +208,7 @@
                 switchAsp : function() {
                     var id = this.selected ;
                     //console.log(id);
-                    axios.get('/api/getRequiredFlag/' + id).then((res)=>{
+                    axios.get('{{ url("api/getRequiredFlag/")}}/' + id).then((res)=>{
                         if(res.data[0]['sponsor_id_require_flag'] == 1 ){
                             this.show = true;
                             this.any = false;
@@ -227,7 +227,7 @@
                             this.any1 = true;
                             this.required1 = false;
                         }
-                        if(id == 6){
+                        if(id == 6 || id == 4 ){
                             this.product_order = true;
                             this.fixed = false;
                             this.ok = false;
@@ -253,7 +253,7 @@
                     //this.login = 
                     console.log(this);
                     this.loading = true;
-                    axios.post('/admin/product/check',
+                    axios.post('{{ url("admin/product/check")}}',
                     {
                         login:this.login,
                         password:this.password,
