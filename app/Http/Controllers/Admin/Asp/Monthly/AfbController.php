@@ -80,7 +80,7 @@ class AfbController extends MonthlyCrawlerController
                             ->select( '#form_start_month', $start ) //レポート期間
                             ->select( '#form_end_month', $end ) //レポート期間
                             ->click( '#adv_id_monthly_chzn > a' ) //案件選択
-                            ->click( '#adv_id_monthly_chzn_o_1' ) //案件選択
+                            ->click( '#adv_id_monthly_chzn_o_'.$product_info->product_order ) //案件選択
                             ->click( '#report_form_1 > div > table > tbody > tr:nth-child(5) > td > p > label:nth-child(1)' )
                             ->click( '#report_form_1 > div > table > tbody > tr:nth-child(5) > td > p > label:nth-child(2)' )
                             ->click( '#report_form_1 > div > table > tbody > tr:nth-child(5) > td > p > label:nth-child(3)' )

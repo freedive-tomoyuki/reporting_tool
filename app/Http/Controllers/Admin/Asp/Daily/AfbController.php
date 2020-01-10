@@ -89,9 +89,10 @@ class AfbController extends DailyCrawlerController
                             
                             ->visit( 'https://client.afi-b.com/client/b/cl/report/?r=daily' )
                             ->click('#adv_id_daily_chzn > a')
-                            ->click('#adv_id_daily_chzn_o_1')
-                            ->type( '#report_form_2 > div > table > tbody > tr > td > ul > li > #form_start_date', $s_date ) 
-                            ->type( '#report_form_2 > div > table > tbody > tr > td > ul > li > #form_end_date', $e_date )
+                            // ->click($product_info->product_order)
+                            ->click('#adv_id_daily_chzn_o_'.$product_info->product_order)
+                            ->type('#report_form_2 > div > table > tbody > tr > td > ul > li > #form_start_date', $s_date ) 
+                            ->type('#report_form_2 > div > table > tbody > tr > td > ul > li > #form_end_date', $e_date )
                             ->click('#report_form_2 > div > table > tbody > tr:nth-child(5) > td > p > label:nth-child(1)')
                             ->click('#report_form_2 > div > table > tbody > tr:nth-child(5) > td > p > label:nth-child(2)')
                             ->click('#report_form_2 > div > table > tbody > tr:nth-child(5) > td > p > label:nth-child(3)')
