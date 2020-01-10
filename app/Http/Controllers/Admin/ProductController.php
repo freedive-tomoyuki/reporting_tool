@@ -157,7 +157,7 @@ class ProductController extends Controller
                 $num = $request->product_order + 1 ;
                 $product_order =  '#sel_promotion_id_chosen > div > ul > li:nth-child('.intval($num).')' ;
             }else{
-                $product_order =  '#adv_id_daily_chzn_o_'.intval($request->product_order) ;
+                $product_order =  intval($request->product_order) ;
             }
             // $num = $request->product_order + 1 ;
             // $product_order =  '#sel_promotion_id_chosen > div > ul > li:nth-child('.$num.')' ;
