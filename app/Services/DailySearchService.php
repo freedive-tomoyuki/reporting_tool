@@ -207,6 +207,7 @@ class DailySearchService
         $converter = Product::select();
         $converter->where('product_base_id', $product_base_id);
         $converter->where('asp_id', $asp_id );
+        $converter->where('killed_flag', 0 );
         $converter = $converter->get()->toArray();
               //var_dump($a8_product[0]["id"]);
         return $converter[0]["id"];
