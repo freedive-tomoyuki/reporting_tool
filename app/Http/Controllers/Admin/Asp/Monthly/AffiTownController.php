@@ -84,7 +84,7 @@ class AffiTownController extends MonthlyCrawlerController
                         //先月と今月分
                         $affitown_data = $crawler->each( function( Crawler $node ) use ($selector_this, $selector_before, $product_info)
                         {
-                            
+                            echo "start";
                             $data              = array( );
                             $data[ 'asp' ]     = $product_info->asp_id;
                             $data[ 'product' ] = $product_info->id;
@@ -94,6 +94,7 @@ class AffiTownController extends MonthlyCrawlerController
                             $data[ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
                             $data[ 'approval' ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $selector_this['approval'] )->text() ) );
                             $data[ 'approval_price' ] = $data[ 'approval' ] * $unit_price;
+
                             if ( date( 'Y/m/d' ) == date( 'Y/m/01' ) ) {
                                 $data[ 'last_date' ] = date( 'Y-m-t', strtotime( '-2 month' ) );
                             }
@@ -140,7 +141,7 @@ class AffiTownController extends MonthlyCrawlerController
                             
                         } );
                         
-                        //var_dump( $affitown_data );
+                        var_dump( $affitown_data );
                         
                         
                         // $x = 0：今月
