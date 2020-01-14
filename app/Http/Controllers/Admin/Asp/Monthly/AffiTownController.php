@@ -73,14 +73,19 @@ class AffiTownController extends MonthlyCrawlerController
                         
                         //先月・今月のセレクタ
                         $selector_this   = array(
-                            'approval' => '#all_display > table > tbody > tr.bg_gray > td:nth-child(5) > p',
+                            'approval' => '#all_display > table > tbody > tr:nth-child(2) > td:nth-child(5)',
+                            //'approval' => '#all_display > table > tbody > tr.striped > td:nth-child(5)',
                             //'approval_price' => '#all_display > table > tbody > tr.bg_gray > td:nth-child(6) > p' 
-                        );
+                        );#all_display > table > tbody > tr.last > td:nth-child(5)
                         $selector_before = array(
-                            'approval' => '#all_display > table > tbody > tr:nth-child(1) > td:nth-child(5) > p',
+                            'approval' => '#all_display > table > tbody > tr:nth-child(1) > td:nth-child(5)',
+                            //'approval' => '#all_display > table > tbody > tr:nth-child(1) > td:nth-child(5) > p',
                             //'approval_price' => '#all_display > table > tbody > tr:nth-child(1) > td:nth-child(6) > p' 
-                        );
+                        );#all_display > table > tbody > tr.striped > td:nth-child(5)
+                        echo  $start;
+                        echo $end;
                         //Selectorから承認件数・承認金額を取得
+                        #all_display > table > tbody > tr.striped > td:nth-child(5)
                         //先月と今月分
                         $affitown_data = $crawler->each( function( Crawler $node ) use ($selector_this, $selector_before, $product_info)
                         {
