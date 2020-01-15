@@ -63,16 +63,16 @@ class ValuecommerceController extends MonthlyCrawlerController
                         
                         //実装：ログイン
                         $crawler = $browser->visit( $product_info->asp->login_url )
-                        ->type( $product_info->asp->login_key, $product_info->login_value )
-                        ->type( $product_info->asp->password_key, $product_info->password_value )
-                        ->click( $product_info->asp->login_selector ) 
+                                            ->type( $product_info->asp->login_key, $product_info->login_value )
+                                            ->type( $product_info->asp->password_key, $product_info->password_value )
+                                            ->click( $product_info->asp->login_selector ) 
                         
                         //実装：初期ページ
-                        ->visit( "https://mer.valuecommerce.ne.jp/report/sales_performance/" )
-                        ->select( '#condition_fromMonth', $start )
-                        ->select( '#condition_toMonth', $end )
-                        ->click( '#show_statistics' )
-                        ->crawler();
+                                            ->visit( "https://mer.valuecommerce.ne.jp/report/sales_performance/" )
+                                            ->select( '#condition_fromMonth', $start )
+                                            ->select( '#condition_toMonth', $end )
+                                            ->click( '#show_statistics' )
+                                            ->crawler();
                         //var_dump($crawler);
                         
                         //先月・今月のセレクタ
@@ -89,7 +89,7 @@ class ValuecommerceController extends MonthlyCrawlerController
                         //セレクターからフィルタリング
                         $valuecommerce_data = $crawler->each( function( Crawler $node ) use ($selector_this, $selector_before, $product_info)
                         {
-                            $data              = array( );
+                            $data              = array();
                             $data[ 'asp' ]     = $product_info->asp_id;
                             $data[ 'product' ] = $product_info->id;
                             
@@ -146,7 +146,7 @@ class ValuecommerceController extends MonthlyCrawlerController
                             return $data;
                         } );
                         
-                        //var_dump( $valuecommerce_data );
+                        var_dump( $valuecommerce_data );
                         //１ページ目クロール
                         //$pagination_page = $product_info->asp->lp2_url;
                         //$crawler_for_site = $browser->visit($pagination_page)->crawler();
@@ -195,11 +195,11 @@ class ValuecommerceController extends MonthlyCrawlerController
                             
                             //　アクティブサイト数（https://mer.valuecommerce.ne.jp/affiliate_analysis/） 
                             $active = explode( "/", $crawler_for_site->filter( "#cusomize_wrap > span" )->text() );
-                            //echo "active件数→" . $active[ 1 ] . "←active件数";
+                            echo "active件数→" . $active[ 1 ] . "←active件数";
                             
                             //ページ数を計算　＝　アクティブサイト数 / ４０
                             $count_page = ( $active[ 1 ] > 40 ) ? ceil( $active[ 1 ] / 40 ) : 1;
-                            //echo "count_page件数→" . $count_page . "←count_page件数";
+                            echo "count_page件数→" . $count_page . "←count_page件数";
                             
                             //var_dump($crawler_for_site);
                             
@@ -280,7 +280,7 @@ class ValuecommerceController extends MonthlyCrawlerController
                                     } 
                                     
                                     $valuecommerce_site[ $count ][ 'approval_price' ] = $valuecommerce_site[ $count ][ 'approval' ] * $product_info->price;
-
+                                    var_dump($valuecommerce_site);
                                     $count++;
                                     
                                 }
