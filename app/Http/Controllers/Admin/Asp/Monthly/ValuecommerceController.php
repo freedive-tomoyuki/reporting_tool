@@ -52,12 +52,16 @@ class ValuecommerceController extends MonthlyCrawlerController
                     //$product_infos = \App\Product::all()->where('id',$product_id);
                     $product_infos = \App\Product::all()->where( 'id', $product_id );
                     if ( date( 'Y/m/d' ) == date( 'Y/m/01' ) ) {
-                        $start = date( "n", strtotime( "-2 month" ) );
-                        $end   = date( "n", strtotime( "-1 month" ) );
+                        $s_Y = date( "Y", strtotime( "-2 month" ) );
+                        $s_M = date( "n", strtotime( "-2 month" ) );
+                        $e_Y   = date( "Y", strtotime( "-1 month" ) );
+                        $e_M   = date( "n", strtotime( "-1 month" ) );
                     } //date( 'Y/m/d' ) == date( 'Y/m/01' )
                     else {
-                        $start = date( "n", strtotime( "-1 month" ) );
-                        $end   = date( "n" );
+                        $s_Y = date( "Y", strtotime( "-1 month" ) );
+                        $s_M = date( "n", strtotime( "-1 month" ) );
+                        $e_Y   = date( "Y" );
+                        $e_M   = date( "n" );
                     }
                     foreach ( $product_infos as $product_info ) {
                         
@@ -69,8 +73,10 @@ class ValuecommerceController extends MonthlyCrawlerController
                         
                         //実装：初期ページ
                                             ->visit( "https://mer.valuecommerce.ne.jp/report/sales_performance/" )
-                                            ->select( '#condition_fromMonth', $start )
-                                            ->select( '#condition_toMonth', $end )
+                                            ->select( '#condition_fromYear', $s_Y )
+                                            ->select( '#condition_fromMonth', $s_M )
+                                            ->select( '#condition_toYear', $e_Y )
+                                            ->select( '#condition_toMonth', $e_M )
                                             ->click( '#show_statistics' )
                                             ->crawler();
                         //var_dump($crawler);
