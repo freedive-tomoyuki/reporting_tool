@@ -71,6 +71,7 @@
         <div class="col-md-12">
             <div class="panel panel-default">
               <div class="panel-heading">検索条件
+              @if(!$daily_data->isEmpty())
               <button class="btn btn-success btn-md pull-right">
                 <?php
                   $s_date = (old("searchdate_start"))? old("searchdate_start"): date("Y-m-d",strtotime('-1 day'));
@@ -86,7 +87,7 @@
                   ＣＳＶ
                 </a>
               </button>
-                
+              @endif
 
               </div>
                   <div class="panel-body">
@@ -143,6 +144,7 @@
                     </div>
         </div>
     </div>
+@if(!$daily_data->isEmpty())
 
 <!--グラフ-->
     <div class="row">
@@ -374,5 +376,12 @@
         return str;
       }
   </script>
-
+@else
+   <div class="row">
+         <div class="col-md-12">
+            <div class="alert bg-danger" role="alert"><em class="fa fa-lg fa-warning">&nbsp;</em>
+            検索結果が見つかりません。 <a href="#" class="pull-right"><em class="fa fa-lg fa-close"></em></a></div>
+         </div>
+   </div>
+@endif
 @endsection

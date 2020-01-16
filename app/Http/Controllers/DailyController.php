@@ -84,11 +84,11 @@ class DailyController extends Controller
         */
 
         //VIEWを表示する。
-        if($daily_data->isEmpty() ){
-            return view('daily_error',compact('product_bases','asps','user'));
-        }else{
+        // if($daily_data->isEmpty() ){
+        //     return view('daily_error',compact('product_bases','asps','user'));
+        // }else{
             return view('daily',compact('daily_data','product_bases','asps','daily_ranking','user','total','total_chart'));
-        }
+        // }
     }
     /**
     *デイリーレポートの検索結果ページを表示。
@@ -117,11 +117,11 @@ class DailyController extends Controller
         [$daily_data ,$daily_ranking , $total , $total_chart ] = $this->dailyDataService->showList($asp_id , $product_id, $start , $end  );
 
         //VIEWを表示する。
-        if($daily_data->isEmpty() ){
-            return view('daily_error',compact('product_bases','asps','user'));
-        }else{
+        // if($daily_data->isEmpty() ){
+        //     return view('daily_error',compact('product_bases','asps','user'));
+        // }else{
             return view('daily',compact('daily_data','product_bases','asps','daily_ranking','user','total','total_chart'));
-        }
+        // }
     }
 
     /*

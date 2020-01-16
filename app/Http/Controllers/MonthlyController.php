@@ -72,9 +72,7 @@ class MonthlyController extends Controller
         $product_bases = ProductBase::where('killed_flag', '==' ,0 )->get();
         $asps = Asp::where('killed_flag', '==' ,0 )->get();
 
-        [ $products, $products_totals, $products_estimates, $products_estimate_totals, $chart_data]= $this->monthlyDataService->showList($id ,$month);
-
-        // var_dump($products);
+        [ $products, $products_totals, $products_estimates, $products_estimate_totals, $chart_data]= $this->monthlyDataService->showList(5 ,$month);
 
         //グラフ数値
         // $chart_data = Monthlydata::select(['name', 'imp', 'click','cv','date'])
@@ -87,11 +85,11 @@ class MonthlyController extends Controller
         //var_dump($chart_data);
         //echo $chart_sql;
 
-        if( $products->isEmpty() ){
-            return view('daily_error',compact('product_bases','asps','user'));
-        }else{
+        // if( $products->isEmpty() ){
+        //     return view('daily_error',compact('product_bases','asps','user'));
+        // }else{
             return view('monthly',compact('products','product_bases','asps','products_estimates','products_estimate_totals','products_totals','user','chart_data'));
-        }
+        // }
     }
     /**
         月次の基本データ表示（検索後）
@@ -108,11 +106,11 @@ class MonthlyController extends Controller
 
         [ $products, $products_totals, $products_estimates, $products_estimate_totals, $chart_data ] = $this->monthlyDataService->showList($id,$month);
 
-        if( $products->isEmpty() ){
-            return view('daily_error',compact('product_bases','asps','user'));
-        }else{
+        // if( $products->isEmpty() ){
+        //     return view('daily_error',compact('product_bases','asps','user'));
+        // }else{
             return view('monthly',compact('products','product_bases','asps','products_estimates','products_estimate_totals','products_totals','user','chart_data'));
-        }
+        // }
     }
 
 }

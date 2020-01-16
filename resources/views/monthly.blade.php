@@ -44,11 +44,7 @@
             <div class="panel panel-default">
               <div class="panel-heading">検索条件
               
-                <a href="{{ url('csv/'. $products[0]->id .'/'. $products[0]->date) }}">
-                <button class="btn btn-default btn-md pull-right">
-                  ＣＳＶ
-                </button>
-                </a>
+                
               </div>
                   <div class="panel-body">
 
@@ -98,6 +94,7 @@
             </div>
         </div>
     </div>
+@if(!$products->isEmpty())
 
 <!--グラフ-->
     <div class="row">
@@ -129,6 +126,16 @@
           <div class="panel panel-default ">
             <div class="panel-heading">
               実績値
+              <button class="btn btn-success btn-md pull-right">
+                <i class='fas fa-file-download'></i>
+                <?php
+                   $month = (old("month"))? old("month"): date('Y-m',strtotime('-1 day'));
+                   $product_base = ( old('product'))? old('product') : 3; 
+                ?>
+                <a href="{{ url('admin/monthly/csv?p='.$product_base.'&month='.$month ) }}">
+                    CSV
+                </a>
+                </button>
             </div>
             <div class="panel-body table-responsive">
                 <table class="table table-striped table-bordered table-hover" cellspacing="0" width="100%">
@@ -223,6 +230,13 @@
           <div class="panel panel-default">
             <div class="panel-heading">
               想定値
+              <button class="btn btn-success btn-md pull-right">
+                <i class='fas fa-file-download'></i>
+                <a href="{{ url('admin/csv_monthly_estimate/'.( old('product'))? old('product') :  3 ) }}">
+
+                    CSV
+                  </a>
+                </button>
             </div>
           <div class="panel-body table-responsive">
           <table class="table table-striped table-bordered table-hover " cellspacing="0" width="100%">
@@ -364,4 +378,13 @@
         return str;
       }
     </script>
+
+@else
+    <div class="row">
+         <div class="col-md-12">
+            <div class="alert bg-danger" role="alert"><em class="fa fa-lg fa-warning">&nbsp;</em>
+            検索結果が見つかりません。 <a href="#" class="pull-right"><em class="fa fa-lg fa-close"></em></a></div>
+    </div>
+</div>
+@endif
 @endsection

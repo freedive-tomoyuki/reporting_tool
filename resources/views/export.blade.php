@@ -99,7 +99,7 @@
                             <label class="col-sm-3 control-label">今月のメディア別成果</label>
                                 <div class="col-sm-9">
                                     <div class="text-left form-control-static">
-                                        <a href="{{ url('pdf/media/{{ $user->product_base_id }}' class="btn btn-success btn-sm" role="button"><i class="fas fa-download">&nbsp;</i>PDF</a>
+                                        <a href="{{ url('pdf/media/'. $user->product_base_id ) }}" class="btn btn-success btn-sm" role="button"><i class="fas fa-download">&nbsp;</i>PDF</a>
                                     </div>
                                 </div>
                         </div>

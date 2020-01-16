@@ -133,27 +133,20 @@
                               </p>
 
                   </div>
-                  <div class="form-group col-md-12 col-sm-12 col-xs-12 col-lg-12">
-<!--                   <button type="submit" class="btn btn-primary col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1 col-xs-10 col-xs-offset-1"><i class='fas fa-search'></i> 検索</button>
-                  
- -->
-                  <?php
-                      if( old('product')){
-                          $product_base = old('product') ;
-                      }else{
-                          $product_base =  3 ;
-                      }
-                  ?>                
-                  <button type="button" class="btn btn-success col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1 col-xs-10 col-xs-offset-1"><i class='fas fa-file-download'></i>
-                    <?php
-                      $month = (old("month"))? old("month"): date('Y-m',strtotime('-1 day'));
-                      $product_base = ( old('product'))? old('product') : 3; 
-                    ?>
-                    <a href="{{ url('admin/monthly/site/csv?p='. $product_base .'&month='. $month )}}" class='d-block'>
-                      ＣＳＶ
-                    </a>
-                  </button>
-                  </div>
+                  @if(!$products->isEmpty())
+                      <div class="form-group col-md-12 col-sm-12 col-xs-12 col-lg-12">
+                
+                        <button type="button" class="btn btn-success col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1 col-xs-10 col-xs-offset-1"><i class='fas fa-file-download'></i>
+                          <?php
+                            $month = (old("month"))? old("month"): date('Y-m',strtotime('-1 day'));
+                            $product_base = ( old('product'))? old('product') : 3; 
+                          ?>
+                          <a href="{{ url('admin/monthly/site/csv?p='. $product_base .'&month='. $month )}}" class='d-block'>
+                            ＣＳＶ
+                          </a>
+                        </button>
+                      </div>
+                  @endif
               </div>
          </div>
          </form>

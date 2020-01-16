@@ -58,11 +58,7 @@
         <div class="col-md-12">
             <div class="panel panel-default">
               <div class="panel-heading">検索条件
-                <button class="btn btn-success btn-md pull-right">
-                <a href="{{ url('csv_site/'. $products[0]->id .'/'. $products[0]->date) }}" class='d-block text-info'>
-                  ＣＳＶ
-                </a>
-                </button>
+
                 
               </div>
                   <div class="panel-body">
@@ -98,10 +94,21 @@
                             </div>
                           </div>
 
-
+                @if(!$products->isEmpty())
+                  <button type="button" class="btn btn-success col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1 col-xs-10 col-xs-offset-1"><i class='fas fa-file-download'></i>
+                    <?php
+                      $month = (old("month"))? old("month"): date('Y-m',strtotime('-1 day'));
+                      $product_base = ( old('product'))? old('product') : 3; 
+                    ?>
+                    <a href="{{ url('admin/monthly/site/csv?p='. $product_base .'&month='. $month )}}" class='d-block'>
+                      ＣＳＶ
+                    </a>
+                  </button>
+                @endif
         </div>
     </div>
 
+@if(!$products->isEmpty())
 
 <!--グラフ-->
     <div class="row">
@@ -204,24 +211,7 @@
           //console.log(array_ranking1[i]);
         });
         console.log(array_ranking1);
-/*        array_ranking = Object.entries(ranking).map(([key, value]) => ({[key]: value}));
-        //array_ranking1 = Object.entries(ranking).map(([key, value]) => ({key, value}));
-        console.log(array_ranking1);
-        //alert(typeof array_ranking) ;
 
-        //foreach (array_ranking as array_s){
-        array_ranking.forEach(function(element) {
-          array_ranking1 = Object.entries(element).map(([key, value]) => ({[key]: value}));
-
-          console.log( array_ranking1[0] );
-          
-          console.log( Object.entries(array_ranking1));
-          console.log( Object.entries(element));
-
-          //console.log( Object.entries(element).map(([key, value]) => ({key, value})));
-          //console.log(Object.entries(element[1][1]).map(([key, value]) => ({[key]: value}))) ;
-          //console.log(element) ;
-        });*/
         array_ranking2 = [['Task', 'Hours per Day']];
         array_ranking1.forEach(function(element){
               array_ranking2.push([ element["site_name"], parseInt(element["cv"], 10) ]);
@@ -248,6 +238,13 @@
         return str;
       }
     </script>
-
+@else
+<div class="row">
+         <div class="col-md-12">
+            <div class="alert bg-danger" role="alert"><em class="fa fa-lg fa-warning">&nbsp;</em>
+            検索結果が見つかりません。 <a href="#" class="pull-right"><em class="fa fa-lg fa-close"></em></a></div>
+         </div>
+</div>
+@endif
 
 @endsection

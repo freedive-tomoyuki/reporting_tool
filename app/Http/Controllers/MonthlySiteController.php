@@ -52,11 +52,11 @@ class MonthlySiteController extends Controller
         $site_ranking = $this->monthlySiteDataService->monthlyRankingSite( $id , $month , $asp_id);
     
         //VIEWを表示する。
-        if( $products->isEmpty() ){
-            return view('daily_error',compact('product_bases','asps','user'));
-        }else{
+        // if( $products->isEmpty() ){
+        //     return view('daily_error',compact('product_bases','asps','user'));
+        // }else{
             return view('monthly_site',compact('products','product_bases','asps','site_ranking','user'));
-        }
+        // }
     }
     /**
     *サイト別デイリーレポートの検索結果ページを表示。
@@ -87,11 +87,11 @@ class MonthlySiteController extends Controller
 
         $site_ranking = $this->monthlySiteDataService->monthlyRankingSite( $id , $month , $asp_id);
         // VIEWを表示する。
-        if( $products->isEmpty() ){
-            return view('daily_error',compact('product_bases','asps','user'));
-        }else{
+        // if( $products->isEmpty() ){
+        //     return view('daily_error',compact('product_bases','asps','user'));
+        // }else{
             return view('monthly_site',compact('products','product_bases','asps','site_ranking','user'));
-        }
+        // }
 
 
     }

@@ -69,22 +69,18 @@
         <div class="col-md-12">
             <div class="panel panel-default">
               <div class="panel-heading">検索条件
+              @if(!$products->isEmpty())
                 <button class="btn btn-success btn-md pull-right">
                 <?php
                   $s_date = (old("searchdate_start"))? old("searchdate_start"): date("Y-m-d",strtotime('-1 day'));
                   $e_date = (old("searchdate_end"))? old("searchdate_end"):date("Y-m-d",strtotime('-1 day'));
-                  if( old('product')){
-                      $product_base = old('product') ;
-                  }else{
-                      $product_base =  3 ;
-                  }
-                  
+                  $product_base = (old('product'))? old('product') : 3 ;
                 ?>
                 <a href="{{ url('csv_site/'. $product_base .'/'. urlencode($s_date) .'/'.  urlencode($e_date)) }}" class='d-block text-info'>
                   ＣＳＶ
                 </a>
                 </button>
-                
+              @endif
               </div>
                   <div class="panel-body">
                     <div class="form-group">
@@ -120,6 +116,7 @@
 
         </div>
     </div>
+@if(!$products->isEmpty())
 
 <!--グラフ-->
     <div class="row">
@@ -249,5 +246,12 @@
         return str;
       }
     </script>
-
+@else
+   <div class="row">
+         <div class="col-md-12">
+            <div class="alert bg-danger" role="alert"><em class="fa fa-lg fa-warning">&nbsp;</em>
+            検索結果が見つかりません。 <a href="#" class="pull-right"><em class="fa fa-lg fa-close"></em></a></div>
+         </div>
+   </div>
+@endif
 @endsection
