@@ -42,11 +42,11 @@ class MonthlyController extends Controller
         
         [ $products, $products_totals, $products_estimates, $products_estimate_totals, $chart_data]= $this->monthlyDataService->showList(3,$month);
 
-        if( $products->isEmpty() ){
-        	return view('admin.daily_error',compact('product_bases','asps','user'));
-        }else{
+        // if( $products->isEmpty() ){
+        // 	return view('admin.daily_error',compact('product_bases','asps','user'));
+        // }else{
         	return view('admin.monthly',compact('products','product_bases','asps','products_estimates','products_estimate_totals','products_totals','user','chart_data'));
-        }
+        // }
     }
     /**
      *    月次の基本データ表示（検索後）
@@ -65,11 +65,11 @@ class MonthlyController extends Controller
 
         [ $products, $products_totals, $products_estimates, $products_estimate_totals, $chart_data]= $this->monthlyDataService->showList($id,$month);
 
-        if( $products->isEmpty() ){
-        	return view('admin.daily_error',compact('product_bases','asps','user'));
-        }else{
+        // if( $products->isEmpty() ){
+        // 	return view('admin.daily_error',compact('product_bases','asps','user'));
+        // }else{
             return view('admin.monthly',compact('products','product_bases','asps','products_estimates','products_estimate_totals','products_totals','user','chart_data'));
-        }
+        // }
     }
     /**
      * 編集画面

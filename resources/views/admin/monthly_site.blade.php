@@ -163,6 +163,7 @@
 </div>
 
 
+@if(!$products->isEmpty())
 
 <!--グラフ-->
     <div class="row">
@@ -309,5 +310,13 @@
         return str;
       }
     </script>
+@else
+   <div class="row">
+         <div class="col-md-12">
+            <div class="alert bg-danger" role="alert"><em class="fa fa-lg fa-warning">&nbsp;</em>
+            検索結果が見つかりません。 <a href="#" class="pull-right"><em class="fa fa-lg fa-close"></em></a></div>
+         </div>
+   </div>
+@endif
 
 @endsection

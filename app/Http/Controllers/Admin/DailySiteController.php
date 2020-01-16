@@ -63,11 +63,11 @@ class DailySiteController extends Controller
         //var_dump($products);
         
         //VIEWを表示する。
-        if( !isset($products) ){
-           return view('admin.daily_error',compact('product_bases','asps','user'));
-        }else{
+        // if( !isset($products) ){
+        //    return view('admin.daily_error',compact('product_bases','asps','user'));
+        // }else{
            return view('admin.daily_site',compact('products','product_bases','asps','site_ranking','user'));
-        }
+        // }
     }
     /**
     *サイト別デイリーレポートの検索結果ページを表示。
@@ -100,11 +100,11 @@ class DailySiteController extends Controller
         $site_ranking = $this->dailySiteDataService->dailyRankingSite( $selected_asp, $id, $start, $end );
 
         //VIEWを表示する。
-        if (!isset($products)) {
-            return view('admin.daily_error', compact('product_bases', 'asps', 'user'));
-        } else {
+        // if (!isset($products)) {
+        //     return view('admin.daily_error', compact('product_bases', 'asps', 'user'));
+        // } else {
             return view('admin.daily_site', compact('products', 'product_bases', 'asps', 'site_ranking', 'user'));
-        }
+        // }
     }
     /**
      * 編集画面

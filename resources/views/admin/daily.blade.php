@@ -172,6 +172,7 @@
    </div>
 </div>
 <!--グラフ-->
+@if(!$daily_data->isEmpty())
 <div class="row">
    <div class="col-lg-12">
       <div class="panel panel-default">
@@ -256,10 +257,10 @@
                   </tr>
                   @endforeach
                 </tfoot>
-
       </div>
   </div>
 </div>
+
 <script>
       //google.charts.load('current', {'packages':['line']});
       google.load("visualization", "1", {
@@ -385,6 +386,15 @@
         str = str.replace(/&#x60;/g, '`');
         return str;
       }
-  </script>
+      
+</script>
+@else
+   <div class="row">
+         <div class="col-md-12">
+            <div class="alert bg-danger" role="alert"><em class="fa fa-lg fa-warning">&nbsp;</em>
+            検索結果が見つかりません。 <a href="#" class="pull-right"><em class="fa fa-lg fa-close"></em></a></div>
+         </div>
+   </div>
+@endif
 
 @endsection

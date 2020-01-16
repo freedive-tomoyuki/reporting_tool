@@ -60,11 +60,11 @@ class MonthlySiteController extends Controller
         $site_ranking = $this->monthlySiteDataService->monthlyRankingSite( 3 , $month , $asp_id);
 
         //VIEWを表示する。
-        if( $products->isEmpty() ){
-            return view('admin.daily_error',compact('product_bases','asps','user'));
-        }else{
+        // if( $products->isEmpty() ){
+        //     return view('admin.daily_error',compact('product_bases','asps','user'));
+        // }else{
             return view('admin.monthly_site',compact('products','product_bases','asps','site_ranking','user'));
-        }
+        // }
     }
 
     /**
@@ -103,11 +103,11 @@ class MonthlySiteController extends Controller
 
         
         //VIEWを表示する。
-        if( $products->isEmpty() ){
-            return view('admin.daily_error',compact('product_bases','asps','user'));
-        }else{
+        // if( $products->isEmpty() ){
+        //     return view('admin.daily_error',compact('product_bases','asps','user'));
+        // }else{
             return view('admin.monthly_site',compact('products','product_bases','asps','site_ranking','user'));
-        }
+        // }
 
 
     }

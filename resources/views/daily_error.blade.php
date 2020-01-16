@@ -76,7 +76,7 @@
                   @endif
 
 
-                  <div class="form-group">
+                  <!-- <div class="form-group">
                     <label>Product</label>
                     <select class="form-control" name="product" >
                                 <option value=""> -- </option>
@@ -89,7 +89,7 @@
                                     >{{ $product_base -> product_name }}</option>
                                 @endforeach
                     </select>
-                  </div>
+                  </div> -->
 
                   <button type="submit" class="btn btn-primary">検索</button>
                   
