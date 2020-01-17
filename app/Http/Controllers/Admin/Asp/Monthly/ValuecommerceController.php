@@ -105,7 +105,7 @@ class ValuecommerceController extends MonthlyCrawlerController
                             
                             if(count($node->filter( $selector_this['approval'] ))){
                                 $data[ 'approval' ] = trim( preg_replace( '/[^0-9]/', '', $node->filter($selector_this['approval'] )->text() ) );
-                            }else{ throw new \Exception($value.'要素が存在しません。');}
+                            }else{ throw new \Exception($selector_this['approval'] .'要素が存在しません。');}
 
                             $data[ 'approval_price' ] = $data[ 'approval' ] * $unit_price;
                                 
@@ -114,9 +114,9 @@ class ValuecommerceController extends MonthlyCrawlerController
                             }else {
                                 $data[ 'last_date' ] = date( 'Y-m-d', strtotime( 'last day of previous month' ) );
                             }
-                            if(count($node->filter( $value ))){
-                                $data[ 'last_approval' ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
-                            }else{ throw new \Exception($value.'要素が存在しません。');}
+                            if(count($node->filter( $selector_before['approval']  ))){
+                                $data[ 'last_approval' ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $selector_before['approval'] )->text() ) );
+                            }else{ throw new \Exception($selector_before['approval'].'要素が存在しません。');}
 
                             $data[ 'last_approval_price' ] = $data[ 'last_approval' ] * $unit_price;
                             
