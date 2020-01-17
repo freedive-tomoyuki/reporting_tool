@@ -104,11 +104,10 @@ class AfbController extends MonthlyCrawlerController
                             $data[ 'product' ] = $product_info->id;
                             
                             $unit_price = $product_info->price;
-                            $value = $selector_this['approval'];
                             
                             $data[ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
                             
-                            if(count($crawler_for_site->filter( $selector_this['approval'] ))){
+                            if(count($node->filter( $selector_this['approval'] ))){
                                 $data[ 'approval' ] = trim( preg_replace( '/[^0-9]/', '', $node->filter(  $selector_this['approval'] )->text() ) );
                             }else{ throw new \Exception($selector_this['approval'].'要素が存在しません。'); }
 
@@ -119,8 +118,8 @@ class AfbController extends MonthlyCrawlerController
                             }else {
                                 $data[ 'last_date' ] = date( 'Y-m-d', strtotime( 'last day of previous month' ) );
                             }
-                            
-                            if(count($crawler_for_site->filter( $selector_before['approval'] ))){
+
+                            if(count($node->filter( $selector_before['approval'] ))){
                                 $data[ 'last_approval' ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $selector_before['approval']  )->text() ) );
                             }else{ throw new \Exception($selector_before['approval'].'要素が存在しません。'); }
 
