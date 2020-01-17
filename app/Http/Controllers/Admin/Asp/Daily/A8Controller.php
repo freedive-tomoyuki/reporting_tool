@@ -113,7 +113,11 @@ class A8Controller extends DailyCrawlerController
                             $data[ 'product' ] = $product_info->id;
                             
                             foreach ( $selector_1 as $key => $value ) {
-                                $data[ $key ] = trim( $node->filter( $value )->text() );
+                                if(count($node->filter( $value ))){
+                                    $data[ $key ] = trim( $node->filter( $value )->text() );
+                                }else{
+                                    throw new Exception($value.'要素が存在しません。');
+                                }
                             } //$selector_1 as $key => $value
                             return $data;
                         } );
@@ -123,7 +127,11 @@ class A8Controller extends DailyCrawlerController
                         $a8_data_2 = $crawler_2->each( function( Crawler $node ) use ($selector_2)
                         {
                             foreach ( $selector_2 as $key => $value ) {
-                                $data[ $key ] = trim( $node->filter( $value )->text() );
+                                if(count($node->filter( $value ))){
+                                    $data[ $key ] = trim( $node->filter( $value )->text() );
+                                }else{
+                                    throw new Exception($value.'要素が存在しません。');
+                                }
                             }
                             return $data;
                         } );
@@ -165,8 +173,13 @@ class A8Controller extends DailyCrawlerController
                                             ->crawler();
 
                         $count_selector   = '#contents1clm > form:nth-child(6) > span.pagebanner';
-                        $count_data       = intval( trim( preg_replace( '/[^0-9]/', '', substr( $crawler_for_site->filter( $count_selector )->text(), 0, 7 ) ) ) );
-                        
+
+                        if(count($crawler_for_site->filter( $count_selector ))){
+                            $count_data       = intval( trim( preg_replace( '/[^0-9]/', '', substr( $crawler_for_site->filter( $count_selector )->text(), 0, 7 ) ) ) );
+                        }else{
+                            throw new Exception($count_selector.'要素が存在しません。');
+                        }
+
                         //echo 'count_data＞'.$count_data;
                         $page_count = ceil( $count_data / 500 );
                         //echo 'page_count' . $page_count;
@@ -203,7 +216,11 @@ class A8Controller extends DailyCrawlerController
                                 );
                                 
                                 foreach ( $selector_for_site as $key => $value ) {
-                                    $a8_site[ $count ][ $key ] = trim( $crawler_for_site->filter( $value )->text() );
+                                    if(count($crawler_for_site->filter( $value ))){
+                                        $a8_site[ $count ][ $key ] = trim( $crawler_for_site->filter( $value )->text() );
+                                    }else{
+                                        throw new Exception($value.'要素が存在しません。');
+                                    }
                                 } //$selector_for_site as $key => $value
                                 
                                 $unit_price = $product_info->price;
@@ -225,21 +242,15 @@ class A8Controller extends DailyCrawlerController
                                         $a8_site[ $count ][ 'cpa' ]  = $calculated[ 'cpa' ]; //CPA
                                         $a8_site[ $count ][ 'cost' ] = $calculated[ 'cost' ]; //獲得単価
                                 
-                                //echo '<pre>';
-                                //echo $i;
-                                //var_dump( $a8_site );
-                                //echo '</pre>';
-                            } //$i = 1; $i <= $count_deff; $i++
-                        } //$page = 0; $page < $page_count; $page++
-                        //var_dump( $a8_site );
-                        //var_dump( $a8_data_1 );
+                            }
+                        }
                         
                         //１サイトずつサイト情報の登録を実行
                         $this->dailySearchService->save_site( json_encode( $a8_site ) );
                         $this->dailySearchService->save_daily( json_encode( $a8_data_1 ) );
                         
                         
-                    } //$product_infos as $product_info
+                    }
 
             }
             catch(\Exception $e){
