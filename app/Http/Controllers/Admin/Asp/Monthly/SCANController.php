@@ -86,9 +86,7 @@ class SCANController extends MonthlyCrawlerController
                             'approval' => '#report_clm > div > div.report_table > table > tbody > tr:nth-child(' . $row_before . ') > td:nth-child(13)',
                             'approval_price' => '#report_clm > div > div.report_table > table > tbody > tr:nth-child(' . $row_before . ') > td:nth-child(14)' 
                         );
-                        /**
-                        セレクターからフィルタリング
-                        */
+                        //セレクターからフィルタリング
                         $scan_data = $crawler->each( function( Crawler $node ) use ($selector_this, $selector_before, $product_info)
                         {
                             
@@ -97,52 +95,28 @@ class SCANController extends MonthlyCrawlerController
                             $data[ 'product' ] = $product_info->id;
                             
                             $unit_price = $product_info->price;
-                            
+
                             $data[ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
-                            $data[ 'approval' ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $selector_this['approval'] )->text() ) );
+
+                            if(count($node->filter( $selector_this['approval'] ))){
+                                $data[ 'approval' ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $selector_this['approval'] )->text() ) );
+                            }else{ throw new \Exception($selector_this['approval'].'要素が存在しません。'); }
+
                             $data[ 'approval_price' ] = $data[ 'approval' ] * $unit_price;
+
                             if ( date( 'Y/m/d' ) == date( 'Y/m/01' ) ) {
                                 $data[ 'last_date' ] = date( 'Y-m-t', strtotime( '-2 month' ) );
                             } 
                             else {
                                 $data[ 'last_date' ] = date( 'Y-m-d', strtotime( 'last day of previous month' ) );
                             }
-                            $data[ 'last_approval' ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $selector_before['approval']  )->text() ) );
+                        
+                            if(count($node->filter( $selector_before['approval'] ))){
+                                $data[ 'last_approval' ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $selector_before['approval'] )->text() ) );
+                            }else{ throw new \Exception($selector_before['approval'].'要素が存在しません。'); }
+
                             $data[ 'last_approval_price' ] = $data[ 'last_approval' ] * $unit_price;
 
-
-                            // foreach ( $selector_this as $key => $value ) {
-                            //     $data[ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
-                                
-                            //     if($key == 'approval_price'){
-                            //         $data[ $key ]   = $this->monthlySearchService->calc_approval_price(
-                            //             trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) ), 9);
-
-                            //     }else{
-                            //         $data[ $key ]   = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
-                                
-                            //     }
-                            
-                            // } //$selector_this as $key => $value
-                            // foreach ( $selector_before as $key => $value ) {
-                            //     //$data[ 'last_date' ]    = date( 'Y-m-d', strtotime( 'last day of previous month' ) );
-                                
-                            //     if ( date( 'Y/m/d' ) == date( 'Y/m/01' ) ) {
-                            //         $data[ 'last_date' ] = date( 'Y-m-t', strtotime( '-2 month' ) );
-                            //     } //date( 'Y/m/d' ) == date( 'Y/m/01' )
-                            //     else {
-                            //         $data[ 'last_date' ] = date( 'Y-m-d', strtotime( 'last day of previous month' ) );
-                            //     }
-
-                            //     if($key == 'approval_price'){
-                            //         $data[ 'last_' . $key ] = $this->monthlySearchService->calc_approval_price(
-                            //             trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) ), 9);
-                                        
-                            //     }else{
-                            //         $data[ 'last_' . $key ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
-                            //     }
-
-                            // } //$selector_before as $key => $value
                             return $data;
                         } );
                         
@@ -223,15 +197,14 @@ class SCANController extends MonthlyCrawlerController
                                 );
                                 //  サイト一覧　１行ずつクロール
                                 foreach ( $selector_for_site as $key => $value ) {
-                                    if ( $key == 'site_name' || $key == 'media_id' ) {
-                                        $scan_site[ $count_site ][ $key ] = trim( $crawler_for_site->filter( $value )->text() );
-                                    } //$key == 'site_name' || $key == 'media_id'
-                                    // elseif($key == 'approval_price'){
-                                    //     $scan_site[ $count_site ][ $key ] = $this->monthlySearchService->calc_approval_price(
-                                    //         trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) ) , 9);
-                                    // }
-                                    else {
-                                        $scan_site[ $count_site ][ $key ] = trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) );
+                                    if(count($crawler_for_site->filter( $value ))){
+                                        if ( $key == 'site_name' || $key == 'media_id' ) {
+                                            $scan_site[ $count_site ][ $key ] = trim( $crawler_for_site->filter( $value )->text() );
+                                        } else {
+                                            $scan_site[ $count_site ][ $key ] = trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) );
+                                        }
+                                    }else{
+                                        throw new \Exception($value.'要素が存在しません。');
                                     }
                                 } // endforeach
                                 
@@ -259,7 +232,6 @@ class SCANController extends MonthlyCrawlerController
                             ];
                             //echo $e->getMessage();
                 Mail::to('t.sato@freedive.co.jp')->send(new Alert($sendData));
-                            throw $e;
             }        
         } );
     }

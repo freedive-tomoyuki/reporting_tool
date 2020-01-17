@@ -98,7 +98,11 @@ class ValuecommerceController extends DailyCrawlerController
                             //echo $node->html();
                             foreach ( $selector_crawler as $key => $value ) {
                                 $data[ $key ] = array( );
-                                $data[ $key ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
+                                if(count($node->filter( $value ))){
+                                    $data[ $key ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
+                                }else{
+                                    throw new \Exception($value.'要素が存在しません。');
+                                }
                             } 
                             //$selector_crawler as $key => $value
                             //$data['cpa']= $this->cpa($data['cv'] ,$data['price'] , 1);
@@ -129,7 +133,11 @@ class ValuecommerceController extends DailyCrawlerController
                         $crawler_for_site = $browser->visit( $c_url )->crawler();
                         
                         $count_selector = "#cusomize_wrap > span";
-                        $active         = explode( "/", $crawler_for_site->filter( $count_selector )->text() );
+                        if(count($crawler_for_site->filter( $count_selector ))){
+                            $active         = explode( "/", $crawler_for_site->filter( $count_selector )->text() );
+                        }else{
+                            throw new \Exception($value.'要素が存在しません。');
+                        }
                         $count_page     = ( $active[ 1 ] > 40 ) ? ceil( $active[ 1 ] / 40 ) : 1;
                         
                         //アクティブ数　格納
@@ -168,15 +176,18 @@ class ValuecommerceController extends DailyCrawlerController
                                     );
                                     
                                     foreach ( $selector_for_site as $key => $value ) {
-                                        
-                                        if ( $key == 'site_name' ){
-                                            
-                                            $valuecommerce_site[ $count ][ $key ] = trim( $crawler_for_site->filter( $value )->text() );
-                                            
-                                        } else {
-                                            
-                                            $valuecommerce_site[ $count ][ $key ] = trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) );
-                                            
+                                        if(count($crawler_for_site->filter( $value ))){
+                                            if ( $key == 'site_name' ){
+                                                
+                                                $valuecommerce_site[ $count ][ $key ] = trim( $crawler_for_site->filter( $value )->text() );
+                                                
+                                            } else {
+                                                
+                                                $valuecommerce_site[ $count ][ $key ] = trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) );
+                                                
+                                            }
+                                        }else{
+                                            throw new \Exception($value.'要素が存在しません。');
                                         }
                                     }
                                     
@@ -219,7 +230,7 @@ class ValuecommerceController extends DailyCrawlerController
                             ];
                             //echo $e->getMessage();
                 Mail::to('t.sato@freedive.co.jp')->send(new Alert($sendData));
-                            throw $e;
+            
             }
         } );
     }

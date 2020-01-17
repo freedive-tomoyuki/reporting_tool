@@ -57,35 +57,27 @@ class AccesstradeController extends MonthlyCrawlerController
                         ->type( $product_info->asp->login_key, $product_info->login_value )
                         ->type( $product_info->asp->password_key, $product_info->password_value )
                         ->click( $product_info->asp->login_selector ) 
-                        /**
-                         *    承認ベース用のページに変更
-                         */ ->visit( 'https://merchant.accesstrade.net/matv3/program/report/monthly/approved.html?programId=' . $product_info->asp_product_id )->crawler();
+                        //    承認ベース用のページに変更
+                        ->visit( 'https://merchant.accesstrade.net/matv3/program/report/monthly/approved.html?programId=' . $product_info->asp_product_id )->crawler();
                         
-                        /**
-                         *    今月用のデータ取得selector
-                         */
+                        // 今月用のデータ取得selector
                         if ( date( 'Y/m/d' ) == date( 'Y/m/01' ) ) {
                             $row_this   = 2;
                             $row_before = 3;
-                        } //date( 'Y/m/d' ) == date( 'Y/m/01' )
-                        else {
+                        }else {
                             $row_this   = 1;
                             $row_before = 2;
                         }
                         $selector_this   = array(
                             'approval' => 'body > report-page > div > div > main > ng-component > section > div > div > div > display > div > table > tbody > tr:nth-child(' . $row_this . ') > td:nth-child(4)',
-                            //'approval_price' => 'body > report-page > div > div > main > ng-component > section > div > div > div > display > div > table > tbody > tr:nth-child(' . $row_this . ') > td:nth-child(7)' 
                         );
                         $selector_before = array(
                             'approval' => 'body > report-page > div > div > main > ng-component > section > div > div > div > display > div > table > tbody > tr:nth-child(' . $row_before . ') > td:nth-child(4)',
-                            //'approval_price' => 'body > report-page > div > div > main > ng-component > section > div > div > div > display > div > table > tbody > tr:nth-child(' . $row_before . ') > td:nth-child(7)' 
                         );
                         
                         //var_dump( $crawler );
                         //$crawler->each(function (Crawler $node) use ( $selector ){
-                        /**
-                        今月用のデータ取得selector
-                        */
+                        //今月用のデータ取得selector
                         $accesstrade_data = $crawler->each( function( Crawler $node ) use ($selector_this, $selector_before, $product_info)
                         {
                             
@@ -93,58 +85,29 @@ class AccesstradeController extends MonthlyCrawlerController
                             $data[ 'asp' ]     = $product_info->asp_id;
                             $data[ 'product' ] = $product_info->id;
                             $unit_price = $product_info->price;
-                            //$data['date'] = date('Y-m-d', strtotime('-1 day'));
 
+                            $data[ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
+
+                            // $value = $selector_this[ 'approval' ];
                             
-                            // foreach ( $selector_this as $key => $value ) {
-                                $data[ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
+                            if(count($node->filter( $selector_this['approval'] ))){
+                                $data[ 'approval' ]   = trim( preg_replace( '/[^0-9]/', '', $node->filter( $selector_this['approval'] )->text() ) );
+                            }else{ throw new \Exception( $selector_this[ 'approval' ].'要素が存在しません。'); }
 
-                                // if($key == 'approval_price'){
-                                //     $data[ $key ]   = 
-                                //         $this->monthlySearchService->calc_approval_price(
-                                //             trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) ) ,2
-                                //         );
-                                // }
-                                // else{ 
-                                $value = $selector_this[ 'approval' ];
-                                $data[ 'approval' ]   = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
-                                // }
-                                $data[ 'approval_price' ] = $data[ 'approval' ] * $unit_price;
+                            $data[ 'approval_price' ] = $data[ 'approval' ] * $unit_price;
 
-                            // }
-
-                            // foreach ( $selector_before as $key => $value ) {
-                            //     //$data['last_date'] = date('Y-m-d', strtotime('last day of previous month'));
-                            //     if ( date( 'Y/m/d' ) == date( 'Y/m/01' ) ) {
-                            //         $data[ 'last_date' ] = date( 'Y-m-t', strtotime( '-2 month' ) );
-                            //     } //date( 'Y/m/d' ) == date( 'Y/m/01' )
-                            //     else {
-                            //         $data[ 'last_date' ] = date( 'Y-m-d', strtotime( 'last day of previous month' ) );
-                            //     }
-                                
-                                //$data[ 'last_' . $key ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
-                                // if($key == 'approval_price'){
-                                //     $data[ 'last_' . $key ] = $this->monthlySearchService
-                                //                                     ->calc_approval_price(
-                                //                                         trim( 
-                                //                                             preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) 
-                                //                                         ) 
-                                //                                     ,2);
-                                // }
-                                // else{
-                                // $data[ 'last_' . $key ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
-                                // }
-                            //     $data[ 'last_approval' ]
-
-                            // }
                             if ( date( 'Y/m/d' ) == date( 'Y/m/01' ) ) {
                                 $data[ 'last_date' ] = date( 'Y-m-t', strtotime( '-2 month' ) );
-                            } //date( 'Y/m/d' ) == date( 'Y/m/01' )
+                            }
                             else {
                                 $data[ 'last_date' ] = date( 'Y-m-d', strtotime( 'last day of previous month' ) );
                             }
-                            $selector = $selector_before['approval'];
-                            $data[ 'last_approval' ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $selector )->text() ) );
+                            // $selector = $selector_before['approval'];
+
+                            if(count($node->filter( $selector_before['approval'] ))){
+                                $data[ 'last_approval' ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $selector_before['approval'] )->text() ) );
+                            }else{ throw new \Exception( $selector_before['approval'].'要素が存在しません。'); }
+
                             $data[ 'last_approval_price' ] = $data[ 'last_approval' ] * $unit_price;
 
                             return $data;
@@ -217,7 +180,6 @@ class AccesstradeController extends MonthlyCrawlerController
                             ];
                             //echo $e->getMessage();
                 Mail::to('t.sato@freedive.co.jp')->send(new Alert($sendData));
-                            throw $e;
             }        
         } );
         

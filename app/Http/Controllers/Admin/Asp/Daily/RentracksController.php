@@ -132,7 +132,11 @@ class RentracksController extends DailyCrawlerController
                             $data[ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
                             
                             foreach ( $selector1 as $key => $value ) {
-                                $data[ $key ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
+                                if(count($node->filter( $value ))){
+                                    $data[ $key ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
+                                }else{
+                                    throw new \Exception($value.'要素が存在しません。');
+                                }
                             } //$selector1 as $key => $value
                             
                             return $data;
@@ -147,7 +151,11 @@ class RentracksController extends DailyCrawlerController
                             $data = array( );
                             
                             foreach ( $selector2 as $key => $value ) {
-                                $data[ $key ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
+                                if(count($node->filter( $value ))){
+                                    $data[ $key ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
+                                }else{
+                                    throw new \Exception($value.'要素が存在しません。');
+                                }
                             } //$selector2 as $key => $value
                             
                             return $data;
@@ -162,7 +170,11 @@ class RentracksController extends DailyCrawlerController
                             $data = array( );
                             
                             foreach ( $selector3 as $key => $value ) {
-                                $data[ $key ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
+                                if(count($node->filter( $value ))){
+                                    $data[ $key ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
+                                }else{
+                                    throw new \Exception($value.'要素が存在しません。');
+                                }
                             } //$selector3 as $key => $value
                             
                             return $data;
@@ -177,7 +189,11 @@ class RentracksController extends DailyCrawlerController
                         
                         //var_dump( $crawler_for_site->html() );
                         //アクティブ件数を取得
-                        $active_partner = trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( '#main > div.hitbox > em' )->text() ) );
+                        if(count($crawler_for_site->filter( '#main > div.hitbox > em' ))){
+                            $active_partner = trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( '#main > div.hitbox > em' )->text() ) );
+                        }else{
+                            throw new \Exception('#main > div.hitbox > em要素が存在しません。');
+                        }
                         //echo $active_partner;
                         
                         for ( $i = 1; $active_partner >= $i; $i++ ) {
@@ -196,14 +212,19 @@ class RentracksController extends DailyCrawlerController
                             );
                             
                             foreach ( $selector_for_site as $key => $value ) {
-                                if ( $key == 'site_name' ) {
-                                    
-                                    $rentracks_site[ $i ][ $key ] = trim( $crawler_for_site->filter( $value )->text() );
-                                    
-                                } //$key == 'site_name'
-                                else {
-                                    
-                                    $rentracks_site[ $i ][ $key ] = trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) );
+                                if(count($crawler_for_site->filter( ＄value ))){
+
+                                    if ( $key == 'site_name' ) {
+                                        
+                                        $rentracks_site[ $i ][ $key ] = trim( $crawler_for_site->filter( $value )->text() );
+                                        
+                                    } //$key == 'site_name'
+                                    else {
+                                        
+                                        $rentracks_site[ $i ][ $key ] = trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) );
+                                    }
+                                }else{
+                                    throw new \Exception($value.'要素が存在しません。');
                                 }
                                 
                             }
@@ -257,7 +278,6 @@ class RentracksController extends DailyCrawlerController
                             ];
                             //echo $e->getMessage();
                 Mail::to('t.sato@freedive.co.jp')->send(new Alert($sendData));
-                            throw $e;
             }
         } );
         

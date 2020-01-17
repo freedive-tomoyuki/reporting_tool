@@ -91,11 +91,9 @@ class AfbController extends MonthlyCrawlerController
                         //先月・今月のセレクタ
                         $selector_this   = array(
                              'approval' => '#reportTable > tbody > tr:nth-child(2) > td:nth-child(10) > p',
-                            //'approval_price' => '#reportTable > tbody > tr:nth-child(2) > td:nth-child(13) > p' 
                         );
                         $selector_before = array(
                              'approval' => '#reportTable > tbody > tr:nth-child(1) > td:nth-child(10) > p',
-                            //'approval_price' => '#reportTable > tbody > tr:nth-child(1) > td:nth-child(13) > p' 
                         );
                         //セレクターからフィルタリング
                         $afb_data = $crawler->each( function( Crawler $node ) use ($selector_this, $selector_before, $product_info)
@@ -106,47 +104,28 @@ class AfbController extends MonthlyCrawlerController
                             $data[ 'product' ] = $product_info->id;
                             
                             $unit_price = $product_info->price;
-
+                            $value = $selector_this['approval'];
+                            
                             $data[ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
-                            $data[ 'approval' ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $selector_this['approval'] )->text() ) );
+                            
+                            if(count($crawler_for_site->filter( $selector_this['approval'] ))){
+                                $data[ 'approval' ] = trim( preg_replace( '/[^0-9]/', '', $node->filter(  $selector_this['approval'] )->text() ) );
+                            }else{ throw new \Exception($selector_this['approval'].'要素が存在しません。'); }
+
                             $data[ 'approval_price' ] = $data[ 'approval' ] * $unit_price;
 
                             if ( date( 'Y/m/d' ) == date( 'Y/m/01' ) ) {
                                 $data[ 'last_date' ] = date( 'Y-m-d', strtotime( '-2 month' ) );
-                            } //date( 'Y/m/d' ) == date( 'Y/m/01' )
-                            else {
+                            }else {
                                 $data[ 'last_date' ] = date( 'Y-m-d', strtotime( 'last day of previous month' ) );
                             }
+                            
+                            if(count($crawler_for_site->filter( $selector_before['approval'] ))){
+                                $data[ 'last_approval' ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $selector_before['approval']  )->text() ) );
+                            }else{ throw new \Exception($selector_before['approval'].'要素が存在しません。'); }
 
-                            $data[ 'last_approval' ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $selector_before['approval']  )->text() ) );
                             $data[ 'last_approval_price' ] = $data[ 'last_approval' ] * $unit_price;
 
-                            // foreach ( $selector_this as $key => $value ) {
-                            //     $data[ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
-
-                            //     // if($key == 'approval_price'){
-                            //     //     $data[ $key ]   = $this->monthlySearchService->calc_approval_price(
-                            //     //         trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) ) ,4);
-                            //     // }else{
-                            //     $data[ $key ]   = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
-                            //     // }
-
-                            // } //$selector_this as $key => $value
-                            // foreach ( $selector_before as $key => $value ) {
-                                
-                            //     if ( date( 'Y/m/d' ) == date( 'Y/m/01' ) ) {
-                            //         $data[ 'last_date' ] = date( 'Y-m-d', strtotime( '-2 month' ) );
-                            //     } //date( 'Y/m/d' ) == date( 'Y/m/01' )
-                            //     else {
-                            //         $data[ 'last_date' ] = date( 'Y-m-d', strtotime( 'last day of previous month' ) );
-                            //     }
-                            //     if($key == 'approval_price'){
-                            //         $data[ 'last_' . $key ] = $this->monthlySearchService->calc_approval_price(
-                            //             trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) ),4);
-                            //     }else{
-                            //         $data[ 'last_' . $key ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
-                            //     }
-                            // } //$selector_before as $key => $value
                             return $data;
                         } );
                         
@@ -224,31 +203,27 @@ class AfbController extends MonthlyCrawlerController
                                 );
                                 // サイト一覧　１行ずつクロール
                                 foreach ( $selector_for_site as $key => $value ) {
-                                    
-                                    if ( $key == 'media_id' ) {
-                                        
-                                        $media_id = array( );
-                                        $sid      = trim( $crawler_for_site->filter( $value )->attr( 'title' ) );
-                                        preg_match( '/SID：(\d+)/', $sid, $media_id );
-                                        $afb_site[ $y ][ $key ] = $media_id[ 1 ];
-                                        
-                                    } //$key == 'media_id'
-                                    elseif ( $key == 'site_name' ) {
-                                        
-                                        $afb_site[ $y ][ $key ] = trim( $crawler_for_site->filter( $value )->text() );
-                                        
-                                    } //$key == 'site_name'
-                                    // elseif($key == 'approval_price'){
-
-                                    //     $afb_site[ $y ][ $key ] = 
-                                    //         $this->monthlySearchService->calc_approval_price(
-                                    //             trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) )
-                                    //         , 4);
-                                    // }
-                                    else {
-                                        
-                                        $afb_site[ $y ][ $key ] = trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) );
-                                        
+                                    if(count($crawler_for_site->filter( $value ))){
+                                        if ( $key == 'media_id' ) {
+                                            
+                                            $media_id = array( );
+                                            $sid      = trim( $crawler_for_site->filter( $value )->attr( 'title' ) );
+                                            preg_match( '/SID：(\d+)/', $sid, $media_id );
+                                            $afb_site[ $y ][ $key ] = $media_id[ 1 ];
+                                            
+                                        } //$key == 'media_id'
+                                        elseif ( $key == 'site_name' ) {
+                                            
+                                            $afb_site[ $y ][ $key ] = trim( $crawler_for_site->filter( $value )->text() );
+                                            
+                                        } 
+                                        else {
+                                            
+                                            $afb_site[ $y ][ $key ] = trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) );
+                                            
+                                        }
+                                    }else{
+                                        throw new \Exception($value.'要素が存在しません。');
                                     }
                                 } // endforeach 
                                 
@@ -273,7 +248,6 @@ class AfbController extends MonthlyCrawlerController
                             ];
                             //echo $e->getMessage();
                 Mail::to('t.sato@freedive.co.jp')->send(new Alert($sendData));
-                            throw $e;
             }        
         } );
     }

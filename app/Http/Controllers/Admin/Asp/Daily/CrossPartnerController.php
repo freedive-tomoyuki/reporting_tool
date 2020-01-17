@@ -119,26 +119,32 @@ class CrossPartnerController extends DailyCrawlerController
                                     );
 
                                     foreach($selector_1 as $key => $value){
-                                        if($y == 0){
-                                            $imp = 0;
-                                            $click = 0;
-                                            $cv = 0;
-                                            $price = 0;
-                                        }
-                                        if( $key == 'imp' ){
-                                            $imp += trim(preg_replace('/[^0-9]/', '', $node->filter($value)->text()));
-                                            $data['imp'] = $imp;
-                                        }elseif( $key == 'click' ){
-                                            $click += trim(preg_replace('/[^0-9]/', '', $node->filter($value)->text()));
-                                            $data['click'] = $click;
-                                        }elseif( $key == 'cv' ){
-                                            $cv += trim(preg_replace('/[^0-9]/', '', $node->filter($value)->text()));
-                                            $data['cv'] = $cv;
+
+                                        if(count($node->filter( $value ))){
+                                            if($y == 0){
+                                                $imp = 0;
+                                                $click = 0;
+                                                $cv = 0;
+                                                $price = 0;
+                                            }
+                                            if( $key == 'imp' ){
+                                                $imp += trim(preg_replace('/[^0-9]/', '', $node->filter($value)->text()));
+                                                $data['imp'] = $imp;
+                                            }elseif( $key == 'click' ){
+                                                $click += trim(preg_replace('/[^0-9]/', '', $node->filter($value)->text()));
+                                                $data['click'] = $click;
+                                            }elseif( $key == 'cv' ){
+                                                $cv += trim(preg_replace('/[^0-9]/', '', $node->filter($value)->text()));
+                                                $data['cv'] = $cv;
+                                            }else{
+                                                //$price += trim(preg_replace('/[^0-9]/', '', $node->filter($value)->text()));
+                                                //$data['price'] = $price;
+                                            }
+                                            $y++ ;
                                         }else{
-                                            //$price += trim(preg_replace('/[^0-9]/', '', $node->filter($value)->text()));
-                                            //$data['price'] = $price;
+                                            throw new \Exception($value.'要素が存在しません。');
                                         }
-                                        $y++ ;
+                                        
                                     }
                                 }
 
@@ -153,7 +159,11 @@ class CrossPartnerController extends DailyCrawlerController
                                 $data = array();
 
                                 foreach($selector_2 as $key => $value){
-                                    $data[$key] = intval(trim(preg_replace('/[^0-9]/', '', mb_substr($node->filter($value)->text(), 0, 8))));
+                                    if(count($node->filter( $value ))){
+                                        $data[$key] = intval(trim(preg_replace('/[^0-9]/', '', mb_substr($node->filter($value)->text(), 0, 8))));
+                                    }else{
+                                        throw new \Exception($value.'要素が存在しません。');
+                                    }
                                 }
 
                                 return $data;
@@ -186,20 +196,23 @@ class CrossPartnerController extends DailyCrawlerController
                                         );
 
                                         foreach($selector_for_site as $key => $value){
-                                            if( $key == 'site_name' ){
-                                                $crosspartner_site[$count][$key] = trim($crawler_for_site->filter($value)->text());
-                                                //$crosspartner_site[$count]['media_id'] = $this->siteCreate(trim($crawler_for_site->filter($value)->text()),20);
-                                            }elseif($key == 'media_id' ){
-                                                $member_id_array = array( );
-                                                $member_id_source = $crawler_for_site->filter($value)->each(function (Crawler $c) {
-                                                  return $c->attr('id');
-                                                });
-                                                preg_match( '/member_id:(\d+)/', $member_id_source[0], $member_id_array );
-                                                $crosspartner_site[$count][$key] = $member_id_array[ 1 ];
+                                            if(count($crawler_for_site->filter( $value ))){
+                                                if( $key == 'site_name' ){
+                                                    $crosspartner_site[$count][$key] = trim($crawler_for_site->filter($value)->text());
+                                                    //$crosspartner_site[$count]['media_id'] = $this->siteCreate(trim($crawler_for_site->filter($value)->text()),20);
+                                                }elseif($key == 'media_id' ){
+                                                    $member_id_array = array( );
+                                                    $member_id_source = $crawler_for_site->filter($value)->each(function (Crawler $c) {
+                                                    return $c->attr('id');
+                                                    });
+                                                    preg_match( '/member_id:(\d+)/', $member_id_source[0], $member_id_array );
+                                                    $crosspartner_site[$count][$key] = $member_id_array[ 1 ];
+                                                }else{
+                                                    $crosspartner_site[$count][$key] = trim(preg_replace('/[^0-9]/', '', $crawler_for_site->filter($value)->text()));
+                                                }
                                             }else{
-                                                $crosspartner_site[$count][$key] = trim(preg_replace('/[^0-9]/', '', $crawler_for_site->filter($value)->text()));
+                                                throw new \Exception($value.'要素が存在しません。');
                                             }
-
                                         }
                                         $unit_price = $product_info->price;
                                         $crosspartner_site[ $count ][ 'price' ] = $unit_price * $crosspartner_site[ $count ][ 'cv' ];
@@ -248,7 +261,6 @@ class CrossPartnerController extends DailyCrawlerController
                             ];
                             //echo $e->getMessage();
                 Mail::to('t.sato@freedive.co.jp')->send(new Alert($sendData));
-                            throw $e;
             }
         } );
         

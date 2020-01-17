@@ -100,66 +100,35 @@ class ValuecommerceController extends MonthlyCrawlerController
                             $data[ 'product' ] = $product_info->id;
                             
                             $unit_price = $product_info->price;
-                            
+
                             $data[ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
-                            $data[ 'approval' ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $selector_this['approval'] )->text() ) );
+                            
+                            if(count($node->filter( $selector_this['approval'] ))){
+                                $data[ 'approval' ] = trim( preg_replace( '/[^0-9]/', '', $node->filter($selector_this['approval'] )->text() ) );
+                            }else{ throw new \Exception($value.'要素が存在しません。');}
+
                             $data[ 'approval_price' ] = $data[ 'approval' ] * $unit_price;
+                                
                             if ( date( 'Y/m/d' ) == date( 'Y/m/01' ) ) {
                                 $data[ 'last_date' ] = date( 'Y-m-t', strtotime( '-2 month' ) );
-                            }
-                            else {
+                            }else {
                                 $data[ 'last_date' ] = date( 'Y-m-d', strtotime( 'last day of previous month' ) );
                             }
-                            $data[ 'last_approval' ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $selector_before['approval']  )->text() ) );
+                            if(count($node->filter( $value ))){
+                                $data[ 'last_approval' ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
+                            }else{ throw new \Exception($value.'要素が存在しません。');}
+
                             $data[ 'last_approval_price' ] = $data[ 'last_approval' ] * $unit_price;
                             
-                            //echo $node->html();
-                            // foreach ( $selector_this as $key => $value ) {
-                            //     $data[ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
-                                
-                            //     if ($key == 'approval_price') {
-                                
-                            //         $data[ $key ]   = $this->monthlySearchService->calc_approval_price(
-                            //             trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) ), 3);
-                                
-                            //     }else{
-                                
-                            //         $data[ $key ]   = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
-                                
-                            //     }
-
-                            // } //$selector_this as $key => $value
-                            // foreach ( $selector_before as $key => $value ) {
-                            //     //$data['last_date'] = date('Y-m-d', strtotime('last day of previous month'));
-                            //     if ( date( 'Y/m/d' ) == date( 'Y/m/01' ) ) {
-                            //         $data[ 'last_date' ] = date( 'Y-m-t', strtotime( '-2 month' ) );
-                            //     } //date( 'Y/m/d' ) == date( 'Y/m/01' )
-                            //     else {
-                            //         $data[ 'last_date' ] = date( 'Y-m-d', strtotime( 'last day of previous month' ) );
-                            //     }
-                            //     if ($key == 'approval_price') {
-
-                            //         $data[ 'last_' . $key ] = $this->monthlySearchService->calc_approval_price(
-                            //             trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) ), 3);
-                                
-                            //     }else{
-                                
-                            //         $data[ 'last_' . $key ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
-                                
-                            //     }
-
-                            // } //$selector_this as $key => $value
                             return $data;
                         } );
                         
-                        var_dump( $valuecommerce_data );
+                        // var_dump( $valuecommerce_data );
                         //１ページ目クロール
                         //$pagination_page = $product_info->asp->lp2_url;
                         //$crawler_for_site = $browser->visit($pagination_page)->crawler();
                         
-                        /**
-                        *   サイト取得用クロール
-                        */
+                        //   サイト取得用クロール
                         
                         //$x = 0; 
                         //$addtion = 0 ;
@@ -200,15 +169,17 @@ class ValuecommerceController extends MonthlyCrawlerController
                             //echo $crawler_for_site->html();
                             
                             //　アクティブサイト数（https://mer.valuecommerce.ne.jp/affiliate_analysis/） 
-                            $active = explode( "/", $crawler_for_site->filter( "#cusomize_wrap > span" )->text() );
-                            echo "active件数→" . $active[ 1 ] . "←active件数";
+                            if(count($crawler_for_site->filter( "#cusomize_wrap > span" ))){
+                                $active = explode( "/", $crawler_for_site->filter( "#cusomize_wrap > span" )->text() );
+                            }else{
+                                throw new \Exception('#cusomize_wrap > span要素が存在しません。');
+                            }
+                            // echo "active件数→" . $active[ 1 ] . "←active件数";
                             
                             //ページ数を計算　＝　アクティブサイト数 / ４０
                             $count_page = ( $active[ 1 ] > 40 ) ? ceil( $active[ 1 ] / 40 ) : 1;
-                            echo "count_page件数→" . $count_page . "←count_page件数";
-                            
-                            //var_dump($crawler_for_site);
-                            
+                            // echo "count_page件数→" . $count_page . "←count_page件数";
+
                             
                             /**
                              *      １ページ　クロール
@@ -228,17 +199,8 @@ class ValuecommerceController extends MonthlyCrawlerController
                                 *１行ごと　クロール
                                 */
                                 for ( $i = 1; $i <= $crawler_count; $i++ ) {
-                                    //while(
-                                    //      $crawler_for_site
-                                    //      ->filter('#report_clm > div > div.report_table > table > tbody > tr:nth-child('.$i.') > td:nth-child(2)')
-                                    //      ->count() > 0 
-                                    //){  
                                     //1ページMAXの件数は４０件
-                                    //$count = ($page*40)+$i+$addtion;
-                                    //echo "count→" . $count . "←count";
                                     $valuecommerce_site[ $count ][ 'product' ] = $product_info->id;
-                                    
-                                    //if($crawler_for_site->filter('#all > div.tablerline > table > tbody > tr:nth-child('.$i.') > td:nth-child(2)')->count() != 0){
                                     
                                     $selector_for_site = array(
                                         'media_id' => '#all > div.tablerline > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(2)',
@@ -260,33 +222,31 @@ class ValuecommerceController extends MonthlyCrawlerController
                                                 $valuecommerce_site[ $count ][ 'date' ] = date( 'Y-m-d', strtotime( 'last day of previous month' ) );
                                             }
                                         }
-                                        
-                                        if ( $key == 'site_name' ) {
-                                            
-                                            $valuecommerce_site[ $count ][ $key ] = trim( $crawler_for_site->filter( $value )->text() );
-                                            
-                                        } //$key == 'site_name'
-                                        elseif ( $key == 'approval' ) {
-                                            
-                                            $approval_array = array();
-                                            $approval       = trim( $crawler_for_site->filter( $value )->text() );
-                                            preg_match( '/(\d+)/', $approval, $approval_array );
-                                            $valuecommerce_site[ $count ][ $key ] = $approval_array[ 1 ];
-                                            
-                                        } //$key == 'approval'
-                                        // elseif ($key == 'approval_price') {
-                                        //     $valuecommerce_site[ $count ][ $key ] = $this->monthlySearchService->calc_approval_price(
-                                        //         trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) ), 3);
-                                        // }
-                                        else {
-                                            
-                                            $valuecommerce_site[ $count ][ $key ] = trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) );
-                                            
+                                        if(count($crawler_for_site->filter( $value ))){
+                                            if ( $key == 'site_name' ) {
+                                                
+                                                $valuecommerce_site[ $count ][ $key ] = trim( $crawler_for_site->filter( $value )->text() );
+                                                
+                                            }
+                                            elseif ( $key == 'approval' ) {
+                                                
+                                                $approval_array = array();
+                                                $approval       = trim( $crawler_for_site->filter( $value )->text() );
+                                                preg_match( '/(\d+)/', $approval, $approval_array );
+                                                $valuecommerce_site[ $count ][ $key ] = $approval_array[ 1 ];
+                                                
+                                            } 
+                                            else {
+                                                
+                                                $valuecommerce_site[ $count ][ $key ] = trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) );
+                                                
+                                            }
+                                        }else{
+                                            throw new \Exception($value.'要素が存在しません。');
                                         }
                                     } 
                                     
                                     $valuecommerce_site[ $count ][ 'approval_price' ] = $valuecommerce_site[ $count ][ 'approval' ] * $product_info->price;
-                                    var_dump($valuecommerce_site);
                                     $count++;
                                     
                                 }
@@ -307,7 +267,6 @@ class ValuecommerceController extends MonthlyCrawlerController
                             ];
                             //echo $e->getMessage();
                 Mail::to('t.sato@freedive.co.jp')->send(new Alert($sendData));
-                            throw $e;
             }
         } );
     }

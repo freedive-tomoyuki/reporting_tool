@@ -73,31 +73,28 @@ class AffiTownController extends MonthlyCrawlerController
                         
                         //先月・今月のセレクタ
                         $selector_this   = array(
-                            'approval' => '#all_display > table > tbody > tr:nth-child(2) > td:nth-child(5)',
-                            //'approval' => '#all_display > table > tbody > tr.striped > td:nth-child(5)',
-                            //'approval_price' => '#all_display > table > tbody > tr.bg_gray > td:nth-child(6) > p' 
-                        );#all_display > table > tbody > tr.last > td:nth-child(5)
+                            'approval' => '#all_display > table > tbody > tr:nth-child(2) > td:nth-child(5)'
+                        );
                         $selector_before = array(
-                            'approval' => '#all_display > table > tbody > tr:nth-child(1) > td:nth-child(5)',
-                            //'approval' => '#all_display > table > tbody > tr:nth-child(1) > td:nth-child(5) > p',
-                            //'approval_price' => '#all_display > table > tbody > tr:nth-child(1) > td:nth-child(6) > p' 
-                        );#all_display > table > tbody > tr.striped > td:nth-child(5)
-                        echo  $start;
-                        echo $end;
+                            'approval' => '#all_display > table > tbody > tr:nth-child(1) > td:nth-child(5)'
+                        );
                         //Selectorから承認件数・承認金額を取得
-                        #all_display > table > tbody > tr.striped > td:nth-child(5)
                         //先月と今月分
                         $affitown_data = $crawler->each( function( Crawler $node ) use ($selector_this, $selector_before, $product_info)
                         {
-                            echo "start";
                             $data              = array( );
                             $data[ 'asp' ]     = $product_info->asp_id;
                             $data[ 'product' ] = $product_info->id;
 
                             $unit_price = $product_info->price;
+
                             
                             $data[ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
-                            $data[ 'approval' ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $selector_this['approval'] )->text() ) );
+
+                            if(count($crawler_for_site->filter( $selector_this['approval'] ))){
+                                $data[ 'approval' ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $selector_this['approval'] )->text() ) );
+                            }else{ throw new \Exception($selector_this['approval'].'要素が存在しません。'); }
+                    
                             $data[ 'approval_price' ] = $data[ 'approval' ] * $unit_price;
 
                             if ( date( 'Y/m/d' ) == date( 'Y/m/01' ) ) {
@@ -106,47 +103,18 @@ class AffiTownController extends MonthlyCrawlerController
                             else {
                                 $data[ 'last_date' ] = date( 'Y-m-d', strtotime( 'last day of previous month' ) );
                             }
-                            $data[ 'last_approval' ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $selector_before['approval']  )->text() ) );
+
+                            if(count($crawler_for_site->filter( $selector_before['approval'] ))){
+                                $data[ 'last_approval' ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $selector_before['approval'] )->text() ) );
+                            }else{ throw new \Exception($selector_before['approval'].'要素が存在しません。'); }
+
                             $data[ 'last_approval_price' ] = $data[ 'last_approval' ] * $unit_price;
-                            
-                            // foreach ( $selector_this as $key => $value ) {
-                                
-                            //     if($key == 'approval_price'){
-                            //         $data[ $key ]   =
-                            //             $this->monthlySearchService->calc_approval_price(
-                            //                 trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) ), 7);
-                                        
-                            //     }else{
-                            //         $data[ $key ]   = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
-                            //     }
-
-                            //     $data[ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
-                            // } //$selector_this as $key => $value
-                            // foreach ( $selector_before as $key => $value ) {
-                                
-                            //     if( $key == 'approval_price' ){
-                            //         $data[ 'last_' . $key ] = 
-                            //             $this->monthlySearchService->calc_approval_price(
-                            //                 trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) ),7);
-
-                            //     }else{
-                            //         $data[ 'last_' . $key ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
-                            //     }
-
-                            //     if ( date( 'Y/m/d' ) == date( 'Y/m/01' ) ) {
-                            //         $data[ 'last_date' ] = date( 'Y-m-t', strtotime( '-2 month' ) );
-                            //     } //date( 'Y/m/d' ) == date( 'Y/m/01' )
-                            //     else {
-                            //         $data[ 'last_date' ] = date( 'Y-m-d', strtotime( 'last day of previous month' ) );
-                            //     }
-
-                            // } //$selector_before as $key => $value
-                            
+                                                        
                             return $data;
                             
                         } );
                         
-                        var_dump( $affitown_data );
+                        // var_dump( $affitown_data );
                         
                         
                         // $x = 0：今月
@@ -207,22 +175,20 @@ class AffiTownController extends MonthlyCrawlerController
                                 );
                                 
                                 foreach ( $selector_for_site as $key => $value ) {
-                                    if ( $key == 'site_name' ) {
+                                    if(count($crawler_for_site->filter( $value ))){
+                                        if ( $key == 'site_name' ) {
+                                            
+                                            $affitown_site[ $active_count ][ $key ] = trim( $crawler_for_site->filter( $value )->text() );
+                                            
+                                        } 
+                                        else {
+                                            
+                                            $affitown_site[ $active_count ][ $key ] = trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) );
                                         
-                                        $affitown_site[ $active_count ][ $key ] = trim( $crawler_for_site->filter( $value )->text() );
-                                        
-                                    } //$key == 'site_name'
-                                    // elseif($key == 'approval_price'){
-                                    //     $affitown_site[ $active_count ][ $key ] = 
-                                    //             $this->monthlySearchService->calc_approval_price(
-                                    //                 trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) ),7 );
-                                    // }
-                                    else {
-                                        
-                                        $affitown_site[ $active_count ][ $key ] = trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) );
-                                    
+                                        }
+                                    }else{
+                                        throw new \Exception($value.'要素が存在しません。');
                                     }
-                                 
                                 } //$selector_for_site as $key => $value
                                 $affitown_site[ $active_count ][ 'approval_price' ] = $affitown_site[ $active_count ][ 'approval' ] * $product_info->price;
 
@@ -245,7 +211,6 @@ class AffiTownController extends MonthlyCrawlerController
                             ];
                             //echo $e->getMessage();
                 Mail::to('t.sato@freedive.co.jp')->send(new Alert($sendData));
-                            throw $e;
             }        
         } );
     }

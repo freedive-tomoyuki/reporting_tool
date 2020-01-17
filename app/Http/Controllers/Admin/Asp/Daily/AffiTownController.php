@@ -96,13 +96,13 @@ class AffiTownController extends DailyCrawlerController
                                             ->visit( "https://affi.town/adserver/merchant/report/dailysales.af?advertiseId=" . $product_info->asp_product_id . "&mediaId=&since=" . $s_date . "&until=" . $e_date )
                                             ->type( '#all_display > p > input[type=search]', '合計' )
                                             ->crawler();
-                        echo $crawler->html();
+                        //echo $crawler->html();
 
                         $crawler2 = $browser->visit( "https://affi.town/adserver/report/mc/impression.af" )
                                             ->visit( "https://affi.town/adserver/report/mc/impression.af?advertiseId=" . $product_info->asp_product_id . "&mediaId=&fromDate=" . $s_date . "&toDate=" . $e_date )
                                             ->type( '#all_display > p > input[type=search]', '合計' )
                                             ->crawler();
-                        echo $crawler2->html();
+                        //echo $crawler2->html();
                         //https://affi.town/adserver/report/mc/impression.af?advertiseId=4316&mediaId=&since=2019-07-01&until=2019-07-27
                         /*
                         selector 設定
@@ -133,12 +133,16 @@ class AffiTownController extends DailyCrawlerController
                             $data[ 'date' ]    = date( 'Y-m-d', strtotime( '-1 day' ) );
                             
                             foreach ( $selector1 as $key => $value ) {
-                                $data[ $key ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
+                                if(count($node->filter( $value ))){
+                                    $data[ $key ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
+                                }else{
+                                    throw new \Exception($value.'要素が存在しません。');
+                                }
                             } //$selector1 as $key => $value
                             return $data;
                             
                         } );
-                        var_dump( $affitown_data );
+                        //var_dump( $affitown_data );
 
                         /*
                         $crawler(Imp)　をフィルタリング
@@ -149,12 +153,16 @@ class AffiTownController extends DailyCrawlerController
                             $data              = array( );
                             
                             foreach ( $selector2 as $key => $value ) {
-                                $data[ $key ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
+                                if(count($node->filter( $value ))){
+                                    $data[ $key ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
+                                }else{
+                                    throw new \Exception($value.'要素が存在しません。');
+                                }
                             } //$selector1 as $key => $value
                             return $data;
                             
                         } );
-                        var_dump( $affitown_data_imp );
+                        //var_dump( $affitown_data_imp );
                         
                         /*
                         サイト抽出　
@@ -174,7 +182,7 @@ class AffiTownController extends DailyCrawlerController
                             // ->type( '#all_display > p > input[type=search]', '合計' )->crawler();
                         $i                = 1;
                         //$selector_end = ;
-                        echo $crawler_for_site->html();
+                        //echo $crawler_for_site->html();
                         // #all_display > table > tbody > tr.last > td:nth-child(2) > a
 
                         // サイト一覧の「合計」以外の前列を1列目から最終列まで一行一行スクレイピング
@@ -194,11 +202,15 @@ class AffiTownController extends DailyCrawlerController
                             );
                             
                             foreach ( $selector_for_site as $key => $value ) {
-                                if ( $key == 'site_name' ) {
-                                    $affitown_site[ $i ][ $key ] = trim( $crawler_for_site->filter( $value )->text() );
-                                }
-                                else {
-                                    $affitown_site[ $i ][ $key ] = trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) );
+                                if(count($crawler_for_site->filter( $value ))){
+                                    if ( $key == 'site_name' ) {
+                                        $affitown_site[ $i ][ $key ] = trim( $crawler_for_site->filter( $value )->text() );
+                                    }
+                                    else {
+                                        $affitown_site[ $i ][ $key ] = trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) );
+                                    }
+                                }else{
+                                    throw new \Exception($value.'要素が存在しません。');
                                 }
                             }
                             $unit_price = $product_info->price;
@@ -259,7 +271,7 @@ class AffiTownController extends DailyCrawlerController
                             ];
                             //echo $e->getMessage();
                 Mail::to('t.sato@freedive.co.jp')->send(new Alert($sendData));
-                            throw $e;
+            
             }
             
         } );

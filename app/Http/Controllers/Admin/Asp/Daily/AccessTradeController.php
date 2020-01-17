@@ -97,22 +97,26 @@ class AccesstradeController extends DailyCrawlerController
                             $data[ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
                             
                             foreach ( $selector as $key => $value ) {
-                                
-                                if ( $key == 'active' ) {
-                                    $active       = explode( "/", $node->filter( $value )->text() );
-                                    $data[ $key ] = trim( $active[ 0 ] );
-                                    
-                                } //$key == 'active'
-                                elseif ( $key == 'partnership' ) {
-                                    
-                                    $data[ $key ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
-                                    
-                                } //$key == 'partnership'
-                                else {
-                                    
-                                    $data[ $key ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
-                                    
+                                if(count($node->filter( $value ))){
+                                    if ( $key == 'active' ) {
+                                        $active       = explode( "/", $node->filter( $value )->text() );
+                                        $data[ $key ] = trim( $active[ 0 ] );
+                                        
+                                    } //$key == 'active'
+                                    elseif ( $key == 'partnership' ) {
+                                        
+                                        $data[ $key ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
+                                        
+                                    } //$key == 'partnership'
+                                    else {
+                                        
+                                        $data[ $key ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
+                                        
+                                    }
+                                }else{
+                                    throw new \Exception($value.'要素が存在しません。');
                                 }
+
                             } //$selector as $key => $value
                             //$data['cpa']= $this->cpa($data['cv'] ,$data['price'] , 2);
                             
@@ -186,7 +190,7 @@ class AccesstradeController extends DailyCrawlerController
                                 ];
                                 //echo $e->getMessage();
                     Mail::to('t.sato@freedive.co.jp')->send(new Alert($sendData));
-                                throw $e;
+                              
                 }
         } );
         

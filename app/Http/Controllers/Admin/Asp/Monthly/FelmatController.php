@@ -23,9 +23,7 @@ use DB;
 
 class FelmatController extends MonthlyCrawlerController
 {
-/**
-　再現性のある数値を生成 サイトIDとして適用
-*/
+//再現性のある数値を生成 サイトIDとして適用
     public function siteCreate($siteName,$seed){
       $siteId='';
       //echo $siteName;
@@ -118,9 +116,12 @@ class FelmatController extends MonthlyCrawlerController
 
 
                                 $unit_price = $product_info->price;
-                                
                                 $data[ 'date' ] = $end;
-                                $data[ 'approval' ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $selector['approval'] )->text() ) );
+
+                                if(count($node->filter( $selector['approval'] ))){
+                                    $data[ 'approval' ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $selector['approval'] )->text() ) );
+                                }else{ throw new \Exception( $selector['approval'].'要素が存在しません。'); }
+                            
                                 $data[ 'approval_price' ] = $data[ 'approval' ] * $unit_price;
 
                                 return $data;
@@ -162,8 +163,11 @@ class FelmatController extends MonthlyCrawlerController
                             $selector ='body > div.wrapper > div.page-content.no-left-sidebar > div > div:nth-child(5) > div > div:nth-child(2) > div:nth-child(1) > div:nth-child(3) > div';
                             
                             //echo "アクティブ数";
-                            $active = intval(trim(preg_replace('/[^0-9]/', '', mb_substr($crawler->filter($selector)->text(), 0, 7))));
 
+                            if(count($crawler->filter( $selector ))){
+                                $active = intval(trim(preg_replace('/[^0-9]/', '', mb_substr($crawler->filter($selector)->text(), 0, 7))));
+                            }else{ throw new \Exception($selector.'要素が存在しません。'); }
+                            
                             $page            = ceil($active / 20);
                             $count_last_page = $active % 20;
 
@@ -212,15 +216,16 @@ class FelmatController extends MonthlyCrawlerController
                                     $felmat_site[$count]['date'] = $end;
 
                                     foreach ($selector_for_site as $key => $value) {
-                                        if ($key == 'site_name') {
-                                            
-                                            $felmat_site[$count][$key]       = trim($crawler_for_site->filter($value)->text());
-                                            $felmat_site[$count]['media_id'] = $this->siteCreate(trim($crawler_for_site->filter($value)->text()), 20);
-                                        } else {
-                                            
-                                            $felmat_site[$count][$key] = trim(preg_replace('/[^0-9]/', '', $crawler_for_site->filter($value)->text()));
-                                        }
-                                        
+                                        if(count($crawler_for_site->filter( $value ))){
+                                            if ($key == 'site_name') {
+                                                
+                                                $felmat_site[$count][$key]       = trim($crawler_for_site->filter($value)->text());
+                                                $felmat_site[$count]['media_id'] = $this->siteCreate(trim($crawler_for_site->filter($value)->text()), 20);
+                                            } else {
+                                                
+                                                $felmat_site[$count][$key] = trim(preg_replace('/[^0-9]/', '', $crawler_for_site->filter($value)->text()));
+                                            }
+                                        }else{ throw new \Exception($value.'要素が存在しません。'); }
                                     }
                                     $felmat_site[ $count ][ 'approval_price' ] = $felmat_site[ $count ][ 'approval' ] * $product_info->price;
 
@@ -252,7 +257,6 @@ class FelmatController extends MonthlyCrawlerController
                             ];
                             //echo $e->getMessage();
                 Mail::to('t.sato@freedive.co.jp')->send(new Alert($sendData));
-                            throw $e;
             }        
         } );
         

@@ -126,7 +126,11 @@ class SCANController extends DailyCrawlerController
                             $data[ 'date' ]    = date( 'Y-m-d', strtotime( '-1 day' ) );
                             
                             foreach ( $selector1 as $key => $value ) {
-                                $data[ $key ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
+                                if(count($node->filter( $value ))){
+                                    $data[ $key ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
+                                }else{
+                                    throw new \Exception($value.'要素が存在しません。');
+                                }
                             } //$selector1 as $key => $value
                             return $data;
                             
@@ -135,7 +139,11 @@ class SCANController extends DailyCrawlerController
                         {
                             $data = array( );
                             foreach ( $selector2 as $key => $value ) {
-                                $data[ $key ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
+                                if(count($node->filter( $value ))){
+                                    $data[ $key ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
+                                }else{
+                                    throw new \Exception($value.'要素が存在しません。');
+                                }
                             } //$selector2 as $key => $value
                             return $data;
                             
@@ -168,14 +176,18 @@ class SCANController extends DailyCrawlerController
                             );
                             
                             foreach ( $selector_for_site as $key => $value ) {
-                                if ( $key == 'site_name' || $key == 'media_id' ) {
-                                    
-                                    $scan_site[ $y ][ $key ] = trim( $crawler_for_site->filter( $value )->text() );
-                                    
-                                } //$key == 'site_name' || $key == 'media_id'
-                                else {
-                                    
-                                    $scan_site[ $y ][ $key ] = trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) );
+                                if(count($crawler_for_site->filter( $value ))){
+                                    if ( $key == 'site_name' || $key == 'media_id' ) {
+                                        
+                                            $scan_site[ $y ][ $key ] = trim( $crawler_for_site->filter( $value )->text() );
+                                       
+                                    } //$key == 'site_name' || $key == 'media_id'
+                                    else {
+                                        
+                                        $scan_site[ $y ][ $key ] = trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) );
+                                    }
+                                }else{
+                                    throw new \Exception($value.'要素が存在しません。');
                                 }
                                 
                             } //$selector_for_site as $key => $value
@@ -198,7 +210,7 @@ class SCANController extends DailyCrawlerController
                             
                             $i++;
                             $y++;
-                        } //$crawler_for_site->filter( '#report_clm > div > div.report_table > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(2)' )->count() > 0
+                        } 
                         
                         $unit_price = $product_info->price;
                         $scan_data[ 0 ][ 'price' ] = $scan_data[ 0 ][ 'cv' ] * $unit_price;
@@ -237,7 +249,6 @@ class SCANController extends DailyCrawlerController
                             ];
                             //echo $e->getMessage();
                 Mail::to('t.sato@freedive.co.jp')->send(new Alert($sendData));
-                            throw $e;
             }
         } );
         

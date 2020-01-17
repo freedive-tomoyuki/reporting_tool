@@ -156,7 +156,11 @@ class FelmatController extends DailyCrawlerController
                             $data['date'] = date('Y-m-d', strtotime('-1 day'));
                             
                             foreach ($selector1 as $key => $value) {
-                                $data[$key] = trim(preg_replace('/[^0-9]/', '', $node->filter($value)->text()));
+                                if(count($node->filter( $value ))){
+                                    $data[$key] = trim(preg_replace('/[^0-9]/', '', $node->filter($value)->text()));
+                                }else{
+                                    throw new \Exception($value.'要素が存在しません。');
+                                }
                             }
                             
                             return $data;
@@ -171,7 +175,11 @@ class FelmatController extends DailyCrawlerController
                             $data = array();
                             
                             foreach ($selector2 as $key => $value) {
-                                $data[$key] = intval(trim(preg_replace('/[^0-9]/', '', mb_substr($node->filter($value)->text(), 0, 7))));
+                                if(count($node->filter( $value ))){
+                                    $data[$key] = intval(trim(preg_replace('/[^0-9]/', '', mb_substr($node->filter($value)->text(), 0, 7))));
+                                }else{
+                                    throw new \Exception($value.'要素が存在しません。');
+                                }
                             }
                             return $data;
                             
@@ -186,10 +194,13 @@ class FelmatController extends DailyCrawlerController
                             $data = array();
                             
                             foreach ($selector3 as $key => $value) {
-                                preg_replace('/[^0-9]/', '', mb_substr($node->filter($value)->text(), 0, 7));
-                                mb_substr($node->filter($value)->text(), 0, 7);
-                                $data[$key] = intval(trim(preg_replace('/[^0-9]/', '', mb_substr($node->filter($value)->text(), 0, 7))));
-                                
+                                if(count($node->filter( $value ))){
+                                    preg_replace('/[^0-9]/', '', mb_substr($node->filter($value)->text(), 0, 7));
+                                    mb_substr($node->filter($value)->text(), 0, 7);
+                                    $data[$key] = intval(trim(preg_replace('/[^0-9]/', '', mb_substr($node->filter($value)->text(), 0, 7))));
+                                }else{
+                                    throw new \Exception($value.'要素が存在しません。');
+                                }
                             }
                             
                             return $data;
@@ -244,13 +255,18 @@ class FelmatController extends DailyCrawlerController
                                 );
                                 
                                 foreach ($selector_for_site as $key => $value) {
-                                    if ($key == 'site_name') {
-                                        
-                                        $felmat_site[$count][$key]       = trim($crawler_for_site->filter($value)->text());
-                                        $felmat_site[$count]['media_id'] = $this->siteCreate(trim($crawler_for_site->filter($value)->text()), 20);
-                                    } else {
-                                        
-                                        $felmat_site[$count][$key] = trim(preg_replace('/[^0-9]/', '', $crawler_for_site->filter($value)->text()));
+                                    if(count($crawler_for_site->filter( $value ))){
+                                        if ($key == 'site_name') {
+                                            
+                                            $felmat_site[$count][$key]       = trim($crawler_for_site->filter($value)->text());
+                                            $felmat_site[$count]['media_id'] = $this->siteCreate(trim($crawler_for_site->filter($value)->text()), 20);
+
+                                        } else {
+                                            
+                                            $felmat_site[$count][$key] = trim(preg_replace('/[^0-9]/', '', $crawler_for_site->filter($value)->text()));
+                                        }
+                                    }else{
+                                        throw new \Exception($value.'要素が存在しません。');
                                     }
                                     
                                 }
@@ -308,7 +324,6 @@ class FelmatController extends DailyCrawlerController
                             ];
                             //echo $e->getMessage();
                 Mail::to('t.sato@freedive.co.jp')->send(new Alert($sendData));
-                            throw $e;
             }
         });
         

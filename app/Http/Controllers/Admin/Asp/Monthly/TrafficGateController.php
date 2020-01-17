@@ -91,54 +91,26 @@ class TrafficGateController extends MonthlyCrawlerController
                             
                             $unit_price = $product_info->price;
                             
+
                             $data[ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
-                            $data[ 'approval' ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $selector_this['approval'] )->text() ) );
+                            if(count($node->filter( $selector_this['approval'] ))){
+                                $data[ 'approval' ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $selector_this['approval'] )->text() ) );
+                            }else{ throw new \Exception( $selector_this['approval'].'要素が存在しません。'); }
+                            
                             $data[ 'approval_price' ] = $data[ 'approval' ] * $unit_price;
+                            
                             if ( date( 'Y/m/d' ) == date( 'Y/m/01' ) ) {
                                 $data[ 'last_date' ] = date( 'Y-m-t', strtotime( '-2 month' ) );
                             } 
                             else {
                                 $data[ 'last_date' ] = date( 'Y-m-d', strtotime( 'last day of previous month' ) );
                             }
-                            $data[ 'last_approval' ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $selector_before['approval']  )->text() ) );
+
+                            if(count($node->filter( $selector_before['approval'] ))){
+                                $data[ 'last_approval' ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $selector_before['approval']  )->text() ) );
+                            }else{ throw new \Exception($selector_before['approval'].'要素が存在しません。'); }
+
                             $data[ 'last_approval_price' ] = $data[ 'last_approval' ] * $unit_price;
-
-
-                            // foreach ( $selector_this as $key => $value ) {
-                                
-                            //     if($key == 'approval_price'){
-                            //         $data[ $key ]   = $this->monthlySearchService->calc_approval_price(
-                            //             trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) ) , 8);
-                                
-                            //     }else{
-                            //         $data[ $key ]   = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
-                                
-                            //     }
-
-                            //     $data[ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
-
-                            // } //$selector_this as $key => $value
-                            // foreach ( $selector_before as $key => $value ) {
-                            //     if($key == 'approval_price'){
-                                
-                            //         $data[ 'last_' . $key ] = $this->monthlySearchService->calc_approval_price(
-                            //             trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) ) , 8);
-                                
-                            //     }else{
-
-                            //         $data[ 'last_' . $key ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
-
-                            //     }
-
-                            //     //$data['last_date'] = date('Y-m-d', strtotime('last day of previous month'));
-                            //     if ( date( 'Y/m/d' ) == date( 'Y/m/01' ) ) {
-                            //         $data[ 'last_date' ] = date( 'Y-m-t', strtotime( '-2 month' ) );
-                            //     } //date( 'Y/m/d' ) == date( 'Y/m/01' )
-                            //     else {
-                            //         $data[ 'last_date' ] = date( 'Y-m-d', strtotime( 'last day of previous month' ) );
-                            //     }
-                                
-                            // } //$selector_before as $key => $value
                             
                             return $data;
                             
@@ -231,21 +203,18 @@ class TrafficGateController extends MonthlyCrawlerController
                                     );
                                     
                                     foreach ( $selector_for_site as $key => $value ) {
-                                        if ( $key == 'site_name' ) {
-                                            
-                                            $trafficgate_site[ $active_count ][ $key ] = trim( $crawler_for_site->filter( $value )->text() );
-                                            
-                                        } //$key == 'site_name'
-                                        // elseif ($key == 'approval_price') {
-
-                                        //     $trafficgate_site[ $active_count ][ $key ] = $this->monthlySearchService->calc_approval_price(
-                                        //             trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) ) , 8);
-                                        // }
-                                        else {
-                                            
-                                            $trafficgate_site[ $active_count ][ $key ] = trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) );
+                                        if(count($crawler_for_site->filter( $value ))){
+                                            if ( $key == 'site_name' ) {
+                                                
+                                                $trafficgate_site[ $active_count ][ $key ] = trim( $crawler_for_site->filter( $value )->text() );
+                                                
+                                            }else {
+                                                
+                                                $trafficgate_site[ $active_count ][ $key ] = trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) );
+                                            }
+                                        }else{
+                                            throw new \Exception($value.'要素が存在しません。');
                                         }
-                                        
                                     }
                                     $trafficgate_site[ $active_count ][ 'approval_price' ] = $trafficgate_site[ $active_count ][ 'approval' ] * $product_info->price;
 

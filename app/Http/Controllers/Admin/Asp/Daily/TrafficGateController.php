@@ -114,7 +114,11 @@ class TrafficGateController extends DailyCrawlerController
                             $data[ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
                             
                             foreach ( $selector1 as $key => $value ) {
-                                $data[ $key ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
+                                if(count($node->filter( $value ))){
+                                    $data[ $key ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
+                                }else{
+                                    throw new \Exception($value.'要素が存在しません。');
+                                }
                             } //$selector1 as $key => $value
                             return $data;
                             
@@ -123,7 +127,11 @@ class TrafficGateController extends DailyCrawlerController
                         {
                             
                             foreach ( $selector2 as $key => $value ) {
-                                $data[ $key ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
+                                if(count($node->filter( $value ))){
+                                    $data[ $key ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
+                                }else{
+                                    throw new \Exception($value.'要素が存在しません。');
+                                }
                             } //$selector2 as $key => $value
                             return $data;
                             
@@ -156,14 +164,18 @@ class TrafficGateController extends DailyCrawlerController
                                 );
                                 
                                 foreach ( $selector_for_site as $key => $value ) {
-                                    if ( $key == 'site_name' ) {
-                                        
-                                        $trafficgate_site[ $active_count ][ $key ] = trim( $crawler_for_site->filter( $value )->text() );
-                                        
-                                    } //$key == 'site_name'
-                                    else {
-                                        
-                                        $trafficgate_site[ $active_count ][ $key ] = trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) );
+                                    if(count($crawler_for_site->filter( $value ))){
+                                        if ( $key == 'site_name' ) {
+                                            
+                                            $trafficgate_site[ $active_count ][ $key ] = trim( $crawler_for_site->filter( $value )->text() );
+                                            
+                                        } //$key == 'site_name'
+                                        else {
+                                            
+                                            $trafficgate_site[ $active_count ][ $key ] = trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) );
+                                        }
+                                    }else{
+                                        throw new \Exception($value.'要素が存在しません。');
                                     }
                                     
                                 }
@@ -221,7 +233,6 @@ class TrafficGateController extends DailyCrawlerController
                             ];
                             //echo $e->getMessage();
                 Mail::to('t.sato@freedive.co.jp')->send(new Alert($sendData));
-                            throw $e;
             }
 
         } );

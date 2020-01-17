@@ -155,7 +155,7 @@ class AfbController extends DailyCrawlerController
                                 if(count($node->filter( $value ))){
                                     $data[ $key ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
                                 }else{
-                                    throw new Exception($value.'要素が存在しません。');
+                                    throw new \Exception($value.'要素が存在しません。');
                                 }
                                 
                             } //$selector_crawler as $key => $value
@@ -175,7 +175,7 @@ class AfbController extends DailyCrawlerController
                                 if(count($node->filter( $value ))){
                                     $partnership = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
                                 }else {
-                                    throw new Exception($value.'要素が存在しません。');
+                                    throw new \Exception($value.'要素が存在しません。');
                                 }
                             
                             } //$selector_crawler2 as $key => $value
@@ -188,7 +188,7 @@ class AfbController extends DailyCrawlerController
                                 if(count($node->filter( $value ))){
                                     $active = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
                                 }else{
-                                    throw new Exception($value.'要素が存在しません。');
+                                    throw new \Exception($value.'要素が存在しません。');
                                 }
                             } //$selector_crawler3 as $key => $value
                             return $active;
@@ -238,7 +238,7 @@ class AfbController extends DailyCrawlerController
                                         
                                     }
                                 }else{
-                                    throw new Exception($value.'要素が存在しません。');
+                                    throw new \Exception($value.'要素が存在しません。');
                                 }
                             }
                             
@@ -267,7 +267,7 @@ class AfbController extends DailyCrawlerController
                             ];
                             //echo $e->getMessage();
                 Mail::to('t.sato@freedive.co.jp')->send(new Alert($sendData));
-                            throw $e;
+            
             }
         });
     }

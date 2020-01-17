@@ -65,11 +65,9 @@ class A8Controller extends MonthlyCrawlerController
                         
                         $selector_this   = array(
                              'approval' => '#element > tbody > tr:nth-child(1) > td:nth-child(10)',
-                            //'approval_price' => '#element > tbody > tr:nth-child(1) > td:nth-child(13)' 
                         );
                         $selector_before = array(
                              'approval' => '#element > tbody > tr:nth-child(1) > td:nth-child(10)',
-                            //'approval_price' => '#element > tbody > tr:nth-child(1) > td:nth-child(13)' 
                         );
                         
                         $a8_data = $crawler->each( function( Crawler $node ) use ($selector_this, $selector_before, $product_info)
@@ -81,46 +79,25 @@ class A8Controller extends MonthlyCrawlerController
                             $unit_price = $product_info->price;
                             
                             $data[ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
-                            $data[ 'approval' ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $selector_this['approval'] )->text() ) );
+
+                            if(count($node->filter( $selector_this['approval'] ))){
+                                $data[ 'approval' ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $selector_this['approval'] )->text() ) );
+                            }else{ throw new \Exception(  $selector_this['approval'].'要素が存在しません。'); }
+
                             $data[ 'approval_price' ] = $data[ 'approval' ] * $unit_price;
+
                             if ( date( 'Y/m/d' ) == date( 'Y/m/01' ) ) {
                                 $data[ 'last_date' ] = date( 'Y-m-t', strtotime( '-2 month' ) );
                             }
                             else {
                                 $data[ 'last_date' ] = date( 'Y-m-d', strtotime( 'last day of previous month' ) );
                             }
-                            $data[ 'last_approval' ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $selector_before['approval']  )->text() ) );
+                            if(count($node->filter( $selector_before['approval']))){
+                                $data[ 'last_approval' ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $selector_before['approval']  )->text() ) );
+                            }else{ throw new \Exception(  $selector_before['approval'].'要素が存在しません。'); }
+
                             $data[ 'last_approval_price' ] = $data[ 'last_approval' ] * $unit_price;
 
-                            // foreach ( $selector_this as $key => $value ) {
-
-                            //     if($key == 'approval_price'){
-                            //         $data[ $key ]   = $this->monthlySearchService->calc_approval_price(trim( $node->filter( $value )->text() ), 1);
-                            //     }else{
-                            //         $data[ $key ]   = trim( $node->filter( $value )->text() );
-                            //     }
-                                
-                            //     $data[ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
-                            
-                            // } //$selector_this as $key => $value
-                            
-                            // foreach ( $selector_before as $key => $value ) {
-                            
-                            //     if($key == 'approval_price'){
-                            //         //$data[ $key ]   = $this->monthlySearchService->calc_approval_price(trim( $node->filter( $value )->text() ));
-                            //         $data[ 'last_' . $key ] = $this->monthlySearchService->calc_approval_price(trim( $node->filter( $value )->text() ), 1);
-                            //     }else{
-                            //         $data[ 'last_' . $key ] = trim( $node->filter( $value )->text() );
-                            //     }
-
-                            //     //$data['last_date'] = date('Y-m-d', strtotime('last day of previous month'));
-                            //     if ( date( 'Y/m/d' ) == date( 'Y/m/01' ) ) {
-                            //         $data[ 'last_date' ] = date( 'Y-m-d', strtotime( '-2 month' ) );
-                            //     } //date( 'Y/m/d' ) == date( 'Y/m/01' )
-                            //     else {
-                            //         $data[ 'last_date' ] = date( 'Y-m-d', strtotime( 'last day of previous month' ) );
-                            //     }
-                            // } //$selector_before as $key => $value
                             return $data;
                             
                         } );
@@ -139,7 +116,6 @@ class A8Controller extends MonthlyCrawlerController
                             ];
                             //echo $e->getMessage();
                 Mail::to('t.sato@freedive.co.jp')->send(new Alert($sendData));
-                            throw $e;
             }        
         } );
         
