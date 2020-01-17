@@ -212,7 +212,7 @@ class RentracksController extends DailyCrawlerController
                             );
                             
                             foreach ( $selector_for_site as $key => $value ) {
-                                if(count($crawler_for_site->filter( ＄value ))){
+                                if(count($crawler_for_site->filter( $value ))){
 
                                     if ( $key == 'site_name' ) {
                                         
