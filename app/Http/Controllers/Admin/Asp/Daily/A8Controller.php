@@ -116,7 +116,7 @@ class A8Controller extends DailyCrawlerController
                                 if(count($node->filter( $value ))){
                                     $data[ $key ] = trim( $node->filter( $value )->text() );
                                 }else{
-                                    throw new Exception($value.'要素が存在しません。');
+                                    throw new \Exception($value.'要素が存在しません。');
                                 }
                             } //$selector_1 as $key => $value
                             return $data;
@@ -262,7 +262,7 @@ class A8Controller extends DailyCrawlerController
                             ];
                             //echo $e->getMessage();
                 Mail::to('t.sato@freedive.co.jp')->send(new Alert($sendData));
-                            throw $e;
+                            //throw $e;
             }
         } );
     }
