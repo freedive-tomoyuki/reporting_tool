@@ -42,8 +42,8 @@ class MonthlySearchService
         $converter = Product::select();
         $converter->where('product_base_id', $baseproduct);
         $converter->where('asp_id', $asp_id );
+        $converter->where('killed_flag', 0 );
         $converter = $converter->get()->toArray();
-              //var_dump($converter[0]["id"]);
         return $converter[0]["id"];
     } 
 /**
