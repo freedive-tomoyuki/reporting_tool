@@ -152,8 +152,11 @@ class AfbController extends DailyCrawlerController
                             $data[ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
                             
                             foreach ( $selector_crawler as $key => $value ) {
-                                
-                                $data[ $key ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
+                                if(count($node->filter( $value ))){
+                                    $data[ $key ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
+                                }else{
+                                    throw new Exception($value.'要素が存在しません。');
+                                }
                                 
                             } //$selector_crawler as $key => $value
 
@@ -169,7 +172,12 @@ class AfbController extends DailyCrawlerController
                         $partnership = $crawler2->each( function( Crawler $node ) use ($selector_crawler2)
                         {
                             foreach ( $selector_crawler2 as $key => $value ) {
-                                $partnership = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
+                                if(count($node->filter( $value ))){
+                                    $partnership = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
+                                }else {
+                                    throw new Exception($value.'要素が存在しません。');
+                                }
+                            
                             } //$selector_crawler2 as $key => $value
                             return $partnership;
                             //var_dump($data);
@@ -177,7 +185,11 @@ class AfbController extends DailyCrawlerController
                         $active = $crawler3->each( function( Crawler $node ) use ($selector_crawler3)
                         {
                             foreach ( $selector_crawler3 as $key => $value ) {
-                                $active = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
+                                if(count($node->filter( $value ))){
+                                    $active = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
+                                }else{
+                                    throw new Exception($value.'要素が存在しません。');
+                                }
                             } //$selector_crawler3 as $key => $value
                             return $active;
                         } );
@@ -205,27 +217,29 @@ class AfbController extends DailyCrawlerController
                             );
                             
                             foreach ( $selector_for_site as $key => $value ) {
-                                
-                                if ( $key == 'media_id' ) {
-                                    //$data = trim($node->filter($value)->attr('title'));
-                                    $media_id = array( );
-                                    $sid      = trim( $crawler3->filter( $value )->attr( 'title' ) );
-                                    preg_match( '/SID：(\d+)/', $sid, $media_id );
-                                    
-                                    $afb_site[ $i ][ $key ] = $media_id[ 1 ];
-                                    
-                                } //$key == 'media_id'
-                                elseif ( $key == 'site_name' ) {
-                                    
-                                    $afb_site[ $i ][ $key ] = trim( $crawler3->filter( $value )->text() );
-                                    
-                                } //$key == 'site_name'
-                                else {
-                                    
-                                    $afb_site[ $i ][ $key ] = trim( preg_replace( '/[^0-9]/', '', $crawler3->filter( $value )->text() ) );
-                                    
+                                if(count($crawler3->filter( $value ))){
+                                    if ( $key == 'media_id' ) {
+                                        //$data = trim($node->filter($value)->attr('title'));
+                                        $media_id = array( );
+                                        $sid      = trim( $crawler3->filter( $value )->attr( 'title' ) );
+                                        preg_match( '/SID：(\d+)/', $sid, $media_id );
+                                        
+                                        $afb_site[ $i ][ $key ] = $media_id[ 1 ];
+                                        
+                                    } //$key == 'media_id'
+                                    elseif ( $key == 'site_name' ) {
+                                        
+                                        $afb_site[ $i ][ $key ] = trim( $crawler3->filter( $value )->text() );
+                                        
+                                    } //$key == 'site_name'
+                                    else {
+                                        
+                                        $afb_site[ $i ][ $key ] = trim( preg_replace( '/[^0-9]/', '', $crawler3->filter( $value )->text() ) );
+                                        
+                                    }
+                                }else{
+                                    throw new Exception($value.'要素が存在しません。');
                                 }
-                                
                             }
                             
                             $unit_price = $product_info->price;
