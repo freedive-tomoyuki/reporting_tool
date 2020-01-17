@@ -130,7 +130,7 @@ class A8Controller extends DailyCrawlerController
                                 if(count($node->filter( $value ))){
                                     $data[ $key ] = trim( $node->filter( $value )->text() );
                                 }else{
-                                    throw new Exception($value.'要素が存在しません。');
+                                    throw new \Exception($value.'要素が存在しません。');
                                 }
                             }
                             return $data;
@@ -177,7 +177,7 @@ class A8Controller extends DailyCrawlerController
                         if(count($crawler_for_site->filter( $count_selector ))){
                             $count_data       = intval( trim( preg_replace( '/[^0-9]/', '', substr( $crawler_for_site->filter( $count_selector )->text(), 0, 7 ) ) ) );
                         }else{
-                            throw new Exception($count_selector.'要素が存在しません。');
+                            throw new \Exception($count_selector.'要素が存在しません。');
                         }
 
                         //echo 'count_data＞'.$count_data;
@@ -219,7 +219,7 @@ class A8Controller extends DailyCrawlerController
                                     if(count($crawler_for_site->filter( $value ))){
                                         $a8_site[ $count ][ $key ] = trim( $crawler_for_site->filter( $value )->text() );
                                     }else{
-                                        throw new Exception($value.'要素が存在しません。');
+                                        throw new \Exception($value.'要素が存在しません。');
                                     }
                                 } //$selector_for_site as $key => $value
                                 
