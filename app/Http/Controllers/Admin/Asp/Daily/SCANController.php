@@ -245,6 +245,7 @@ class SCANController extends DailyCrawlerController
                             'message' => $e->getMessage(),
                             'datetime' => date('Y-m-d H:i:s'),
                             'product_id' => $product_id,
+                            'asp' => 'SCAN',
                             'type' => 'Daily',
                             ];
                             //echo $e->getMessage();

@@ -186,6 +186,7 @@ class AccesstradeController extends DailyCrawlerController
                                     'message' => $e->getMessage(),
                                     'datetime' => date('Y-m-d H:i:s'),
                                     'product_id' => $product_id,
+                                    'asp' => 'A8',
                                     'type' => 'Daily',
                                 ];
                                 //echo $e->getMessage();

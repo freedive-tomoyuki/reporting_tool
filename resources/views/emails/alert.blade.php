@@ -11,5 +11,6 @@
 エラー内容: {{ $sendData['message'] }}
 案件ID: {{ $sendData['product_id'] }}
 実行タイプ: {{ $sendData['type'] }}
+失敗したASP: {{ $sendData['asp'] }}
 ---
 ==============================================

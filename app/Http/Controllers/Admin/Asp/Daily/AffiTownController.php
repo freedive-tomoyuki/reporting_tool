@@ -267,6 +267,7 @@ class AffiTownController extends DailyCrawlerController
                             'message' => $e->getMessage(),
                             'datetime' => date('Y-m-d H:i:s'),
                             'product_id' => $product_id,
+                            'asp' => 'アフィタウン',
                             'type' => 'Daily',
                             ];
                             //echo $e->getMessage();

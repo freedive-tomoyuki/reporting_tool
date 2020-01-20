@@ -279,6 +279,7 @@ class RentracksController extends MonthlyCrawlerController
                             'message' => $e->getMessage(),
                             'datetime' => date('Y-m-d H:i:s'),
                             'product_id' => $product_id,
+                            'asp' => 'レントラックス',
                             'type' => 'Monthly',
                             ];
                             //echo $e->getMessage();

@@ -204,6 +204,7 @@ class CrossPartnerController extends MonthlyCrawlerController
                             'message' => $e->getMessage(),
                             'datetime' => date('Y-m-d H:i:s'),
                             'product_id' => $product_id,
+                            'asp' => 'クロスパートナー',
                             'type' => 'Monthly',
                             ];
                             //echo $e->getMessage();

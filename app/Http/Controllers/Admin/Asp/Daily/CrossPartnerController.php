@@ -250,6 +250,8 @@ class CrossPartnerController extends DailyCrawlerController
                         $this->dailySearchService->save_daily( json_encode( $crosspartner_data1 ) );
                     
                     }
+                    //最後にログアウト
+                    $browser->visit('http://crosspartners.net/agent/logins/logout');
 
             }
             catch(\Exception $e){
@@ -257,6 +259,7 @@ class CrossPartnerController extends DailyCrawlerController
                             'message' => $e->getMessage(),
                             'datetime' => date('Y-m-d H:i:s'),
                             'product_id' => $product_id,
+                            'asp' => 'クロスパートナー',
                             'type' => 'Daily',
                             ];
                             //echo $e->getMessage();

@@ -183,7 +183,8 @@ class FelmatController extends MonthlyCrawlerController
                                                                 ->type('#search > div > div:nth-child(2) > div.col-sm-4.form-inline > div > input:nth-child(1)', $first)
                                                                 ->type('#search > div > div:nth-child(2) > div.col-sm-4.form-inline > div > input:nth-child(3)', $end)
                                                                 ->click('#sel_promotion_id_chosen')
-                                                                ->click('#sel_promotion_id_chosen > div > ul > li:nth-child(2)')
+                                                                // ->click('#sel_promotion_id_chosen > div > ul > li:nth-child(2)')
+                                                                ->click($product_info->product_order)
                                                                 ->click('#view > div > button.btn.btn-primary.btn-sm');
                                     $p = $i + 1;
                                     
@@ -193,7 +194,8 @@ class FelmatController extends MonthlyCrawlerController
                                                                 ->type('#search > div > div:nth-child(2) > div.col-sm-4.form-inline > div > input:nth-child(1)', $first)
                                                                 ->type('#search > div > div:nth-child(2) > div.col-sm-4.form-inline > div > input:nth-child(3)', $end)
                                                                 ->click('#sel_promotion_id_chosen')
-                                                                ->click('#sel_promotion_id_chosen > div > ul > li:nth-child(2)')
+                                                                // ->click('#sel_promotion_id_chosen > div > ul > li:nth-child(2)')
+                                                                ->click($product_info->product_order)
                                                                 ->click('#view > div > button.btn.btn-primary.btn-sm');
                                 }
                                 
@@ -253,6 +255,7 @@ class FelmatController extends MonthlyCrawlerController
                             'message' => $e->getMessage(),
                             'datetime' => date('Y-m-d H:i:s'),
                             'product_id' => $product_id,
+                            'asp' => 'フェルマ',
                             'type' => 'Monthly',
                             ];
                             //echo $e->getMessage();

@@ -171,7 +171,7 @@ class A8Controller extends DailyCrawlerController
                         $crawler_for_site = $browser
                                             ->visit('https://adv.a8.net/a8v2/ecAsRankingReportAction.do?reportType=11&insId=' . $product_info->asp_product_id . '&asmstId=&termType=1&d-2037996-p=1&multiSelectFlg=0&year=' . $s_Y . '&month=' . $s_M )
                                             ->crawler();
-
+                        //https://adv.a8.net/a8v2/ecAsRankingReportAction.do?reportType=11&insId=s00000015456001&asmstId=&termType=1&d-2037996-p=1&multiSelectFlg=0&year=2020&month=01
                         $count_selector   = '#contents1clm > form:nth-child(6) > span.pagebanner';
 
                         if(count($crawler_for_site->filter( $count_selector ))){
@@ -258,6 +258,7 @@ class A8Controller extends DailyCrawlerController
                             'message' => $e->getMessage(),
                             'datetime' => date('Y-m-d H:i:s'),
                             'product_id' => $product_id,
+                            'asp' => 'A8',
                             'type' => 'Daily',
                             ];
                             //echo $e->getMessage();
