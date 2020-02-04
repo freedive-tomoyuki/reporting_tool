@@ -13,10 +13,10 @@ use App\Jobs\SearchJob;
 | contains the "web" middleware group. Now create something great!
 |
 */
-Route::get('/', function () {
+// Route::get('/', function () {
 
-    return view('auth.login');
-});
+//     return view('auth.login');
+// });
 
 //Route::get('/','DailyCrawlerController@show_test')->name('show_test');
 
@@ -154,26 +154,14 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth:admin'], function() {
     Route::get('daily/site/csv','Admin\CsvExportController@downloadSiteDaily');
     Route::get('monthly/site/csv','Admin\CsvExportController@downloadSiteMonthly');
 
-    // Route::get('csv/{id}/{s_date?}/{e_date?}','Admin\CsvExportController@downloadDaily');
-    // Route::get('csv_site/{id}/{s_date?}/{e_date?}','Admin\CsvExportController@downloadSiteDaily');
     
-    // Route::get('csv_monthly/{id}/{month?}','Admin\CsvExportController@downloadMonthly');
     Route::get('csv_monthly_estimate/{id}','Admin\CsvExportController@downloadMonthlyEstimate');
     // Route::get('csv_monthly_site/{id}/{month?}','Admin\CsvExportController@downloadSiteMonthly');
 
 
-    Route::get('DownloadTemplateCsvSite',
-    function() {
-        $data = array();
-        $csvHeader = ['日付','案件ID','ASPID','Imp', 'Click','CV','SiteID','Site名','発生金額','承認件数','承認金額'];
-        return CSV::download($data, $csvHeader, 'template_monthly_site.csv');
-    });
-    Route::get('DownloadTemplateCsv',
-    function() {
-        $data = array();
-        $csvHeader = ['日付','案件ID','ASPID','Imp','Click','CV','アクティブ','提携数','発生金額','承認件数','承認金額'];
-        return CSV::download($data, $csvHeader, 'template_daily.csv');
-    });
+    Route::get('DownloadTemplateCsvSite','Admin\CsvExportController@downloadTemplateSite' );
+    Route::get('DownloadTemplateCsv','Admin\CsvExportController@downloadTemplate');
+
     Route::get('excel_test','Admin\ExportController@excel');
     //PDF出力
     //今月・昨月分 済
@@ -185,13 +173,13 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth:admin'], function() {
     
     Route::get('pdf/media/{id?}/{month?}','Admin\ExportController@pdf_media' );
     
-    Route::get('test/{text}', function ($text) {
-    SearchJob::dispatch($text);
-    return 'Queued!';
+    // Route::get('test/{text}', function ($text) {
+    // SearchJob::dispatch($text);
+    // return 'Queued!';
 });
 
     //Route::get('api/getRequiredFlag/{id}', 'Api\getAspController@getRequiredFlag');
-});
+// });
 Route::group(['middleware' => 'auth:user'], function() {
 
     //デイリーレポート一覧
@@ -226,19 +214,19 @@ Route::group(['middleware' => 'auth:user'], function() {
     Route::post('export','ExportController@selected');
 
     //テンプレートダウンロード
-    Route::get('DownloadTemplateCsvSite',
-    function() {
-        $data = array();
-        $csvHeader = ['日付','案件ID','ASPID','Imp', 'Click','CV','SiteID','Site名','発生金額','承認件数','承認金額'];
-        return CSV::download($data, $csvHeader, 'template_monthly_site.csv');
-    });
+    // Route::get('DownloadTemplateCsvSite',
+    // function() {
+    //     $data = array();
+    //     $csvHeader = ['日付','案件ID','ASPID','Imp', 'Click','CV','SiteID','Site名','発生金額','承認件数','承認金額'];
+    //     return CSV::download($data, $csvHeader, 'template_monthly_site.csv');
+    // });
 
-    Route::get('DownloadTemplateCsv',
-    function() {
-        $data = array();
-        $csvHeader = ['日付','案件ID','ASPID','Imp','Click','CV','アクティブ','提携数','発生金額','承認件数','承認金額'];
-        return CSV::download($data, $csvHeader, 'template_daily.csv');
-    });
+    // Route::get('DownloadTemplateCsv',
+    // function() {
+    //     $data = array();
+    //     $csvHeader = ['日付','案件ID','ASPID','Imp','Click','CV','アクティブ','提携数','発生金額','承認件数','承認金額'];
+    //     return CSV::download($data, $csvHeader, 'template_daily.csv');
+    // });
     
     //PDF出力
     //今月・昨月分 済
@@ -251,16 +239,16 @@ Route::group(['middleware' => 'auth:user'], function() {
     Route::get('pdf/media/{id?}/{month?}','ExportController@pdf_media' );
 });
 
-Route::get('api/getRequiredFlag/{id}',function($id){
+// Route::get('api/getRequiredFlag/{id}',function($id){
     
-    $RequiredFlag = DB::table('asps')->select('sponsor_id_require_flag','product_id_require_flag')->where('id', $id)->get();
-    return $RequiredFlag;
-            //return ['sponsor_id_require_falg' => request('title'),'product_id_require_falg' => request('content')];
-});
+//     $RequiredFlag = DB::table('asps')->select('sponsor_id_require_flag','product_id_require_flag')->where('id', $id)->get();
+//     return $RequiredFlag;
+//             //return ['sponsor_id_require_falg' => request('title'),'product_id_require_falg' => request('content')];
+// });
 
-Route::get('check',function(){
-    echo "OK";
-});
+// Route::get('check',function(){
+//     echo "OK";
+// });
 
 //CSV出力
 Route::get('csv/{id}/{s_date?}/{e_date?}','DailyController@downloadCSV');

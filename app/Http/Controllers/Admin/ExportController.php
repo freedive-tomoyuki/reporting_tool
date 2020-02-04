@@ -43,6 +43,22 @@ class ExportController extends Controller
       return json_encode($target_asp);
     }
     /**
+     * テンプレートダウンロード
+     */
+    public function downloadTemplate() {
+            $data = array();
+            $csvHeader = ['日付','案件ID','ASPID','Imp','Click','CV','アクティブ','提携数','発生金額','承認件数','承認金額'];
+            return CSV::download($data, $csvHeader, 'template_daily.csv');
+    }
+    /**
+     * テンプレートダウンロード（サイト用）
+     */
+    public function downloadTemplateSite() {
+        $data = array();
+        $csvHeader = ['日付','案件ID','ASPID','Imp', 'Click','CV','SiteID','Site名','発生金額','承認件数','承認金額'];
+        return CSV::download($data, $csvHeader, 'template_monthly_site.csv');
+    }
+    /**
     * 親案件から案件一覧を取得する。
     * @param number $baseproduct
     * @return array $converter 
