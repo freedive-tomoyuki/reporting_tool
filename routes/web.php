@@ -178,7 +178,6 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth:admin'], function() {
     // return 'Queued!';
 });
 
-    //Route::get('api/getRequiredFlag/{id}', 'Api\getAspController@getRequiredFlag');
 // });
 Route::group(['middleware' => 'auth:user'], function() {
 

@@ -18,3 +18,6 @@ use Illuminate\Http\Request;
 // });
 /*Route::group(['middleware' => ['api']], function(){
 });*/
+
+Route::get('getRequiredFlag/{id}', 'Api\getAspController@getRequiredFlag');
+
