@@ -47,7 +47,7 @@ class CrossPartnerController extends Controller
  
                 try{
                     //最後にログアウト
-                    $browser->visit('http://crosspartners.net/agent/logins/logout');
+                    $browser->logout();//('http://crosspartners.net/agent/logins/logout');
 
                     $crawler =
                         $browser->visit( $asp_info[0]['login_url'] )
