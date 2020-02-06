@@ -46,9 +46,7 @@ class CrossPartnerController extends Controller
             $asp_info = Asp::where('id','=',10)->get()->toArray();
  
                 try{
-                    //最後にログアウト
-                    $browser->visit('http://crosspartners.net/agent/logins/logout');
-
+                    
                     $crawler =
                         $browser->visit( $asp_info[0]['login_url'] )
                         ->keys( $asp_info[0]['login_key'], $id )
@@ -66,6 +64,8 @@ class CrossPartnerController extends Controller
                         $result = 0;
                         //var_dump($result);
                     }
+                    //最後にログアウト
+                    $browser->visit('http://crosspartners.net/agent/logins/logout');
 
                     return $crawler;
 
