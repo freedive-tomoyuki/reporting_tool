@@ -56,7 +56,11 @@ class CrossPartnerController extends Controller
                         ->click( $asp_info[0]['login_selector'] )
                         ->visit( $asp_info[0]['lp1_url'] )
                         ->crawler();
-                        
+                        \Log::debug($id);
+                        \Log::debug($pass);
+                        \Log::debug($asp_info[0]['lp1_url']);
+                        \Log::debug($asp_info[0]['login_selector']);
+
                         $crawler = $crawler->getUri();
                         \Log::debug($crawler);
                     if (strpos($crawler,'tops') !== false ){
