@@ -198,6 +198,9 @@ class CrossPartnerController extends MonthlyCrawlerController
                         $this->monthlySearchService->save_monthly( json_encode( $crosspartner_data ) );
                     
                     } //$product_infos as $product_info
+
+                    //ログアウト
+                    $browser->visit("https://crosspartners.net/agent/logins/logout");
             }
             catch(\Exception $e){
                 $sendData = [
