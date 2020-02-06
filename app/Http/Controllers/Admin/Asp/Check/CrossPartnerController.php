@@ -46,8 +46,8 @@ class CrossPartnerController extends Controller
             $asp_info = Asp::where('id','=',10)->get()->toArray();
  
                 try{
-                    
-                    // $browser->driver->manage()->deleteAllCookies();
+                    //最後にログアウト
+                    $browser->visit('http://crosspartners.net/agent/logins/logout');
 
                     $crawler =
                         $browser->visit( $asp_info[0]['login_url'] )
@@ -65,9 +65,6 @@ class CrossPartnerController extends Controller
                         $result = 0;
                         //var_dump($result);
                     }
-                                        
-                    //ログアウト
-                    // $browser->visit("https://crosspartners.net/agent/logins/logout");
 
                     return $crawler;
 

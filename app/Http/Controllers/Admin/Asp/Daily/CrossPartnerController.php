@@ -66,6 +66,9 @@ class CrossPartnerController extends DailyCrawlerController
         $client->browse( function( Browser $browser ) use (&$crawler, $product_id)
         {
             try{
+                    //最後にログアウト
+                    $browser->visit('http://crosspartners.net/agent/logins/logout');
+
                     $product_infos = \App\Product::all()->where( 'id', $product_id );
 
                     $ym = date( 'Ym', strtotime( '-1 day' ) );
@@ -250,8 +253,7 @@ class CrossPartnerController extends DailyCrawlerController
                         $this->dailySearchService->save_daily( json_encode( $crosspartner_data1 ) );
                     
                     }
-                    //最後にログアウト
-                    $browser->visit('http://crosspartners.net/agent/logins/logout');
+
 
             }
             catch(\Exception $e){

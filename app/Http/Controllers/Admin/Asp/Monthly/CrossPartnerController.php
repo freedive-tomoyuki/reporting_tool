@@ -50,6 +50,9 @@ class CrossPartnerController extends MonthlyCrawlerController
         $client->browse( function( Browser $browser ) use (&$crawler, $product_id)
         {
             try{
+                    //最後にログアウト
+                    $browser->visit('http://crosspartners.net/agent/logins/logout');
+
                     $product_infos = \App\Product::all()->where( 'id', $product_id );
         	        //var_dump($product_infos);
             
