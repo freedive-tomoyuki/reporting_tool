@@ -38,7 +38,7 @@ class CrossPartnerController extends Controller
         $result = 0;
 
         //Chromeドライバー実行
-        $client->browse( function( Browser $browser ) use (&$crawler, $id , $pass , &$result)
+        $client->browse( function( Browser $browser ) use (&$crawler, $id , $pass , $product , $sponsor, &$result)
         //$client->browse( function( Browser $browser ) use (&$crawler, $id , $pass , $product, &$result)
         {
             
@@ -49,19 +49,29 @@ class CrossPartnerController extends Controller
                     // \Log::debug($logout->html());
 
                     $crawler =
-                        $browser->visit( $asp_info[0]['login_url'] )
+                        $browser
+                        // ->visit( $asp_info[0]['login_url'] )
+                        // ->keys( $asp_info[0]['login_key'], $id )
+                        // ->keys( $asp_info[0]['password_key'], $pass )
+                        // ->click( $asp_info[0]['login_selector'] )
+                        // //->visit( $asp_info[0]['lp1_url'] )
+                        // ->crawler()->getUri();
+
+                        ->visit( $$asp_info[0]['login_url'] )
                         ->keys( $asp_info[0]['login_key'], $id )
                         ->keys( $asp_info[0]['password_key'], $pass )
-                        ->click( $asp_info[0]['login_selector'] )
-                        //->visit( $asp_info[0]['lp1_url'] )
+                        ->click(  $asp_info[0]['login_selector'] )
+                        ->visit( $asp_info[0]['lp1_url'])
+                        ->visit('http://crosspartners.net/agent/clients/su/'.$sponsor)
                         ->crawler()->getUri();
-                        // \Log::debug($id);
-                        // \Log::debug($pass);
-                        // \Log::debug($asp_info[0]['lp1_url']);
-                        // \Log::debug($asp_info[0]['login_selector']);
+                        \Log::debug($product);
+                        \Log::debug($sponsor);
+                        \Log::debug($asp_info[0]['login_key']);
+                        \Log::debug($asp_info[0]['password_key']);
+                        \Log::debug($asp_info[0]['login_selector']);
 
                         // $crawler = $crawler->getUri();
-                        // \Log::debug($crawler);
+                         \Log::debug($crawler);
                     if (strpos($crawler,'tops') !== false ){
                         $result = 1;
                         //var_dump($result);
