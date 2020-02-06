@@ -72,7 +72,7 @@ class CrossPartnerController extends Controller
 
                         // $crawler = $crawler->getUri();
                          \Log::debug($crawler);
-                    if (strpos($crawler,$sponsor) !== false ){
+                    if (strpos($crawler,'tops') !== false ){
                         $result = 1;
                         //var_dump($result);
                     }else{
