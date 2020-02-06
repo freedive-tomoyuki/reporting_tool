@@ -47,7 +47,7 @@ class CrossPartnerController extends Controller
  
                 try{
                     
-                    $browser->driver->manage()->deleteAllCookies();
+                    // $browser->driver->manage()->deleteAllCookies();
 
                     $crawler =
                         $browser->visit( $asp_info[0]['login_url'] )
