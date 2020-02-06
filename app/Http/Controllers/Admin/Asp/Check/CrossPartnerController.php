@@ -45,8 +45,8 @@ class CrossPartnerController extends Controller
             $asp_info = Asp::where('id','=',10)->get()->toArray();
  
                 try{
-                    // $logout = $browser->visit('http://crosspartners.net/agent/logins/logout')->crawler();
-                    // \Log::debug($logout->html());
+                    $logout = $browser->visit('http://crosspartners.net/agent/logins/logout')->crawler();
+                    \Log::debug($logout->html());
 
                     $crawler =
                         $browser
@@ -72,7 +72,7 @@ class CrossPartnerController extends Controller
 
                         // $crawler = $crawler->getUri();
                          \Log::debug($crawler);
-                    if (strpos($crawler,'tops') !== false ){
+                    if (strpos($crawler,$sponsor) !== false ){
                         $result = 1;
                         //var_dump($result);
                     }else{
