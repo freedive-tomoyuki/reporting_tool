@@ -57,7 +57,7 @@ class CrossPartnerController extends Controller
                         // //->visit( $asp_info[0]['lp1_url'] )
                         // ->crawler()->getUri();
 
-                        ->visit( $$asp_info[0]['login_url'] )
+                        ->visit( $asp_info[0]['login_url'] )
                         ->keys( $asp_info[0]['login_key'], $id )
                         ->keys( $asp_info[0]['password_key'], $pass )
                         ->click(  $asp_info[0]['login_selector'] )
