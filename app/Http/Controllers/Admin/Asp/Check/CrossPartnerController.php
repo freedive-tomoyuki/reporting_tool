@@ -47,7 +47,7 @@ class CrossPartnerController extends Controller
  
                 try{
                     $logout = $browser->visit('http://crosspartners.net/agent/logins/logout')->crawler();
-                    \Log::debug($logout);
+                    \Log::debug($logout->html());
 
                     $crawler =
                         $browser->visit( $asp_info[0]['login_url'] )
