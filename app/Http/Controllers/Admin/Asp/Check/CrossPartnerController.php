@@ -46,7 +46,7 @@ class CrossPartnerController extends Controller
  
                 try{
                     $logout = $browser->visit('http://crosspartners.net/agent/logins/logout')->crawler();
-                    \Log::debug($logout->html());
+                    // \Log::debug($logout->html());
 
                     $crawler =
                         $browser->visit( $asp_info[0]['login_url'] )
@@ -54,14 +54,14 @@ class CrossPartnerController extends Controller
                         ->keys( $asp_info[0]['password_key'], $pass )
                         ->click( $asp_info[0]['login_selector'] )
                         ->visit( $asp_info[0]['lp1_url'] )
-                        ->crawler();
-                        \Log::debug($id);
-                        \Log::debug($pass);
-                        \Log::debug($asp_info[0]['lp1_url']);
-                        \Log::debug($asp_info[0]['login_selector']);
+                        ->crawler()->getUri();
+                        // \Log::debug($id);
+                        // \Log::debug($pass);
+                        // \Log::debug($asp_info[0]['lp1_url']);
+                        // \Log::debug($asp_info[0]['login_selector']);
 
-                        $crawler = $crawler->getUri();
-                        \Log::debug($crawler);
+                        // $crawler = $crawler->getUri();
+                        // \Log::debug($crawler);
                     if (strpos($crawler,'tops') !== false ){
                         $result = 1;
                         //var_dump($result);
