@@ -25,12 +25,11 @@ class CrossPartnerController extends Controller
         });
         
         $options = [
-                '--window-size=1920,3000',
-                '--start-maximized',
-                '--headless',
-                '--disable-gpu',
-                '--no-sandbox',
-                '--lang=ja_JP',
+            '--window-size=1920,1080',
+            '--start-maximized',
+            '--headless',
+            '--disable-gpu',
+            '--no-sandbox'
         ];
 
         // Chromeドライバーのインスタンス呼び出し
