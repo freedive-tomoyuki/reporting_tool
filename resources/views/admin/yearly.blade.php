@@ -106,6 +106,7 @@
         </div>
     </div>
 		<!--/.row-->
+@if(!isset($yearly_imps)||!isset($yearly_clicks)||!isset($yearly_ctrs)||!isset($yearly_cvs)||!isset($yearly_cvrs))
 <!--グラフ-->
     <div class="row">
       <div class="col-lg-12">
@@ -255,103 +256,112 @@
         </div>
       @endforeach
     </div>
-<script type="text/javascript">
-        //google.charts.load('current', {'packages':['line']});
-    google.load("visualization", "1", {
-                packages: ["line"]
-            });
-    google.charts.setOnLoadCallback(drawChart);
 
-    function drawChart() {
+    <script type="text/javascript">
+            //google.charts.load('current', {'packages':['line']});
+        google.load("visualization", "1", {
+                    packages: ["line"]
+                });
+        google.charts.setOnLoadCallback(drawChart);
+
+        function drawChart() {
+          
+          var ranking = JSON.parse(escapeHtml('{{ $yearly_chart }}'));
+
+            i = 0;
+
+          
+          //AspArray = Object.keys(ranking).map(function (key,val) {return key })
+          //NumArray = Object.keys(ranking).map(function (key) {return ranking[key] })
+          
+          console.log(ranking);
+          //console.log(NumArray);
+          var array = [];
+          var array_asp = new Array();
+
+            ranking.forEach(function(element,i) {
+              //console.log(element);
+              array[i] = new Array();
+
+              for ( var key in element ) {
+
+                var data = element[key];
+
+                if(key == 'date'){
+                    var date = new Date(data);
+                    var year = date.getFullYear();
+                    var month = date.getMonth() + 1;
+                    array[i][key] = year +'年'+ month +'月' ;//+'-'+ day;
       
-      var ranking = JSON.parse(escapeHtml('{{ $yearly_chart }}'));
+                }else{
+                  array[i][key] = parseInt(data, 10);
 
-        i = 0;
-
-      
-      //AspArray = Object.keys(ranking).map(function (key,val) {return key })
-      //NumArray = Object.keys(ranking).map(function (key) {return ranking[key] })
-      
-      console.log(ranking);
-      //console.log(NumArray);
-      var array = [];
-      var array_asp = new Array();
-
-        ranking.forEach(function(element,i) {
-          //console.log(element);
-          array[i] = new Array();
-
-          for ( var key in element ) {
-
-            var data = element[key];
-
-            if(key == 'date'){
-                var date = new Date(data);
-                var year = date.getFullYear();
-                var month = date.getMonth() + 1;
-                array[i][key] = year +'年'+ month +'月' ;//+'-'+ day;
-  
-            }else{
-              array[i][key] = parseInt(data, 10);
-
-              if(array_asp.indexOf(key) < 0){
-                array_asp.push(key);
+                  if(array_asp.indexOf(key) < 0){
+                    array_asp.push(key);
+                  }
+                  
+                }
+                
               }
-              
-            }
+              i = i+1;
+              //console.log(array_ranking1[i]);
+            });
+            console.log(array_asp);
+            console.log(array);
+
+            array_ranking2 = new Array();
+            element_data = new Array();
+
+            array.forEach(function(element){
+              //console.log(element);
+              var valuesOf = function(obj) {
+                return Object.keys(obj).map(function (key) { return obj[key]; })
+              }
+              //console.log(valuesOf(element));
+              array_ranking2.push(valuesOf(element));
+
+            });
+            console.log(array_ranking2);
+          
+            var data = new google.visualization.DataTable();
+                data.addColumn('string', 'months');
+
+                //data.addColumn('string', '');
+            array_asp.forEach(function(element){
+              data.addColumn('number', element );
+              //console.log(element);
+            });
+            data.addRows(array_ranking2);
+
+          var options = {
+
+            height: 300,
+            legend: 'bottom',
+
             
+          };
+
+          var chart = new google.charts.Line(document.getElementById('line_top_x'));
+
+          chart.draw(data, google.charts.Line.convertOptions(options));
+        }
+        function escapeHtml(str){
+            str = str.replace(/&amp;/g, '&');
+            str = str.replace(/&gt;/g, '>');
+            str = str.replace(/&lt;/g, '<');
+            str = str.replace(/&quot;/g, '"');
+            str = str.replace(/&#x27;/g, "'");
+            str = str.replace(/&#x60;/g, '`');
+            return str;
           }
-          i = i+1;
-          //console.log(array_ranking1[i]);
-        });
-        console.log(array_asp);
-        console.log(array);
-
-        array_ranking2 = new Array();
-        element_data = new Array();
-
-        array.forEach(function(element){
-          //console.log(element);
-          var valuesOf = function(obj) {
-            return Object.keys(obj).map(function (key) { return obj[key]; })
-          }
-          //console.log(valuesOf(element));
-          array_ranking2.push(valuesOf(element));
-
-        });
-        console.log(array_ranking2);
-      
-        var data = new google.visualization.DataTable();
-            data.addColumn('string', 'months');
-
-            //data.addColumn('string', '');
-        array_asp.forEach(function(element){
-          data.addColumn('number', element );
-          //console.log(element);
-        });
-        data.addRows(array_ranking2);
-
-      var options = {
-
-        height: 300,
-        legend: 'bottom',
-
-        
-      };
-
-      var chart = new google.charts.Line(document.getElementById('line_top_x'));
-
-      chart.draw(data, google.charts.Line.convertOptions(options));
-    }
-    function escapeHtml(str){
-        str = str.replace(/&amp;/g, '&');
-        str = str.replace(/&gt;/g, '>');
-        str = str.replace(/&lt;/g, '<');
-        str = str.replace(/&quot;/g, '"');
-        str = str.replace(/&#x27;/g, "'");
-        str = str.replace(/&#x60;/g, '`');
-        return str;
-      }
-</script>
+    </script>
+@else
+    <div class="row">
+          <div class="col-md-12">
+              <div class="alert bg-danger" role="alert"><em class="fa fa-lg fa-warning">&nbsp;</em>
+              検索結果が見つかりません。 <a href="#" class="pull-right"><em class="fa fa-lg fa-close"></em></a></div>
+          </div>
+    </div>
+@endif
 
 @endsection
