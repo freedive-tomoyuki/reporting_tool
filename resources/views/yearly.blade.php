@@ -23,6 +23,7 @@
                   <div class="col-sm-10">
                     <select class="form-control" name="product" >
                                 <option value=""> -- </option>
+
                                 @foreach($product_bases as $product_base)
                                   <option value="{{ $product_base -> id }}"
                                     @if( old('product'))
@@ -106,6 +107,7 @@
         </div>
     </div>
 		<!--/.row-->
+@if(!isset($yearly_imps)||!isset($yearly_clicks)||!isset($yearly_ctrs)||!isset($yearly_cvs)||!isset($yearly_cvrs))
 <!--グラフ-->
     <div class="row">
       <div class="col-lg-12">
@@ -117,6 +119,8 @@
           </div>
       </div>
     </div> 
+
+
 
     <div class="col-md-12">
         <div class="panel panel-primary ">
@@ -353,5 +357,12 @@
         return str;
       }
 </script>
-
+@else
+    <div class="row">
+          <div class="col-md-12">
+              <div class="alert bg-danger" role="alert"><em class="fa fa-lg fa-warning">&nbsp;</em>
+              検索結果が見つかりません。 <a href="#" class="pull-right"><em class="fa fa-lg fa-close"></em></a></div>
+          </div>
+    </div>
+@endif
 @endsection

@@ -44,7 +44,7 @@ class YearlyController extends Controller
         [$yearly_cvs,$yearly_clicks,$yearly_imps,$yearly_approvals,$yearly_cvrs,$yearly_ctrs,$yearly_cvs_asp,$yearly_clicks_asp,$yearly_imps_asp,$yearly_ctrs_asp,$yearly_cvrs_asp] = $this->yearDataService->showAllList(3);
 
         $yearly_chart= $this->yearDataService->calChart(3);
-        //var_dump($yearly_chart);
+
         return view('admin.yearly',compact('user','product_bases','asps','yearly_chart','yearly_cvs','yearly_clicks','yearly_imps','yearly_approvals','yearly_cvrs','yearly_ctrs','yearly_cvs_asp','yearly_clicks_asp','yearly_imps_asp','yearly_ctrs_asp','yearly_cvrs_asp'));
     }
 
