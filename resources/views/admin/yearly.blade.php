@@ -106,7 +106,7 @@
         </div>
     </div>
 		<!--/.row-->
-@if(!isset($yearly_imps)||!isset($yearly_clicks)||!isset($yearly_ctrs)||!isset($yearly_cvs)||!isset($yearly_cvrs))
+@if(isset($yearly_imps)||isset($yearly_clicks)||isset($yearly_ctrs)||isset($yearly_cvs)||isset($yearly_cvrs))
 <!--グラフ-->
     <div class="row">
       <div class="col-lg-12">

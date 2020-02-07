@@ -84,7 +84,7 @@ class YearlyDataService
         $yearly_cvs->where('product_base_id',$id);
         $yearly_cvs->groupBy('product_base_id');
         $yearly_cvs = $yearly_cvs->get()->toArray();
-        $yearly_cvs = (isset($yearly_cvs[0]))? array_reverse(array_values($yearly_cvs[0])) : '';
+        $yearly_cvs = (!empty($yearly_cvs[0]))? array_reverse(array_values($yearly_cvs[0])) : '';
 
 //クリック数
     $select = '';
@@ -101,7 +101,7 @@ class YearlyDataService
     $yearly_clicks->where('product_base_id',$id);
     $yearly_clicks->groupBy('product_base_id');
     $yearly_clicks = $yearly_clicks->get()->toArray();
-    $yearly_clicks = (isset($yearly_clicks[0]))? array_reverse(array_values($yearly_clicks[0])) : '';
+    $yearly_clicks = (!empty($yearly_clicks[0]))? array_reverse(array_values($yearly_clicks[0])) : '';
 
 //Imp数
     $select = '';
@@ -118,7 +118,7 @@ class YearlyDataService
     $yearly_imps->where('product_base_id',$id);
     $yearly_imps->groupBy('product_base_id');
     $yearly_imps = $yearly_imps->get()->toArray();
-    $yearly_imps = (isset($yearly_imps[0]))? array_reverse(array_values($yearly_imps[0])) : '';
+    $yearly_imps = (!empty($yearly_imps[0]))? array_reverse(array_values($yearly_imps[0])) : '';
 //承認数
     $select = '';
     for( $i=1 ; $i <= 12 ; $i++ ){
@@ -134,7 +134,7 @@ class YearlyDataService
     $yearly_approvals->where('product_base_id',$id);
     $yearly_approvals->groupBy('product_base_id');
     $yearly_approvals = $yearly_approvals->get()->toArray();
-    $yearly_approvals = (isset($yearly_approvals[0]))? array_reverse(array_values($yearly_approvals[0])) : '';
+    $yearly_approvals = (!empty($yearly_approvals[0]))? array_reverse(array_values($yearly_approvals[0])) : '';
 //承認率
     $select = '';
     for( $i=1 ; $i <= 12 ; $i++ ){
@@ -150,7 +150,7 @@ class YearlyDataService
     $yearly_approval_rates->where('product_base_id',$id);
     $yearly_approval_rates->groupBy('product_base_id');
     $yearly_approval_rates = $yearly_approval_rates->get()->toArray();
-    $yearly_approval_rates = (isset($yearly_approval_rates[0]))? array_reverse(array_values($yearly_approval_rates[0])) : '';
+    $yearly_approval_rates = (!empty($yearly_approval_rates[0]))? array_reverse(array_values($yearly_approval_rates[0])) : '';
 
 //CTR
     if(!empty($yearly_imps)){
@@ -299,6 +299,18 @@ class YearlyDataService
                 }
         }   
     }
+        \Log::debug($yearly_cvs);
+        \Log::debug($yearly_clicks);
+        \Log::debug($yearly_imps);
+        \Log::debug($yearly_approvals);
+        \Log::debug($yearly_cvrs);
+        \Log::debug($yearly_ctrs);
+        \Log::debug($yearly_cvs_asp);
+        \Log::debug($yearly_clicks_asp);
+        \Log::debug($yearly_imps_asp);
+        \Log::debug($yearly_ctrs_asp);
+        \Log::debug($yearly_cvrs_asp);
+        
         return [$yearly_cvs,$yearly_clicks,$yearly_imps,$yearly_approvals,$yearly_cvrs,$yearly_ctrs,$yearly_cvs_asp,$yearly_clicks_asp,$yearly_imps_asp,$yearly_ctrs_asp,$yearly_cvrs_asp];
     }
 }
