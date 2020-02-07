@@ -76,7 +76,7 @@
               <div class="col-md-9 col-md-offset-1">
                   <div class="col-md-12">
                      <div class="form-group col-md-6">
-                        <label class="control-label">Month</label>
+                        <label class="control-label">対象月</label>
                                 <p class="form-control-static">
                                 @if(old('month'))
                                   {{ old('month') }}
@@ -90,7 +90,7 @@
                      </div>
 
                      <div class="form-group col-md-6">
-                      <label class="control-label">Product</label>
+                      <label class="control-label">広告主</label>
                                 <p class="form-control-static">
                                   @if( old('product'))
                                     @foreach($product_bases as $product_base)
@@ -120,76 +120,6 @@
       </div>
    </div>
 </div>
- <!--        <div class="col-md-12">
-            <div class="panel panel-default">
-              <div class="panel-heading">検索条件
-              
-
-                </<a>
-              </div>
-                  <div class="panel-body">
-
-                    <div class="form-group">
-                      <label class="col-sm-2 control-label">ASP</label>
-                      <div class="col-sm-10">
-                              <p class="form-control-static">
-                              @if( old('asps')  )
-                                  @foreach($asps as $asp)
-                                      @if( old('asp_id') == $asp->id  )
-                                          {{ $asp -> name }}
-                                      @endif
-                                  @endforeach
-                              @else
-                               すべてのASP
-                              @endif
-                              </p>
-                            </div>
-                          </div>
-                          <div class="form-group">
-                            <label class="col-sm-2 control-label">Month</label>
-                            <div class="col-sm-10">
-                              <p class="form-control-static">
-                              @if(old('month'))
-                              {{ old('month') }}
-                              @else
-                               {{ date("Y-m",strtotime('-1 day')) }}　
-                              @endif
-                              @if(old('month') == date("Y-m",strtotime('-1 day'))|| !old('month') )
-                              {{"前日分までのデータ"}}
-                              @endif
-                              </p>
-                            </div>
-                          </div>
-                          <div class="form-group">
-                            <label class="col-sm-2 control-label">Product</label>
-                            <div class="col-sm-10">
-                              <p class="form-control-static">
-                                @if( old('product'))
-                                  @foreach($product_bases as $product_base)
-                                      @if( old('product') == $product_base->id  )
-                                          {{ $product_base -> product_name }}
-                                      @endif
-                                  @endforeach
-                              @else
-                               案件の指定がございません
-                              @endif
-                              </p>
-                            </div>
-                          </div>
-                          <div class="form-group">
-                            <label class="col-sm-2 control-label">消化率</label>
-                            <div class="col-sm-10">
-                              <p class="form-control-static">
-                              <?php
-                                   //echo ceil((date("d",strtotime('-1 day'))/date("t"))*100)." %";
-                              ?>
-                              </p>
-                            </div>
-                          </div>
-                      </div>
-            </div>
-        </div>
-    </div> -->
 @if(!$products->isEmpty())
 
 <!--グラフ-->
@@ -240,7 +170,7 @@
                         <tr>
                             <th class="th-sm">No</th>
                             <th class="th-sm">ASP</th>
-                            <!-- <th class="th-sm">Date</th> -->
+                            <th class="th-sm">案件名</th>
                             <th class="th-sm">Imp</th>
                             <th class="th-sm">CTR <div>[ % ]</div></th>
                             <th class="th-sm">Click</th>
@@ -264,6 +194,7 @@
                     <tr>
                         <td><?php echo $i; ?></td>
                         <td>{{ $product->name }}</td>
+                        <td>{{ $product->product }}</td>
                         <td>{{ number_format($product->imp) }}</td>
                         <td>{{ $product->ctr }}</td>
                         <td>{{ number_format($product->click) }}</td>

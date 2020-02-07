@@ -97,24 +97,7 @@ class DailyDataService
                 $this->daily_repo->updateData( $start , $end , $selected_asp , $id , $all_post_data, $products);
 
                 return false;
-                // foreach ($daily as $p) {
-                //     $update_daily = DailyData::find($p->id) ;
-                //     $request_key = hash('md5', $p->id);
 
-                //     $update_daily->imp = $request->imp[$request_key];
-                //     $update_daily->ctr = $request->ctr[$request_key];
-                //     $update_daily->click = $request->click[$request_key];
-                //     $update_daily->cvr = $request->cvr[$request_key];
-                //     $update_daily->cv = $request->cv[$request_key];
-                //     $update_daily->active = $request->active[$request_key];
-                //     $update_daily->partnership = $request->partner[$request_key];
-                //     $update_daily->cost = $request->cost[$request_key];
-                //     $update_daily->price = $request->price[$request_key];
-                //     if ($request->delete[$request_key] == 'on') {
-                //         $update_daily->killed_flag = 1;
-                //     }
-                //     $update_daily->save();
-                // }
             }
             public function showCsv($selected_asp , $id, $start, $end ): array
             {

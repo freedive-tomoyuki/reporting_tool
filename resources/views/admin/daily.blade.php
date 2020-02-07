@@ -37,7 +37,7 @@
                       </div>
                    </div>
                    <div class="form-group col-md-8 ">
-                    <label class="center-block">Date</label>
+                    <label class="center-block">日時</label>
                        <input type="date" name="searchdate_start" class="datepicker form-control date-style" id="datepicker_start" max='{{ date("Y-m-d",strtotime('-1 day')) }}' value=@if( old('searchdate_start')) 
                          {{ old('searchdate_start') }}
                          @else
@@ -52,7 +52,7 @@
                    </div>
                 </div>
                 <div class="form-group col-md-12">
-                    <label class="control-label col-md-12">Product</label>
+                    <label class="control-label col-md-12">広告主</label>
                     <div class="col-md-12">
                        <select class="form-control" name="product" >
                           <option value=""> -- </option>
@@ -204,6 +204,7 @@
                         <tr>
                             <th class="th-sm">No</th>
                             <th class="th-sm">ASP</th>
+                            <th class="th-sm">案件名</th>
                             <th class="th-sm">Date</th>
                             <th class="th-sm">Imp</th>
                             <th class="th-sm">CTR</th>
@@ -225,6 +226,7 @@
                     <tr>
                         <td><?php echo $i; ?></td>
                         <td>{{ $d->name }}</td>
+                        <td>{{ $d->product }}</td>
                         <td>{{ $d->date }}</td>
                         <td>{{ number_format($d->imp) }}</td>
                         <td>{{ number_format($d->ctr) }}</td>
