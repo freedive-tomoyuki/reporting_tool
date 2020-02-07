@@ -34,7 +34,7 @@
                       </div>
                   </div>
                   <div class="form-group col-md-6">
-                    <label class="control-label">Month</label>
+                    <label class="control-label">対象月</label>
                       <input id="month" type="month" name="month" class="form-control" value=@if( old('month')) 
                       {{ old('month') }}
                     @else
@@ -42,7 +42,7 @@
                     @endif>
                   </div>
                   <div class="form-group col-md-12">
-                    <label class="control-label">Product</label>
+                    <label class="control-label">広告主</label>
                     <select class="form-control" name="product" >
                                 <option value=""> -- </option>
                                 @foreach($product_bases as $product_base)
@@ -103,7 +103,7 @@
                       </div>
                   </div>
                   <div class="form-group col-md-6">
-                    <label class="control-label">Month</label>
+                    <label class="control-label">対象月</label>
                               <p class="form-control-static">
                                 @if(old('month'))
                                 {{ old('month') }}
@@ -116,7 +116,7 @@
                               </p>
                   </div>
                   <div class="form-group col-md-12">
-                    <label class="control-label">Product</label>
+                    <label class="control-label">広告主</label>
                               <p class="form-control-static">
                                 @foreach($product_bases as $product_base)
                                 
@@ -177,6 +177,7 @@
                       <tr>
                           <th class="th-sm">No</th>
                           <th class="th-sm">ASP</th>
+                          <th class="th-sm">案件名</th>
                           
                           <th class="th-sm" style="max-width: 50px;" >Media ID</th>
                           <th class="th-sm">サイト名</th>
@@ -207,6 +208,7 @@
                     <tr>
                         <td><?php echo $i; ?></td>
                         <td>{{ $product->name }}</td>
+                        <td>{{ $product->product }}</td>
                         <td>{{ $product->media_id }}</td>
                         <td>{{ $product->site_name }}</td>
                         <td>{{ number_format($product->imp) }}</td>
