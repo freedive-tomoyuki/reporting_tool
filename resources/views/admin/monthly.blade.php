@@ -218,7 +218,6 @@
                         <td></td>
                         <td>合計</td>
                         <td> -- </td>
-                        <td> -- </td>
                         <td>{{ number_format($products_totals[0]['total_imp']) }}</td>
                         <?php 
                           $CtrTotal = (($products_totals[0]['total_imp'] != 0 )&&($products_totals[0]['total_click'] != 0 ))? 

@@ -248,6 +248,7 @@
                         <td></td>
                         <td>合計</td>
                         <td> -- </td>
+                        <td> -- </td>
                         <td>{{ number_format($t->total_imp) }}</td>
                         <td>{!! calc_percent($t->total_click , $t->total_imp) !!}</td>
                         <td>{{ number_format($t->total_click) }}</td>
