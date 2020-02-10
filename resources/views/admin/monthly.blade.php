@@ -172,9 +172,9 @@
                             <th class="th-sm">ASP</th>
                             <th class="th-sm">案件名</th>
                             <th class="th-sm">Imp</th>
-                            <th class="th-sm">CTR <div>[ % ]</div></th>
+                            <th class="th-sm">CTR <span>[ % ]</span></th>
                             <th class="th-sm">Click</th>
-                            <th class="th-sm">CVR <div>[ % ]</div></th>
+                            <th class="th-sm">CVR <span>[ % ]</span></th>
                             <th class="th-sm">CV</th>
                             <th class="th-sm">アクティブ数</th>
                             <th class="th-sm">提携数</th>
@@ -217,7 +217,8 @@
                     <tr>
                         <td></td>
                         <td>合計</td>
-                        
+                        <td> -- </td>
+                        <td> -- </td>
                         <td>{{ number_format($products_totals[0]['total_imp']) }}</td>
                         <?php 
                           $CtrTotal = (($products_totals[0]['total_imp'] != 0 )&&($products_totals[0]['total_click'] != 0 ))? 
@@ -264,11 +265,11 @@
                         <tr>
                             <th class="th-sm">No</th>
                             <th class="th-sm">ASP</th>
-                            <!-- <th class="th-sm">Date</th> -->
+                            <th class="th-sm">案件名</th>
                             <th class="th-sm">Imp</th>
-                            <th class="th-sm">CTR <div>[ % ]</div></th>
+                            <th class="th-sm">CTR <span>[ % ]</span></th>
                             <th class="th-sm">Click</th>
-                            <th class="th-sm">CVR <div>[ % ]</div></th>
+                            <th class="th-sm">CVR <span>[ % ]</span></th>
                             <th class="th-sm">CV</th>
                             <th class="th-sm">FDグロス</th>
                             <!-- <th class="th-sm">予想承認金額</th> -->
@@ -285,6 +286,7 @@
                       
                         <td><?php echo $i; ?></td>
                         <td>{{ $p->name }}</td>
+                        <td>{{ $p->product }}</td>
                         <td>{{ number_format($p->estimate_imp) }}</td>
                         <td>{{ number_format($p->estimate_ctr,2) }}</td>
                         <td>{{ number_format($p->estimate_click) }}</td>
@@ -307,6 +309,7 @@
                     <tr>
                         <td>着地想定</td>
                         <td>合計</td>
+                        <td> -- </td>
                         <td>{{ number_format($products_estimate_totals[0]['total_estimate_imp']) }}</td>
                         <?php 
                           $t_imp = $products_estimate_totals[0]['total_estimate_imp'];
