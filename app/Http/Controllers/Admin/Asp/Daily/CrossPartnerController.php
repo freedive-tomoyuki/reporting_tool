@@ -185,6 +185,8 @@ class CrossPartnerController extends DailyCrawlerController
                         
                         $crosspartner_site = array();
                         
+                        if(trim( preg_replace( '/[\n\r\t ]+/', ' ', str_replace( "\xc2\xa0", " ", $crawler_for_site->filter( 'table.highlight > tbody > tr:nth-child('.$iPlus.') > td:nth-child(1)' )->count()) ) ) <= 0 ) throw new \Exception('サイト情報を取得できませんでした。');;
+
                         while ( trim( preg_replace( '/[\n\r\t ]+/', ' ', str_replace( "\xc2\xa0", " ", $crawler_for_site->filter( 'table.highlight > tbody > tr:nth-child('.$iPlus.') > td:nth-child(1)' )->count() ) ) ) ) {
                             
                                         $crosspartner_site[$count]['product'] = $product_info->id;
