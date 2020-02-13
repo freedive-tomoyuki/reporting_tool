@@ -83,13 +83,8 @@ class AfbController extends DailyCrawlerController
                             ->type( $product_info->asp->login_key, $product_info->login_value )
                             ->type( $product_info->asp->password_key, $product_info->password_value )
                             ->click( $product_info->asp->login_selector )
-                            //->type( '#pageTitle > aside.m-grid__itemOrder--03.m-gheader__loginForm > g-header-loginform > div.m-form__wrap > form > div > div:nth-child(1) > input', 'broadwimax' )
-                            //->type( '#pageTitle > aside.m-grid__itemOrder--03.m-gheader__loginForm > g-header-loginform > div.m-form__wrap > form > div > div:nth-child(2) > input', '0hS6gmTN5RHGYn1MSHhf')
-                            //->click( '#pageTitle > aside.m-grid__itemOrder--03.m-gheader__loginForm > g-header-loginform > div.m-form__wrap > form > div > div.m-gLoginGlid__btn > m-btn > div > input' )
-                            
                             ->visit( 'https://client.afi-b.com/client/b/cl/report/?r=daily' )
                             ->click('#adv_id_daily_chzn > a')
-                            // ->click($product_info->product_order)
                             ->click('#adv_id_daily_chzn_o_'.$product_info->product_order)
                             ->type('#report_form_2 > div > table > tbody > tr > td > ul > li > #form_start_date', $s_date ) 
                             ->type('#report_form_2 > div > table > tbody > tr > td > ul > li > #form_end_date', $e_date )
@@ -97,36 +92,19 @@ class AfbController extends DailyCrawlerController
                             ->click('#report_form_2 > div > table > tbody > tr:nth-child(5) > td > p > label:nth-child(2)')
                             ->click('#report_form_2 > div > table > tbody > tr:nth-child(5) > td > p > label:nth-child(3)')
                             ->click('#report_form_2 > div > div.btn_area.mt20 > ul.btn_list_01 > li > input')->crawler();
-                            //var_dump();
-                            //->screenshot(date('Ymd_His_') . '_' . str_pad(++ $index, 3, 0, STR_PAD_LEFT));
-                            //header('Content-type: text/html; charset=utf-8');
-                            //echo '<pre>';
-                            //var_dump($crawler);
-                            //$crawler->dump();
-                            //echo $crawler->html();
-                            //var_dump($crawler->dump());//->crawler()->html();
-                            //echo '</pre>';
-
-                            //var_dump($crawler1->crawler()->html());
-                            //echo $crawler->html();
+                        
 
                         $crawler2 = $browser->visit( 'https://client.afi-b.com/client/b/cl/main' )->crawler();
                         
                         $crawler3 = 
                             $browser
                             ->visit( 'https://client.afi-b.com/client/b/cl/report/?r=site#report_view' )
-                            //->click( '#site_tab_bth' )
-                            //->type( '#report_form_4 > div > table > tbody > tr:nth-child(4) > td > ul > li:nth-child(1) > #form_start_date', $s_date ) 
-                            //->type( '#report_form_4 > div > table > tbody > tr:nth-child(4) > td > ul > li:nth-child(3) > #form_end_date', $e_date )
                             ->click( '#report_form_4 > div > table > tbody > tr:nth-child(6) > td > p > label:nth-child(1)' )
                             ->click( '#report_form_4 > div > table > tbody > tr:nth-child(6) > td > p > label:nth-child(2)' )
                             ->click( '#report_form_4 > div > table > tbody > tr:nth-child(6) > td > p > label:nth-child(3)' )
-                            //->click( '#report_form_4 > div > div.btn_area.mt20 > ul.btn_list_01 > li > input' )
                             ->click('#report_form_4 > div > div.btn_area.mt20 > ul.btn_list_01 > li > input')
-                            //->press('input[name=]')
                             ->crawler();
-                            //echo $crawler3->html();
-
+                            
 
                         $selector_crawler  = array(
                             'imp' => '#reportTable > tfoot > tr > td:nth-child(3) > p',
@@ -200,6 +178,7 @@ class AfbController extends DailyCrawlerController
 
                         $afb_site    = array( );
                         //echo $count_data;
+                        if($count_data <= 0){ throw new \Exception('アクティブパートナーが存在しませんでした。'); }
                         
                         for ( $i = 1; $count_data >= $i; $i++ ) {
                             $afb_site[ $i ][ 'product' ] = $product_info->id;

@@ -213,10 +213,13 @@ class FelmatController extends DailyCrawlerController
                         
                         //echo "アクティブ数:".$felmat_data3[0]['active'];
                         //echo "パートナー数:".$felmat_data2[0]['partnership'];
-                        $page            = ceil($felmat_data2[0]['active'] / 20);
-                        $count_last_page = $felmat_data2[0]['active'] % 20;
+                        $count_actice = $felmat_data2[0]['active'];
+                        if($count_actice <= 0){ throw new \Exception('アクティブパートナーが存在しませんでした。'); }
+
+                        $page            = ceil($count_actice / 20);
+                        $count_last_page = $count_actice % 20;
                         $count           = 0;
-                        
+
                         for ($i = 1; $page >= $i; $i++) {
                             //echo "ページ数page:" . $page;
                             //echo "ページ数i:" . $i;

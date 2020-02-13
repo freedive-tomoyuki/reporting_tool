@@ -138,6 +138,8 @@ class ValuecommerceController extends DailyCrawlerController
                         }else{
                             throw new \Exception($value.'要素が存在しません。');
                         }
+                        if($active[ 1 ] <= 0){ throw new \Exception('アクティブパートナーが存在しませんでした。'); }
+                        
                         $count_page     = ( $active[ 1 ] > 40 ) ? ceil( $active[ 1 ] / 40 ) : 1;
                         
                         //アクティブ数　格納
@@ -145,6 +147,7 @@ class ValuecommerceController extends DailyCrawlerController
                         
                         //echo "active件数→".$active[1]."←active件数";
                         
+
                         for ( $page = 0; $page < $count_page; $page++ ) {
                             
                             $target_page = $page + 1;
@@ -156,6 +159,7 @@ class ValuecommerceController extends DailyCrawlerController
                             
                             //echo $target_page."ページ目のcrawler_count＞＞".$crawler_count."</br>" ;
                             
+
                             for ( $i = 1; $i <= $crawler_count; $i++ ) {
                                 
                                 $count = ( $page * 40 ) + $i;
