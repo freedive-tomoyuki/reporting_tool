@@ -188,6 +188,7 @@ class RentracksController extends DailyCrawlerController
                         $crawler_for_site = $browser->visit( "https://manage.rentracks.jp/sponsor/detail_partner" )->select( '#idDropdownlist1', $product_info->asp_product_id )->select( '#idGogoYear', $s_Y )->select( '#idGogoMonth', $s_M )->select( '#idGogoDay', $s_D )->select( '#idDoneYear', $e_Y )->select( '#idDoneMonth', $e_M )->select( '#idDoneDay', $e_D )->select( '#idPageSize', '300' )->click( '#idButton1' )->crawler();
                         
                         //var_dump( $crawler_for_site->html() );
+                        
                         //アクティブ件数を取得
                         if(count($crawler_for_site->filter( '#main > div.hitbox > em' ))){
                             $active_partner = trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( '#main > div.hitbox > em' )->text() ) );
@@ -195,6 +196,7 @@ class RentracksController extends DailyCrawlerController
                             throw new \Exception('#main > div.hitbox > em要素が存在しません。');
                         }
                         //echo $active_partner;
+                        if($active_partner <= 0){ $rentracks_site= array();throw new \Exception('提携パートナーが存在しませんでした。'); }
                         
                         for ( $i = 1; $active_partner >= $i; $i++ ) {
                             $rentracks_site[ $i ][ 'product' ] = $product_info->id;

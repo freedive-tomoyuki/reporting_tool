@@ -179,10 +179,13 @@ class A8Controller extends DailyCrawlerController
                         }else{
                             throw new \Exception($count_selector.'要素が存在しません。');
                         }
-
+                        
+                        if($count_data <= 0){ throw new \Exception('アクティブパートナーが存在しませんでした。'); }
                         //echo 'count_data＞'.$count_data;
                         $page_count = ceil( $count_data / 500 );
                         //echo 'page_count' . $page_count;
+
+                       
 
                         //ページ数毎にfor文を回す
                         for ( $page = 0; $page < $page_count; $page++ ) {

@@ -144,6 +144,8 @@ class AccesstradeController extends DailyCrawlerController
                         
                         $x = 0;
                         
+                        if(empty($array_sites)){ throw new \Exception('アクティブパートナーが存在しませんでした。'); }
+
                         foreach ( $array_sites as $site ) {
 
                             $accesstrade_site[ $x ][ 'product' ]   = $product_info->id;
