@@ -100,11 +100,7 @@ class MonthlySiteController extends Controller
         $products = $this->monthlySiteDataService->showSiteList( $asp_id , $id , $month , $selected_site_name);
         
         $site_ranking = $this->monthlySiteDataService->monthlyRankingSite( $asp_id , $id , $month );
-        echo $id ;
-        echo $month ;
-        echo $asp_id;
 
-        var_dump($site_ranking);
 
         return view('admin.monthly_site',compact('products','product_bases','asps','site_ranking','user'));
 
