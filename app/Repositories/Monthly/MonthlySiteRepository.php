@@ -152,7 +152,7 @@ class MonthlySiteRepository implements MonthlySiteRepositoryInterface
         // 案件ｘ対象期間からCVがTOP10のサイトを抽出
         $month = date('Ym',strtotime($selected_date));
         $monthly_sites_table = $month.'_monthlysites';
-
+        echo $monthly_sites_table;
         $monthly_site = DB::table($monthly_sites_table)
             ->select(DB::raw("cv , media_id, site_name"))
             ->join('products',DB::raw($monthly_sites_table.'.product_id'),'=','products.id')
@@ -173,7 +173,9 @@ class MonthlySiteRepository implements MonthlySiteRepositoryInterface
                 $monthly_site->where('date' , $selected_date );
             }
             //echo $searchdate;
+            $monthly_site->groupBy("cv");
             $monthly_site->groupBy("media_id");
+            $monthly_site->groupBy("site_name");
             $monthly_site->orderByRaw('CAST(cv AS DECIMAL(10,2)) DESC');
 
             $monthly_site->limit(10);

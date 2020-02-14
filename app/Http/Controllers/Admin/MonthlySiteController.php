@@ -57,8 +57,8 @@ class MonthlySiteController extends Controller
         
         $products = $this->monthlySiteDataService->showSiteList($asp_id ,  3 , $month , $selected_site_name);
         
-        $site_ranking = $this->monthlySiteDataService->monthlyRankingSite( 3 , $month , $asp_id);
-
+        $site_ranking = $this->monthlySiteDataService->monthlyRankingSite( $asp_id , 3 , $month );
+        // var_dump($site_ranking);
         //VIEWを表示する。
         // if( $products->isEmpty() ){
         //     return view('admin.daily_error',compact('product_bases','asps','user'));
@@ -99,16 +99,14 @@ class MonthlySiteController extends Controller
         
         $products = $this->monthlySiteDataService->showSiteList( $asp_id , $id , $month , $selected_site_name);
         
-        $site_ranking = $this->monthlySiteDataService->monthlyRankingSite( $id , $month , $asp_id);
+        $site_ranking = $this->monthlySiteDataService->monthlyRankingSite( $asp_id , $id , $month );
+        echo $id ;
+        echo $month ;
+        echo $asp_id;
 
-        
-        //VIEWを表示する。
-        // if( $products->isEmpty() ){
-        //     return view('admin.daily_error',compact('product_bases','asps','user'));
-        // }else{
-            return view('admin.monthly_site',compact('products','product_bases','asps','site_ranking','user'));
-        // }
+        var_dump($site_ranking);
 
+        return view('admin.monthly_site',compact('products','product_bases','asps','site_ranking','user'));
 
     }
     /**
@@ -145,16 +143,7 @@ class MonthlySiteController extends Controller
         // var_dump($products);
         //月次データ一覧
         $monthly_sites = $this->monthlySiteDataService->showSiteList( $selected_asp , $id ,  $selected_month , $selected_site_name);
-        //var_dump($monthly_sites);
 
-        //$sites = Site::whereIn("product_id",$array_product_id);
-
-        // if($selected_asp){
-        //     $sites->where('asp_id', '=' , $selected_asp);
-        // }
-        // $sites = $sites->get();
-        //echo $products[0]->product_base_id ;
-        
         return view('admin.monthly.site_edit',compact('monthly_sites','user','asps' ,'products','selected_month','selected_asp'));
     }
 

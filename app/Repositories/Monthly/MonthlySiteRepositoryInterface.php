@@ -18,7 +18,7 @@ interface MonthlySiteRepositoryInterface
      * @var string $monthly 
      * @return json
      */
-    public function getRanking( $selected_asp, $id, $monthly);
+    public function getRanking( $selected_asp, $id, $selected_date);
     /**
      * サイト別月次データ登録
      *
