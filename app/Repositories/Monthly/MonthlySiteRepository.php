@@ -152,7 +152,6 @@ class MonthlySiteRepository implements MonthlySiteRepositoryInterface
         // 案件ｘ対象期間からCVがTOP10のサイトを抽出
         $month = date('Ym',strtotime($selected_date));
         $monthly_sites_table = $month.'_monthlysites';
-        echo $monthly_sites_table;
         $monthly_site = DB::table($monthly_sites_table)
             ->select(DB::raw("cv , media_id, site_name"))
             ->join('products',DB::raw($monthly_sites_table.'.product_id'),'=','products.id')
