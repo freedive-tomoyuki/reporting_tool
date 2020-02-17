@@ -72,7 +72,7 @@ class AccesstradeController extends DailyCrawlerController
                                 'cv' => 'body > program-page > div > div > main > program-home > section:nth-child(2) > div > div > div > summary-report > div > table > tbody > tr:nth-child(2) > td:nth-child(4)',
                                 'partnership' => $product_info->asp->daily_partnership_selector,
                                 'active' => $product_info->asp->daily_active_selector,
-                                //'price' => 'body > program-page > div > div > main > program-home > section:nth-child(2) > div > div > div > summary-report > div > table > tbody > tr:nth-child(2) > td:nth-child(9)' 
+                                'price' => 'body > program-page > div > div > main > program-home > section:nth-child(2) > div > div > div > summary-report > div > table > tbody > tr:nth-child(2) > td:nth-child(9)' 
                             );
                         } //date( 'Y/m/d' ) == date( 'Y/m/01' )
                         else {
@@ -82,7 +82,7 @@ class AccesstradeController extends DailyCrawlerController
                                 'cv' => $product_info->asp->daily_cv_selector,
                                 'partnership' => $product_info->asp->daily_partnership_selector,
                                 'active' => $product_info->asp->daily_active_selector,
-                                //'price' => $product_info->asp->daily_price_selector 
+                                'price' => $product_info->asp->daily_price_selector 
                             );
                         }
                         //var_dump( $crawler );
@@ -90,7 +90,7 @@ class AccesstradeController extends DailyCrawlerController
                         
                         $accesstrade_data = $crawler->each( function( Crawler $node ) use ($selector, $product_info)
                         {
-                            $unit_price = $product_info->price;
+                            // $unit_price = $product_info->price;
                             $data              = array( );
                             $data[ 'asp' ]     = $product_info->asp_id;
                             $data[ 'product' ] = $product_info->id;
@@ -120,7 +120,7 @@ class AccesstradeController extends DailyCrawlerController
                             } //$selector as $key => $value
                             //$data['cpa']= $this->cpa($data['cv'] ,$data['price'] , 2);
                             
-                            $data[ 'price' ] = $data['cv'] * $unit_price;
+                            // $data[ 'price' ] = $data['cv'] * $unit_price;
 
                             $calculated = json_decode( json_encode( json_decode( $this->dailySearchService->cpa( $data[ 'cv' ], $data[ 'price' ], 2 ) ) ), True );
                             
@@ -155,10 +155,10 @@ class AccesstradeController extends DailyCrawlerController
                             $accesstrade_site[ $x ][ 'imp' ]       = $site[ "impressionCount" ];
                             $accesstrade_site[ $x ][ 'click' ]     = $site[ "clickCount" ];
                             $accesstrade_site[ $x ][ 'cv' ]        = $site[ "actionCount" ];
-                            //$data[ $x ][ 'price' ]     = $site[ "occurredTotalReward" ];
+                            $accesstrade_site[ $x ][ 'price' ]     = $site[ "occurredTotalReward" ];
                             
-                            $unit_price = $product_info->price;
-                            $accesstrade_site[ $x ][ 'price' ] = $unit_price * $accesstrade_site[ $x ][ 'cv' ];
+                            // $unit_price = $product_info->price;
+                            // $accesstrade_site[ $x ][ 'price' ] = $unit_price * $accesstrade_site[ $x ][ 'cv' ];
 
                             //$data[$x]['cpa']= $this->cpa($site['occurredTotalReward'] ,$site["actionCount"] , 1)
                             $calculated              = json_decode( 

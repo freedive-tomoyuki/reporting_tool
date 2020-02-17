@@ -64,6 +64,7 @@ class RentracksController extends DailyCrawlerController
         {
             try{
                     $product_infos = \App\Product::all()->where( 'id', $product_id );
+                    
                     /*
                     日付　取得
                     */
@@ -198,6 +199,8 @@ class RentracksController extends DailyCrawlerController
                         //echo $active_partner;
                         if($active_partner <= 0){ $rentracks_site= array();throw new \Exception('提携パートナーが存在しませんでした。'); }
                         
+                        $total_price = 0; //発生金額　合計
+
                         for ( $i = 1; $active_partner >= $i; $i++ ) {
                             $rentracks_site[ $i ][ 'product' ] = $product_info->id;
                             $rentracks_site[ $i ][ 'asp' ]     = $product_info->asp_id;
@@ -210,7 +213,7 @@ class RentracksController extends DailyCrawlerController
                                 'imp' => '#main > table > tbody > tr:nth-child(' . $iPlus . ') > td.c05',
                                 'click' => '#main > table > tbody > tr:nth-child(' . $iPlus . ') > td.c06',
                                 'cv' => '#main > table > tbody > tr:nth-child(' . $iPlus . ') > td.c10',
-                                //'price' => '#main > table > tbody > tr:nth-child(' . $iPlus . ') > td.c15' 
+                                'price' => '#main > table > tbody > tr:nth-child(' . $iPlus . ') > td.c15' 
                             );
                             
                             foreach ( $selector_for_site as $key => $value ) {
@@ -220,6 +223,12 @@ class RentracksController extends DailyCrawlerController
                                         
                                         $rentracks_site[ $i ][ $key ] = trim( $crawler_for_site->filter( $value )->text() );
                                         
+                                    }elseif ( $key == 'price' ) {
+                                        $crawled_price = trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) );
+
+                                        $rentracks_site[ $i ][ $key ] = $crawled_price;
+                                        $total_price += (is_numeric($crawled_price))? $crawled_price : 0 ;
+
                                     } //$key == 'site_name'
                                     else {
                                         
@@ -230,8 +239,8 @@ class RentracksController extends DailyCrawlerController
                                 }
                                 
                             }
-                            $unit_price = $product_info->price;
-                            $rentracks_site[ $i ][ 'price' ] = $unit_price * $rentracks_site[ $i ][ 'cv' ];
+                            // $unit_price = $product_info->price;
+                            // $rentracks_site[ $i ][ 'price' ] = $unit_price * $rentracks_site[ $i ][ 'cv' ];
 
                             $calculated                = json_decode( 
                                                         json_encode( 
@@ -246,8 +255,9 @@ class RentracksController extends DailyCrawlerController
                         }
                         
                         //$rentracks_data[ 0 ][ 'price' ] = trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( '#main > table > tbody > tr.total > td:nth-child(15)' )->text() ) );
-                        $unit_price = $product_info->price;
-                        $rentracks_data[ 0 ][ 'price' ] = $rentracks_data[ 0 ][ 'cv' ] * $unit_price;
+                        // $unit_price = $product_info->price;
+                        // $rentracks_data[ 0 ][ 'price' ] = $rentracks_data[ 0 ][ 'cv' ] * $unit_price;
+                        $rentracks_data[ 0 ][ 'price' ] = $total_price;
 
                         $rentracks_data[ 0 ][ 'partnership' ] = $rentracks_data2[ 0 ][ 'partnership' ];
                         $rentracks_data[ 0 ][ 'active' ]      = $rentracks_data3[ 0 ][ 'active' ];

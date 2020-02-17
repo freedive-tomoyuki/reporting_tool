@@ -110,7 +110,7 @@ class AfbController extends DailyCrawlerController
                             'imp' => '#reportTable > tfoot > tr > td:nth-child(3) > p',
                             'click' => '#reportTable > tfoot > tr > td:nth-child(4) > p',
                             'cv' => '#reportTable > tfoot > tr > td:nth-child(7) > p',
-                            //'price' => '#reportTable > tfoot > tr > td:nth-child(10) > p' 
+                            'price' => '#reportTable > tfoot > tr > td:nth-child(10) > p' 
                         );
                         $selector_crawler2 = array(
                              'partnership' => '#main > div.wrap > div.section33 > div.section_inner.positionr.positionr > table > tbody > tr:nth-child(13) > td:nth-child(2)' 
@@ -138,8 +138,8 @@ class AfbController extends DailyCrawlerController
                                 
                             } //$selector_crawler as $key => $value
 
-                            $unit_price = $product_info->price;
-                            $data[ 'price' ] = $data[ 'cv' ] * $unit_price;
+                            // $unit_price = $product_info->price;
+                            // $data[ 'price' ] = $data[ 'cv' ] * $unit_price;
 
                             $calculated        = json_decode( json_encode( json_decode( $this->dailySearchService->cpa( $data[ 'cv' ], $data[ 'price' ], 4 ) ) ), True );
                             $data[ 'cpa' ]  = $calculated[ 'cpa' ]; //CPA
@@ -192,7 +192,7 @@ class AfbController extends DailyCrawlerController
                                 'cv' => '#reportTable > tbody > tr:nth-child(' . $i . ') > td:nth-child(9) > p',
                                 'ctr' => '#reportTable > tbody > tr:nth-child(' . $i . ') > td:nth-child(7) > p',
                                 'cvr' => '#reportTable > tbody > tr:nth-child(' . $i . ') > td:nth-child(10) > p',
-                            //    'price' => '#reportTable > tbody > tr:nth-child(' . $i . ') > td:nth-child(12) > p' 
+                                'price' => '#reportTable > tbody > tr:nth-child(' . $i . ') > td:nth-child(12) > p' 
                             );
                             
                             foreach ( $selector_for_site as $key => $value ) {
@@ -221,8 +221,8 @@ class AfbController extends DailyCrawlerController
                                 }
                             }
                             
-                            $unit_price = $product_info->price;
-                            $afb_site[ $i ][ 'price' ] = $unit_price * $afb_site[ $i ][ 'cv' ];
+                            // $unit_price = $product_info->price;
+                            // $afb_site[ $i ][ 'price' ] = $unit_price * $afb_site[ $i ][ 'cv' ];
 
                             $calculated                 = json_decode( json_encode( json_decode( $this->dailySearchService->cpa( $afb_site[ $i ][ 'cv' ], $afb_site[ $i ][ 'price' ], 4 ) ) ), True );
                             $afb_site[ $i ][ 'cpa' ]  = $calculated[ 'cpa' ]; //CPA

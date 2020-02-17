@@ -110,7 +110,7 @@ class AffiTownController extends DailyCrawlerController
                         $selector1 = array(
                             'click' => '#all_display > table > tbody > tr.visible.striped > td:nth-child(5)',
                             'cv' => '#all_display > table > tbody > tr.visible.striped > td:nth-child(6)',
-                            //'price' => '#all_display > table > tbody > tr.visible.striped > td:nth-child(7)' 
+                            'price' => '#all_display > table > tbody > tr.visible.striped > td:nth-child(7)' 
                         );
                         
                         /*
@@ -198,7 +198,7 @@ class AffiTownController extends DailyCrawlerController
                                 'site_name' => '#all_display > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(2) > a',
                                 'click'     => '#all_display > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(4)',
                                 'cv'        => '#all_display > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(5)',
-                                //'price' => '#all_display > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(6) > p' 
+                                'price' => '#all_display > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(6) > p' 
                             );
                             
                             foreach ( $selector_for_site as $key => $value ) {
@@ -213,8 +213,8 @@ class AffiTownController extends DailyCrawlerController
                                     throw new \Exception($value.'要素が存在しません。');
                                 }
                             }
-                            $unit_price = $product_info->price;
-                            $affitown_site[ $i ][ 'price' ] = $unit_price * $affitown_site[ $i ][ 'cv' ];
+                            // $unit_price = $product_info->price;
+                            // $affitown_site[ $i ][ 'price' ] = $unit_price * $affitown_site[ $i ][ 'cv' ];
 
                             $calculated                       = json_decode( 
                                                                     json_encode( 
@@ -231,8 +231,8 @@ class AffiTownController extends DailyCrawlerController
                             
                         } 
                         //var_dump($affitown_site);
-                        $unit_price = $product_info->price;
-                        $affitown_data[ 0 ][ 'price' ] = $affitown_data[ 0 ][ 'cv' ] * $unit_price;
+                        // $unit_price = $product_info->price;
+                        // $affitown_data[ 0 ][ 'price' ] = $affitown_data[ 0 ][ 'cv' ] * $unit_price;
 
                         $affitown_data[ 0 ][ 'partnership' ] = $site_count;
                         $affitown_data[ 0 ][ 'active' ] = $i; //一覧をクロールした行数をサイト数としてカウント
