@@ -101,7 +101,7 @@ class A8Controller extends DailyCrawlerController
                         $selector_2 = array(
                             'imp' => '#ReportList > tbody > tr:nth-child(1) > td:nth-child(2)',
                             'click' => '#ReportList > tbody > tr:nth-child(1) > td:nth-child(3)',
-                            //'price' => '#ReportList > tbody > tr:nth-child(1) > td:nth-child(12)',
+                            'price' => '#ReportList > tbody > tr:nth-child(1) > td:nth-child(12)',
                             'cv' => $product_info->asp->daily_cv_selector 
                         );
                         
@@ -138,14 +138,14 @@ class A8Controller extends DailyCrawlerController
 
                         //var_dump( $a8_data_2 );
 
-                        $unit_price = $product_info->price;
+                        // $unit_price = $product_info->price;
                         
                         //数値変換
                         $a8_data_1[ 0 ][ 'cv' ]    = trim( preg_replace( '/[^0-9]/', '', $a8_data_2[ 0 ][ "cv" ] ) );
                         $a8_data_1[ 0 ][ 'click' ] = trim( preg_replace( '/[^0-9]/', '', $a8_data_2[ 0 ][ "click" ] ) );
                         $a8_data_1[ 0 ][ 'imp' ]   = trim( preg_replace( '/[^0-9]/', '', $a8_data_2[ 0 ][ "imp" ] ) );
-                        $a8_data_1[ 0 ][ 'price' ] = $a8_data_1[ 0 ][ 'cv' ] * $unit_price;
-                        // $a8_data_1[ 0 ][ 'price' ] = trim( preg_replace( '/[^0-9]/', '', $a8_data_2[ 0 ][ "price" ] ) );
+                        // $a8_data_1[ 0 ][ 'price' ] = $a8_data_1[ 0 ][ 'cv' ] * $unit_price;
+                        $a8_data_1[ 0 ][ 'price' ] = trim( preg_replace( '/[^0-9]/', '', $a8_data_2[ 0 ][ "price" ] ) );
 
                         // echo "合計<br>";
                         // echo $a8_data_1[ 0 ][ 'cv' ]."<br>";
@@ -210,24 +210,32 @@ class A8Controller extends DailyCrawlerController
                                 $count = $i + ( 500 * $page );
                                 
                                 $selector_for_site = array(
-                                    'media_id' => '#ReportList > tbody > tr:nth-child(' . $i . ') > td:nth-child(2) > a',
+                                    'media_id'  => '#ReportList > tbody > tr:nth-child(' . $i . ') > td:nth-child(2) > a',
                                     'site_name' => '#ReportList > tbody > tr:nth-child(' . $i . ') > td:nth-child(4)',
-                                    'imp' => '#ReportList > tbody > tr:nth-child(' . $i . ') > td:nth-child(5)',
-                                    'click' => '#ReportList > tbody > tr:nth-child(' . $i . ') > td:nth-child(6)',
-                                    'cv' => '#ReportList > tbody > tr:nth-child(' . $i . ') > td:nth-child(10)',
-                                    //'price' => '#ReportList > tbody > tr:nth-child(' . $i . ') > td:nth-child(13)' 
+                                    'imp'       => '#ReportList > tbody > tr:nth-child(' . $i . ') > td:nth-child(5)',
+                                    'click'     => '#ReportList > tbody > tr:nth-child(' . $i . ') > td:nth-child(6)',
+                                    'cv'        => '#ReportList > tbody > tr:nth-child(' . $i . ') > td:nth-child(10)',
+                                    'price'     => '#ReportList > tbody > tr:nth-child(' . $i . ') > td:nth-child(13)' 
                                 );
                                 
                                 foreach ( $selector_for_site as $key => $value ) {
+                                    
                                     if(count($crawler_for_site->filter( $value ))){
-                                        $a8_site[ $count ][ $key ] = trim( $crawler_for_site->filter( $value )->text() );
+                                        if ( $key == 'media_id' || $key == 'site_name'){
+                                                
+                                            $a8_site[ $count ][ $key ] = trim( $crawler_for_site->filter( $value )->text() );
+                                            
+                                        }else{
+                                            $a8_site[ $count ][ $key ] = trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) );
+                                        }
+                                    
                                     }else{
                                         throw new \Exception($value.'要素が存在しません。');
                                     }
                                 } //$selector_for_site as $key => $value
                                 
-                                $unit_price = $product_info->price;
-                                $a8_site[ $count ][ 'price' ] = $unit_price * $a8_site[ $count ][ 'cv' ];
+                                // $unit_price = $product_info->price;
+                                // $a8_site[ $count ][ 'price' ] = $unit_price * $a8_site[ $count ][ 'cv' ];
                                 
                                 $calculated = json_decode( 
                                     json_encode( 
@@ -237,13 +245,13 @@ class A8Controller extends DailyCrawlerController
                                             ) 
                                         ), True );
                                         
-                                        //$a8_site[$count]['product'] = $product_info->id;
-                                        $a8_site[ $count ][ 'asp' ]   = $product_info->asp_id;
-                                        $a8_site[ $count ][ 'product' ] = $product_info->id;
-                                        $a8_site[ $count ][ 'date' ]    = date( 'Y-m-d', strtotime( '-1 day' ) );
+                                //$a8_site[$count]['product'] = $product_info->id;
+                                $a8_site[ $count ][ 'asp' ]   = $product_info->asp_id;
+                                $a8_site[ $count ][ 'product' ] = $product_info->id;
+                                $a8_site[ $count ][ 'date' ]    = date( 'Y-m-d', strtotime( '-1 day' ) );
                                         
-                                        $a8_site[ $count ][ 'cpa' ]  = $calculated[ 'cpa' ]; //CPA
-                                        $a8_site[ $count ][ 'cost' ] = $calculated[ 'cost' ]; //獲得単価
+                                $a8_site[ $count ][ 'cpa' ]  = $calculated[ 'cpa' ]; //CPA
+                                $a8_site[ $count ][ 'cost' ] = $calculated[ 'cost' ]; //獲得単価
                                 
                             }
                         }

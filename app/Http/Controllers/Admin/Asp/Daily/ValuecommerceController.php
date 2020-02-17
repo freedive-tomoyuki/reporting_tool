@@ -78,7 +78,7 @@ class ValuecommerceController extends DailyCrawlerController
                                 'click'     => '#report > tbody > tr:nth-child(4) > td:nth-child(8)',
                                 'cv'        => '#report > tbody > tr:nth-child(4) > td:nth-child(11)',
                                 'partnership' => '#report > tbody > tr:nth-child(4) > td:nth-child(2)',
-                            //    'price'     => '#report > tbody > tr:nth-child(4) > td:nth-child(14)', 
+                                'price'     => '#report > tbody > tr:nth-child(4) > td:nth-child(14)', 
                             );
                         }else{
                             $selector_crawler = array(
@@ -86,7 +86,7 @@ class ValuecommerceController extends DailyCrawlerController
                                 'click'     => $product_info->asp->daily_click_selector,
                                 'cv'        => $product_info->asp->daily_cv_selector,
                                 'partnership' => $product_info->asp->daily_partnership_selector,
-                            //    'price'     => $product_info->asp->daily_price_selector,
+                                'price'     => $product_info->asp->daily_price_selector,
                             );
                         }
                         
@@ -176,12 +176,12 @@ class ValuecommerceController extends DailyCrawlerController
                                         'imp'       => '#all > div.tablerline > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(7)',
                                         'click'     => '#all > div.tablerline > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(8)',
                                         'cv'        => '#all > div.tablerline > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(19)',
-                                        //'price' => '#all > div.tablerline > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(21)' 
+                                        'price' => '#all > div.tablerline > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(21)' 
                                     );
                                     
                                     foreach ( $selector_for_site as $key => $value ) {
                                         if(count($crawler_for_site->filter( $value ))){
-                                            if ( $key == 'site_name' ){
+                                            if ( $key == 'media_id' || $key == 'site_name' ){
                                                 
                                                 $valuecommerce_site[ $count ][ $key ] = trim( $crawler_for_site->filter( $value )->text() );
                                                 
@@ -195,8 +195,8 @@ class ValuecommerceController extends DailyCrawlerController
                                         }
                                     }
                                     
-                                    $unit_price = $product_info->price;
-                                    $valuecommerce_site[ $count ][ 'price' ] = $unit_price * $valuecommerce_site[ $count ][ 'cv' ];
+                                    // $unit_price = $product_info->price;
+                                    // $valuecommerce_site[ $count ][ 'price' ] = $unit_price * $valuecommerce_site[ $count ][ 'cv' ];
 
                                     //CPAとASPフィーの考慮した数値を算出
                                     $calculated = json_decode(

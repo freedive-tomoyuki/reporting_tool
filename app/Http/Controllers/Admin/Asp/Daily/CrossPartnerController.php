@@ -118,7 +118,7 @@ class CrossPartnerController extends DailyCrawlerController
                                         'imp' => 'table.highlight > tbody > tr:nth-child('.$d.') > td:nth-child(2)',
                                         'click' => 'table.highlight > tbody > tr:nth-child('.$d.') > td:nth-child(3)',
                                         'cv' => 'table.highlight > tbody > tr:nth-child('.$d.') > td:nth-child(5)',
-                                    //    'price' => 'table.highlight > tbody > tr:nth-child('.$d.') > td:nth-child(9)',
+                                        'price' => 'table.highlight > tbody > tr:nth-child('.$d.') > td:nth-child(9)',
                                     );
 
                                     foreach($selector_1 as $key => $value){
@@ -140,8 +140,8 @@ class CrossPartnerController extends DailyCrawlerController
                                                 $cv += trim(preg_replace('/[^0-9]/', '', $node->filter($value)->text()));
                                                 $data['cv'] = $cv;
                                             }else{
-                                                //$price += trim(preg_replace('/[^0-9]/', '', $node->filter($value)->text()));
-                                                //$data['price'] = $price;
+                                                $price += trim(preg_replace('/[^0-9]/', '', $node->filter($value)->text()));
+                                                $data['price'] = $price;
                                             }
                                             $y++ ;
                                         }else{
@@ -200,7 +200,7 @@ class CrossPartnerController extends DailyCrawlerController
                                             'imp'       =>'table.highlight > tbody > tr:nth-child('.$iPlus.') > td:nth-child(3)',
                                             'click'     =>'table.highlight > tbody > tr:nth-child('.$iPlus.') > td:nth-child(4)',
                                             'cv'        =>'table.highlight > tbody > tr:nth-child('.$iPlus.') > td:nth-child(6)',
-                                            //'price'     =>'table.highlight > tbody > tr:nth-child('.$iPlus.') > td:nth-child(10)',
+                                            'price'     =>'table.highlight > tbody > tr:nth-child('.$iPlus.') > td:nth-child(10)',
                                         );
 
                                         foreach($selector_for_site as $key => $value){
@@ -222,8 +222,8 @@ class CrossPartnerController extends DailyCrawlerController
                                                 throw new \Exception($value.'要素が存在しません。');
                                             }
                                         }
-                                        $unit_price = $product_info->price;
-                                        $crosspartner_site[ $count ][ 'price' ] = $unit_price * $crosspartner_site[ $count ][ 'cv' ];
+                                        // $unit_price = $product_info->price;
+                                        // $crosspartner_site[ $count ][ 'price' ] = $unit_price * $crosspartner_site[ $count ][ 'cv' ];
 
                                         $calculated = json_decode(
                                                     json_encode(
@@ -238,8 +238,8 @@ class CrossPartnerController extends DailyCrawlerController
                                         $iPlus++;
                                     //}
                         }
-                        $unit_price = $product_info->price;
-                        $crosspartner_data1[ 0 ][ 'price' ] = $crosspartner_data1[ 0 ][ 'cv' ] * $unit_price;
+                        // $unit_price = $product_info->price;
+                        // $crosspartner_data1[ 0 ][ 'price' ] = $crosspartner_data1[ 0 ][ 'cv' ] * $unit_price;
                                                 
                         $crosspartner_data1[0]['active'] = $iPlus ;
                         $crosspartner_data1[0]['partnership'] = $crosspartner_data2[0]['partnership'];

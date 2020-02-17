@@ -94,7 +94,7 @@ class TrafficGateController extends DailyCrawlerController
                             'imp' => '#container > form > table > tbody > tr > td.report-total:nth-child(2)',
                             'click' => '#container > form > table > tbody > tr > td.report-total:nth-child(3)',
                             'cv' => '#container > form > table > tbody > tr > td.report-total:nth-child(4)',
-                            //'price' => '#container > form > table > tbody > tr > td.report-total:nth-child(6)'
+                            'price' => '#container > form > table > tbody > tr > td.report-total:nth-child(6)'
                             
                         );
                         $selector2 = array(
@@ -160,7 +160,7 @@ class TrafficGateController extends DailyCrawlerController
                                     'imp' => '#container-big2 > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(8)',
                                     'click' => '#container-big2 > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(9)',
                                     'cv' => '#container-big2 > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(10)',
-                                    //'price' => '#container-big2 > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(11)' 
+                                    'price' => '#container-big2 > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(11)' 
                                 );
                                 
                                 foreach ( $selector_for_site as $key => $value ) {
@@ -180,8 +180,8 @@ class TrafficGateController extends DailyCrawlerController
                                     
                                 }
                                 
-                                $unit_price = $product_info->price;
-                                $trafficgate_site[ $active_count ][ 'price' ] = $unit_price * $trafficgate_site[ $active_count ][ 'cv' ];
+                                // $unit_price = $product_info->price;
+                                // $trafficgate_site[ $active_count ][ 'price' ] = $unit_price * $trafficgate_site[ $active_count ][ 'cv' ];
 
                                 $calculated                                     = json_decode( 
                                                                                 json_encode( 
@@ -200,8 +200,8 @@ class TrafficGateController extends DailyCrawlerController
                             $page++;
                         } //Page単位
                                                 
-                        $unit_price = $product_info->price;
-                        $trafficgate_data[ 0 ][ 'price' ] = $trafficgate_data[ 0 ][ 'cv' ] * $unit_price;
+                        // $unit_price = $product_info->price;
+                        // $trafficgate_data[ 0 ][ 'price' ] = $trafficgate_data[ 0 ][ 'cv' ] * $unit_price;
                         
                         $trafficgate_data[ 0 ][ 'partnership' ] = $trafficgate_data2[ 0 ][ "partnership" ];
                         $trafficgate_data[ 0 ][ 'active' ]      = $active_count;

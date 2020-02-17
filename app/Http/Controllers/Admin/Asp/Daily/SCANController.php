@@ -110,7 +110,7 @@ class SCANController extends DailyCrawlerController
                             'partnership' => '#report_clm > div > div.report_table > table > tbody > tr.tr_even > td:nth-child(4)',
                             'active' => '#report_clm > div > div.report_table > table > tbody > tr.tr_even > td:nth-child(5)',
                             
-                            //'price' => '#report_clm > div > div.report_table > table > tbody > tr.tr_even > td:nth-child(12)' 
+                            'price' => '#report_clm > div > div.report_table > table > tbody > tr.tr_even > td:nth-child(12)' 
                         );
                         
                         
@@ -172,7 +172,7 @@ class SCANController extends DailyCrawlerController
                                 'click' => '#report_clm > div > div.report_table > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(7)',
                                 'approval' => '#report_clm > div > div.report_table > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(12)',
                                 'cv' => '#report_clm > div > div.report_table > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(10)',
-                                //'price' => '#report_clm > div > div.report_table > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(13)' 
+                                'price' => '#report_clm > div > div.report_table > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(13)' 
                             );
                             
                             foreach ( $selector_for_site as $key => $value ) {
@@ -194,8 +194,8 @@ class SCANController extends DailyCrawlerController
                             
                             //$scan_site[ $y ][ 'price' ] = ($scan_site[ $y ][ 'price' ] != 0 && $scan_site[ $y ][ 'approval' ] != 0  )? round (( $scan_site[ $y ][ 'price' ] / $scan_site[ $y ][ 'approval' ] ) * $scan_site[ $y ][ 'cv' ]) : 0 ;
                             
-                            $unit_price = $product_info->price;
-                            $scan_site[ $y ][ 'price' ] = $unit_price * $scan_site[ $y ][ 'cv' ];
+                            // $unit_price = $product_info->price;
+                            // $scan_site[ $y ][ 'price' ] = $unit_price * $scan_site[ $y ][ 'cv' ];
 
                             $calculated                   = json_decode( 
                                                             json_encode( 
@@ -212,8 +212,8 @@ class SCANController extends DailyCrawlerController
                             $y++;
                         } 
                         
-                        $unit_price = $product_info->price;
-                        $scan_data[ 0 ][ 'price' ] = $scan_data[ 0 ][ 'cv' ] * $unit_price;
+                        // $unit_price = $product_info->price;
+                        // $scan_data[ 0 ][ 'price' ] = $scan_data[ 0 ][ 'cv' ] * $unit_price;
                         
                         $scan_data[ 0 ][ 'partnership' ] = $scan_data2[ 0 ][ 'partnership' ];
                         

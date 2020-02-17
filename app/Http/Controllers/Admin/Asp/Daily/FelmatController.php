@@ -130,7 +130,7 @@ class FelmatController extends DailyCrawlerController
                             'imp' => '#report > div > table > tfoot > tr > th:nth-child(2)', //$product_info->asp->daily_imp_selector,
                             'click' => '#report > div > table > tfoot > tr > th:nth-child(3)', //$product_info->asp->daily_click_selector,
                             'cv' => '#report > div > table > tfoot > tr > th:nth-child(5)', //$product_info->asp->daily_cv_selector,
-                            //'price' => '#report > div > table > tfoot > tr > th:nth-child(6)'
+                            'price' => '#report > div > table > tfoot > tr > th:nth-child(6)'
                             
                         );
                         $selector2 = array(
@@ -254,7 +254,7 @@ class FelmatController extends DailyCrawlerController
                                     'imp' => '#report > div > table > tbody > tr:nth-child(' . $x . ') > td:nth-child(2)',
                                     'click' => '#report > div > table > tbody > tr:nth-child(' . $x . ') > td:nth-child(3)',
                                     'cv' => '#report > div > table > tbody > tr:nth-child(' . $x . ') > td:nth-child(5)',
-                                    //'price' => '#report > div > table > tbody > tr:nth-child(' . $x . ') > td:nth-child(6)'
+                                    'price' => '#report > div > table > tbody > tr:nth-child(' . $x . ') > td:nth-child(6)'
                                 );
                                 
                                 foreach ($selector_for_site as $key => $value) {
@@ -273,8 +273,8 @@ class FelmatController extends DailyCrawlerController
                                     }
                                     
                                 }
-                                $unit_price = $product_info->price;
-                                $felmat_site[ $count ][ 'price' ] = $unit_price * $felmat_site[ $count ][ 'cv' ];
+                                // $unit_price = $product_info->price;
+                                // $felmat_site[ $count ][ 'price' ] = $unit_price * $felmat_site[ $count ][ 'cv' ];
 
                                 $calculated                     = json_decode(
                                                                     json_encode(
