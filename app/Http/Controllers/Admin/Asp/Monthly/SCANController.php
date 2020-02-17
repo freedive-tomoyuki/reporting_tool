@@ -94,7 +94,7 @@ class SCANController extends MonthlyCrawlerController
                             $data[ 'asp' ]     = $product_info->asp_id;
                             $data[ 'product' ] = $product_info->id;
                             
-                            $unit_price = $product_info->price;
+                            // $unit_price = $product_info->price;
 
                             $data[ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
 
@@ -102,7 +102,13 @@ class SCANController extends MonthlyCrawlerController
                                 $data[ 'approval' ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $selector_this['approval'] )->text() ) );
                             }else{ throw new \Exception($selector_this['approval'].'要素が存在しません。'); }
 
-                            $data[ 'approval_price' ] = $data[ 'approval' ] * $unit_price;
+                            if(count($node->filter( $selector_this['approval_price'] ))){
+                                $data[ 'approval_price' ] = $this->monthlySearchService->calc_approval_price( 
+                                                                    trim( preg_replace( '/[^0-9]/', '', $node->filter(  $selector_this['approval_price'] )->text() ) )
+                                                                ,9);
+                            }else{ throw new \Exception($selector_this['approval_price'].'要素が存在しません。'); }
+
+                            // $data[ 'approval_price' ] = $data[ 'approval' ] * $unit_price;
 
                             if ( date( 'Y/m/d' ) == date( 'Y/m/01' ) ) {
                                 $data[ 'last_date' ] = date( 'Y-m-t', strtotime( '-2 month' ) );
@@ -115,7 +121,13 @@ class SCANController extends MonthlyCrawlerController
                                 $data[ 'last_approval' ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $selector_before['approval'] )->text() ) );
                             }else{ throw new \Exception($selector_before['approval'].'要素が存在しません。'); }
 
-                            $data[ 'last_approval_price' ] = $data[ 'last_approval' ] * $unit_price;
+                            if(count($node->filter( $selector_before['approval_price'] ))){
+                                $data[ 'last_approval_price' ] = $this->monthlySearchService->calc_approval_price( 
+                                                                    trim( preg_replace( '/[^0-9]/', '', $node->filter(  $selector_before['approval_price'] )->text() ) )
+                                                                ,9);
+                            }else{ throw new \Exception($selector_before['approval_price'].'要素が存在しません。'); }
+
+                            // $data[ 'last_approval_price' ] = $data[ 'last_approval' ] * $unit_price;
 
                             return $data;
                         } );
@@ -193,14 +205,21 @@ class SCANController extends MonthlyCrawlerController
                                     'media_id' => '#report_clm > div > div.report_table > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(2)',
                                     'site_name' => '#report_clm > div > div.report_table > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(4)',
                                     'approval' => '#report_clm > div > div.report_table > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(12)',
-                                    //'approval_price' => '#report_clm > div > div.report_table > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(13)' 
+                                    'approval_price' => '#report_clm > div > div.report_table > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(13)' 
                                 );
                                 //  サイト一覧　１行ずつクロール
                                 foreach ( $selector_for_site as $key => $value ) {
                                     if(count($crawler_for_site->filter( $value ))){
                                         if ( $key == 'site_name' || $key == 'media_id' ) {
                                             $scan_site[ $count_site ][ $key ] = trim( $crawler_for_site->filter( $value )->text() );
-                                        } else {
+                                        }
+                                        elseif ( $key == 'approval_price' ) {
+                                            
+                                            $scan_site[ $count_site ][ $key ] = $this->monthlySearchService->calc_approval_price( 
+                                                                            trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) )
+                                                                        ,9);
+                                        }
+                                        else {
                                             $scan_site[ $count_site ][ $key ] = trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) );
                                         }
                                     }else{

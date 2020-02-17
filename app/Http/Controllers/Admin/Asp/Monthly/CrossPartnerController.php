@@ -80,11 +80,11 @@ class CrossPartnerController extends MonthlyCrawlerController
 
                         $selector_this   = array(
                                 'approval' => 'table.highlight > tbody > tr:nth-child(2) > td:nth-child(11)',
-                                //'approval_price' => 'table.highlight > tbody > tr:nth-child(2) > td:nth-child(12)'
+                                'approval_price' => 'table.highlight > tbody > tr:nth-child(2) > td:nth-child(12)'
                         );
                         $selector_before   = array(
                                 'approval' => 'table.highlight > tbody > tr:nth-child(1) > td:nth-child(11)',
-                                //'approval_price' => 'table.highlight > tbody > tr:nth-child(1) > td:nth-child(12)'
+                                'approval_price' => 'table.highlight > tbody > tr:nth-child(1) > td:nth-child(12)'
                         );
 
                         //今月・先月用のデータ取得selector
@@ -96,15 +96,21 @@ class CrossPartnerController extends MonthlyCrawlerController
                             $data[ 'asp' ]     = $product_info->asp_id;
                             $data[ 'product' ] = $product_info->id;
 
-                            $unit_price = $product_info->price;
+                            // $unit_price = $product_info->price;
                             
                             $data[ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
                             
                             if(count($node->filter( $selector_this['approval'] ))){
                                 $data[ 'approval' ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $selector_this['approval'] )->text() ) );
                             }else{ throw new \Exception( $selector_this['approval'].'要素が存在しません。'); }
+                            
+                            if(count($node->filter( $selector_this['approval_price'] ))){
+                                $data[ 'approval_price' ] = $this->monthlySearchService->calc_approval_price( 
+                                                                    trim( preg_replace( '/[^0-9]/', '', $node->filter(  $selector_this['approval_price'] )->text() ) )
+                                                                ,10);
+                            }else{ throw new \Exception($selector_this['approval_price'].'要素が存在しません。'); }
 
-                            $data[ 'approval_price' ] = $data[ 'approval' ] * $unit_price;
+                            // $data[ 'approval_price' ] = $data[ 'approval' ] * $unit_price;
 
                             if ( date( 'Y/m/d' ) == date( 'Y/m/01' ) ) {
                                 $data[ 'last_date' ] = date( 'Y-m-t', strtotime( '-2 month' ) );
@@ -116,7 +122,13 @@ class CrossPartnerController extends MonthlyCrawlerController
                                 $data[ 'last_approval' ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $selector_before['approval']  )->text() ) );
                             }else{ throw new \Exception( $selector_before['approval'].'要素が存在しません。'); }
 
-                            $data[ 'last_approval_price' ] = $data[ 'last_approval' ] * $unit_price;
+                            if(count($node->filter( $selector_before['approval_price'] ))){
+                                $data[ 'last_approval_price' ] = $this->monthlySearchService->calc_approval_price( 
+                                                                    trim( preg_replace( '/[^0-9]/', '', $node->filter(  $selector_before['approval_price'] )->text() ) )
+                                                                ,10);
+                            }else{ throw new \Exception($selector_before['approval_price'].'要素が存在しません。'); }
+
+                            // $data[ 'last_approval_price' ] = $data[ 'last_approval' ] * $unit_price;
 
                             return $data;
                         } );
@@ -133,17 +145,17 @@ class CrossPartnerController extends MonthlyCrawlerController
                                 if ( date( 'Y/m/d' ) == date( 'Y/m/01' ) ) { //1日のクロールの場合
                                     $searchMonth = date( 'Ym', strtotime( '-1 day' ) );
                                     $date   = date( 'Y-m-d', strtotime( '-1 day' ) );
-                                } //date( 'Y/m/d' ) == date( 'Y/m/01' )
+                                } 
                                 else {
                                     $searchMonth = date( 'Ym' );
                                     $date   = date( 'Y-m-d', strtotime( '-1 day' ) );
                                 }
-                            } //$x == 0
+                            } 
                             else { //先月
                                 if ( date( 'Y/m/d' ) == date( 'Y/m/01' ) ) { //1日のクロールの場合
                                     $searchMonth = date( 'Ym', strtotime( '-2 month' ) );
                                     $date   = date( 'Y-m-t', strtotime( '-2 month' ) );
-                                } //date( 'Y/m/d' ) == date( 'Y/m/01' )
+                                } 
                                 else {
                                     $searchMonth = date( 'Ym', strtotime( 'last day of previous month' ) );
                                     $date   = date( 'Y-m-t', strtotime( 'last day of previous month' ) );
@@ -164,7 +176,7 @@ class CrossPartnerController extends MonthlyCrawlerController
                                 $selector_for_site = array(
                                         'media_id'  =>'table.highlight > tbody > tr:nth-child('.$iPlus.')',
                                         'approval'       =>'table.highlight > tbody > tr:nth-child('.$iPlus.') > td:nth-child(8)',
-                                        //'approval_price'     =>'table.highlight > tbody > tr:nth-child('.$iPlus.') > td:nth-child(13)',
+                                        'approval_price'     =>'table.highlight > tbody > tr:nth-child('.$iPlus.') > td:nth-child(13)',
                                 );
 
                                 foreach($selector_for_site as $key => $value){
@@ -177,12 +189,19 @@ class CrossPartnerController extends MonthlyCrawlerController
                                             });
                                             preg_match( '/member_id:(\d+)/', $member_id_source[0], $member_id_array );
                                             $crosspartner_site[$count][$key] = $member_id_array[ 1 ];
-                                        }else{
+                                        }
+                                        elseif ( $key == 'approval_price' ) {
+                                            
+                                            $crosspartner_site[ $count ][ $key ] = $this->monthlySearchService->calc_approval_price( 
+                                                                            trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) )
+                                                                        ,10);
+                                        } 
+                                        else{
                                             $crosspartner_site[$count][$key] = trim(preg_replace('/[^0-9]/', '', $crawler_for_site->filter($value)->text()));
                                         }
                                     }else{ throw new \Exception( $value.'要素が存在しません。'); }
                                 }
-                                $crosspartner_site[ $count ][ 'approval_price' ] = $crosspartner_site[ $count ][ 'approval' ] * $product_info->price;
+                                // $crosspartner_site[ $count ][ 'approval_price' ] = $crosspartner_site[ $count ][ 'approval' ] * $product_info->price;
                                 $crosspartner_site[ $count ][ 'date' ] = $date ;
 
                                 $count++;

@@ -65,9 +65,11 @@ class A8Controller extends MonthlyCrawlerController
                         
                         $selector_this   = array(
                              'approval' => '#element > tbody > tr:nth-child(1) > td:nth-child(10)',
+                             'approval_price' => '#element > tbody > tr:nth-child(1) > td:nth-child(13)' 
                         );
                         $selector_before = array(
                              'approval' => '#element > tbody > tr:nth-child(1) > td:nth-child(10)',
+                             'approval_price' => '#element > tbody > tr:nth-child(1) > td:nth-child(13)'
                         );
                         
                         $a8_data = $crawler->each( function( Crawler $node ) use ($selector_this, $selector_before, $product_info)
@@ -84,7 +86,13 @@ class A8Controller extends MonthlyCrawlerController
                                 $data[ 'approval' ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $selector_this['approval'] )->text() ) );
                             }else{ throw new \Exception(  $selector_this['approval'].'要素が存在しません。'); }
 
-                            $data[ 'approval_price' ] = $data[ 'approval' ] * $unit_price;
+                            if(count($node->filter( $selector_this['approval_price'] ))){
+                                $data[ 'approval_price' ] = $this->monthlySearchService->calc_approval_price( 
+                                                                    trim( preg_replace( '/[^0-9]/', '', $node->filter(  $selector_this['approval_price'] )->text() ) )
+                                                                ,1);
+                            }else{ throw new \Exception($selector_this['approval_price'].'要素が存在しません。'); }
+
+                            // $data[ 'approval_price' ] = $data[ 'approval' ] * $unit_price;
 
                             if ( date( 'Y/m/d' ) == date( 'Y/m/01' ) ) {
                                 $data[ 'last_date' ] = date( 'Y-m-t', strtotime( '-2 month' ) );
@@ -96,7 +104,13 @@ class A8Controller extends MonthlyCrawlerController
                                 $data[ 'last_approval' ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $selector_before['approval']  )->text() ) );
                             }else{ throw new \Exception(  $selector_before['approval'].'要素が存在しません。'); }
 
-                            $data[ 'last_approval_price' ] = $data[ 'last_approval' ] * $unit_price;
+                            if(count($node->filter( $selector_before['approval_price'] ))){
+                                $data[ 'last_approval_price' ] = $this->monthlySearchService->calc_approval_price( 
+                                                                    trim( preg_replace( '/[^0-9]/', '', $node->filter(  $selector_before['approval_price'] )->text() ) )
+                                                                ,1);
+                            }else{ throw new \Exception($selector_before['approval_price'].'要素が存在しません。'); }
+
+                            // $data[ 'last_approval_price' ] = $data[ 'last_approval' ] * $unit_price;
 
                             return $data;
                             

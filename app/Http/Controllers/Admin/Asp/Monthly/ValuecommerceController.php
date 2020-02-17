@@ -83,12 +83,12 @@ class ValuecommerceController extends MonthlyCrawlerController
                         
                         //先月・今月のセレクタ
                         $selector_this   = array(
-                             'approval' => '#reportCompare > tbody > tr:nth-child(2) > td:nth-child(11)',
-                            //'approval_price' => '#reportCompare > tbody > tr:nth-child(2) > td:nth-child(20)' 
+                            'approval' => '#reportCompare > tbody > tr:nth-child(2) > td:nth-child(11)',
+                            'approval_price' => '#reportCompare > tbody > tr:nth-child(2) > td:nth-child(20)' 
                         );
                         $selector_before = array(
-                             'approval' => '#reportCompare > tbody > tr:nth-child(1) > td:nth-child(11)',
-                            //'approval_price' => '#reportCompare > tbody > tr:nth-child(1) > td:nth-child(20)' 
+                            'approval' => '#reportCompare > tbody > tr:nth-child(1) > td:nth-child(11)',
+                            'approval_price' => '#reportCompare > tbody > tr:nth-child(1) > td:nth-child(20)' 
                         );
                         //echo $crawler->html();
                         
@@ -99,7 +99,7 @@ class ValuecommerceController extends MonthlyCrawlerController
                             $data[ 'asp' ]     = $product_info->asp_id;
                             $data[ 'product' ] = $product_info->id;
                             
-                            $unit_price = $product_info->price;
+                            // $unit_price = $product_info->price;
 
                             $data[ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
                             
@@ -107,7 +107,13 @@ class ValuecommerceController extends MonthlyCrawlerController
                                 $data[ 'approval' ] = trim( preg_replace( '/[^0-9]/', '', $node->filter($selector_this['approval'] )->text() ) );
                             }else{ throw new \Exception($selector_this['approval'] .'要素が存在しません。');}
 
-                            $data[ 'approval_price' ] = $data[ 'approval' ] * $unit_price;
+                            if(count($node->filter( $selector_this['approval_price'] ))){
+                                $data[ 'approval_price' ] = $this->monthlySearchService->calc_approval_price( 
+                                                                    trim( preg_replace( '/[^0-9]/', '', $node->filter(  $selector_this['approval_price'] )->text() ) )
+                                                                ,3);
+                            }else{ throw new \Exception($selector_this['approval_price'].'要素が存在しません。'); }
+                            
+                            // $data[ 'approval_price' ] = $data[ 'approval' ] * $unit_price;
                                 
                             if ( date( 'Y/m/d' ) == date( 'Y/m/01' ) ) {
                                 $data[ 'last_date' ] = date( 'Y-m-t', strtotime( '-2 month' ) );
@@ -117,8 +123,14 @@ class ValuecommerceController extends MonthlyCrawlerController
                             if(count($node->filter( $selector_before['approval']  ))){
                                 $data[ 'last_approval' ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $selector_before['approval'] )->text() ) );
                             }else{ throw new \Exception($selector_before['approval'].'要素が存在しません。');}
+                            
+                            if(count($node->filter( $selector_before['approval_price'] ))){
+                                $data[ 'last_approval_price' ] = $this->monthlySearchService->calc_approval_price( 
+                                                                    trim( preg_replace( '/[^0-9]/', '', $node->filter(  $selector_before['approval_price'] )->text() ) )
+                                                                ,3);
+                            }else{ throw new \Exception($selector_before['approval_price'].'要素が存在しません。'); }
 
-                            $data[ 'last_approval_price' ] = $data[ 'last_approval' ] * $unit_price;
+                            // $data[ 'last_approval_price' ] = $data[ 'last_approval' ] * $unit_price;
                             
                             return $data;
                         } );
@@ -203,10 +215,10 @@ class ValuecommerceController extends MonthlyCrawlerController
                                     $valuecommerce_site[ $count ][ 'product' ] = $product_info->id;
                                     
                                     $selector_for_site = array(
-                                        'media_id' => '#all > div.tablerline > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(2)',
-                                        'site_name' => '#all > div.tablerline > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(3) > a',
-                                        'approval' => '#all > div.tablerline > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(10)',
-                                        //'approval_price' => '#all > div.tablerline > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(21)' 
+                                        'media_id'      => '#all > div.tablerline > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(2)',
+                                        'site_name'     => '#all > div.tablerline > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(3) > a',
+                                        'approval'      => '#all > div.tablerline > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(10)',
+                                        'approval_price' => '#all > div.tablerline > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(21)' 
                                     );
                                     
                                     foreach ( $selector_for_site as $key => $value ) {
@@ -217,7 +229,7 @@ class ValuecommerceController extends MonthlyCrawlerController
                                         else {
                                             if ( date( 'Y/m/d' ) == date( 'Y/m/01' ) ) {
                                                 $valuecommerce_site[ $count ][ 'date' ] = date( 'Y-m-t', strtotime( '-2 month' ) );
-                                            } //date( 'Y/m/d' ) == date( 'Y/m/01' )
+                                            } 
                                             else {
                                                 $valuecommerce_site[ $count ][ 'date' ] = date( 'Y-m-d', strtotime( 'last day of previous month' ) );
                                             }
@@ -236,6 +248,12 @@ class ValuecommerceController extends MonthlyCrawlerController
                                                 $valuecommerce_site[ $count ][ $key ] = $approval_array[ 1 ];
                                                 
                                             } 
+                                            elseif ( $key == 'approval_price' ) {
+                                            
+                                                $valuecommerce_site[ $count ][ $key ] = $this->monthlySearchService->calc_approval_price( 
+                                                                                trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) )
+                                                                            ,3);
+                                            } 
                                             else {
                                                 
                                                 $valuecommerce_site[ $count ][ $key ] = trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) );
@@ -246,7 +264,7 @@ class ValuecommerceController extends MonthlyCrawlerController
                                         }
                                     } 
                                     
-                                    $valuecommerce_site[ $count ][ 'approval_price' ] = $valuecommerce_site[ $count ][ 'approval' ] * $product_info->price;
+                                    // $valuecommerce_site[ $count ][ 'approval_price' ] = $valuecommerce_site[ $count ][ 'approval' ] * $product_info->price;
                                     $count++;
                                     
                                 }

@@ -91,9 +91,11 @@ class AfbController extends MonthlyCrawlerController
                         //先月・今月のセレクタ
                         $selector_this   = array(
                              'approval' => '#reportTable > tbody > tr:nth-child(2) > td:nth-child(10) > p',
+                             'approval_price' => '#reportTable > tbody > tr:nth-child(2) > td:nth-child(13) > p' 
                         );
                         $selector_before = array(
                              'approval' => '#reportTable > tbody > tr:nth-child(1) > td:nth-child(10) > p',
+                             'approval_price' => '#reportTable > tbody > tr:nth-child(1) > td:nth-child(13) > p' 
                         );
                         //セレクターからフィルタリング
                         $afb_data = $crawler->each( function( Crawler $node ) use ($selector_this, $selector_before, $product_info)
@@ -103,7 +105,7 @@ class AfbController extends MonthlyCrawlerController
                             $data[ 'asp' ]     = $product_info->asp_id;
                             $data[ 'product' ] = $product_info->id;
                             
-                            $unit_price = $product_info->price;
+                            // $unit_price = $product_info->price;
                             
                             $data[ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
                             
@@ -111,7 +113,13 @@ class AfbController extends MonthlyCrawlerController
                                 $data[ 'approval' ] = trim( preg_replace( '/[^0-9]/', '', $node->filter(  $selector_this['approval'] )->text() ) );
                             }else{ throw new \Exception($selector_this['approval'].'要素が存在しません。'); }
 
-                            $data[ 'approval_price' ] = $data[ 'approval' ] * $unit_price;
+                            if(count($node->filter( $selector_this['approval_price'] ))){
+                                $data[ 'approval_price' ] = $this->monthlySearchService->calc_approval_price( 
+                                                                trim( preg_replace( '/[^0-9]/', '', $node->filter(  $selector_this['approval_price'] )->text() ) )
+                                                            ,4);
+                            }else{ throw new \Exception($selector_this['approval_price'].'要素が存在しません。'); }
+
+                            // $data[ 'approval_price' ] = $data[ 'approval' ] * $unit_price;
 
                             if ( date( 'Y/m/d' ) == date( 'Y/m/01' ) ) {
                                 $data[ 'last_date' ] = date( 'Y-m-d', strtotime( '-2 month' ) );
@@ -123,7 +131,13 @@ class AfbController extends MonthlyCrawlerController
                                 $data[ 'last_approval' ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $selector_before['approval']  )->text() ) );
                             }else{ throw new \Exception($selector_before['approval'].'要素が存在しません。'); }
 
-                            $data[ 'last_approval_price' ] = $data[ 'last_approval' ] * $unit_price;
+                            if(count($node->filter( $selector_before['approval_price'] ))){
+                                $data[ 'last_approval_price' ] = $this->monthlySearchService->calc_approval_price( 
+                                                                    trim( preg_replace( '/[^0-9]/', '', $node->filter(  $selector_before['approval_price'] )->text() ) )
+                                                                ,4);
+                            }else{ throw new \Exception($selector_before['approval_price'].'要素が存在しません。'); }
+
+                            // $data[ 'last_approval_price' ] = $data[ 'last_approval' ] * $unit_price;
 
                             return $data;
                         } );
@@ -198,7 +212,7 @@ class AfbController extends MonthlyCrawlerController
                                     'media_id' => '#reportTable > tbody > tr:nth-child(' . $i . ') > td.maxw150',
                                     'site_name' => '#reportTable > tbody > tr:nth-child(' . $i . ') > td.maxw150 > p > a',
                                     'approval' => '#reportTable > tbody > tr:nth-child(' . $i . ') > td:nth-child(13) > p',
-                                    //'approval_price' => '#reportTable > tbody > tr:nth-child(' . $i . ') > td:nth-child(16) > p' 
+                                    'approval_price' => '#reportTable > tbody > tr:nth-child(' . $i . ') > td:nth-child(16) > p' 
                                 );
                                 // サイト一覧　１行ずつクロール
                                 foreach ( $selector_for_site as $key => $value ) {
@@ -210,11 +224,17 @@ class AfbController extends MonthlyCrawlerController
                                             preg_match( '/SID：(\d+)/', $sid, $media_id );
                                             $afb_site[ $y ][ $key ] = $media_id[ 1 ];
                                             
-                                        } //$key == 'media_id'
+                                        } 
                                         elseif ( $key == 'site_name' ) {
                                             
                                             $afb_site[ $y ][ $key ] = trim( $crawler_for_site->filter( $value )->text() );
                                             
+                                        }
+                                        elseif ( $key == 'approval_price' ) {
+                                            
+                                            $afb_site[ $y ][ $key ] = $this->monthlySearchService->calc_approval_price( 
+                                                                            trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) )
+                                                                        ,4);
                                         } 
                                         else {
                                             
@@ -226,7 +246,7 @@ class AfbController extends MonthlyCrawlerController
                                     }
                                 } // endforeach 
                                 
-                                $afb_site[ $y ][ 'approval_price' ] = $afb_site[ $y ][ 'approval' ] * $product_info->price;
+                                // $afb_site[ $y ][ 'approval_price' ] = $afb_site[ $y ][ 'approval' ] * $product_info->price;
 
                                 $y++;
                                 $i++;
