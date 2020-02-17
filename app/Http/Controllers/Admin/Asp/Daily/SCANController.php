@@ -148,8 +148,8 @@ class SCANController extends DailyCrawlerController
                             
                         } );
                         
-                        var_dump( $scan_data );
-                        var_dump( $scan_data2 );
+                        // var_dump( $scan_data );
+                        // var_dump( $scan_data2 );
                         //var_dump($scan_data3);
                         /*
                         サイト抽出　
@@ -218,8 +218,8 @@ class SCANController extends DailyCrawlerController
                         
                         $scan_data[ 0 ][ 'active' ] = $scan_data2[ 0 ][ 'active' ];
                         
-                        //$scan_data[ 0 ][ 'price' ] = $scan_data2[ 0 ][ 'price' ];
-                        var_dump( $scan_site );
+                        $scan_data[ 0 ][ 'price' ] = $scan_data2[ 0 ][ 'price' ];
+                        // var_dump( $scan_site );
 
                         $calculated                  = json_decode( 
                                                             json_encode( 
