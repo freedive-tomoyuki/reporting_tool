@@ -97,8 +97,13 @@ class TrafficGateController extends MonthlyCrawlerController
                                 $data[ 'approval' ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $selector_this['approval'] )->text() ) );
                             }else{ throw new \Exception( $selector_this['approval'].'要素が存在しません。'); }
                             
-                            $data[ 'approval_price' ] = $data[ 'approval' ] * $unit_price;
-                            
+                            // $data[ 'approval_price' ] = $data[ 'approval' ] * $unit_price;
+                            if(count($node->filter( $selector_this['approval_price'] ))){
+                                $data[ 'approval_price' ] = $this->monthlySearchService->calc_approval_price( 
+                                                                    trim( preg_replace( '/[^0-9]/', '', $node->filter(  $selector_this['approval_price'] )->text() ) )
+                                                                ,8);
+                            }else{ throw new \Exception($selector_this['approval_price'].'要素が存在しません。'); }
+
                             if ( date( 'Y/m/d' ) == date( 'Y/m/01' ) ) {
                                 $data[ 'last_date' ] = date( 'Y-m-t', strtotime( '-2 month' ) );
                             } 
@@ -110,7 +115,13 @@ class TrafficGateController extends MonthlyCrawlerController
                                 $data[ 'last_approval' ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $selector_before['approval']  )->text() ) );
                             }else{ throw new \Exception($selector_before['approval'].'要素が存在しません。'); }
 
-                            $data[ 'last_approval_price' ] = $data[ 'last_approval' ] * $unit_price;
+                            if(count($node->filter( $selector_before['approval_price'] ))){
+                                $data[ 'last_approval_price' ] = $this->monthlySearchService->calc_approval_price( 
+                                                                    trim( preg_replace( '/[^0-9]/', '', $node->filter(  $selector_before['approval_price'] )->text() ) )
+                                                                ,8);
+                            }else{ throw new \Exception($selector_before['approval_price'].'要素が存在しません。'); }
+
+                            // $data[ 'last_approval_price' ] = $data[ 'last_approval' ] * $unit_price;
                             
                             return $data;
                             
@@ -192,13 +203,13 @@ class TrafficGateController extends MonthlyCrawlerController
                                     //$iPlus = $i+1;
                                     
                                     $approval_selector      = '#container-big2 > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(14)';
-                                    // $approvalprice_selector = '#container-big2 > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(15)';
+                                    $approvalprice_selector = '#container-big2 > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(15)';
                                     
                                     $selector_for_site = array(
                                         'media_id' => '#container-big2 > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(3)',
                                         'site_name' => '#container-big2 > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(4)',
                                         'approval' => $approval_selector,
-                                        // 'approval_price' => $approvalprice_selector 
+                                        'approval_price' => $approvalprice_selector 
                                         
                                     );
                                     
@@ -208,7 +219,14 @@ class TrafficGateController extends MonthlyCrawlerController
                                                 
                                                 $trafficgate_site[ $active_count ][ $key ] = trim( $crawler_for_site->filter( $value )->text() );
                                                 
-                                            }else {
+                                            }
+                                            elseif ( $key == 'approval_price' ) {
+                                            
+                                                $trafficgate_site[ $active_count ][ $key ] = $this->monthlySearchService->calc_approval_price( 
+                                                                                trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) )
+                                                                            ,8);
+                                            }
+                                            else {
                                                 
                                                 $trafficgate_site[ $active_count ][ $key ] = trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) );
                                             }
@@ -216,7 +234,7 @@ class TrafficGateController extends MonthlyCrawlerController
                                             throw new \Exception($value.'要素が存在しません。');
                                         }
                                     }
-                                    $trafficgate_site[ $active_count ][ 'approval_price' ] = $trafficgate_site[ $active_count ][ 'approval' ] * $product_info->price;
+                                    // $trafficgate_site[ $active_count ][ 'approval_price' ] = $trafficgate_site[ $active_count ][ 'approval' ] * $product_info->price;
 
                                     $active_count++;
                                     $i++;

@@ -73,10 +73,12 @@ class AffiTownController extends MonthlyCrawlerController
                         
                         //先月・今月のセレクタ
                         $selector_this   = array(
-                            'approval' => '#all_display > table > tbody > tr:nth-child(2) > td:nth-child(5)'
+                            'approval' => '#all_display > table > tbody > tr:nth-child(2) > td:nth-child(5)',
+                            'approval_price' => '#all_display > table > tbody > tr.bg_gray > td:nth-child(6) > p' 
                         );
                         $selector_before = array(
-                            'approval' => '#all_display > table > tbody > tr:nth-child(1) > td:nth-child(5)'
+                            'approval' => '#all_display > table > tbody > tr:nth-child(1) > td:nth-child(5)',
+                            'approval_price' => '#all_display > table > tbody > tr:nth-child(1) > td:nth-child(6) > p' 
                         );
                         //Selectorから承認件数・承認金額を取得
                         //先月と今月分
@@ -86,7 +88,7 @@ class AffiTownController extends MonthlyCrawlerController
                             $data[ 'asp' ]     = $product_info->asp_id;
                             $data[ 'product' ] = $product_info->id;
 
-                            $unit_price = $product_info->price;
+                            // $unit_price = $product_info->price;
 
                             
                             $data[ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
@@ -94,8 +96,13 @@ class AffiTownController extends MonthlyCrawlerController
                             if(count($node->filter( $selector_this['approval'] ))){
                                 $data[ 'approval' ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $selector_this['approval'] )->text() ) );
                             }else{ throw new \Exception($selector_this['approval'].'要素が存在しません。'); }
-                    
-                            $data[ 'approval_price' ] = $data[ 'approval' ] * $unit_price;
+
+                            if(count($node->filter( $selector_this['approval_price'] ))){
+                                $data[ 'approval_price' ] = $this->monthlySearchService->calc_approval_price( 
+                                                                trim( preg_replace( '/[^0-9]/', '', $node->filter( $selector_this['approval_price'] )->text() ) )
+                                                            ,7);
+                            }else{ throw new \Exception($selector_this['approval_price'].'要素が存在しません。'); }
+                            // $data[ 'approval_price' ] = $data[ 'approval' ] * $unit_price;
 
                             if ( date( 'Y/m/d' ) == date( 'Y/m/01' ) ) {
                                 $data[ 'last_date' ] = date( 'Y-m-t', strtotime( '-2 month' ) );
@@ -107,8 +114,14 @@ class AffiTownController extends MonthlyCrawlerController
                             if(count($node->filter( $selector_before['approval'] ))){
                                 $data[ 'last_approval' ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $selector_before['approval'] )->text() ) );
                             }else{ throw new \Exception($selector_before['approval'].'要素が存在しません。'); }
+                            
+                            if(count($node->filter( $selector_before['approval_price'] ))){
+                                $data[ 'last_approval_price' ] = $this->monthlySearchService->calc_approval_price( 
+                                                                    trim( preg_replace( '/[^0-9]/', '', $node->filter( $selector_before['approval_price'] )->text() ) )
+                                                                ,7);
+                            }else{ throw new \Exception($selector_before['approval_price'].'要素が存在しません。'); }
 
-                            $data[ 'last_approval_price' ] = $data[ 'last_approval' ] * $unit_price;
+                            // $data[ 'last_approval_price' ] = $data[ 'last_approval' ] * $unit_price;
                                                         
                             return $data;
                             
@@ -171,7 +184,7 @@ class AffiTownController extends MonthlyCrawlerController
                                     'media_id' => '#all_display > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(1)',
                                     'site_name' => '#all_display > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(2) > a',
                                     'approval' => '#all_display > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(7)',
-                                    // 'approval_price' => '#all_display > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(8) > p' 
+                                    'approval_price' => '#all_display > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(8) > p' 
                                 );
                                 
                                 foreach ( $selector_for_site as $key => $value ) {
@@ -180,7 +193,13 @@ class AffiTownController extends MonthlyCrawlerController
                                             
                                             $affitown_site[ $active_count ][ $key ] = trim( $crawler_for_site->filter( $value )->text() );
                                             
-                                        } 
+                                        }
+                                        elseif ( $key == 'approval_price' ) {
+                                            
+                                            $affitown_site[ $active_count ][ $key ] = $this->monthlySearchService->calc_approval_price( 
+                                                                            trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) )
+                                                                        ,7);
+                                        }
                                         else {
                                             
                                             $affitown_site[ $active_count ][ $key ] = trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) );
@@ -189,12 +208,12 @@ class AffiTownController extends MonthlyCrawlerController
                                     }else{
                                         throw new \Exception($value.'要素が存在しません。');
                                     }
-                                } //$selector_for_site as $key => $value
-                                $affitown_site[ $active_count ][ 'approval_price' ] = $affitown_site[ $active_count ][ 'approval' ] * $product_info->price;
+                                } 
+                                // $affitown_site[ $active_count ][ 'approval_price' ] = $affitown_site[ $active_count ][ 'approval' ] * $product_info->price;
 
                                 $i++;
                                 $active_count++;
-                            } //trim( $crawler_for_site->filter( '#all_display > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(2) > a' )->text() ) != "合計"
+                            } 
                             
                         } //$x = 0; $x < 2; $x++
                         //var_dump( $affitown_site );

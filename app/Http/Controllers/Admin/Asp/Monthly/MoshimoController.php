@@ -100,7 +100,7 @@ class MoshimoController extends MonthlyCrawlerController
 
                             $selector   = array(
                                     'approval' => '#report > div > table > tfoot > tr > th:nth-child(8)', 
-                                    // 'approval_price' => '#report > div > table > tfoot > tr > th:nth-child(9)'
+                                    'approval_price' => '#report > div > table > tfoot > tr > th:nth-child(9)'
                             );
 
 

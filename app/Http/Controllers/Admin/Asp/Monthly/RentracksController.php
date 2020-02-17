@@ -109,11 +109,11 @@ class RentracksController extends MonthlyCrawlerController
                         }
                         
                         $selector_this   = array(
-                             'approval' => '#main > table > tbody > tr:nth-child(8) > td:nth-child(' . $row_this . ')',
+                            'approval' => '#main > table > tbody > tr:nth-child(8) > td:nth-child(' . $row_this . ')',
                             'approval_price' => '#main > table > tbody > tr.total > td:nth-child(' . $row_this . ')' 
                         );
                         $selector_before = array(
-                             'approval' => '#main > table > tbody > tr:nth-child(8) > td:nth-child(' . $row_before . ')',
+                            'approval' => '#main > table > tbody > tr:nth-child(8) > td:nth-child(' . $row_before . ')',
                             'approval_price' => '#main > table > tbody > tr.total > td:nth-child(' . $row_before . ')' 
                         );
                         
@@ -127,14 +127,20 @@ class RentracksController extends MonthlyCrawlerController
                             $data[ 'asp' ]     = $product_info->asp_id;
                             $data[ 'product' ] = $product_info->id;
                             
-                            $unit_price = $product_info->price;
+                            // $unit_price = $product_info->price;
                             
                             $data[ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
                             if(count($node->filter( $selector_this['approval'] ))){
                                 $data[ 'approval' ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $selector_this['approval'] )->text() ) );
                             }else{ throw new \Exception( $selector_this['approval'].'要素が存在しません。'); }
 
-                            $data[ 'approval_price' ] = $data[ 'approval' ] * $unit_price;
+                            if(count($node->filter( $selector_this['approval_price'] ))){
+                                $data[ 'approval_price' ] = $this->monthlySearchService->calc_approval_price( 
+                                                                    trim( preg_replace( '/[^0-9]/', '', $node->filter(  $selector_this['approval_price'] )->text() ) )
+                                                                ,5);
+                            }else{ throw new \Exception($selector_this['approval_price'].'要素が存在しません。'); }
+
+                            // $data[ 'approval_price' ] = $data[ 'approval' ] * $unit_price;
                             if ( date( 'Y/m/d' ) == date( 'Y/m/01' ) ) {
                                 $data[ 'last_date' ] = date( 'Y-m-t', strtotime( '-2 month' ) );
                             }
@@ -144,8 +150,14 @@ class RentracksController extends MonthlyCrawlerController
                             if(count($node->filter( $selector_before['approval'] ))){
                                 $data[ 'last_approval' ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $selector_before['approval']  )->text() ) );
                             }else{ throw new \Exception( $selector_before['approval'].'要素が存在しません。'); }
+                            
+                            if(count($node->filter( $selector_before['approval_price'] ))){
+                                $data[ 'last_approval_price' ] = $this->monthlySearchService->calc_approval_price( 
+                                                                    trim( preg_replace( '/[^0-9]/', '', $node->filter(  $selector_before['approval_price'] )->text() ) )
+                                                                ,5);
+                            }else{ throw new \Exception($selector_before['approval_price'].'要素が存在しません。'); }
 
-                            $data[ 'last_approval_price' ] = $data[ 'last_approval' ] * $unit_price;
+                            // $data[ 'last_approval_price' ] = $data[ 'last_approval' ] * $unit_price;
 
                             return $data;
                             
@@ -236,13 +248,13 @@ class RentracksController extends MonthlyCrawlerController
                                 $iPlus                  = $i + 1;
                                 //月内の場合は、「承認」先月のものに関しては、「請求済」からデータを取得
                                 $approval_selector      = ( $x == 0 ) ? '#main > table > tbody > tr:nth-child(' . $iPlus . ') > td.c13' : '#main > table > tbody > tr:nth-child(' . $iPlus . ') > td.c14';
-                                // $approvalprice_selector = ( $x == 0 ) ? '#main > table > tbody > tr:nth-child(' . $iPlus . ') > td.c18' : '#main > table > tbody > tr:nth-child(' . $iPlus . ') > td.c19';
+                                $approvalprice_selector = ( $x == 0 ) ? '#main > table > tbody > tr:nth-child(' . $iPlus . ') > td.c18' : '#main > table > tbody > tr:nth-child(' . $iPlus . ') > td.c19';
                                 
                                 $selector_for_site = array(
                                     'media_id' => '#main > table > tbody > tr:nth-child(' . $iPlus . ') > td.c03',
                                     'site_name' => '#main > table > tbody > tr:nth-child(' . $iPlus . ') > td.c04',
                                     'approval' => $approval_selector,
-                                    // 'approval_price' => $approvalprice_selector 
+                                    'approval_price' => $approvalprice_selector 
                                     
                                 );
                                 
@@ -252,6 +264,12 @@ class RentracksController extends MonthlyCrawlerController
                                             
                                             $rentrack_site[ $y ][ $key ] = trim( $crawler_for_site->filter( $value )->text() );
                                             
+                                        }
+                                        elseif ( $key == 'approval_price' ) {
+                                            
+                                            $rentrack_site[ $y ][ $key ] = $this->monthlySearchService->calc_approval_price( 
+                                                                            trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) )
+                                                                        ,5);
                                         } 
                                         else {
                                             
@@ -259,7 +277,7 @@ class RentracksController extends MonthlyCrawlerController
                                         }
                                     }else{ throw new \Exception( $value.'要素が存在しません。'); }
                                 }
-                                $rentrack_site[ $y ][ 'approval_price' ] = $rentrack_site[ $y ][ 'approval' ] * $product_info->price;
+                                // $rentrack_site[ $y ][ 'approval_price' ] = $rentrack_site[ $y ][ 'approval' ] * $product_info->price;
 
                                 $y++;
                             }

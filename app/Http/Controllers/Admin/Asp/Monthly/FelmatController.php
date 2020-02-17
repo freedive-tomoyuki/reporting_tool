@@ -45,12 +45,11 @@ class FelmatController extends MonthlyCrawlerController
         });
         
         $options = [
-        '--window-size=1920,1080',
-        '--start-maximized',
-        '--headless',
-        '--disable-gpu',
-        '--no-sandbox'
-        
+            '--window-size=1920,1080',
+            '--start-maximized',
+            '--headless',
+            '--disable-gpu',
+            '--no-sandbox'
         ];
         
         //案件の大本IDからASP別のプロダクトIDを取得
@@ -102,8 +101,8 @@ class FelmatController extends MonthlyCrawlerController
 
 
                             $selector   = array(
-                                    'approval' => '#report > div > table > tfoot > tr > th:nth-child(8)', 
-                                    // 'approval_price' => '#report > div > table > tfoot > tr > th:nth-child(9)'
+                                'approval' => '#report > div > table > tfoot > tr > th:nth-child(8)', 
+                                'approval_price' => '#report > div > table > tfoot > tr > th:nth-child(9)'
                             );
 
 
@@ -115,14 +114,20 @@ class FelmatController extends MonthlyCrawlerController
                                 $data[ 'product' ] = $product_info->id;
 
 
-                                $unit_price = $product_info->price;
+                                // $unit_price = $product_info->price;
                                 $data[ 'date' ] = $end;
 
                                 if(count($node->filter( $selector['approval'] ))){
                                     $data[ 'approval' ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $selector['approval'] )->text() ) );
                                 }else{ throw new \Exception( $selector['approval'].'要素が存在しません。'); }
                             
-                                $data[ 'approval_price' ] = $data[ 'approval' ] * $unit_price;
+                                if(count($node->filter( $selector['approval_price'] ))){
+                                    $data[ 'approval_price' ] = $this->monthlySearchService->calc_approval_price( 
+                                                                        trim( preg_replace( '/[^0-9]/', '', $node->filter(  $selector['approval_price'] )->text() ) )
+                                                                    ,6);
+                                }else{ throw new \Exception($selector['approval_price'].'要素が存在しません。'); }
+
+                                // $data[ 'approval_price' ] = $data[ 'approval' ] * $unit_price;
 
                                 return $data;
                             });
@@ -212,7 +217,7 @@ class FelmatController extends MonthlyCrawlerController
                                     $selector_for_site = array(
                                         'site_name' => '#report > div > table > tbody > tr:nth-child(' . $x . ') > td.left',
                                         'approval' => '#report > div > table > tbody > tr:nth-child(' . $x . ') > td:nth-child(8)',
-                                        //'approval_price' => '#report > div > table > tbody > tr:nth-child(' . $x . ') > td:nth-child(9)',
+                                        'approval_price' => '#report > div > table > tbody > tr:nth-child(' . $x . ') > td:nth-child(9)',
                                     );
 
                                     $felmat_site[$count]['date'] = $end;
@@ -223,7 +228,14 @@ class FelmatController extends MonthlyCrawlerController
                                                 
                                                 $felmat_site[$count][$key]       = trim($crawler_for_site->filter($value)->text());
                                                 $felmat_site[$count]['media_id'] = $this->siteCreate(trim($crawler_for_site->filter($value)->text()), 20);
-                                            } else {
+                                            }
+                                            elseif ( $key == 'approval_price' ) {
+                                            
+                                                $felmat_site[ $count ][ $key ] = $this->monthlySearchService->calc_approval_price( 
+                                                                                trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) )
+                                                                            ,6);
+                                            } 
+                                            else {
                                                 
                                                 $felmat_site[$count][$key] = trim(preg_replace('/[^0-9]/', '', $crawler_for_site->filter($value)->text()));
                                             }
