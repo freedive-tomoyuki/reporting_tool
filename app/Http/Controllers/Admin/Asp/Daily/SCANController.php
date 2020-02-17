@@ -109,7 +109,6 @@ class SCANController extends DailyCrawlerController
                         $selector2 = array(
                             'partnership' => '#report_clm > div > div.report_table > table > tbody > tr.tr_even > td:nth-child(4)',
                             'active' => '#report_clm > div > div.report_table > table > tbody > tr.tr_even > td:nth-child(5)',
-                            
                             'price' => '#report_clm > div > div.report_table > table > tbody > tr.tr_even > td:nth-child(12)' 
                         );
                         
@@ -149,8 +148,8 @@ class SCANController extends DailyCrawlerController
                             
                         } );
                         
-                        //var_dump( $scan_data );
-                        //var_dump( $scan_data2 );
+                        var_dump( $scan_data );
+                        var_dump( $scan_data2 );
                         //var_dump($scan_data3);
                         /*
                         サイト抽出　
@@ -179,7 +178,7 @@ class SCANController extends DailyCrawlerController
                                 if(count($crawler_for_site->filter( $value ))){
                                     if ( $key == 'site_name' || $key == 'media_id' ) {
                                         
-                                            $scan_site[ $y ][ $key ] = trim( $crawler_for_site->filter( $value )->text() );
+                                        $scan_site[ $y ][ $key ] = trim( $crawler_for_site->filter( $value )->text() );
                                        
                                     } //$key == 'site_name' || $key == 'media_id'
                                     else {
@@ -201,7 +200,7 @@ class SCANController extends DailyCrawlerController
                                                             json_encode( 
                                                                 json_decode( 
                                                                     $this->dailySearchService
-                                                                        ->cpa( $scan_site[ $y ][ 'cv' ], $scan_site[ $y ][ 'price' ], 7 ) 
+                                                                        ->cpa( $scan_site[ $y ][ 'cv' ], $scan_site[ $y ][ 'price' ], 9 ) 
                                                                 ) 
                                                             ), True );
                             $scan_site[ $y ][ 'cpa' ]  = $calculated[ 'cpa' ]; //CPA
@@ -220,12 +219,13 @@ class SCANController extends DailyCrawlerController
                         $scan_data[ 0 ][ 'active' ] = $scan_data2[ 0 ][ 'active' ];
                         
                         //$scan_data[ 0 ][ 'price' ] = $scan_data2[ 0 ][ 'price' ];
-                        
+                        var_dump( $scan_site );
+
                         $calculated                  = json_decode( 
                                                             json_encode( 
                                                                 json_decode( 
                                                                     $this->dailySearchService
-                                                                                    ->cpa( $scan_data[ 0 ][ 'cv' ], $scan_data[ 0 ][ 'price' ], 7 ) 
+                                                                                    ->cpa( $scan_data[ 0 ][ 'cv' ], $scan_data[ 0 ][ 'price' ], 9 ) 
                                                                 ) ), True );
                         $scan_data[ 0 ][ 'cpa' ]  = $calculated[ 'cpa' ]; //CPA
                         $scan_data[ 0 ][ 'cost' ] = $calculated[ 'cost' ];
