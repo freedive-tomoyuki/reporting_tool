@@ -169,7 +169,7 @@
                         <td><?php echo $i; ?></td>
                         <td>{{ $product->name }}</td>
                         <td>{{ $product->date }}</td>
-                        <td>{{ $product->media_id }}</td>
+                        <td class="media-id-style">{{ $product->media_id }}</td>
                         <td>{{ $product->site_name }}</td>
                         <td>{{ $product->imp }}</td>
                         <td>{{ $product->ctr }}</td>
