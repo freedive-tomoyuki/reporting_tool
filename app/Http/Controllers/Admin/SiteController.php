@@ -32,11 +32,11 @@ class SiteController extends Controller
         }
         if(isset($request->site_name)){
             $site_name = $request->site_name;
-            $sites = $sites->where('site_name', 'like', "%{$site_name}%" )->get();
+            $sites = $sites->where('site_name', 'like', "%{$site_name}%" );
         }
         
         // $sites = $sites->paginate(100);
-        $sites = $sites->get();
+        $sites = $sites->paginate(50);
         
         return view('admin.site_list',compact('sites','user'));
 
