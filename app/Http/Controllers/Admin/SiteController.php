@@ -16,7 +16,7 @@ class SiteController extends Controller
     }
     public function list(){
         $user = Auth::user();
-        $sites = Site::all();
+        $sites = Site::where('killed_flag', '=', 0)->paginate(50);
         // var_dump($user);
         return view('admin.site_list',compact('sites','user'));
     }
