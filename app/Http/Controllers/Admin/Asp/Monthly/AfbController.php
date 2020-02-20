@@ -263,6 +263,7 @@ class AfbController extends MonthlyCrawlerController
                             'message' => $e->getMessage(),
                             'datetime' => date('Y-m-d H:i:s'),
                             'product_id' => $product_id,
+                            'asp' => 'Afb',
                             'type' => 'Monthly',
                             ];
                             //echo $e->getMessage();
