@@ -33,12 +33,11 @@ class A8Controller extends MonthlyCrawlerController
         } );
         
         $options = [
-        '--window-size=1920,1080',
-        '--start-maximized',
-        '--headless',
-        '--disable-gpu',
-        '--no-sandbox'
-        
+            '--window-size=1920,1080',
+            '--start-maximized',
+            '--headless',
+            '--disable-gpu',
+            '--no-sandbox'
         ];
         $product_id = $this->monthlySearchService->BasetoProduct( 1, $product_base_id );
         
@@ -65,11 +64,11 @@ class A8Controller extends MonthlyCrawlerController
                         
                         $selector_this   = array(
                              'approval' => '#element > tbody > tr:nth-child(1) > td:nth-child(10)',
-                             'approval_price' => '#element > tbody > tr:nth-child(1) > td:nth-child(13)' 
+                            //  'approval_price' => '#element > tbody > tr:nth-child(1) > td:nth-child(13)' 
                         );
                         $selector_before = array(
                              'approval' => '#element > tbody > tr:nth-child(1) > td:nth-child(10)',
-                             'approval_price' => '#element > tbody > tr:nth-child(1) > td:nth-child(13)'
+                            //  'approval_price' => '#element > tbody > tr:nth-child(1) > td:nth-child(13)'
                         );
                         
                         $a8_data = $crawler->each( function( Crawler $node ) use ($selector_this, $selector_before, $product_info)
