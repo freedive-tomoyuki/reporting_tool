@@ -52,8 +52,8 @@ class A8Controller extends MonthlyCrawlerController
                         
                         $crawler = $browser
                         ->visit( $product_info->asp->login_url )
-                        ->type( $product_info->login_key, $product_info->login_value )
-                        ->type( $product_info->password_key, $product_info->password_value )
+                        ->type( $product_info->asp->login_key, $product_info->login_value )
+                        ->type( $product_info->asp->password_key, $product_info->password_value )
                         ->click( $product_info->asp->login_selector )
                         ->visit( $product_info->asp->lp2_url )
                         ->select( '#reportOutAction > table > tbody > tr:nth-child(2) > td > select', '21' )
@@ -64,11 +64,11 @@ class A8Controller extends MonthlyCrawlerController
                         
                         $selector_this   = array(
                              'approval' => '#element > tbody > tr:nth-child(1) > td:nth-child(10)',
-                            //  'approval_price' => '#element > tbody > tr:nth-child(1) > td:nth-child(13)' 
+                             'approval_price' => '#element > tbody > tr:nth-child(1) > td:nth-child(13)' 
                         );
                         $selector_before = array(
                              'approval' => '#element > tbody > tr:nth-child(1) > td:nth-child(10)',
-                            //  'approval_price' => '#element > tbody > tr:nth-child(1) > td:nth-child(13)'
+                             'approval_price' => '#element > tbody > tr:nth-child(1) > td:nth-child(13)'
                         );
                         
                         $a8_data = $crawler->each( function( Crawler $node ) use ($selector_this, $selector_before, $product_info)
