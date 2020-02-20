@@ -189,7 +189,7 @@
                           <th class="th-sm">No</th>
                           <th class="th-sm">ASP</th>
                           <th class="th-sm">Date</th>
-                          <th class="th-sm media-id-style" style="max-width: 50px;" >Media ID</th>
+                          <th class="th-sm" style="max-width: 50px;" >Media ID</th>
                           <th class="th-sm">サイト名</th>
                           <th class="th-sm">Imp</th>
                           <th class="th-sm">CTR</th>
@@ -218,7 +218,7 @@
                         <td><?php echo $i; ?></td>
                         <td>{{ $product->name }}</td>
                         <td>{{ $product->date }}</td>
-                        <td>{{ $product->media_id }}</td>
+                        <td class="media-id-style">{{ $product->media_id }}</td>
                         <td>{{ $product->site_name }}</td>
                         <td>{{ number_format($product->imp) }}</td>
                         <td>{{ number_format($product->ctr) }}</td>
