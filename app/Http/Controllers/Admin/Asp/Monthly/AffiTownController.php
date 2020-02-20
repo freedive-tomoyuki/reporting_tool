@@ -74,11 +74,11 @@ class AffiTownController extends MonthlyCrawlerController
                         //先月・今月のセレクタ
                         $selector_this   = array(
                             'approval' => '#all_display > table > tbody > tr:nth-child(2) > td:nth-child(5)',
-                            'approval_price' => '#all_display > table > tbody > tr.bg_gray > td:nth-child(6) > p' 
+                            'approval_price' => '#all_display > table > tbody > tr.bg_gray > td:nth-child(6)' 
                         );
                         $selector_before = array(
                             'approval' => '#all_display > table > tbody > tr:nth-child(1) > td:nth-child(5)',
-                            'approval_price' => '#all_display > table > tbody > tr:nth-child(1) > td:nth-child(6) > p' 
+                            'approval_price' => '#all_display > table > tbody > tr:nth-child(1) > td:nth-child(6)' 
                         );
                         //Selectorから承認件数・承認金額を取得
                         //先月と今月分
