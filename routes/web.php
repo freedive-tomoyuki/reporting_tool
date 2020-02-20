@@ -245,9 +245,9 @@ Route::group(['middleware' => 'auth:user'], function() {
 //             //return ['sponsor_id_require_falg' => request('title'),'product_id_require_falg' => request('content')];
 // });
 
-// Route::get('check',function(){
-//     echo "OK";
-// });
+Route::get('check',function(){
+ echo "OK";
+});
 
 //CSV出力
 Route::get('csv/{id}/{s_date?}/{e_date?}','DailyController@downloadCSV');
