@@ -184,7 +184,7 @@ class AffiTownController extends MonthlyCrawlerController
                                     'media_id' => '#all_display > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(1)',
                                     'site_name' => '#all_display > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(2) > a',
                                     'approval' => '#all_display > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(7)',
-                                    'approval_price' => '#all_display > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(8) > p' 
+                                    'approval_price' => '#all_display > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(8)' 
                                 );
                                 
                                 foreach ( $selector_for_site as $key => $value ) {
