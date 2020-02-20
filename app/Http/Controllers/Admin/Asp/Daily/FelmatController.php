@@ -219,6 +219,7 @@ class FelmatController extends DailyCrawlerController
                         $page            = ceil($count_actice / 20);
                         $count_last_page = $count_actice % 20;
                         $count           = 0;
+                        $felmat_site = array( );
 
                         for ($i = 1; $page >= $i; $i++) {
                             //echo "ページ数page:" . $page;
@@ -261,8 +262,12 @@ class FelmatController extends DailyCrawlerController
                                     if(count($crawler_for_site->filter( $value ))){
                                         if ($key == 'site_name') {
                                             
-                                            $felmat_site[$count][$key]       = trim($crawler_for_site->filter($value)->text());
-                                            $felmat_site[$count]['media_id'] = $this->siteCreate(trim($crawler_for_site->filter($value)->text()), 20);
+                                            $felmat_site[$count][$key] = trim($crawler_for_site->filter($value)->text());
+                                            
+
+                                        }elseif ( $key == 'media_id' ) {
+                                            
+                                            $felmat_site[$count][$key] = $this->siteCreate(trim($crawler_for_site->filter($value)->text()), 20);
 
                                         } else {
                                             
@@ -294,8 +299,8 @@ class FelmatController extends DailyCrawlerController
                         
                         
                         //$felmat_data[0]['price'] = trim(preg_replace('/[^0-9]/', '', $crawler_for_site->filter('#main > table > tbody > tr.total > td:nth-child(15)')->text()));
-                        $unit_price = $product_info->price;
-                        $felmat_data[ 0 ][ 'price' ] = $felmat_data[ 0 ][ 'cv' ] * $unit_price;
+                        // $unit_price = $product_info->price;
+                        // $felmat_data[ 0 ][ 'price' ] = $felmat_data[ 0 ][ 'cv' ] * $unit_price;
 
                         $felmat_data[0]['active']      = $felmat_data2[0]['active'];
                         $felmat_data[0]['partnership'] = $felmat_data3[0]['partnership'];
