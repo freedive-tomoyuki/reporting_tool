@@ -1,4 +1,4 @@
-<?php
+g<?php
 
 namespace App\Http\Controllers\Admin\Asp\Daily;
 
@@ -263,11 +263,7 @@ class FelmatController extends DailyCrawlerController
                                         if ($key == 'site_name') {
                                             
                                             $felmat_site[$count][$key] = trim($crawler_for_site->filter($value)->text());
-                                            
-
-                                        }elseif ( $key == 'media_id' ) {
-                                            
-                                            $felmat_site[$count][$key] = $this->siteCreate(trim($crawler_for_site->filter($value)->text()), 20);
+                                            $felmat_site[$count]['media_id'] = $this->siteCreate(trim($crawler_for_site->filter($value)->text()), 20);
 
                                         } else {
                                             
