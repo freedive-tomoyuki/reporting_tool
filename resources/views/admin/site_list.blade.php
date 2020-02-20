@@ -30,31 +30,33 @@
 					</form>
 					<?php $i = 1;?>
 					<div class="form-group col-md-12">
-					<table id="dtBasicExample" class="table table-striped table-bordered table-sm">
-						<thead>
-							<th class="th-sm">ASP</th>
-							<th class="th-sm">サイトID</th>
-							<th class="th-sm">サイト名</th>
-							<th class="th-sm">URL</th>
-							<th class="th-sm">単価</th>
-						</thead>
-						<tbody>
-							@foreach($sites as $site)
-								<tr>
-									<td>{{ $site->asp->name }}</td>
-									<td class="media-id-style">{{ $site->media_id }}</td>
-									<td>{{ $site->site_name }}</td>
-									<td>{{ $site->url }}</td>
-									<td>{{ $site->unit_price }}</td>
-								</tr>
-							@endforeach
-						</tbody>
-					</table>
+						<table id="" class="table table-striped table-bordered table-sm">
+							<thead>
+								<th class="th-sm">ASP</th>
+								<th class="th-sm">サイトID</th>
+								<th class="th-sm">サイト名</th>
+								<th class="th-sm">URL</th>
+								<th class="th-sm">単価</th>
+							</thead>
+							<tbody>
+								@foreach($sites as $site)
+									<tr>
+										<td>{{ $site->asp->name }}</td>
+										<td class="media-id-style">{{ $site->media_id }}</td>
+										<td>{{ $site->site_name }}</td>
+										<td>{{ $site->url }}</td>
+										<td>{{ $site->unit_price }}</td>
+									</tr>
+								@endforeach
+							</tbody>
+						</table>
+						<div class="d-flex justify-content-center">
+							{{ $sites->links() }}
+						</div>
 					</div>
+
 				</div>
-			<!-- <div class="d-flex justify-content-center">
-				{ $sites->links() }
-			</div> -->
+			
 		</div>
 </div>
 @endsection
