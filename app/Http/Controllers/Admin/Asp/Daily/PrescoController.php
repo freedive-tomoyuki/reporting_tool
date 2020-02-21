@@ -28,7 +28,7 @@ class PrescoController extends DailyCrawlerController
     /**
     * Presco
     */
-    public function affitown( $product_base_id ) //OK
+    public function presco( $product_base_id ) //OK
     {
         
         /*
