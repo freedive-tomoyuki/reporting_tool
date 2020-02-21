@@ -50,7 +50,7 @@ class PrescoController extends DailyCrawlerController
         /*
         案件の大本IDからASP別のプロダクトIDを取得
         */
-        $product_id = $this->dailySearchService->BasetoProduct( 7, $product_base_id );
+        $product_id = $this->dailySearchService->BasetoProduct( 14, $product_base_id );
         
         /*
         Chromeドライバーのインスタンス呼び出し
@@ -71,12 +71,12 @@ class PrescoController extends DailyCrawlerController
                     日付　取得
                     */
                     if ( date( 'Y/m/d' ) == date( 'Y/m/01' ) ) {
-                        $s_date = date( 'Ymd', strtotime( 'first day of previous month' ) );
-                        $e_date = date( 'Ymd', strtotime( 'last day of previous month' ) );
+                        $s_date = date( 'Y/m/d', strtotime( 'first day of previous month' ) );
+                        $e_date = date( 'Y/m/d', strtotime( 'last day of previous month' ) );
                     } //date( 'Y/m/d' ) == date( 'Y/m/01' )
                     else {
-                        $s_date = date( 'Ym01' );
-                        $e_date = date( 'Ymd', strtotime( '-1 day' ) );
+                        $s_date = date( 'Y/m/01' );
+                        $e_date = date( 'Y/m/d', strtotime( '-1 day' ) );
                     }
                     
                     foreach ( $product_infos as $product_info ) {
@@ -88,47 +88,51 @@ class PrescoController extends DailyCrawlerController
                         \Log::info($product_info->asp_product_id);
                         \Log::info($s_date);
                         \Log::info($e_date);
-                        $crawler = $browser->visit( 'https://presco.ai/merchant/auth/loginForm' )
-                                            ->type( '#content > div > div > div.w40-per.mt100.loginForm > form > table > tbody > tr:nth-child(1) > td > div > input[type=text]', $product_info->login_value )
-                                            ->type( '#content > div > div > div.w40-per.mt100.loginForm > form > table > tbody > tr:nth-child(2) > td > div > input', $product_info->password_value )
-                                            ->click( '#content > div > div > div.w40-per.mt100.loginForm > form > div.m-news-body.align-center.mt40 > p:nth-child(1) > input' )
-                                            ->visit( "https://presco.ai/merchant/home/" )
-                                            ->visit( "https://affi.town/adserver/merchant/report/dailysales.af?advertiseId=" . $product_info->asp_product_id . "&mediaId=&since=" . $s_date . "&until=" . $e_date )
-                                            ->type( '#all_display > p > input[type=search]', '合計' )
+                        $crawler = $browser->visit($product_info->asp->login_url )
+                                            ->type( $product_info->asp->login_key, $product_info->login_value )
+                                            ->type( $product_info->asp->password_key, $product_info->password_value )
+                                            ->click( $product_info->asp->login_selector )
+                                            ->visit( $asp_info[0]['lp1_url'] )
+                                            ->visit( "https://presco.ai/merchant/report/search?searchPeriodType=2&searchDateType=2&searchDateTimeFrom=" . $s_date . "&searchDateTimeTo=" . $e_date . "&searchItemType=0&searchLargeGenreId=&searchMediumGenreId=&searchSmallGenreId=&searchProgramId=" . $product_info->asp_product_id . "&searchProgramUrlId=&searchPartnerSiteId=&searchPartnerSitePageId=&searchJoinType=0&_searchJoinType=on" )
                                             ->crawler();
                         //echo $crawler->html();
-
-                        $crawler2 = $browser->visit( "https://affi.town/adserver/report/mc/impression.af" )
-                                            ->visit( "https://affi.town/adserver/report/mc/impression.af?advertiseId=" . $product_info->asp_product_id . "&mediaId=&fromDate=" . $s_date . "&toDate=" . $e_date )
-                                            ->type( '#all_display > p > input[type=search]', '合計' )
-                                            ->crawler();
+                        //アクティブ
+                        $crawler2 = $browser->visit(  "https://presco.ai/merchant/report/search?searchPeriodType=2&searchDateType=2&searchDateTimeFrom=" . $s_date . "&searchDateTimeTo=" . $e_date . "&searchItemType=0&searchLargeGenreId=&searchMediumGenreId=&searchSmallGenreId=&searchProgramId=" . $product_info->asp_product_id . "&searchProgramUrlId=&searchPartnerSiteId=&searchPartnerSitePageId=&searchJoinType=0&_searchJoinType=on"  )->crawler();
+                        
+                        $crawler3 = $browser->visit(  "https://presco.ai/merchant/report/search?searchPeriodType=2&searchDateType=2&searchDateTimeFrom=" . $s_date . "&searchDateTimeTo=" . $e_date . "&searchItemType=0&searchLargeGenreId=&searchMediumGenreId=&searchSmallGenreId=&searchProgramId=" . $product_info->asp_product_id . "&searchProgramUrlId=&searchPartnerSiteId=&searchPartnerSitePageId=&searchJoinType=1&_searchJoinType=on"  )->crawler();
                         //echo $crawler2->html();
                         /*
                         selector 設定
                         */
                         $selector1 = array(
-                            'click' => '#all_display > table > tbody > tr.visible.striped > td:nth-child(5)',
-                            'cv' => '#all_display > table > tbody > tr.visible.striped > td:nth-child(6)',
-                            //'price' => '#all_display > table > tbody > tr.visible.striped > td:nth-child(7)' 
+                            'click'     => '#reportTable > tbody > tr > td:nth-child(2) > div > div',
+                            'cv'        => '#reportTable > tbody > tr > td:nth-child(3) > div > div',
+                            'approval_price' => '#reportTable > tbody > tr > td:nth-child(6)',
+                            'price'     => '#reportTable > tbody > tr > td:nth-child(14)' 
                         );
                         
                         /*
-                        selector Imp 設定
+                        selector アクティブ数 設定
                         */
                         $selector2 = array(
-                             'imp' => '#all_display > table > tbody:nth-child(2) > tr.visible.striped > td:nth-child(5)',
+                             'active' => '#reportTable_info > div > span.num',
                         );
-                        
+                        /*
+                        selector 提携数 設定
+                        */
+                        $selector3 = array(
+                            'partnership' => '#reportTable_info > div > span.num',
+                       );
+                       
                         /*
                         $crawler　をフィルタリング
                         */
-                        $affitown_data = $crawler->each( function( Crawler $node ) use ($selector1, $product_info)
+                        $presco_data = $crawler->each( function( Crawler $node ) use ($selector1, $product_info)
                         {
                             
                             $data              = array( );
                             $data[ 'asp' ]     = $product_info->asp_id;
                             $data[ 'product' ] = $product_info->id;
-                            //$data['imp'] = 0;
                             $data[ 'date' ]    = date( 'Y-m-d', strtotime( '-1 day' ) );
                             
                             foreach ( $selector1 as $key => $value ) {
@@ -146,7 +150,7 @@ class PrescoController extends DailyCrawlerController
                         /*
                         $crawler(Imp)　をフィルタリング
                         */
-                        $affitown_data_imp = $crawler2->each( function( Crawler $node ) use ($selector2, $product_info)
+                        $presco_data2 = $crawler2->each( function( Crawler $node ) use ($selector2, $product_info)
                         {
                             
                             $data              = array( );
@@ -161,90 +165,108 @@ class PrescoController extends DailyCrawlerController
                             return $data;
                             
                         } );
+                        /*
+                        $crawler(Imp)　をフィルタリング
+                        */
+                        $presco_data3 = $crawler2->each( function( Crawler $node ) use ($selector3, $product_info)
+                        {
+                            
+                            $data              = array( );
+                            
+                            foreach ( $selector3 as $key => $value ) {
+                                if(count($node->filter( $value ))){
+                                    $data[ $key ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
+                                }else{
+                                    throw new \Exception($value.'要素が存在しません。');
+                                }
+                            } //$selector1 as $key => $value
+                            return $data;
+                            
+                        } );
                         //var_dump( $affitown_data_imp );
                         
                         /*
                         サイト抽出　
                         */
-                        $crawler_for_count_site = $browser->visit( "https://affi.town/adserver/merchant/join.af?joinApprove=2" )->crawler();
+                        // $crawler_for_count_site = $browser->visit( "https://affi.town/adserver/merchant/join.af?joinApprove=2" )->crawler();
                         
-                        $site_count = 1;
+                        // $site_count = 1;
                         
-                        while ( $crawler_for_count_site->filter( '#form_link_approval > table > tbody > tr:nth-child(' . $site_count . ') > td:nth-child(2)' )->count() == 1 ) {
-                            $site_count++;
-                        }
-                        //echo 'サイト件数：'.$site_count;
-                        $site_count--;
-                        //echo "カウントここ" . $site_count . "カウントここ";
+                        // while ( $crawler_for_count_site->filter( '#form_link_approval > table > tbody > tr:nth-child(' . $site_count . ') > td:nth-child(2)' )->count() == 1 ) {
+                        //     $site_count++;
+                        // }
+                        // //echo 'サイト件数：'.$site_count;
+                        // $site_count--;
+                        // //echo "カウントここ" . $site_count . "カウントここ";
                         
-                        $crawler_for_site = $browser->visit( "https://affi.town/adserver/report/mc/site.af?advertiseId=" . $product_info->asp_product_id . "&fromDate=" . $s_date . "&toDate=" . $e_date )->crawler();
-                            // ->type( '#all_display > p > input[type=search]', '合計' )->crawler();
-                        $i                = 1;
-                        //$selector_end = ;
-                        //echo $crawler_for_site->html();
-                        // #all_display > table > tbody > tr.last > td:nth-child(2) > a
+                        // $crawler_for_site = $browser->visit( "https://affi.town/adserver/report/mc/site.af?advertiseId=" . $product_info->asp_product_id . "&fromDate=" . $s_date . "&toDate=" . $e_date )->crawler();
+                        //     // ->type( '#all_display > p > input[type=search]', '合計' )->crawler();
+                        // $i                = 1;
+                        // //$selector_end = ;
+                        // //echo $crawler_for_site->html();
+                        // // #all_display > table > tbody > tr.last > td:nth-child(2) > a
 
-                        // サイト一覧の「合計」以外の前列を1列目から最終列まで一行一行スクレイピング
-                        while ( ($crawler_for_site->filter( '#all_display > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(1)' )->text()) !== '' ) {
-                            //echo $i;
+                        // // サイト一覧の「合計」以外の前列を1列目から最終列まで一行一行スクレイピング
+                        // while ( ($crawler_for_site->filter( '#all_display > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(1)' )->text()) !== '' ) {
+                        //     //echo $i;
                             
-                            $affitown_site[ $i ][ 'product' ] = $product_info->id;
-                            $affitown_site[ $i ][ 'asp' ]   = $product_info->asp_id;
-                            $affitown_site[ $i ][ 'imp' ]     = 0;
+                        //     $affitown_site[ $i ][ 'product' ] = $product_info->id;
+                        //     $affitown_site[ $i ][ 'asp' ]   = $product_info->asp_id;
+                        //     $affitown_site[ $i ][ 'imp' ]     = 0;
                             
-                            $selector_for_site = array(
-                                'media_id'  => '#all_display > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(1)',
-                                'site_name' => '#all_display > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(2) > a',
-                                'click'     => '#all_display > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(4)',
-                                'cv'        => '#all_display > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(5)',
-                                //'price' => '#all_display > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(6) > p' 
-                            );
+                        //     $selector_for_site = array(
+                        //         'media_id'  => '#all_display > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(1)',
+                        //         'site_name' => '#all_display > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(2) > a',
+                        //         'click'     => '#all_display > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(4)',
+                        //         'cv'        => '#all_display > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(5)',
+                        //         //'price' => '#all_display > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(6) > p' 
+                        //     );
                             
-                            foreach ( $selector_for_site as $key => $value ) {
-                                if(count($crawler_for_site->filter( $value ))){
-                                    if ( $key == 'site_name' ) {
-                                        $affitown_site[ $i ][ $key ] = trim( $crawler_for_site->filter( $value )->text() );
-                                    }
-                                    else {
-                                        $affitown_site[ $i ][ $key ] = trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) );
-                                    }
-                                }else{
-                                    throw new \Exception($value.'要素が存在しません。');
-                                }
-                            }
-                            $unit_price = $product_info->price;
-                            $affitown_site[ $i ][ 'price' ] = $unit_price * $affitown_site[ $i ][ 'cv' ];
+                        //     foreach ( $selector_for_site as $key => $value ) {
+                        //         if(count($crawler_for_site->filter( $value ))){
+                        //             if ( $key == 'site_name' ) {
+                        //                 $affitown_site[ $i ][ $key ] = trim( $crawler_for_site->filter( $value )->text() );
+                        //             }
+                        //             else {
+                        //                 $affitown_site[ $i ][ $key ] = trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) );
+                        //             }
+                        //         }else{
+                        //             throw new \Exception($value.'要素が存在しません。');
+                        //         }
+                        //     }
+                        //     $unit_price = $product_info->price;
+                        //     $affitown_site[ $i ][ 'price' ] = $unit_price * $affitown_site[ $i ][ 'cv' ];
 
-                            $calculated                       = json_decode( 
-                                                                    json_encode( 
-                                                                        json_decode( 
-                                                                            $this->dailySearchService
-                                                                                   ->cpa( $affitown_site[ $i ][ 'cv' ], $affitown_site[ $i ][ 'price' ], 7 ) 
-                                                                        ) 
-                                                                    ), True );
-                            $affitown_site[ $i ][ 'cpa' ]  = $calculated[ 'cpa' ]; //CPA
-                            $affitown_site[ $i ][ 'cost' ] = $calculated[ 'cost' ];
-                            $affitown_site[ $i ][ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
+                        //     $calculated                       = json_decode( 
+                        //                                             json_encode( 
+                        //                                                 json_decode( 
+                        //                                                     $this->dailySearchService
+                        //                                                            ->cpa( $affitown_site[ $i ][ 'cv' ], $affitown_site[ $i ][ 'price' ], 7 ) 
+                        //                                                 ) 
+                        //                                             ), True );
+                        //     $affitown_site[ $i ][ 'cpa' ]  = $calculated[ 'cpa' ]; //CPA
+                        //     $affitown_site[ $i ][ 'cost' ] = $calculated[ 'cost' ];
+                        //     $affitown_site[ $i ][ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
                             
-                            $i++;
+                        //     $i++;
                             
-                        } 
-                        //var_dump($affitown_site);
-                        $unit_price = $product_info->price;
-                        $affitown_data[ 0 ][ 'price' ] = $affitown_data[ 0 ][ 'cv' ] * $unit_price;
+                        // } 
+                        // //var_dump($affitown_site);
+                        // $unit_price = $product_info->price;
+                        // $affitown_data[ 0 ][ 'price' ] = $affitown_data[ 0 ][ 'cv' ] * $unit_price;
 
-                        $affitown_data[ 0 ][ 'partnership' ] = $site_count;
-                        $affitown_data[ 0 ][ 'active' ] = $i; //一覧をクロールした行数をサイト数としてカウント
-                        $affitown_data[ 0 ][ 'imp' ] = $affitown_data_imp[ 0 ][ 'imp' ];
+                        // $affitown_data[ 0 ][ 'partnership' ] = $site_count;
+                        // $affitown_data[ 0 ][ 'active' ] = $i; //一覧をクロールした行数をサイト数としてカウント
+                        // $affitown_data[ 0 ][ 'imp' ] = $affitown_data_imp[ 0 ][ 'imp' ];
 
-                        $calculated                      = json_decode( 
-                                                                json_encode( 
-                                                                    json_decode( 
-                                                                        $this->dailySearchService
-                                                                            ->cpa( $affitown_data[ 0 ][ 'cv' ], $affitown_data[ 0 ][ 'price' ], 7 ) 
-                                                                        ) ), True );
-                        $affitown_data[ 0 ][ 'cpa' ]  = $calculated[ 'cpa' ]; //CPA
-                        $affitown_data[ 0 ][ 'cost' ] = $calculated[ 'cost' ];
+                        // $calculated                      = json_decode( 
+                        //                                         json_encode( 
+                        //                                             json_decode( 
+                        //                                                 $this->dailySearchService
+                        //                                                     ->cpa( $affitown_data[ 0 ][ 'cv' ], $affitown_data[ 0 ][ 'price' ], 7 ) 
+                        //                                                 ) ), True );
+                        // $affitown_data[ 0 ][ 'cpa' ]  = $calculated[ 'cpa' ]; //CPA
+                        // $affitown_data[ 0 ][ 'cost' ] = $calculated[ 'cost' ];
 
 
                         //echo "<pre>";
@@ -255,8 +277,8 @@ class PrescoController extends DailyCrawlerController
                         /*
                         サイトデータ・日次データ保存
                         */
-                        $this->dailySearchService->save_site( json_encode( $affitown_site ) );
-                        $this->dailySearchService->save_daily( json_encode( $affitown_data ) );
+                        // $this->dailySearchService->save_site( json_encode( $affitown_site ) );
+                        // $this->dailySearchService->save_daily( json_encode( $affitown_data ) );
                         
                         //var_dump($crawler_for_site);
                     } //$product_infos as $product_info
@@ -266,7 +288,7 @@ class PrescoController extends DailyCrawlerController
                             'message' => $e->getMessage(),
                             'datetime' => date('Y-m-d H:i:s'),
                             'product_id' => $product_id,
-                            'asp' => 'アフィタウン',
+                            'asp' => 'プレスコ',
                             'type' => 'Daily',
                             ];
                             //echo $e->getMessage();
