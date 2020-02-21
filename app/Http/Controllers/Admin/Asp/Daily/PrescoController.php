@@ -183,7 +183,9 @@ class PrescoController extends DailyCrawlerController
                             return $data;
                             
                         } );
-                        //var_dump( $affitown_data_imp );
+                        var_dump( $presco_data );
+                        var_dump( $presco_data2 );
+                        var_dump( $presco_data3 );
                         
                         /*
                         サイト抽出　
