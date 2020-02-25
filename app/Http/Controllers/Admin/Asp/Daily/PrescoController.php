@@ -198,9 +198,9 @@ class PrescoController extends DailyCrawlerController
                             
                         // } );
                         var_dump( $presco_data );
-                        var_dump( $presco_data2 );
-                        var_dump( $presco_data3 );
-                        
+                        // var_dump( $presco_data2 );
+                        // var_dump( $presco_data3 );
+                        \Log::info($presco_data);
                         /*
                         サイト抽出　
                         */
@@ -210,20 +210,20 @@ class PrescoController extends DailyCrawlerController
                         $site_count = 1;
                         
                         //
-                        $presco_data = $crawler_for_count_site->each( function( Crawler $node ) use ($active_partnership_selector, $product_info)
-                        {
+                        // $presco_data = $crawler_for_count_site->each( function( Crawler $node ) use ($active_partnership_selector, $product_info)
+                        // {
 
                             
-                            foreach ( $selector1 as $key => $value ) {
-                                if(count($node->filter( $value ))){
-                                    $data[ $key ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
-                                }else{
-                                    throw new \Exception($value.'要素が存在しません。');
-                                }
-                            } //$selector1 as $key => $value
-                            return $data;
+                        //     foreach ( $selector1 as $key => $value ) {
+                        //         if(count($node->filter( $value ))){
+                        //             $data[ $key ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
+                        //         }else{
+                        //             throw new \Exception($value.'要素が存在しません。');
+                        //         }
+                        //     } //$selector1 as $key => $value
+                        //     return $data;
                             
-                        } );
+                        // } );
                         // while ( $crawler_for_count_site->filter( '#form_link_approval > table > tbody > tr:nth-child(' . $site_count . ') > td:nth-child(2)' )->count() == 1 ) {
                         //     $site_count++;
                         // }
@@ -242,7 +242,7 @@ class PrescoController extends DailyCrawlerController
                         // count == 1 →　提携数
                         
                         $cnt_site = $presco_data[ 0 ][ 'partnership' ];
-
+                        \Log::info($cnt_site);
                         // $active_partnership_selector = '#reportTable_info > div > span';
                         // $presco_data[$count] = $crawler_for_count_site->filter( $active_partnership_selector )->text();
                         $i = 1;
