@@ -240,16 +240,21 @@ class PrescoController extends DailyCrawlerController
                     // for($count = 0 ; $count < 2 ; $count++ ){
                         // count == 0 →　アクティブ数
                         // count == 1 →　提携数
-                        $crowle_url_for_site = "https://presco.ai/merchant/report/search?searchPeriodType=2&searchDateType=2&searchDateTimeFrom=" . $s_date . "&searchDateTimeTo=" . $e_date . "&searchItemType=2&searchLargeGenreId=&searchMediumGenreId=&searchSmallGenreId=&searchProgramId=" . $product_info->asp_product_id . "&searchProgramUrlId=&searchPartnerSiteId=&searchPartnerSitePageId=&searchJoinType=1&_searchJoinType=on";
-
-                        $crawler_for_site = $browser->visit( $crowle_url_for_site )->crawler();
+                        
+                        $cnt_site = $presco_data[ 0 ][ 'partnership' ];
 
                         // $active_partnership_selector = '#reportTable_info > div > span';
                         // $presco_data[$count] = $crawler_for_count_site->filter( $active_partnership_selector )->text();
-
+                        $i = 1;
                         //サイトのスクレイピングは２回目以降
-                        // if( $count == 1 ){
-                            
+                        $crowle_url_for_site = "https://presco.ai/merchant/report/search?searchPeriodType=2&searchDateType=2&searchDateTimeFrom=" . $s_date . "&searchDateTimeTo=" . $e_date . "&searchItemType=2&searchLargeGenreId=&searchMediumGenreId=&searchSmallGenreId=&searchProgramId=" . $product_info->asp_product_id . "&searchProgramUrlId=&searchPartnerSiteId=&searchPartnerSitePageId=&searchJoinType=1&_searchJoinType=on";
+                        
+                        if( $cnt_site > 10 ){
+                            $crawler_for_site = $browser->visit( $crowle_url_for_site )->select('reportTable_length', '100')->crawler();
+                        }else{
+                            $crawler_for_site = $browser->visit( $crowle_url_for_site )->crawler();
+                        }
+                        
                         // サイト一覧の「合計」以外の前列を1列目から最終列まで一行一行スクレイピング
                             while ( ($crowle_url_for_site->filter( '#reportTable > tbody > tr:nth-child(' . $i . ') > td:nth-child(5) > div > div' )->text()) !== '' ) {
                                 //echo $i;
