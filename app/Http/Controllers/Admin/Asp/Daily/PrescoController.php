@@ -92,7 +92,7 @@ class PrescoController extends DailyCrawlerController
                                             ->type( $product_info->asp->login_key, $product_info->login_value )
                                             ->type( $product_info->asp->password_key, $product_info->password_value )
                                             ->click( $product_info->asp->login_selector )
-                                            ->visit( $asp_info[0]['lp1_url'] )
+                                            ->visit( $product_info->asp->lp1_url )
                                             ->visit( "https://presco.ai/merchant/report/search?searchPeriodType=2&searchDateType=2&searchDateTimeFrom=" . $s_date . "&searchDateTimeTo=" . $e_date . "&searchItemType=0&searchLargeGenreId=&searchMediumGenreId=&searchSmallGenreId=&searchProgramId=" . $product_info->asp_product_id . "&searchProgramUrlId=&searchPartnerSiteId=&searchPartnerSitePageId=&searchJoinType=0&_searchJoinType=on" )
                                             ->crawler();
                         //echo $crawler->html();
