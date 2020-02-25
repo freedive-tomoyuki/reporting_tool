@@ -258,7 +258,9 @@ class PrescoController extends DailyCrawlerController
                         }else{
                             $crawler_for_site = $browser->visit( $crowle_url_for_site )->crawler();
                         }
-                        
+                        var_dump( $crowle_url_for_site );
+                        var_dump( $crawler_for_site );
+
                         // サイト一覧の「合計」以外の前列を1列目から最終列まで一行一行スクレイピング
                             while ( ($crowle_url_for_site->filter( '#reportTable > tbody > tr:nth-child(' . $i . ') > td:nth-child(5) > div > div' )->text()) !== '' ) {
                                 //echo $i;
