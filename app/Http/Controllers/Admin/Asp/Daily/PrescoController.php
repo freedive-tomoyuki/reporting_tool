@@ -105,10 +105,10 @@ class PrescoController extends DailyCrawlerController
                         selector 設定
                         */
                         $selector1 = array(
-                            'click'     => '#reportTable > tbody > tr > td:nth-child(2) > div > div',
-                            'cv'        => '#reportTable > tbody > tr > td:nth-child(3) > div > div',
-                            'approval_price' => '#reportTable > tbody > tr > td:nth-child(6)',
-                            'price'     => '#reportTable > tbody > tr > td:nth-child(14)' 
+                            'click'     => '#reportTable > tbody > tr:nth-child(1) > td:nth-child(2) > div > div',
+                            'cv'        => '#reportTable > tbody > tr:nth-child(1) > td:nth-child(3) > div > div',
+                            'approval_price' => '#reportTable > tbody > tr:nth-child(1) > td:nth-child(6)',
+                            'price'     => '#reportTable > tbody > tr:nth-child(1) > td:nth-child(14)' 
                         );
                         
                         /*
