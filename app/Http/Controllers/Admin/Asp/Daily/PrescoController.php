@@ -103,8 +103,8 @@ class PrescoController extends DailyCrawlerController
                         //echo $crawler2->html();
                         
                         \Log::info("https://presco.ai/merchant/report/search?searchPeriodType=2&searchDateType=2&searchDateTimeFrom=" . $s_date . "&searchDateTimeTo=" . $e_date . "&searchItemType=0&searchLargeGenreId=&searchMediumGenreId=&searchSmallGenreId=&searchProgramId=" . $product_info->asp_product_id . "&searchProgramUrlId=&searchPartnerSiteId=&searchPartnerSitePageId=&searchJoinType=0&_searchJoinType=on" );
-                        \Log::info($crawler);
-                        
+                        //\Log::info($crawler);
+
                         /*
                         selector 設定
                         */
