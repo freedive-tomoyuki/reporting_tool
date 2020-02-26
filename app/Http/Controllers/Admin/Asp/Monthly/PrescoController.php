@@ -81,13 +81,13 @@ class PrescoController extends MonthlyCrawlerController
                                             ->visit( "https://presco.ai/merchant/report/search?searchPeriodType=2&searchDateType=2&searchDateTimeFrom=" . $s_date . "&searchDateTimeTo=" . $e_date . "&searchItemType=0&searchLargeGenreId=&searchMediumGenreId=&searchSmallGenreId=&searchProgramId=" . $product_info->asp_product_id . "&searchProgramUrlId=&searchPartnerSiteId=&searchPartnerSitePageId=&searchJoinType=0&_searchJoinType=on" )
                                             ->crawler();
                         //先月分
-                        $crawler2 = $browser->visit(  "https://presco.ai/merchant/report/search?searchPeriodType=2&searchDateType=2&searchDateTimeFrom=" . $s_date . "&searchDateTimeTo=" . $e_date . "&searchItemType=0&searchLargeGenreId=&searchMediumGenreId=&searchSmallGenreId=&searchProgramId=" . $product_info->asp_product_id . "&searchProgramUrlId=&searchPartnerSiteId=&searchPartnerSitePageId=&searchJoinType=0&_searchJoinType=on" )->crawler();
+                        $crawler2 = $browser->visit(  "https://presco.ai/merchant/report/search?searchPeriodType=2&searchDateType=2&searchDateTimeFrom=" . $s_date_last_month . "&searchDateTimeTo=" . $e_date_last_month . "&searchItemType=0&searchLargeGenreId=&searchMediumGenreId=&searchSmallGenreId=&searchProgramId=" . $product_info->asp_product_id . "&searchProgramUrlId=&searchPartnerSiteId=&searchPartnerSitePageId=&searchJoinType=0&_searchJoinType=on" )->crawler();
                         
                         $selector   = array(
                             'approval' => '#reportTable > tbody > tr > td:nth-child(4) > div > div',
                             'approval_price' => '#reportTable > tbody > tr > td:nth-child(6)'
                         );
-                        var_dump($crawler);
+                        // var_dump($crawler);
                         \Log::info($selector);
                         \Log::info('point0.5');
                         //今月用のデータ取得selector
@@ -98,7 +98,8 @@ class PrescoController extends MonthlyCrawlerController
                             $data[ 'asp' ]     = $product_info->asp_id;
                             $data[ 'product' ] = $product_info->id;
                             // $unit_price = $product_info->price;
-
+                            \Log::info($data[ 'asp' ] );
+                            \Log::info($data[ 'product' ] );
                             $data[ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
 
                             // $value = $selector_this[ 'approval' ];
