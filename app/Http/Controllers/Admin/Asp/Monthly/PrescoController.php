@@ -146,15 +146,18 @@ class PrescoController extends MonthlyCrawlerController
                             return $data;
                             
                         } );
-                        var_dump($presco_data);
+                        // var_dump($presco_data);
                         \Log::info($presco_data);
-                        var_dump($presco_data2);
-                        var_dump($presco_data + $presco_data2);
+                        // var_dump($presco_data2);
+                        // var_dump($presco_data + $presco_data2);
+                        $presco_data = $presco_data + $presco_data2; 
                         // $array_site = array( );
                         // $presco_site = array( );
                         // $x = 0;
                         // //1回目：今月分　2回目：先月分
                         // \Log::info('1');
+
+                        $cnt = 1;
 
                         for ( $x = 0; $x < 2; $x++ ) {
                             $i = 1;
@@ -187,17 +190,17 @@ class PrescoController extends MonthlyCrawlerController
                             while ( $crawler_for_site->filter( '#reportTable > tbody > tr:nth-child(' . $i . ') > td:nth-child(5) > div > div' )->count() > 0 ) { //１行目が空になるまで
                                 
                             
-                                    $presco_site[ $i ][ 'product' ] = $product_info->id;
+                                    $presco_site[ $cnt ][ 'product' ] = $product_info->id;
                                     
                                     if ( $x == 0 ) {
-                                        $presco_site[ $i ][ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
+                                        $presco_site[ $cnt ][ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
                                     } 
                                     else {
                                         if ( date( 'Y/m/d' ) == date( 'Y/m/01' ) ) {
-                                            $presco_site[ $i ][ 'date' ] = date( 'Y-m-t', strtotime( '-2 month' ) );
+                                            $presco_site[ $cnt ][ 'date' ] = date( 'Y-m-t', strtotime( '-2 month' ) );
                                         }
                                         else {
-                                            $presco_site[ $i ][ 'date' ] = date( 'Y-m-d', strtotime( 'last day of previous month' ) );
+                                            $presco_site[ $cnt ][ 'date' ] = date( 'Y-m-d', strtotime( 'last day of previous month' ) );
                                         }
                                     }
                                     
@@ -212,18 +215,18 @@ class PrescoController extends MonthlyCrawlerController
                                         if(count($crawler_for_site->filter( $value ))){
                                             if ( $key == 'site_name' ) {
                                             
-                                                $presco_site[ $i ][ $key ] = trim( $crawler_for_site->filter( $value )->text() );
+                                                $presco_site[ $cnt ][ $key ] = trim( $crawler_for_site->filter( $value )->text() );
                                                 
                                             }
                                             elseif ( $key == 'approval_price' ) {
                                                 
-                                                $presco_site[ $i ][ $key ] = $this->monthlySearchService->calc_approval_price( 
+                                                $presco_site[ $cnt ][ $key ] = $this->monthlySearchService->calc_approval_price( 
                                                                                 trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) )
-                                                                            ,5);
+                                                                            ,14);
                                             } 
                                             else {
                                                 
-                                                $presco_site[ $i ][ $key ] = trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) );
+                                                $presco_site[ $cnt ][ $key ] = trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) );
                                             }
                                         }else{
                                             throw new \Exception($value.'要素が存在しません。');
@@ -233,9 +236,10 @@ class PrescoController extends MonthlyCrawlerController
                                 }
                             }
                             \Log::info($presco_site);
-                            var_dump($presco_site);
+                            var_dump($presco_data);
+                            
                         $this->monthlySearchService->save_site( json_encode( $presco_site ) );
-                        $this->monthlySearchService->save_monthly( json_encode( $presco_data2 ) );
+                        $this->monthlySearchService->save_monthly( json_encode( $presco_data ) );
                     } //$product_infos as $product_info
             }
             catch(\Exception $e){
