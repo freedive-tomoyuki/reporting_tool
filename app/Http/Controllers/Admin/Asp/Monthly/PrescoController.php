@@ -181,12 +181,9 @@ class PrescoController extends MonthlyCrawlerController
                                 }
                             }
                             $crowle_url_for_site = "https://presco.ai/merchant/report/search?searchPeriodType=2&searchDateType=2&searchDateTimeFrom=" . $s_date . "&searchDateTimeTo=" . $e_date . "&searchItemType=2&searchLargeGenreId=&searchMediumGenreId=&searchSmallGenreId=&searchProgramId=" . $product_info->asp_product_id . "&searchProgramUrlId=&searchPartnerSiteId=&searchPartnerSitePageId=&searchJoinType=1&_searchJoinType=on";
-                            if( $cnt_site > 10 ){
-                                $crawler_for_site = $browser->visit( $crowle_url_for_site )->select('reportTable_length', '100')->crawler();
-                            }else{
-                                $crawler_for_site = $browser->visit( $crowle_url_for_site )->crawler();
-                            }   
-
+                            
+                            $crawler_for_site = $browser->visit( $crowle_url_for_site )->crawler();
+                        
                             while ( $crawler_for_site->filter( '#reportTable > tbody > tr:nth-child(' . $i . ') > td:nth-child(5) > div > div' )->count() > 0 ) { //１行目が空になるまで
                                 
                             
