@@ -336,8 +336,8 @@ class PrescoController extends DailyCrawlerController
                         /*
                         サイトデータ・日次データ保存
                         */
-                        // $this->dailySearchService->save_site( json_encode( $affitown_site ) );
-                        // $this->dailySearchService->save_daily( json_encode( $affitown_data ) );
+                        $this->dailySearchService->save_site( json_encode( $presco_site ) );
+                        $this->dailySearchService->save_daily( json_encode( $presco_data ) );
                         
                         //var_dump($crawler_for_site);
                     } //$product_infos as $product_info
