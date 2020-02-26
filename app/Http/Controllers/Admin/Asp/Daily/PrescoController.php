@@ -318,7 +318,7 @@ class PrescoController extends DailyCrawlerController
 
                         $presco_data[ 0 ][ 'partnership' ] = $presco_data[0];
                         $presco_data[ 0 ][ 'active' ] = $presco_data[0]; //一覧をクロールした行数をサイト数としてカウント
-                        // $presco_data[ 0 ][ 'imp' ] = $affitown_data_imp[ 0 ][ 'imp' ];
+                        $presco_data[ 0 ][ 'imp' ] = 0;
 
                         $calculated                      = json_decode(
                                                                 json_encode(
