@@ -233,7 +233,7 @@ class PrescoController extends MonthlyCrawlerController
                                             throw new \Exception($value.'要素が存在しません。');
                                         }
                                     }
-                                    $i++;
+                                    $i++; $cnt++;
                                 }
                             }
                             \Log::info($presco_site);
