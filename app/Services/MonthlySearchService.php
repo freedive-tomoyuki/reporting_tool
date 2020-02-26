@@ -102,8 +102,8 @@ class MonthlySearchService
           
           $approval_rate = $approval_rate->groupby('product_id')->get()->toArray();
           //$approval_rate = json_decode(json_encode($approval_rate[0]), true);
-          //echo '承認率変換前';
-          //var_dump($approval_rate);
+          echo '承認率変換前';
+          var_dump($approval_rate);
 
           $rate = (empty($approval_rate[0]['rate']))? 0 : $approval_rate[0]['rate'];
 
