@@ -264,7 +264,7 @@ class PrescoController extends DailyCrawlerController
                         var_dump( $crawler_for_site );
                         echo 'point1';
                         // サイト一覧の「合計」以外の前列を1列目から最終列まで一行一行スクレイピング
-                            while ( ($crawler_for_site->filter( '#reportTable > tbody > tr:nth-child(' . $i . ') > td:nth-child(5) > div > div' )->text()) !== '' ) {
+                            while ( $crawler_for_site->filter( '#reportTable > tbody > tr:nth-child(' . $i . ') > td:nth-child(5) > div > div' )->count() > 0  ) {
                                 echo 'point'.$i;
                                 
                                 $presco_site[ $i ][ 'product' ] = $product_info->id;
