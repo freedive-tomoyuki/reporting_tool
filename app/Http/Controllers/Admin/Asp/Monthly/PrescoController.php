@@ -62,6 +62,11 @@ class PrescoController extends MonthlyCrawlerController
                         $e_date  = date( 'Y/m/d', strtotime( '-1 day' ) );
                     
                     }
+                    \Log::info($s_date_last_month);
+                    \Log::info($e_date_last_month);
+                    \Log::info($s_date);
+                    \Log::info($e_date);
+
                     foreach ( $product_infos as $product_info ) {
                         // /var_dump($product_info->asp);
                         //今月分
@@ -82,7 +87,7 @@ class PrescoController extends MonthlyCrawlerController
                             'approval' => '#reportTable > tbody > tr > td:nth-child(4) > div > div',
                             'approval_price' => '#reportTable > tbody > tr > td:nth-child(6)'
                         );
-                        
+                        var_dump($crawler);
                         \Log::info($selector);
                         \Log::info('point0.5');
                         //今月用のデータ取得selector
@@ -104,13 +109,13 @@ class PrescoController extends MonthlyCrawlerController
                             
                             if(count($node->filter( $selector['approval_price'] ))){
                                 $data[ 'approval_price' ]   = $this->monthlySearchService->calc_approval_price(
-                                                                    trim( preg_replace( '/[^0-9]/', '', $node->filter( $selector['approval_price'] )->text() ) ) ,2
+                                                                    trim( preg_replace( '/[^0-9]/', '', $node->filter( $selector['approval_price'] )->text() ) ) ,14
                                                                 );
                             }else{ throw new \Exception( $selector[ 'approval_price' ].'要素が存在しません。'); }
 
                         });
                         \Log::info('point1');
-                        $presco_data2 = $crawler2->each( function( Crawler $node ) use ($selector , $product_info)
+                        $presco_data2 = $crawler2->each( function( Crawler $node ) use ($selector )
                         {
                             // $data[ 'approval_price' ] = $data[ 'approval' ] * $unit_price;
 
@@ -128,7 +133,7 @@ class PrescoController extends MonthlyCrawlerController
 
                             if(count($node->filter( $selector['approval_price'] ))){
                                 $data[ 'last_approval_price' ]   = $this->monthlySearchService->calc_approval_price(
-                                                                    trim( preg_replace( '/[^0-9]/', '', $node->filter( $selector['approval_price'] )->text() ) ) ,2
+                                                                    trim( preg_replace( '/[^0-9]/', '', $node->filter( $selector['approval_price'] )->text() ) ) ,14
                                                                 );
                             }else{ throw new \Exception( $selector[ 'approval_price' ].'要素が存在しません。'); }
 
