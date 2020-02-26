@@ -88,7 +88,7 @@ class PrescoController extends DailyCrawlerController
                         \Log::info($product_info->asp_product_id);
                         \Log::info($s_date);
                         \Log::info($e_date);
-                        $crawler = $browser->visit($product_info->asp->login_url )
+                        $crawler = $browser->visit( $product_info->asp->login_url )
                                             ->type( $product_info->asp->login_key, $product_info->login_value )
                                             ->type( $product_info->asp->password_key, $product_info->password_value )
                                             ->click( $product_info->asp->login_selector )
@@ -116,21 +116,10 @@ class PrescoController extends DailyCrawlerController
                         );
                         
                         /*
-                        selector アクティブ数 設定
+                        selector アクティブ数/提携数 設定
                         */
-                        // $selector2 = array(
-                            //  'active' = '#reportTable_info > div > span.num',
-                        // );
+
                         $active_partnership_selector = '#reportTable_info > div > span.num';
-
-                        /*
-                        selector 提携数 設定
-                    //     */
-                    //     $selector3 = array(
-                    //         'partnership' => '#reportTable_info > div > span.num',
-                    //    );
-                    //    $active = '#reportTable_info > div > span.num';
-
                         /*
                         $crawler　をフィルタリング
                         */
@@ -169,80 +158,12 @@ class PrescoController extends DailyCrawlerController
                             throw new \Exception('提携数の要素が存在しません。');
                         }
 
-                        // $presco_data2 = $crawler2->each( function( Crawler $node ) use ($selector2, $product_info)
-                        // {
-                            
-                        //     $data              = array( );
-                            
-                        //     foreach ( $selector2 as $key => $value ) {
-                        //         if(count($node->filter( $value ))){
-                        //             $data[ $key ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
-                        //         }else{
-                        //             throw new \Exception($value.'要素が存在しません。');
-                        //         }
-                        //     } //$selector1 as $key => $value
-                        //     return $data;
-                            
-                        // } );
-                        /*
-                        $crawler(Pertnership)　をフィルタリング
-                        */
-                        // $presco_data3 = $crawler2->each( function( Crawler $node ) use ($selector3, $product_info)
-                        // {
-                            
-                        //     $data              = array( );
-                            
-                        //     foreach ( $selector3 as $key => $value ) {
-                        //         if(count($node->filter( $value ))){
-                        //             $data[ $key ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
-                        //         }else{
-                        //             throw new \Exception($value.'要素が存在しません。');
-                        //         }
-                        //     } //$selector1 as $key => $value
-                        //     return $data;
-                            
-                        // } );
                         var_dump( $presco_data );
-                        // var_dump( $presco_data2 );
-                        // var_dump( $presco_data3 );
                         \Log::info($presco_data);
                         /*
                         サイト抽出　
                         */
-                        
-                        
-                        
-                        $site_count = 1;
-                        
-                        //
-                        // $presco_data = $crawler_for_count_site->each( function( Crawler $node ) use ($active_partnership_selector, $product_info)
-                        // {
 
-                            
-                        //     foreach ( $selector1 as $key => $value ) {
-                        //         if(count($node->filter( $value ))){
-                        //             $data[ $key ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
-                        //         }else{
-                        //             throw new \Exception($value.'要素が存在しません。');
-                        //         }
-                        //     } //$selector1 as $key => $value
-                        //     return $data;
-                            
-                        // } );
-                        // while ( $crawler_for_count_site->filter( '#form_link_approval > table > tbody > tr:nth-child(' . $site_count . ') > td:nth-child(2)' )->count() == 1 ) {
-                        //     $site_count++;
-                        // }
-                        //echo 'サイト件数：'.$site_count;
-                        // $site_count--;
-                        //echo "カウントここ" . $site_count . "カウントここ";
-                        
-                        // $crawler_for_site = $browser->visit( "https://affi.town/adserver/report/mc/site.af?advertiseId=" . $product_info->asp_product_id . "&fromDate=" . $s_date . "&toDate=" . $e_date )->crawler();
-                            // ->type( '#all_display > p > input[type=search]', '合計' )->crawler();
-                        // $i                = 1;
-                        //$selector_end = ;
-                        //echo $crawler_for_site->html();
-                        // #all_display > table > tbody > tr.last > td:nth-child(2) > a
-                    // for($count = 0 ; $count < 2 ; $count++ ){
                         // count == 0 →　アクティブ数
                         // count == 1 →　提携数
                         
@@ -259,11 +180,7 @@ class PrescoController extends DailyCrawlerController
                         }else{
                             $crawler_for_site = $browser->visit( $crowle_url_for_site )->crawler();
                         }
-                        echo 'point0';
-                        var_dump( $crowle_url_for_site );
-                        echo 'point0.5';
-                        var_dump( $crawler_for_site );
-                        echo 'point1';
+
                         // サイト一覧の「合計」以外の前列を1列目から最終列まで一行一行スクレイピング
                             while ( $crawler_for_site->filter( '#reportTable > tbody > tr:nth-child(' . $i . ') > td:nth-child(5) > div > div' )->count() > 0  ) {
                                 echo 'point'.$i;
@@ -311,15 +228,6 @@ class PrescoController extends DailyCrawlerController
                                 $i++;
                                 
                             }
-                        
-                    
-                        //var_dump($affitown_site);
-                        // $unit_price = $product_info->price;
-                        // $presco_data[ 0 ][ 'price' ] = $presco_data[ 0 ][ 'cv' ] * $unit_price;
-
-                        // $presco_data[ 0 ][ 'partnership' ] = $presco_data[0];
-                        // $presco_data[ 0 ][ 'active' ] = $presco_data[0]; //一覧をクロールした行数をサイト数としてカウント
-                        
 
                         $calculated                      = json_decode(
                                                                 json_encode(
