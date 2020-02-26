@@ -87,14 +87,14 @@ class PrescoController extends MonthlyCrawlerController
                             'approval' => '#reportTable > tbody > tr > td:nth-child(4) > div > div',
                             'approval_price' => '#reportTable > tbody > tr > td:nth-child(6)'
                         );
-                        // var_dump($crawler);
+                        var_dump($crawler);
                         \Log::info($selector);
                         \Log::info('point0.5');
                         //今月用のデータ取得selector
                         $presco_data = $crawler->each( function( Crawler $node ) use ($selector, $product_info)
                         {
                             
-                            $data              = array( );
+                            // $data              = array();
                             $data[ 'asp' ]     = $product_info->asp_id;
                             $data[ 'product' ] = $product_info->id;
                             // $unit_price = $product_info->price;
@@ -113,8 +113,12 @@ class PrescoController extends MonthlyCrawlerController
                                                                     trim( preg_replace( '/[^0-9]/', '', $node->filter( $selector['approval_price'] )->text() ) ) ,14
                                                                 );
                             }else{ throw new \Exception( $selector[ 'approval_price' ].'要素が存在しません。'); }
+                            \Log::info($data[ 'approval' ] );
+                            \Log::info($data[ 'approval_price' ] );
+                            return $data;
 
                         });
+                        var_dump($presco_data);
                         \Log::info('point1');
                         $presco_data2 = $crawler2->each( function( Crawler $node ) use ($selector )
                         {
@@ -145,6 +149,7 @@ class PrescoController extends MonthlyCrawlerController
                         var_dump($presco_data);
                         \Log::info($presco_data);
                         var_dump($presco_data2);
+                        var_dump(array_merge($presco_data, $presco_data2));
                         // $array_site = array( );
                         // $presco_site = array( );
                         // $x = 0;
