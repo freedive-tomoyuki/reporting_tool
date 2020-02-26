@@ -141,7 +141,8 @@ class PrescoController extends DailyCrawlerController
                             $data[ 'asp' ]     = $product_info->asp_id;
                             $data[ 'product' ] = $product_info->id;
                             $data[ 'date' ]    = date( 'Y-m-d', strtotime( '-1 day' ) );
-                            
+                            $data[ 'imp' ] = 0;
+
                             foreach ( $selector1 as $key => $value ) {
                                 if(count($node->filter( $value ))){
                                     $data[ $key ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
@@ -316,9 +317,9 @@ class PrescoController extends DailyCrawlerController
                         // $unit_price = $product_info->price;
                         // $presco_data[ 0 ][ 'price' ] = $presco_data[ 0 ][ 'cv' ] * $unit_price;
 
-                        $presco_data[ 0 ][ 'partnership' ] = $presco_data[0];
-                        $presco_data[ 0 ][ 'active' ] = $presco_data[0]; //一覧をクロールした行数をサイト数としてカウント
-                        $presco_data[ 0 ][ 'imp' ] = 0;
+                        // $presco_data[ 0 ][ 'partnership' ] = $presco_data[0];
+                        // $presco_data[ 0 ][ 'active' ] = $presco_data[0]; //一覧をクロールした行数をサイト数としてカウント
+                        
 
                         $calculated                      = json_decode(
                                                                 json_encode(
