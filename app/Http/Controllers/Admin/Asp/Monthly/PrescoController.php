@@ -239,7 +239,7 @@ class PrescoController extends MonthlyCrawlerController
                             \Log::info($presco_site);
                             var_dump($presco_data);
                             var_dump($presco_site);
-                        $this->monthlySearchService->save_site( json_encode( $presco_site ) );
+                        // $this->monthlySearchService->save_site( json_encode( $presco_site ) );
                         $this->monthlySearchService->save_monthly( json_encode( $presco_data ) );
                     } //$product_infos as $product_info
             }
