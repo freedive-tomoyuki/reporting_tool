@@ -201,7 +201,7 @@ class MonthlySearchService
               'approval' => $data_array[0]['approval'],
           ]);
 
-        $rate = $this->calc_approval_rate($data_array[0]['product'],$data_array[0]['date']);
+        // $rate = $this->calc_approval_rate($data_array[0]['product'],$data_array[0]['date']);
         //echo '承認率'.$rate ;
 
         DB::table('monthlydatas')
