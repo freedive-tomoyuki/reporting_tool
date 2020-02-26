@@ -238,11 +238,11 @@ class PrescoController extends DailyCrawlerController
                         $presco_data[ 0 ][ 'cpa' ]  = $calculated[ 'cpa' ]; //CPA
                         $presco_data[ 0 ][ 'cost' ] = $calculated[ 'cost' ];
 
-                        echo 'point100';
-                        echo "<pre>";
-                        var_dump( $presco_data );
-                        var_dump( $presco_site );
-                        echo "</pre>";
+                        // echo 'point100';
+                        // echo "<pre>";
+                        // var_dump( $presco_data );
+                        // var_dump( $presco_site );
+                        // echo "</pre>";
 
                         /*
                         サイトデータ・日次データ保存
