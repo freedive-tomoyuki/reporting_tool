@@ -150,7 +150,8 @@ class PrescoController extends MonthlyCrawlerController
                         \Log::info($presco_data);
                         // var_dump($presco_data2);
                         // var_dump($presco_data + $presco_data2);
-                        $presco_data = $presco_data + $presco_data2; 
+                        $presco_data = $presco_data[0] + $presco_data2[0]; 
+
                         // $array_site = array( );
                         // $presco_site = array( );
                         // $x = 0;
