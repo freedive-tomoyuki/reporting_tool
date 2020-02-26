@@ -132,15 +132,17 @@ class PrescoController extends MonthlyCrawlerController
                             
                         } );
                         var_dump($presco_data);
+                        \Log::info($presco_data);
                         var_dump($presco_data2);
                         $array_site = array( );
                         $presco_site = array( );
                         $x = 0;
                         //1回目：今月分　2回目：先月分
+                        \Log::info('1');
 
                         for ( $x = 0; $x < 2; $x++ ) {
                             $i = 1;
-                        
+                            \Log::info('aaa'.$i);
                             if ( $x == 0 ) {//
                                 if ( date( 'Y/m/d' ) == date( 'Y/m/01' ) ) {
                                     $s_date     = date( 'Y/m/d', strtotime( 'first day of previous month' ) );
@@ -217,6 +219,7 @@ class PrescoController extends MonthlyCrawlerController
                                     $i++;
                                 }
                             }
+                            \Log::info($presco_site);
                             var_dump($presco_site);
                         $this->monthlySearchService->save_site( json_encode( $presco_site ) );
                         $this->monthlySearchService->save_monthly( json_encode( $presco_data2 ) );
