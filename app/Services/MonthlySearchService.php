@@ -35,9 +35,9 @@ class MonthlySearchService
 
     }
 
-/**
- 親案件IDとASPIDから案件IDを取得
-*/
+    /**
+    * 親案件IDとASPIDから案件IDを取得
+    */
     public function BasetoProduct($asp_id, $baseproduct){
         $converter = Product::select();
         $converter->where('product_base_id', $baseproduct);
@@ -46,9 +46,9 @@ class MonthlySearchService
         $converter = $converter->get()->toArray();
         return $converter[0]["id"];
     } 
-/**
- 案件IDからASPを取得
-*/
+    /**
+    * 案件IDからASPを取得
+    */
     public function filterAsp( $product_id ){
       $target_asp = Product::select('asp_id','name')
                   ->join('asps','products.asp_id','=','asps.id')
@@ -59,7 +59,7 @@ class MonthlySearchService
       return json_encode($target_asp);
     }
     /**
-    　ASPフィー＋FDフィー算出用の関数
+    *　ASPフィー＋FDフィー算出用の関数
     */
     public function calc_approval_price($approval_price ,$asp){
       $calData = array();
@@ -187,7 +187,7 @@ class MonthlySearchService
 
     }
 /**
-　月次の基本データの保存。日毎の承認件数、承認金額のアップロード
+*　月次の基本データの保存。日毎の承認件数、承認金額のアップロード
 
 */
     public function save_monthly($data){
@@ -214,7 +214,7 @@ class MonthlySearchService
     }
 
 /**
-　月次のサイト別データの保存。日毎の承認件数、承認金額のアップロード
+*　月次のサイト別データの保存。日毎の承認件数、承認金額のアップロード
 */
     public function save_site($data){
         
