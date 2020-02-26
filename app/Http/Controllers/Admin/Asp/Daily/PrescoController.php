@@ -258,12 +258,14 @@ class PrescoController extends DailyCrawlerController
                         }else{
                             $crawler_for_site = $browser->visit( $crowle_url_for_site )->crawler();
                         }
+                        echo 'point0';
                         var_dump( $crowle_url_for_site );
+                        echo 'point0.5';
                         var_dump( $crawler_for_site );
-
+                        echo 'point1';
                         // サイト一覧の「合計」以外の前列を1列目から最終列まで一行一行スクレイピング
                             while ( ($crawler_for_site->filter( '#reportTable > tbody > tr:nth-child(' . $i . ') > td:nth-child(5) > div > div' )->text()) !== '' ) {
-                                //echo $i;                          
+                                echo 'point'.$i;
                                 
                                 $presco_site[ $i ][ 'product' ] = $product_info->id;
                                 $presco_site[ $i ][ 'asp' ]   = $product_info->asp_id;
@@ -327,7 +329,7 @@ class PrescoController extends DailyCrawlerController
                         $presco_data[ 0 ][ 'cpa' ]  = $calculated[ 'cpa' ]; //CPA
                         $presco_data[ 0 ][ 'cost' ] = $calculated[ 'cost' ];
 
-
+                        echo 'point100';
                         echo "<pre>";
                         var_dump( $presco_data );
                         var_dump( $presco_site );
