@@ -85,7 +85,7 @@ class MoshimoController extends MonthlyCrawlerController
                             $moshimo_data[0][ 'date' ]       = date( 'Y/m/d', strtotime( '-1 day' ) );
                             
                             echo '<pre>';
-                            var_dump( $moshimo_data);
+                            var_dump( $crawler);
                             echo '</pre>';
 
                             if ( date( 'Y/m/d' ) == date( 'Y/m/01' ) ) {
