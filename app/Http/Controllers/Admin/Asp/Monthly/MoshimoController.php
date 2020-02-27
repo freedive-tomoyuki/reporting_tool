@@ -87,7 +87,11 @@ class MoshimoController extends MonthlyCrawlerController
                             $moshimo_data[0][ 'asp' ]     = $product_info->asp_id;
                             $moshimo_data[0][ 'product' ] = $product_info->id;
                             $moshimo_data[0][ 'date' ]       = date( 'Y/m/d', strtotime( '-1 day' ) );
-                            
+                            $moshimo_data[0][ 'approval' ]   = 0;
+                            $moshimo_data[0][ 'approval_price' ] = 0;
+                            $moshimo_data[0][ 'last_approval' ]    = 0;
+                            $moshimo_data[0][ 'last_approval_price' ] = 0;
+
                             echo '<pre>';
                             echo $url ;
                             var_dump( $crawler);
