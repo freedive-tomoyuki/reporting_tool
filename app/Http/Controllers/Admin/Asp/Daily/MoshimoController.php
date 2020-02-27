@@ -95,7 +95,7 @@ class MoshimoController extends DailyCrawlerController
                                             ->visit( "https://secure.moshimo.com/af/merchant/index" )
                                             ->crawler();
                         //echo $crawler->html();
-
+                        echo "クロールクリア";
                         // $crawler2 = $browser->visit( "https://affi.town/adserver/report/mc/impression.af" )
                         //                     ->visit( "https://affi.town/adserver/report/mc/impression.af?advertiseId=" . $product_info->asp_product_id . "&mediaId=&fromDate=" . $s_date . "&toDate=" . $e_date )
                         //                     ->type( '#all_display > p > input[type=search]', '合計' )
@@ -170,14 +170,16 @@ class MoshimoController extends DailyCrawlerController
                         $url = "https://secure.moshimo.com/af/merchant/report/kpi/site?promotion_id=" . $product_info->asp_product_id . "&from_date=" . $s_date . "&to_date=" . $e_date ;
                         $crawler = $browser->visit( $url )->crawler();
                         
-                            
+                        var_dump($crawler );
                         $moshimo_data[0][ 'asp' ]     = $product_info->asp_id;
                         $moshimo_data[0][ 'product' ] = $product_info->id;
                         $moshimo_data[0][ 'date' ]       = date( 'Y-m-d', strtotime( '-1 day' ) );
+                        echo "２クロールクリア";
 
                         // サイト一覧の「合計」以外の前列を1列目から最終列まで一行一行スクレイピング
                         while ( $crawler->filter( '#report > div.result > table > tbody > tr:nth-child('.$i.') > td.value-name > div > p:nth-child(1) > a' )->count() > 0 ) {
                             //echo $i;
+                            echo "ループクロール中(".$i.")";
                             
                             $moshimo_site[ $i ][ 'product' ] = $product_info->id;
                             $moshimo_site[ $i ][ 'asp' ]   = $product_info->asp_id;
@@ -193,6 +195,8 @@ class MoshimoController extends DailyCrawlerController
                             );
                             
                             foreach ( $selector_for_site as $key => $value ) {
+                                echo "Filterループクロール中(".$key.")";
+
                                 if(count($crawler->filter( $value ))){
                                     if ( $key == 'site_name' ) {
                                         $moshimo_site[ $i ][ $key ] = trim( $crawler->filter( $value )->text() );
@@ -216,7 +220,7 @@ class MoshimoController extends DailyCrawlerController
                                     throw new \Exception($value.'要素が存在しません。');
                                 }
                             }
-                            
+                            echo "Filterループクロール済";
                             $calculated                       = json_decode( 
                                                                     json_encode( 
                                                                         json_decode( 
@@ -236,14 +240,14 @@ class MoshimoController extends DailyCrawlerController
                         // $moshimo_data[ 0 ][ 'partnership' ] = $site_count;
                         // $moshimo_data[ 0 ][ 'active' ] = $i; //一覧をクロールした行数をサイト数としてカウント
 
-                        $calculated                      = json_decode( 
-                                                                json_encode( 
-                                                                    json_decode( 
-                                                                        $this->dailySearchService
-                                                                            ->cpa( $moshimo_data[ 0 ][ 'cv' ], $moshimo_data[ 0 ][ 'price' ], 13 ) 
-                                                                        ) ), True );
-                        $moshimo_data[ 0 ][ 'cpa' ]  = $calculated[ 'cpa' ]; //CPA
-                        $moshimo_data[ 0 ][ 'cost' ] = $calculated[ 'cost' ];
+                        // $calculated                      = json_decode( 
+                        //                                         json_encode( 
+                        //                                             json_decode( 
+                        //                                                 $this->dailySearchService
+                        //                                                     ->cpa( $moshimo_data[ 0 ][ 'cv' ], $moshimo_data[ 0 ][ 'price' ], 13 ) 
+                        //                                                 ) ), True );
+                        // $moshimo_data[ 0 ][ 'cpa' ]  = $calculated[ 'cpa' ]; //CPA
+                        // $moshimo_data[ 0 ][ 'cost' ] = $calculated[ 'cost' ];
 
 
                         //echo "<pre>";
