@@ -102,7 +102,7 @@ class MoshimoController extends DailyCrawlerController
                         $selector = '#affiliate-search > div:nth-child(4) > p.total';
 
                         if(count($crawler2->filter( $selector ))){
-                            $site_count_source = trim( preg_replace( '/[^0-9]/', '', $crawler2->filter( $selector )->text() ) );
+                            $site_count_source = trim( $crawler2->filter( $selector )->text() ) ;
                             var_dump($site_count_source); 
                             preg_match( '/\d+件中/', $site_count_source, $partnership_count_source_array );
                             echo "提携数（";
