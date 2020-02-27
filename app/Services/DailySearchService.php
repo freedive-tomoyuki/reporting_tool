@@ -23,7 +23,10 @@ class DailySearchService
 
         $asp_name = $this->filterAsp($product);
         $asp_array = json_decode($asp_name,true);
-        var_dump(array_unique($asp_array));
+        var_dump($asp_array);
+        echo gettype($asp_array);
+        var_dump(array_unique($asp_array, SORT_REGULAR));
+
         foreach ($asp_array as $name){
             $functionName = str_replace(' ', '' ,mb_strtolower($name["name"]));
             $className = 'App\Http\Controllers\Admin\Asp\Daily'. '\\'.str_replace(' ', '' ,$name["name"]).'Controller';
