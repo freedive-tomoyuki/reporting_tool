@@ -26,7 +26,7 @@ class MonthlySearchService
         $asp_array = json_decode($asp_name,true);
 
         $asp_array = array_unique($asp_array, SORT_REGULAR);
-        var_dump($asp_array);
+        // var_dump($asp_array);
         foreach($asp_array as $name){
             $functionName = str_replace(' ', '' ,mb_strtolower($name["name"]));
             $className = 'App\Http\Controllers\Admin\Asp\Monthly'. '\\'.str_replace(' ', '' ,$name["name"]).'Controller';
@@ -46,7 +46,8 @@ class MonthlySearchService
         $converter->where('asp_id', $asp_id );
         $converter->where('killed_flag', 0 );
         $converter = $converter->get()->toArray();
-        return $converter[0]["id"];
+        // return $converter[0]["id"];
+        return json_encode($converter);
     } 
     /**
     * 案件IDからASPを取得
