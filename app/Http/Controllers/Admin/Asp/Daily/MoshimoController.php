@@ -164,7 +164,7 @@ class MoshimoController extends DailyCrawlerController
                         //var_dump( $affitown_data_imp );
                         
                         /*
-                        サイト抽出　
+                        *　１〜昨日付データ＋サイト抽出　
                         */
                         $i =  1;
                         $url = "https://secure.moshimo.com/af/merchant/report/kpi/site?promotion_id=" . $product_info->asp_product_id . "&from_date=" . $s_date . "&to_date=" . $e_date ;
@@ -250,16 +250,29 @@ class MoshimoController extends DailyCrawlerController
                         //var_dump($affitown_site);
                         
                         // $moshimo_data[ 0 ][ 'partnership' ] = $site_count;
-                        // $moshimo_data[ 0 ][ 'active' ] = $i; //一覧をクロールした行数をサイト数としてカウント
+                        $moshimo_data[ 0 ][ 'active' ] = $i; //一覧をクロールした行数をサイト数としてカウント
+                        $partner_url = "https://secure.moshimo.com/af/merchant/affiliate/search?apply_status=2&promotion_id=" . $product_info->asp_product_id;
+                        
+                        $crawler2 = $browser->visit( $partner_url )->crawler();
+                        $value = '#affiliate-search > div:nth-child(4) > p.total';
 
-                        // $calculated                      = json_decode( 
-                        //                                         json_encode( 
-                        //                                             json_decode( 
-                        //                                                 $this->dailySearchService
-                        //                                                     ->cpa( $moshimo_data[ 0 ][ 'cv' ], $moshimo_data[ 0 ][ 'price' ], 13 ) 
-                        //                                                 ) ), True );
-                        // $moshimo_data[ 0 ][ 'cpa' ]  = $calculated[ 'cpa' ]; //CPA
-                        // $moshimo_data[ 0 ][ 'cost' ] = $calculated[ 'cost' ];
+                        if(count($crawler2->filter( $value ))){
+                            $site_count_source = trim( preg_replace( '/[^0-9]/', '', $crawler2->filter( $value )->text() ) );
+                            preg_match( '/\d+件中/', $site_count_source, $partnership_count_source_array );
+                            var_dump($partnership_count_source_array);
+                            $moshimo_site[0]['partnership'] = $partnership_count_source_array[ 1 ];
+                        }else{
+                            throw new \Exception($value.'要素が存在しません。');
+                        }
+                        
+                        $calculated                      = json_decode( 
+                                                                json_encode( 
+                                                                    json_decode( 
+                                                                        $this->dailySearchService
+                                                                            ->cpa( $moshimo_data[ 0 ][ 'cv' ], $moshimo_data[ 0 ][ 'price' ], 13 ) 
+                                                                        ) ), True );
+                        $moshimo_data[ 0 ][ 'cpa' ]  = $calculated[ 'cpa' ]; //CPA
+                        $moshimo_data[ 0 ][ 'cost' ] = $calculated[ 'cost' ];
 
 
                         //echo "<pre>";
