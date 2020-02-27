@@ -57,6 +57,7 @@ class MoshimoController extends DailyCrawlerController
         */
         $client = new Client( new Chrome( $options ) );
         
+        
         /*
         Chromeドライバー実行
         　引数
