@@ -166,6 +166,7 @@ class MoshimoController extends DailyCrawlerController
                         /*
                         サイト抽出　
                         */
+                        $i =  1;
                         $url = "https://secure.moshimo.com/af/merchant/report/kpi/site?promotion_id=" . $product_info->asp_product_id . "&from_date=" . $s_date . "&to_date=" . $e_date ;
                         $crawler = $browser->visit( $url )->crawler();
                         
@@ -232,8 +233,8 @@ class MoshimoController extends DailyCrawlerController
                         } 
                         //var_dump($affitown_site);
                         
-                        $moshimo_data[ 0 ][ 'partnership' ] = $site_count;
-                        $moshimo_data[ 0 ][ 'active' ] = $i; //一覧をクロールした行数をサイト数としてカウント
+                        // $moshimo_data[ 0 ][ 'partnership' ] = $site_count;
+                        // $moshimo_data[ 0 ][ 'active' ] = $i; //一覧をクロールした行数をサイト数としてカウント
 
                         $calculated                      = json_decode( 
                                                                 json_encode( 
