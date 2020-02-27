@@ -104,7 +104,7 @@
                             </div>
                         </div> 
                         <div class="form-group row">
-                            <label for="price" class="col-md-4 col-form-label text-md-right" >単価<font style="color:red">*</font></label>
+                            <label for="price" class="col-md-4 col-form-label text-md-right" >単価</label>
                             <div class="col-md-6">
                                 <input id="price" type="text" class="form-control" name="price" value="{{ $products[0]['price'] }}">
                             </div>
