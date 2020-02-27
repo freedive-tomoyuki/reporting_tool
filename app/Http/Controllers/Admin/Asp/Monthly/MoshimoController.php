@@ -96,7 +96,7 @@ class MoshimoController extends MonthlyCrawlerController
                             }
 
                             //切り口：サイト別の表をスクレイピング
-                            while ( $crawler->filter( '#report > div.result > table > tbody > tr:nth-child('.$i.') > td.value-name > div > p:nth-child(1) > a' )->count() > 0 ) {
+                            while ( $crawler->filter( '#report > div.result > table > tbody > tr:nth-child('.$i.') > td.value-approve > div > p:nth-child(1)' )->count() > 0 ) {
                                 //echo $i;
                                 echo "ループクロール中(".$i.")";
                                 
@@ -180,7 +180,7 @@ class MoshimoController extends MonthlyCrawlerController
                             'message' => $e->getMessage(),
                             'datetime' => date('Y-m-d H:i:s'),
                             'product_id' => $product_id,
-                            'asp' => 'フェルマ',
+                            'asp' => 'もしも',
                             'type' => 'Monthly',
                             ];
                             //echo $e->getMessage();
