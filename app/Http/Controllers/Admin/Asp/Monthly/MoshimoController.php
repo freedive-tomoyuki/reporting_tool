@@ -107,9 +107,9 @@ class MoshimoController extends MonthlyCrawlerController
                                 
                                 $moshimo_site[ $count ][ 'product' ] = $product_info->id;
                                 $moshimo_site[ $count ][ 'asp' ]   = $product_info->asp_id;
-                                if ( $x == 0 ) {
+                                if ( $y == 0 ) {
                                     $moshimo_site[ $count ][ 'date' ] = date( 'Y/m/d', strtotime( '-1 day' ) );
-                                } //$x == 0
+                                }
                                 else { //2周目
                                     if ( date( 'Y/m/d' ) == date( 'Y/m/01' ) ) {
                                         $moshimo_site[ $count ][ 'date' ] = date( 'Y/m/t', strtotime( '-2 month' ) );
