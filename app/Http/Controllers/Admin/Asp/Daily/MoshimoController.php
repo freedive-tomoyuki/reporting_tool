@@ -26,7 +26,7 @@ class MoshimoController extends DailyCrawlerController
 {
     
     /**
-    Moshimo
+    * Moshimo
     */
     public function moshimo( $product_base_id ) //OK
     {
@@ -146,21 +146,21 @@ class MoshimoController extends DailyCrawlerController
                         /*
                         $crawler(Imp)　をフィルタリング
                         */
-                        $affitown_data_imp = $crawler2->each( function( Crawler $node ) use ($selector2, $product_info)
-                        {
+                        // $affitown_data_imp = $crawler2->each( function( Crawler $node ) use ($selector2, $product_info)
+                        // {
                             
-                            $data              = array( );
+                        //     $data              = array( );
                             
-                            foreach ( $selector2 as $key => $value ) {
-                                if(count($node->filter( $value ))){
-                                    $data[ $key ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
-                                }else{
-                                    throw new \Exception($value.'要素が存在しません。');
-                                }
-                            } //$selector1 as $key => $value
-                            return $data;
+                        //     foreach ( $selector2 as $key => $value ) {
+                        //         if(count($node->filter( $value ))){
+                        //             $data[ $key ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
+                        //         }else{
+                        //             throw new \Exception($value.'要素が存在しません。');
+                        //         }
+                        //     } //$selector1 as $key => $value
+                        //     return $data;
                             
-                        } );
+                        // } );
                         //var_dump( $affitown_data_imp );
                         
                         /*
