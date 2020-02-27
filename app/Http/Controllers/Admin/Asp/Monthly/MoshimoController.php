@@ -100,8 +100,8 @@ class MoshimoController extends MonthlyCrawlerController
                                 //echo $i;
                                 echo "ループクロール中(".$i.")";
                                 
-                                $moshimo_site[ $i ][ 'product' ] = $product_info->id;
-                                $moshimo_site[ $i ][ 'asp' ]   = $product_info->asp_id;
+                                $moshimo_site[ $count ][ 'product' ] = $product_info->id;
+                                $moshimo_site[ $count ][ 'asp' ]   = $product_info->asp_id;
                                 if ( $x == 0 ) {
                                     $moshimo_site[ $count ][ 'date' ] = date( 'Y/m/d', strtotime( '-1 day' ) );
                                 } //$x == 0
@@ -139,18 +139,18 @@ class MoshimoController extends MonthlyCrawlerController
                                                                                 trim( preg_replace( '/[^0-9]/', '', $crawler->filter( $value )->text() ) )
                                                                             ,13);
                                             if( $y == 0 ){
-                                                $moshimo_data[0][ 'approval_price' ] += ( is_numeric($moshimo_site[ $i ][ $key ]))? $moshimo_site[ $i ][ $key ] : 0;
+                                                $moshimo_data[0][ 'approval_price' ] += ( is_numeric($moshimo_site[ $count ][ $key ]))? $moshimo_site[ $count ][ $key ] : 0;
                                             }else{
-                                                $moshimo_data[0][ 'last_approval_price' ] += ( is_numeric($moshimo_site[ $i ][ $key ]))? $moshimo_site[ $i ][ $key ] : 0;
+                                                $moshimo_data[0][ 'last_approval_price' ] += ( is_numeric($moshimo_site[ $count ][ $key ]))? $moshimo_site[ $count ][ $key ] : 0;
                                             }
                                         }
                                         else {
                                             $moshimo_site[ $count ][ $key ] =  trim( preg_replace( '/[^0-9]/', '', $crawler->filter( $value )->text() ) );
                                                                     
                                             if($key == 'approval' &&  $y == 0){
-                                                $moshimo_data[0][ 'approval' ]   += ( is_numeric($moshimo_site[ $i ][ $key ]))? $moshimo_site[ $i ][ $key ] : 0;
+                                                $moshimo_data[0][ 'approval' ]   += ( is_numeric($moshimo_site[ $count ][ $key ]))? $moshimo_site[ $count ][ $key ] : 0;
                                             }elseif($key == 'approval' &&  $y == 1){
-                                                $moshimo_data[0][ 'last_approval' ] += ( is_numeric($moshimo_site[ $i ][ $key ]))? $moshimo_site[ $i ][ $key ] : 0;
+                                                $moshimo_data[0][ 'last_approval' ] += ( is_numeric($moshimo_site[ $count ][ $key ]))? $moshimo_site[ $count ][ $key ] : 0;
                                             }
                                             
                                         }
