@@ -109,9 +109,9 @@ class MoshimoController extends DailyCrawlerController
                             echo "提携数（";
                             var_dump($partnership_count_source_array);
                             echo ')';
-                            $moshimo_site[0]['partnership'] =  preg_replace( '/[^0-9]/', '', $partnership_count_source_array[ 0 ]);
+                            $moshimo_data[0]['partnership'] =  preg_replace( '/[^0-9]/', '', $partnership_count_source_array[ 0 ]);
                             echo "提携数（";
-                            var_dump($moshimo_site[0]['partnership']);
+                            var_dump($moshimo_data[0]['partnership']);
                             echo ')';
                         }else{
                             throw new \Exception($value.'要素が存在しません。');
@@ -293,8 +293,8 @@ class MoshimoController extends DailyCrawlerController
                         /*
                         サイトデータ・日次データ保存
                         // */
-                        // $this->dailySearchService->save_site( json_encode( $moshimo_site ) );
-                        // $this->dailySearchService->save_daily( json_encode( $moshimo_data ) );
+                        $this->dailySearchService->save_site( json_encode( $moshimo_site ) );
+                        $this->dailySearchService->save_daily( json_encode( $moshimo_data ) );
                         
                         //var_dump($crawler_for_site);
                     } //$product_infos as $product_info
