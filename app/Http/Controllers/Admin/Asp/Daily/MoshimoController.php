@@ -246,24 +246,25 @@ class MoshimoController extends DailyCrawlerController
                             
                             $i++;
                             
-                        } 
+                        }
                         //var_dump($affitown_site);
                         
                         // $moshimo_data[ 0 ][ 'partnership' ] = $site_count;
                         $moshimo_data[ 0 ][ 'active' ] = $i; //一覧をクロールした行数をサイト数としてカウント
-                        $partner_url = "https://secure.moshimo.com/af/merchant/affiliate/search?apply_status=2&promotion_id=" . $product_info->asp_product_id;
-                        
-                        $crawler2 = $browser->visit( $partner_url )->crawler();
-                        $selector = '#affiliate-search > div:nth-child(4) > p.total';
+                        // var_dump( $moshimo_data );
 
-                        if(count($crawler2->filter( $selector ))){
-                            $site_count_source = trim( preg_replace( '/[^0-9]/', '', $crawler2->filter( $selector )->text() ) );
-                            preg_match( '/\d+件中/', $site_count_source, $partnership_count_source_array );
-                            var_dump($partnership_count_source_array);
-                            $moshimo_site[0]['partnership'] = $partnership_count_source_array[ 1 ];
-                        }else{
-                            throw new \Exception($value.'要素が存在しません。');
-                        }
+                        // $partner_url = "https://secure.moshimo.com/af/merchant/affiliate/search?apply_status=2&promotion_id=" . $product_info->asp_product_id;
+                        // $crawler2 = $browser->visit( $partner_url )->crawler();
+                        // $selector = '#affiliate-search > div:nth-child(4) > p.total';
+
+                        // if(count($crawler2->filter( $selector ))){
+                        //     $site_count_source = trim( preg_replace( '/[^0-9]/', '', $crawler2->filter( $selector )->text() ) );
+                        //     preg_match( '/\d+件中/', $site_count_source, $partnership_count_source_array );
+                        //     var_dump($partnership_count_source_array);
+                        //     $moshimo_site[0]['partnership'] = $partnership_count_source_array[ 1 ];
+                        // }else{
+                        //     throw new \Exception($value.'要素が存在しません。');
+                        // }
                         
                         $calculated                      = json_decode( 
                                                                 json_encode( 
