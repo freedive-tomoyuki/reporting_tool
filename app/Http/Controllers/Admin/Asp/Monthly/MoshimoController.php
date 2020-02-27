@@ -41,7 +41,7 @@ class MoshimoController extends MonthlyCrawlerController
         
         //案件の大本IDからASP別のプロダクトIDを取得
         $products = json_decode($this->monthlySearchService->BasetoProduct( 13, $product_base_id ),true);
-        var_dump($products);
+        // var_dump($products);
         // Chromeドライバーのインスタンス呼び出し
         $client = new Client( new Chrome( $options ) );
         foreach($products as $p ){
