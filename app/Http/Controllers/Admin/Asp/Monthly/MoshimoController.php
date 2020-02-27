@@ -22,20 +22,7 @@ use DB;
 
 class MoshimoController extends MonthlyCrawlerController
 {
-//再現性のある数値を生成 サイトIDとして適用
-    public function siteCreate($siteName,$seed){
-      $siteId='';
-      //echo $siteName;
-      mt_srand($seed, MT_RAND_MT19937);
-      foreach(str_split($siteName) as $char) {
-            $char_array[] = ord($char) + mt_rand(0, 255) ;
-      }
-      //var_dump($char_array);
-      $siteId = mb_substr(implode($char_array),0,100);
-      //echo $siteId;
 
-      return $siteId;
-    }    
     public function moshimo( $product_base_id ) //OK
     {
 
@@ -63,187 +50,128 @@ class MoshimoController extends MonthlyCrawlerController
         {
             try{
                     $product_infos = \App\Product::all()->where( 'id', $product_id );
-                    $felmat_data = array();
 
                     foreach ( $product_infos as $product_info ) {
-                        
-                        for ( $x = 0; $x < 2; $x++ ) {
-                                if ( $x == 0 ) {
-                                    $first = date( 'Y-m-01', strtotime( '-1 day' ) );
-                                    $end = date( 'Y-m-d', strtotime( '-1 day' ) );
-                                }
-                                else {
-                                    
-                                    if ( date( 'Y/m/d' ) == date( 'Y/m/01' ) ) {
-                                        $first = date( 'Y-m-01', strtotime( '-2 month' ) );
-                                        $end = date( 'Y-m-t', strtotime( '-2 month' ) );
-                                    } //date( 'Y/m/d' ) == date( 'Y/m/01' )
-                                    else {
-                                        $first = date( 'Y-m-01', strtotime( 'first day of previous month' ) );
-                                        $end = date( 'Y-m-t', strtotime( 'last day of previous month' ) );
-                                    }
-                                    
-                                }
-                            
-                            $crawler = $browser->visit($product_info->asp->login_url)//https://secure.moshimo.com/af/merchant/login2
-                                ->type($product_info->asp->login_key, $product_info->login_value)//#login-form > table > tbody > tr:nth-child(1) > td > input[type=text]
-                                ->type($product_info->asp->password_key, $product_info->password_value)//#login-form > table > tbody > tr:nth-child(2) > td > input[type=password]
-                                ->click($product_info->asp->login_selector)//#login-form > table > tbody > tr:nth-child(3) > td > input[type=submit]
-                                ->visit("https://secure.moshimo.com/af/merchant/report/integrate")
-                                ->type('#search > div > div:nth-child(2) > div.col-sm-4.form-inline > div > input:nth-child(1)', $first)
-                                ->type('#search > div > div:nth-child(2) > div.col-sm-4.form-inline > div > input:nth-child(3)', $end)
-                                ->click('#sel_promotion_id_chosen')
-                                ->click($product_info->product_order)
-                                ->click('#view > div > button.btn.btn-primary.btn-sm')
-                                ->crawler();
-
-
-                            $selector   = array(
-                                    'approval' => '#report > div > table > tfoot > tr > th:nth-child(8)', 
-                                    'approval_price' => '#report > div > table > tfoot > tr > th:nth-child(9)'
-                            );
-
-
-                            //今月・先月用のデータ取得selector
-                            $crawler_data[$x] = $crawler->each( function( Crawler $node ) use ($selector, $product_info, $end){
-                                
-                                $data              = array( );
-                                $data[ 'asp' ]     = $product_info->asp_id;
-                                $data[ 'product' ] = $product_info->id;
-
-
-                                $unit_price = $product_info->price;
-                                $data[ 'date' ] = $end;
-
-                                if(count($node->filter( $selector['approval'] ))){
-                                    $data[ 'approval' ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $selector['approval'] )->text() ) );
-                                }else{ throw new \Exception( $selector['approval'].'要素が存在しません。'); }
-                            
-                                $data[ 'approval_price' ] = $data[ 'approval' ] * $unit_price;
-
-                                return $data;
-                            });
-                        }
-                        //var_dump($crawler_data);
-                        foreach ($crawler_data as $value){
-                            array_push($felmat_data , $value[0]);
-                        }
                         // $crawler サイト用　をフィルタリング
                         
                         $count           = 0;
-
+                        //０：今月分のデータ取得　１：先月のデータ取得
+                        
                         for ( $y = 0; $y < 2; $y++ ) {
+                            //検索用の日付取得
                             if ( $y == 0 ) {
-                                $first = date( 'Y-m-01', strtotime( '-1 day' ) );
-                                $end = date( 'Y-m-d', strtotime( '-1 day' ) );
+                                $s_date = date( 'Y/m/01', strtotime( '-1 day' ) );
+                                $e_date = date( 'Y/m/d', strtotime( '-1 day' ) );
                             } 
                             else {
                                 if ( date( 'Y/m/d' ) == date( 'Y/m/01' ) ) {
-                                    $first = date( 'Y-m-01', strtotime( '-2 month' ) );
-                                    $end = date( 'Y-m-t', strtotime( '-2 month' ) );
+                                    $s_date = date( 'Y/m/01', strtotime( '-2 month' ) );
+                                    $e_date = date( 'Y/m/t', strtotime( '-2 month' ) );
                                 }
                                 else {
-                                    $first = date( 'Y-m-01', strtotime( 'first day of previous month' ) );
-                                    $end = date( 'Y-m-t', strtotime( 'last day of previous month' ) );
+                                    $s_date = date( 'Y/m/01', strtotime( 'first day of previous month' ) );
+                                    $e_date = date( 'Y/m/t', strtotime( 'last day of previous month' ) );
                                 }
                             }
+                            //スクレイピング実施
+                            $i =  1; //行番号
+                            $url = "https://secure.moshimo.com/af/merchant/report/kpi/site?promotion_id=" . $product_info->asp_product_id . "&from_date=" . $s_date . "&to_date=" . $e_date ;
+                            $crawler = $browser->visit( $url )->crawler();
+                            echo "検索クロールクリア";
 
-                            //アクティブ件数取得
-                            $crawler = $browser->visit("https://www.felmat.net/advertiser/report/partnersite") //->crawler();
-                                                ->type('#search > div > div:nth-child(2) > div.col-sm-4.form-inline > div > input:nth-child(1)', $first)
-                                                ->type('#search > div > div:nth-child(2) > div.col-sm-4.form-inline > div > input:nth-child(3)', $end)
-                                                ->click('#sel_promotion_id_chosen')
-                                                ->click('#sel_promotion_id_chosen > div > ul > li:nth-child(2)')
-                                                ->click('#view > div > button.btn.btn-primary.btn-sm')
-                                                ->crawler();
-
-                            $selector ='body > div.wrapper > div.page-content.no-left-sidebar > div > div:nth-child(5) > div > div:nth-child(2) > div:nth-child(1) > div:nth-child(3) > div';
+                            //初期値＋固定値設置（月次データ）
+                            $moshimo_data[0][ 'asp' ]     = $product_info->asp_id;
+                            $moshimo_data[0][ 'product' ] = $product_info->id;
+                            $moshimo_data[0][ 'date' ]       = date( 'Y/m/d', strtotime( '-1 day' ) );
                             
-                            //echo "アクティブ数";
+                            echo '<pre>';
+                            var_dump( $moshimo_data);
+                            echo '</pre>';
 
-                            if(count($crawler->filter( $selector ))){
-                                $active = intval(trim(preg_replace('/[^0-9]/', '', mb_substr($crawler->filter($selector)->text(), 0, 7))));
-                            }else{ throw new \Exception($selector.'要素が存在しません。'); }
-                            
-                            $page            = ceil($active / 20);
-                            $count_last_page = $active % 20;
+                            if ( date( 'Y/m/d' ) == date( 'Y/m/01' ) ) {
+                                $moshimo_data[0][ 'last_date' ] = date( 'Y/m/t', strtotime( '-2 month' ) );
+                            }
+                            else {
+                                $moshimo_data[0][ 'last_date' ] = date( 'Y/m/d', strtotime( 'last day of previous month' ) );
+                            }
 
-
-                            for ($i = 1; $page >= $i; $i++) {
-                                // echo "ページ数page:" . $page;
-                                // echo "ページ数i:" . $i;
-                                $crawlCountPerOne = ($page == $i) ? $count_last_page : 20;
+                            //切り口：サイト別の表をスクレイピング
+                            while ( $crawler->filter( '#report > div.result > table > tbody > tr:nth-child('.$i.') > td.value-name > div > p:nth-child(1) > a' )->count() > 0 ) {
+                                //echo $i;
+                                echo "ループクロール中(".$i.")";
                                 
-                                //最後のページ
-                                if ($i > 1) {
-                                    $crawler_for_site = $browser->visit("https://www.felmat.net/advertiser/report/partnersite")
-                                                                ->type('#search > div > div:nth-child(2) > div.col-sm-4.form-inline > div > input:nth-child(1)', $first)
-                                                                ->type('#search > div > div:nth-child(2) > div.col-sm-4.form-inline > div > input:nth-child(3)', $end)
-                                                                ->click('#sel_promotion_id_chosen')
-                                                                // ->click('#sel_promotion_id_chosen > div > ul > li:nth-child(2)')
-                                                                ->click($product_info->product_order)
-                                                                ->click('#view > div > button.btn.btn-primary.btn-sm');
-                                    $p = $i + 1;
-                                    
-                                    $crawler_for_site->click('div.wrapper > div.page-content.no-left-sidebar > div > div:nth-child(5) > div > div:nth-child(2) > div:nth-child(1) > div:nth-child(2) > div > ul > li:nth-child(' . $p . ') > a');
-                                }else{
-                                    $crawler_for_site = $browser->visit("https://www.felmat.net/advertiser/report/partnersite")
-                                                                ->type('#search > div > div:nth-child(2) > div.col-sm-4.form-inline > div > input:nth-child(1)', $first)
-                                                                ->type('#search > div > div:nth-child(2) > div.col-sm-4.form-inline > div > input:nth-child(3)', $end)
-                                                                ->click('#sel_promotion_id_chosen')
-                                                                // ->click('#sel_promotion_id_chosen > div > ul > li:nth-child(2)')
-                                                                ->click($product_info->product_order)
-                                                                ->click('#view > div > button.btn.btn-primary.btn-sm');
-                                }
-                                
-                                $crawler_for_site = $crawler_for_site->crawler();
-                                
-                                //var_dump($crawler_for_site->html());
-                                
-                                for ($x = 1; $crawlCountPerOne >= $x; $x++) {
-                                    $felmat_site[$count]['product'] = $product_info->id;
-                                    //echo "CountX:" . $x;
-                                    //$iPlus = $x ;
-                                    //echo 'iPlus'.$iPlus;
-                                    
-                                    $selector_for_site = array(
-                                        'site_name' => '#report > div > table > tbody > tr:nth-child(' . $x . ') > td.left',
-                                        'approval' => '#report > div > table > tbody > tr:nth-child(' . $x . ') > td:nth-child(8)',
-                                        //'approval_price' => '#report > div > table > tbody > tr:nth-child(' . $x . ') > td:nth-child(9)',
-                                    );
-
-                                    $felmat_site[$count]['date'] = $end;
-
-                                    foreach ($selector_for_site as $key => $value) {
-                                        if(count($crawler_for_site->filter( $value ))){
-                                            if ($key == 'site_name') {
-                                                
-                                                $felmat_site[$count][$key]       = trim($crawler_for_site->filter($value)->text());
-                                                $felmat_site[$count]['media_id'] = $this->siteCreate(trim($crawler_for_site->filter($value)->text()), 20);
-                                            } else {
-                                                
-                                                $felmat_site[$count][$key] = trim(preg_replace('/[^0-9]/', '', $crawler_for_site->filter($value)->text()));
-                                            }
-                                        }else{ throw new \Exception($value.'要素が存在しません。'); }
+                                $moshimo_site[ $i ][ 'product' ] = $product_info->id;
+                                $moshimo_site[ $i ][ 'asp' ]   = $product_info->asp_id;
+                                if ( $x == 0 ) {
+                                    $moshimo_site[ $count ][ 'date' ] = date( 'Y/m/d', strtotime( '-1 day' ) );
+                                } //$x == 0
+                                else { //2周目
+                                    if ( date( 'Y/m/d' ) == date( 'Y/m/01' ) ) {
+                                        $moshimo_site[ $count ][ 'date' ] = date( 'Y/m/t', strtotime( '-2 month' ) );
+                                    } //date( 'Y/m/d' ) == date( 'Y/m/01' )
+                                    else {
+                                        $moshimo_site[ $count ][ 'date' ] = date( 'Y/m/d', strtotime( 'last day of previous month' ) );
                                     }
-                                    $felmat_site[ $count ][ 'approval_price' ] = $felmat_site[ $count ][ 'approval' ] * $product_info->price;
-
-                                    $count++;
-                                    
                                 }
-                            }
-                            
-                        }
+                                $selector   = array(
+                                    'approval'          => '#report > div.result > table > tbody > tr:nth-child('.$i.') > td.value-approve > div > p:nth-child(1)', 
+                                    'approval_price'    => '#report > div.result > table > tbody > tr:nth-child('.$i.') > td.value-approve > div > p:nth-child(2)',
+                                    'media_id'          => '#report > div.result > table > tbody > tr:nth-child('.$i.') > td.value-name > div > p:nth-child(1)',
+                                    'site_name'         => '#report > div.result > table > tbody > tr:nth-child('.$i.') > td.value-name > div > p:nth-child(1) > a',
+                                );
 
-                        // echo "<pre>";
-                        // var_dump($felmat_data);
-                        // var_dump($felmat_site);
-                        // echo "</pre>";
+                                foreach ( $selector_for_site as $key => $value ) {
+                                    echo "Filterループクロール中(".$key.")";
+    
+                                    if(count($crawler->filter( $value ))){
+                                        if ( $key == 'site_name' ) {
+                                            $moshimo_site[ $count ][ $key ] = trim( $crawler->filter( $value )->text() );
+                                        }elseif($key == 'media_id' ){
+                                            $member_id_array = array( );
+                                            $member_id =  trim( $crawler->filter( $value )->text()) ;
+                                            echo "メディアID";
+                                            preg_match( '/(\d+)/', $member_id, $member_id_array );
+                                            var_dump($member_id_array);
+                                            $moshimo_site[$count][$key] = $member_id_array[ 1 ];
+
+                                        }elseif($key == 'approval_price'){
+                                            $moshimo_site[ $count ][ $key ] = $this->monthlySearchService->calc_approval_price( 
+                                                                                trim( preg_replace( '/[^0-9]/', '', $crawler->filter( $value )->text() ) )
+                                                                            ,13);
+                                            if( $y == 0 ){
+                                                $moshimo_data[0][ 'approval_price' ] += ( is_numeric($moshimo_site[ $i ][ $key ]))? $moshimo_site[ $i ][ $key ] : 0;
+                                            }else{
+                                                $moshimo_data[0][ 'last_approval_price' ] += ( is_numeric($moshimo_site[ $i ][ $key ]))? $moshimo_site[ $i ][ $key ] : 0;
+                                            }
+                                        }
+                                        else {
+                                            $moshimo_site[ $count ][ $key ] =  trim( preg_replace( '/[^0-9]/', '', $crawler->filter( $value )->text() ) );
+                                                                    
+                                            if($key == 'approval' &&  $y == 0){
+                                                $moshimo_data[0][ 'approval' ]   += ( is_numeric($moshimo_site[ $i ][ $key ]))? $moshimo_site[ $i ][ $key ] : 0;
+                                            }elseif($key == 'approval' &&  $y == 1){
+                                                $moshimo_data[0][ 'last_approval' ] += ( is_numeric($moshimo_site[ $i ][ $key ]))? $moshimo_site[ $i ][ $key ] : 0;
+                                            }
+                                            
+                                        }
+                                    }else{
+                                        throw new \Exception($value.'要素が存在しません。');
+                                    }
+                                }
+                                
+                                $i++;
+                                $count++;
+                            }
+                        }
+                        echo "<pre>";
+                        var_dump($moshimo_data);
+                        var_dump($moshimo_site);
+                        echo "</pre>";
                         /*
                         サイトデータ・日次データ保存
                         */
-                        $this->monthlySearchService->save_site( json_encode( $felmat_site ) );
-                        $this->monthlySearchService->save_monthly( json_encode( $felmat_data ) );
+                        // $this->monthlySearchService->save_site( json_encode( $moshimo_site ) );
+                        // $this->monthlySearchService->save_monthly( json_encode( $moshimo_data ) );
                     
                     }
             }
