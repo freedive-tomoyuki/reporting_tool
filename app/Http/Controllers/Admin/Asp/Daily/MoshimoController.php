@@ -206,15 +206,22 @@ class MoshimoController extends DailyCrawlerController
                                         echo "メディアID";
                                         preg_match( '/(\d+)/', $member_id, $member_id_array );
                                         var_dump($member_id_array);
-                                        //$moshimo_site[$i][$key] = $member_id_array[ 1 ];
+                                        $moshimo_site[$i][$key] = $member_id_array[ 1 ];
                                     }
                                     
                                     else {
                                         $moshimo_site[ $i ][ $key ] = trim( preg_replace( '/[^0-9]/', '', $crawler->filter( $value )->text() ) );
-                                        $moshimo_data[0][ 'imp' ]   += ($key == 'imp' && is_numeric($moshimo_site[ $i ][ $key ]))? $moshimo_site[ $i ][ $key ] : 0;
-                                        $moshimo_data[0][ 'click' ] += ($key == 'click' && is_numeric($moshimo_site[ $i ][ $key ]))? $moshimo_site[ $i ][ $key ] : 0;
-                                        $moshimo_data[0][ 'cv' ]    += ($key == 'cv' && is_numeric($moshimo_site[ $i ][ $key ]))? $moshimo_site[ $i ][ $key ] : 0;
-                                        $moshimo_data[0][ 'price' ] += ($key == 'imp' && is_numeric($moshimo_site[ $i ][ $key ]))? $moshimo_site[ $i ][ $key ] : 0;
+                                        if($key == 'imp'){
+                                            $moshimo_data[0][ 'imp' ]   += ( is_numeric($moshimo_site[ $i ][ $key ]))? $moshimo_site[ $i ][ $key ] : 0;
+                                        }elseif($key == 'click'){
+                                            $moshimo_data[0][ 'click' ] += ( is_numeric($moshimo_site[ $i ][ $key ]))? $moshimo_site[ $i ][ $key ] : 0;
+                                        }elseif($key == 'cv'){
+                                        
+                                            $moshimo_data[0][ 'cv' ]    += ( is_numeric($moshimo_site[ $i ][ $key ]))? $moshimo_site[ $i ][ $key ] : 0;
+                                        }elseif($key == 'price'){
+                                        
+                                            $moshimo_data[0][ 'price' ] += ( is_numeric($moshimo_site[ $i ][ $key ]))? $moshimo_site[ $i ][ $key ] : 0;
+                                        }
                                     }
                                 }else{
                                     throw new \Exception($value.'要素が存在しません。');
