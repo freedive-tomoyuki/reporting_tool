@@ -170,7 +170,7 @@ class MoshimoController extends DailyCrawlerController
                         $url = "https://secure.moshimo.com/af/merchant/report/kpi/site?promotion_id=" . $product_info->asp_product_id . "&from_date=" . $s_date . "&to_date=" . $e_date ;
                         $crawler = $browser->visit( $url )->crawler();
                         
-                            
+                        var_dump($crawler );
                         $moshimo_data[0][ 'asp' ]     = $product_info->asp_id;
                         $moshimo_data[0][ 'product' ] = $product_info->id;
                         $moshimo_data[0][ 'date' ]       = date( 'Y-m-d', strtotime( '-1 day' ) );
