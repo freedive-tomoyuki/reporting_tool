@@ -22,7 +22,7 @@ class DailySearchService
         $asp_array = array();
 
         $asp_name = $this->filterAsp($product);
-        $asp_array = (json_decode($asp_name,true));
+        $asp_array = array_unique(json_decode($asp_name,true));
         var_dump($asp_array);
         foreach ($asp_array as $name){
             $functionName = str_replace(' ', '' ,mb_strtolower($name["name"]));
