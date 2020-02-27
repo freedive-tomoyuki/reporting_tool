@@ -96,6 +96,21 @@ class MoshimoController extends DailyCrawlerController
                                             ->crawler();
                         //echo $crawler->html();
                         echo "クロールクリア";
+    
+                        $partner_url = "https://secure.moshimo.com/af/merchant/affiliate/search?apply_status=2&promotion_id=" . $product_info->asp_product_id;
+                        $crawler2 = $browser->visit( $partner_url )->crawler();
+                        $selector = '#affiliate-search > div:nth-child(4) > p.total';
+
+                        if(count($crawler2->filter( $selector ))){
+                            $site_count_source = trim( preg_replace( '/[^0-9]/', '', $crawler2->filter( $selector )->text() ) );
+                            preg_match( '/\d+件中/', $site_count_source, $partnership_count_source_array );
+                            echo "提携数（";
+                            var_dump($partnership_count_source_array);
+                            echo ')';
+                            $moshimo_site[0]['partnership'] = $partnership_count_source_array[ 1 ];
+                        }else{
+                            throw new \Exception($value.'要素が存在しません。');
+                        }
                         // $crawler2 = $browser->visit( "https://affi.town/adserver/report/mc/impression.af" )
                         //                     ->visit( "https://affi.town/adserver/report/mc/impression.af?advertiseId=" . $product_info->asp_product_id . "&mediaId=&fromDate=" . $s_date . "&toDate=" . $e_date )
                         //                     ->type( '#all_display > p > input[type=search]', '合計' )
@@ -253,18 +268,7 @@ class MoshimoController extends DailyCrawlerController
                         $moshimo_data[ 0 ][ 'active' ] = $i; //一覧をクロールした行数をサイト数としてカウント
                         // var_dump( $moshimo_data );
 
-                        // $partner_url = "https://secure.moshimo.com/af/merchant/affiliate/search?apply_status=2&promotion_id=" . $product_info->asp_product_id;
-                        // $crawler2 = $browser->visit( $partner_url )->crawler();
-                        // $selector = '#affiliate-search > div:nth-child(4) > p.total';
 
-                        // if(count($crawler2->filter( $selector ))){
-                        //     $site_count_source = trim( preg_replace( '/[^0-9]/', '', $crawler2->filter( $selector )->text() ) );
-                        //     preg_match( '/\d+件中/', $site_count_source, $partnership_count_source_array );
-                        //     var_dump($partnership_count_source_array);
-                        //     $moshimo_site[0]['partnership'] = $partnership_count_source_array[ 1 ];
-                        // }else{
-                        //     throw new \Exception($value.'要素が存在しません。');
-                        // }
                         
                         $calculated                      = json_decode( 
                                                                 json_encode( 
