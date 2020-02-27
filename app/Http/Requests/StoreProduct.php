@@ -26,7 +26,6 @@ class StoreProduct extends FormRequest
             'name' => 'required|string',
             'asp_id' => 'required',
             'product' => 'required',
-            'price' => 'required',
             'loginid' => 'required',
             'password' => 'required',
         ];
@@ -37,7 +36,6 @@ class StoreProduct extends FormRequest
             'name' => '案件名',
             'asp_id' => 'ASP',
             'product' => '広告主名（案件名）',
-            'price' => '単価',
             'loginid' => 'ログインID',
             'password' => 'パスワード',
         ]; 
