@@ -202,12 +202,10 @@ class MoshimoController extends DailyCrawlerController
                                         $moshimo_site[ $i ][ $key ] = trim( $crawler->filter( $value )->text() );
                                     }elseif($key == 'media_id' ){
                                         $member_id_array = array( );
-                                        $member_id_source = $crawler->filter($value)->each(function (Crawler $c) {
-                                            return $c->attr('id');
-                                        });
+                                        $member_id =  trim( $crawler->filter( $value )->text()) ;
                                         echo "メディアID";
-                                        var_dump($member_id_source);
-                                        preg_match( '/(\d+)/', $member_id_source[0], $member_id_array );
+                                        preg_match( '/(\d+)/', $member_id, $member_id_array );
+                                        var_dump($member_id_array);
                                         //$moshimo_site[$i][$key] = $member_id_array[ 1 ];
                                     }
                                     
