@@ -103,12 +103,16 @@ class MoshimoController extends DailyCrawlerController
 
                         if(count($crawler2->filter( $selector ))){
                             $site_count_source = trim( $crawler2->filter( $selector )->text() ) ;
+
                             var_dump($site_count_source); 
                             preg_match( '/\d+件中/', $site_count_source, $partnership_count_source_array );
                             echo "提携数（";
                             var_dump($partnership_count_source_array);
                             echo ')';
-                            $moshimo_site[0]['partnership'] = $partnership_count_source_array[ 1 ];
+                            $moshimo_site[0]['partnership'] =  preg_replace( '/[^0-9]/', '', $partnership_count_source_array[ 0 ]);
+                            echo "提携数（";
+                            var_dump($moshimo_site[0]['partnership']);
+                            echo ')';
                         }else{
                             throw new \Exception($value.'要素が存在しません。');
                         }
