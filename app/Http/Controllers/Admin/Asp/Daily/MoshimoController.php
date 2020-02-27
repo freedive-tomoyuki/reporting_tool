@@ -50,14 +50,14 @@ class MoshimoController extends DailyCrawlerController
         /*
         案件の大本IDからASP別のプロダクトIDを取得
         */
-        $products = $this->dailySearchService->BasetoProduct( 13, $product_base_id );
+        $products = json_decode($this->dailySearchService->BasetoProduct( 13, $product_base_id ));
         \Log::info($products);
         /*
         Chromeドライバーのインスタンス呼び出し
         */
         $client = new Client( new Chrome( $options ) );
         
-        
+
         /*
         Chromeドライバー実行
         　引数
