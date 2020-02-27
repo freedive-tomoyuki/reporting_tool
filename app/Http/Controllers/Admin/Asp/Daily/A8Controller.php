@@ -42,11 +42,13 @@ class A8Controller extends DailyCrawlerController
         ];
         
         //案件の大本IDからASP別のプロダクトIDを取得
-        $product_id = $this->dailySearchService->BasetoProduct( 1, $product_base_id );
+        $products = json_decode($this->dailySearchService->BasetoProduct( 1, $product_base_id ),true);
         
         // Chromeドライバーのインスタンス呼び出し
         $client = new Client( new Chrome( $options ) );
-        
+        foreach($products as $p ){
+            
+            $product_id = $p['id'];
         //Chromeドライバー実行
         $client->browse( function( Browser $browser ) use (&$crawler, $product_id)
         {
@@ -192,90 +194,91 @@ class A8Controller extends DailyCrawlerController
                             
                             $target_page = $page + 1;
                             
-                            $url = 'https://adv.a8.net/a8v2/ecAsRankingReportAction.do?reportType=11&insId=' . $product_info->asp_product_id . '&asmstId=&termType=1&d-2037996-p=' . $target_page . '&multiSelectFlg=0&year=' . $s_Y . '&month=' . $s_M;
-                            
-                            //echo $url;
-                            
-                            $crawler_for_site = $browser->visit( $url )->crawler();
-                            
-                            $count_deff = intval( $count_data ) - ( 500 * $page );
-                            
-                            $count_deff = ( intval( $count_deff ) > 500 ) ? 500 : intval( $count_deff );
-                            
-                            //echo "サイト数＞" . $count_data;
-                            //echo $page . "ページのサイト数＞" . $count_deff;
-                            
-                            for ( $i = 1; $i <= $count_deff; $i++ ) {
+                                $url = 'https://adv.a8.net/a8v2/ecAsRankingReportAction.do?reportType=11&insId=' . $product_info->asp_product_id . '&asmstId=&termType=1&d-2037996-p=' . $target_page . '&multiSelectFlg=0&year=' . $s_Y . '&month=' . $s_M;
                                 
-                                $count = $i + ( 500 * $page );
+                                //echo $url;
                                 
-                                $selector_for_site = array(
-                                    'media_id'  => '#ReportList > tbody > tr:nth-child(' . $i . ') > td:nth-child(2) > a',
-                                    'site_name' => '#ReportList > tbody > tr:nth-child(' . $i . ') > td:nth-child(4)',
-                                    'imp'       => '#ReportList > tbody > tr:nth-child(' . $i . ') > td:nth-child(5)',
-                                    'click'     => '#ReportList > tbody > tr:nth-child(' . $i . ') > td:nth-child(6)',
-                                    'cv'        => '#ReportList > tbody > tr:nth-child(' . $i . ') > td:nth-child(10)',
-                                    'price'     => '#ReportList > tbody > tr:nth-child(' . $i . ') > td:nth-child(13)' 
-                                );
+                                $crawler_for_site = $browser->visit( $url )->crawler();
                                 
-                                foreach ( $selector_for_site as $key => $value ) {
+                                $count_deff = intval( $count_data ) - ( 500 * $page );
+                                
+                                $count_deff = ( intval( $count_deff ) > 500 ) ? 500 : intval( $count_deff );
+                                
+                                //echo "サイト数＞" . $count_data;
+                                //echo $page . "ページのサイト数＞" . $count_deff;
+                                
+                                for ( $i = 1; $i <= $count_deff; $i++ ) {
                                     
-                                    if(count($crawler_for_site->filter( $value ))){
-                                        if ( $key == 'media_id' || $key == 'site_name'){
+                                    $count = $i + ( 500 * $page );
+                                    
+                                    $selector_for_site = array(
+                                        'media_id'  => '#ReportList > tbody > tr:nth-child(' . $i . ') > td:nth-child(2) > a',
+                                        'site_name' => '#ReportList > tbody > tr:nth-child(' . $i . ') > td:nth-child(4)',
+                                        'imp'       => '#ReportList > tbody > tr:nth-child(' . $i . ') > td:nth-child(5)',
+                                        'click'     => '#ReportList > tbody > tr:nth-child(' . $i . ') > td:nth-child(6)',
+                                        'cv'        => '#ReportList > tbody > tr:nth-child(' . $i . ') > td:nth-child(10)',
+                                        'price'     => '#ReportList > tbody > tr:nth-child(' . $i . ') > td:nth-child(13)' 
+                                    );
+                                    
+                                    foreach ( $selector_for_site as $key => $value ) {
+                                        
+                                        if(count($crawler_for_site->filter( $value ))){
+                                            if ( $key == 'media_id' || $key == 'site_name'){
+                                                    
+                                                $a8_site[ $count ][ $key ] = trim( $crawler_for_site->filter( $value )->text() );
                                                 
-                                            $a8_site[ $count ][ $key ] = trim( $crawler_for_site->filter( $value )->text() );
-                                            
+                                            }else{
+                                                $a8_site[ $count ][ $key ] = trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) );
+                                            }
+                                        
                                         }else{
-                                            $a8_site[ $count ][ $key ] = trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) );
+                                            throw new \Exception($value.'要素が存在しません。');
                                         }
+                                    } //$selector_for_site as $key => $value
                                     
-                                    }else{
-                                        throw new \Exception($value.'要素が存在しません。');
-                                    }
-                                } //$selector_for_site as $key => $value
-                                
-                                // $unit_price = $product_info->price;
-                                // $a8_site[ $count ][ 'price' ] = $unit_price * $a8_site[ $count ][ 'cv' ];
-                                
-                                $calculated = json_decode( 
-                                    json_encode( 
-                                        json_decode( 
-                                            $this->dailySearchService
-                                            ->cpa( $a8_site[ $count ][ 'cv' ], $a8_site[ $count ][ 'price' ], 1 ) 
-                                            ) 
-                                        ), True );
-                                        
-                                //$a8_site[$count]['product'] = $product_info->id;
-                                $a8_site[ $count ][ 'asp' ]   = $product_info->asp_id;
-                                $a8_site[ $count ][ 'product' ] = $product_info->id;
-                                $a8_site[ $count ][ 'date' ]    = date( 'Y-m-d', strtotime( '-1 day' ) );
-                                        
-                                $a8_site[ $count ][ 'cpa' ]  = $calculated[ 'cpa' ]; //CPA
-                                $a8_site[ $count ][ 'cost' ] = $calculated[ 'cost' ]; //獲得単価
-                                
+                                    // $unit_price = $product_info->price;
+                                    // $a8_site[ $count ][ 'price' ] = $unit_price * $a8_site[ $count ][ 'cv' ];
+                                    
+                                    $calculated = json_decode( 
+                                        json_encode( 
+                                            json_decode( 
+                                                $this->dailySearchService
+                                                ->cpa( $a8_site[ $count ][ 'cv' ], $a8_site[ $count ][ 'price' ], 1 ) 
+                                                ) 
+                                            ), True );
+                                            
+                                    //$a8_site[$count]['product'] = $product_info->id;
+                                    $a8_site[ $count ][ 'asp' ]   = $product_info->asp_id;
+                                    $a8_site[ $count ][ 'product' ] = $product_info->id;
+                                    $a8_site[ $count ][ 'date' ]    = date( 'Y-m-d', strtotime( '-1 day' ) );
+                                            
+                                    $a8_site[ $count ][ 'cpa' ]  = $calculated[ 'cpa' ]; //CPA
+                                    $a8_site[ $count ][ 'cost' ] = $calculated[ 'cost' ]; //獲得単価
+                                    
+                                }
                             }
+                            
+                            //１サイトずつサイト情報の登録を実行
+                            $this->dailySearchService->save_site( json_encode( $a8_site ) );
+                            $this->dailySearchService->save_daily( json_encode( $a8_data_1 ) );
+                            
+                            
                         }
-                        
-                        //１サイトずつサイト情報の登録を実行
-                        $this->dailySearchService->save_site( json_encode( $a8_site ) );
-                        $this->dailySearchService->save_daily( json_encode( $a8_data_1 ) );
-                        
-                        
-                    }
 
-            }
-            catch(\Exception $e){
-                $sendData = [
-                            'message' => $e->getMessage(),
-                            'datetime' => date('Y-m-d H:i:s'),
-                            'product_id' => $product_id,
-                            'asp' => 'A8',
-                            'type' => 'Daily',
-                            ];
-                            //echo $e->getMessage();
-                Mail::to('t.sato@freedive.co.jp')->send(new Alert($sendData));
-                            //throw $e;
-            }
-        } );
+                }
+                catch(\Exception $e){
+                    $sendData = [
+                                'message' => $e->getMessage(),
+                                'datetime' => date('Y-m-d H:i:s'),
+                                'product_id' => $product_id,
+                                'asp' => 'A8',
+                                'type' => 'Daily',
+                                ];
+                                //echo $e->getMessage();
+                    Mail::to('t.sato@freedive.co.jp')->send(new Alert($sendData));
+                                //throw $e;
+                }
+            } );
+        }
     }
 }
