@@ -46,7 +46,8 @@ class MonthlySearchService
         $converter->where('asp_id', $asp_id );
         $converter->where('killed_flag', 0 );
         $converter = $converter->get()->toArray();
-        return $converter[0]["id"];
+        // return $converter[0]["id"];
+        return json_encode($converter);
     } 
     /**
     * 案件IDからASPを取得
