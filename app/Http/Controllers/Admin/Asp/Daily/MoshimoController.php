@@ -116,72 +116,7 @@ class MoshimoController extends DailyCrawlerController
                         }else{
                             throw new \Exception($value.'要素が存在しません。');
                         }
-                        // $crawler2 = $browser->visit( "https://affi.town/adserver/report/mc/impression.af" )
-                        //                     ->visit( "https://affi.town/adserver/report/mc/impression.af?advertiseId=" . $product_info->asp_product_id . "&mediaId=&fromDate=" . $s_date . "&toDate=" . $e_date )
-                        //                     ->type( '#all_display > p > input[type=search]', '合計' )
-                        //                     ->crawler();
-                        //echo $crawler2->html();
-                        //https://affi.town/adserver/report/mc/impression.af?advertiseId=4316&mediaId=&since=2019-07-01&until=2019-07-27
-                        /*
-                        selector 設定
-                        */
-                        // $selector1 = array(
-                        //     'imp' => '#report > div.result > table > tbody > tr:nth-child(1) > td.value-pv > div > p',
-                        //     'click' => '#report > div.result > table > tbody > tr:nth-child(1) > td.value-click > div > p:nth-child(1)',
-                        //     'cv' => '#report > div.result > table > tbody > tr:nth-child(1) > td.value-result > div > p:nth-child(1)',
-                        //     'price' => '#report > div.result > table > tbody > tr:nth-child(1) > td.value-result > div > p:nth-child(2)' 
-                        // );
                         
-                        /*
-                        selector Imp 設定
-                        // */
-                        // $selector2 = array(
-                        //      'imp' => '#all_display > table > tbody:nth-child(2) > tr.visible.striped > td:nth-child(5)',
-                        // );
-                        
-                        /*
-                        $crawler　をフィルタリング
-                        */
-                        // $affitown_data = $crawler->each( function( Crawler $node ) use ($selector1, $product_info)
-                        // {
-                            
-                        //     $data              = array( );
-                        //     $data[ 'asp' ]     = $product_info->asp_id;
-                        //     $data[ 'product' ] = $product_info->id;
-                        //     //$data['imp'] = 0;
-                        //     $data[ 'date' ]    = date( 'Y-m-d', strtotime( '-1 day' ) );
-                            
-                        //     foreach ( $selector1 as $key => $value ) {
-                        //         if(count($node->filter( $value ))){
-                        //             $data[ $key ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
-                        //         }else{
-                        //             throw new \Exception($value.'要素が存在しません。');
-                        //         }
-                        //     } //$selector1 as $key => $value
-                        //     return $data;
-                            
-                        // } );
-                        //var_dump( $affitown_data );
-
-                        /*
-                        $crawler(Imp)　をフィルタリング
-                        */
-                        // $affitown_data_imp = $crawler2->each( function( Crawler $node ) use ($selector2, $product_info)
-                        // {
-                            
-                        //     $data              = array( );
-                            
-                        //     foreach ( $selector2 as $key => $value ) {
-                        //         if(count($node->filter( $value ))){
-                        //             $data[ $key ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
-                        //         }else{
-                        //             throw new \Exception($value.'要素が存在しません。');
-                        //         }
-                        //     } //$selector1 as $key => $value
-                        //     return $data;
-                            
-                        // } );
-                        //var_dump( $affitown_data_imp );
                         
                         /*
                         *　１〜昨日付データ＋サイト抽出　
