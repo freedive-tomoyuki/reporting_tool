@@ -174,6 +174,11 @@ class MoshimoController extends DailyCrawlerController
                         $moshimo_data[0][ 'asp' ]     = $product_info->asp_id;
                         $moshimo_data[0][ 'product' ] = $product_info->id;
                         $moshimo_data[0][ 'date' ]       = date( 'Y-m-d', strtotime( '-1 day' ) );
+                        $moshimo_data[0][ 'imp' ]   = 0;
+                        $moshimo_data[0][ 'click' ] = 0;
+                        $moshimo_data[0][ 'cv' ]    = 0;
+                        $moshimo_data[0][ 'price' ] = 0;
+
                         echo "２クロールクリア";
 
                         // サイト一覧の「合計」以外の前列を1列目から最終列まで一行一行スクレイピング
@@ -232,7 +237,7 @@ class MoshimoController extends DailyCrawlerController
                                                                     json_encode( 
                                                                         json_decode( 
                                                                             $this->dailySearchService
-                                                                                   ->cpa( $moshimo_site[ $i ][ 'cv' ], $moshimo_site[ $i ][ 'price' ], 7 ) 
+                                                                                   ->cpa( $moshimo_site[ $i ][ 'cv' ], $moshimo_site[ $i ][ 'price' ], 13 ) 
                                                                         ) 
                                                                     ), True );
                             $moshimo_site[ $i ][ 'cpa' ]  = $calculated[ 'cpa' ]; //CPA
