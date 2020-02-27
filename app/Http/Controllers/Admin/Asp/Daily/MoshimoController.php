@@ -193,12 +193,12 @@ class MoshimoController extends DailyCrawlerController
                             );
                             
                             foreach ( $selector_for_site as $key => $value ) {
-                                if(count($crawler_for_site->filter( $value ))){
+                                if(count($crawler->filter( $value ))){
                                     if ( $key == 'site_name' ) {
-                                        $moshimo_site[ $i ][ $key ] = trim( $crawler_for_site->filter( $value )->text() );
+                                        $moshimo_site[ $i ][ $key ] = trim( $crawler->filter( $value )->text() );
                                     }elseif($key == 'media_id' ){
                                         $member_id_array = array( );
-                                        $member_id_source = $crawler_for_site->filter($value)->each(function (Crawler $c) {
+                                        $member_id_source = $crawler->filter($value)->each(function (Crawler $c) {
                                             return $c->attr('id');
                                         });
                                         preg_match( '/(\d+)/', $member_id_source[0], $member_id_array );
@@ -206,7 +206,7 @@ class MoshimoController extends DailyCrawlerController
                                     }
                                     
                                     else {
-                                        $moshimo_site[ $i ][ $key ] = trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) );
+                                        $moshimo_site[ $i ][ $key ] = trim( preg_replace( '/[^0-9]/', '', $crawler->filter( $value )->text() ) );
                                         $moshimo_data[0][ 'imp' ]   += ($key == 'imp' && is_numeric($moshimo_site[ $i ][ $key ]))? $moshimo_site[ $i ][ $key ] : 0;
                                         $moshimo_data[0][ 'click' ] += ($key == 'click' && is_numeric($moshimo_site[ $i ][ $key ]))? $moshimo_site[ $i ][ $key ] : 0;
                                         $moshimo_data[0][ 'cv' ]    += ($key == 'cv' && is_numeric($moshimo_site[ $i ][ $key ]))? $moshimo_site[ $i ][ $key ] : 0;
