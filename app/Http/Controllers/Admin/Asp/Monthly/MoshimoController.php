@@ -76,7 +76,11 @@ class MoshimoController extends MonthlyCrawlerController
                             //スクレイピング実施
                             $i =  1; //行番号
                             $url = "https://secure.moshimo.com/af/merchant/report/kpi/site?promotion_id=" . $product_info->asp_product_id . "&from_date=" . $s_date . "&to_date=" . $e_date ;
-                            $crawler = $browser->visit( $url )->crawler();
+                            $crawler = $browser->visit( $product_info->asp->login_url )
+                                        ->type( $product_info->asp->login_key, $product_info->login_value )
+                                        ->type( $product_info->asp->password_key, $product_info->password_value )
+                                        ->click( $product_info->asp->login_selector )
+                                        ->visit( $url )->crawler();
                             echo "検索クロールクリア";
 
                             //初期値＋固定値設置（月次データ）
