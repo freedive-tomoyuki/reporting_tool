@@ -125,7 +125,7 @@ class MoshimoController extends MonthlyCrawlerController
                                     'site_name'         => '#report > div.result > table > tbody > tr:nth-child('.$i.') > td.value-name > div > p:nth-child(1) > a',
                                 );
 
-                                foreach ( $selector_for_site as $key => $value ) {
+                                foreach ( $selector as $key => $value ) {
                                     echo "Filterループクロール中(".$key.")";
     
                                     if(count($crawler->filter( $value ))){
