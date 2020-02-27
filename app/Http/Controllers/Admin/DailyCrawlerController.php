@@ -40,7 +40,7 @@ class DailyCrawlerController extends Controller
     {
         $user = Auth::user();
         $product_bases = ProductBase::all();
-        //var_dump($product_bases);
+        var_dump($product_bases);
         return view('admin.crawlerdaily',compact('product_bases','user'));
     }
 

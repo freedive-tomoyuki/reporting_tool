@@ -65,7 +65,7 @@ class MoshimoController extends DailyCrawlerController
         */
         var_dump($products);
         foreach($products as $p ){
-            echo $product_id = $p->id;
+            echo $product_id = $p['id'];
         }
         // $client->browse( function( Browser $browser ) use (&$crawler, $product_id)
         // {
