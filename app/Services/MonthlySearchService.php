@@ -25,6 +25,8 @@ class MonthlySearchService
         //var_dump($asp_name);
         $asp_array = (json_decode($asp_name,true));
 
+        $asp_array = array_unique($asp_array, SORT_REGULAR);
+        
         foreach($asp_array as $name){
             $functionName = str_replace(' ', '' ,mb_strtolower($name["name"]));
             $className = 'App\Http\Controllers\Admin\Asp\Monthly'. '\\'.str_replace(' ', '' ,$name["name"]).'Controller';
