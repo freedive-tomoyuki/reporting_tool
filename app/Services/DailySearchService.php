@@ -210,7 +210,8 @@ class DailySearchService
         $converter->where('killed_flag', 0 );
         $converter = $converter->get()->toArray();
               //var_dump($a8_product[0]["id"]);
-        return $converter[0]["id"];
+        // return $converter[0]["id"];
+        return json_encode($converter);
     } 
 
 
