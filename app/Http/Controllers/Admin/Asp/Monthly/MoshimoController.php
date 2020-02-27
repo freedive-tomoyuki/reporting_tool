@@ -179,8 +179,8 @@ class MoshimoController extends MonthlyCrawlerController
                         /*
                         サイトデータ・日次データ保存
                         */
-                        // $this->monthlySearchService->save_site( json_encode( $moshimo_site ) );
-                        // $this->monthlySearchService->save_monthly( json_encode( $moshimo_data ) );
+                        $this->monthlySearchService->save_site( json_encode( $moshimo_site ) );
+                        $this->monthlySearchService->save_monthly( json_encode( $moshimo_data ) );
                     
                     }
             }
