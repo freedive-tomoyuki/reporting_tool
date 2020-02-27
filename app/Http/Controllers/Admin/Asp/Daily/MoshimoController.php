@@ -40,11 +40,11 @@ class MoshimoController extends DailyCrawlerController
         } );
         
         $options = [
-        '--window-size=1920,1080',
-        '--start-maximized',
-        '--headless',
-        '--disable-gpu',
-        '--no-sandbox'
+            '--window-size=1920,1080',
+            '--start-maximized',
+            '--headless',
+            '--disable-gpu',
+            '--no-sandbox'
         
         ];
         /*
@@ -65,6 +65,7 @@ class MoshimoController extends DailyCrawlerController
         */
         var_dump($products);
         foreach($products as $p ){
+            
             $product_id = $p['id'];
         
             $client->browse( function( Browser $browser ) use (&$crawler, $product_id)
