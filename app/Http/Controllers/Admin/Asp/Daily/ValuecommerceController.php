@@ -140,8 +140,8 @@ class ValuecommerceController extends DailyCrawlerController
                                     ->visit( $c_url )
                                     ->select( '#condition_fromYear', $s_Y )
                                     ->select( '#condition_fromMonth', $s_M )
-                                    ->select( '#condition_toYear', $e_Y )
-                                    ->select( '#condition_toMonth', $e_M )
+                                    ->select( '#condition_toYear', $s_Y )
+                                    ->select( '#condition_toMonth', $s_M )
                                     ->click( '#show_statistics' )
                                     ->crawler();
                                                 
@@ -169,8 +169,8 @@ class ValuecommerceController extends DailyCrawlerController
                                                         ->visit( $c_url )
                                                         ->select( '#condition_fromYear', $s_Y )
                                                         ->select( '#condition_fromMonth', $s_M )
-                                                        ->select( '#condition_toYear', $e_Y )
-                                                        ->select( '#condition_toMonth', $e_M )
+                                                        ->select( '#condition_toYear', $s_Y )
+                                                        ->select( '#condition_toMonth', $s_M )
                                                         ->click( '#show_statistics' )
                                                         ->visit( 'https://mer.valuecommerce.ne.jp/affiliate_analysis/?condition%5BactiveFlag%5D=Y&allPage=1&notOmksPage=1&omksPage=1&pageType=all&page=' . $target_page )
                                                         ->crawler();
