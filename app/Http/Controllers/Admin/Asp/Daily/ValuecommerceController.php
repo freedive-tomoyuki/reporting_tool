@@ -133,7 +133,7 @@ class ValuecommerceController extends DailyCrawlerController
                             //$crawler->closeAll();
 
                             $c_url = 'https://mer.valuecommerce.ne.jp/affiliate_analysis/?condition%5BfromYear%5D=' . $s_Y . '&condition%5BfromMonth%5D=' . $s_M . '&condition%5BtoYear%5D=' . $s_Y . '&condition%5BtoMonth%5D=' . $s_M . '&condition%5BactiveFlag%5D=Y&allPage=1&notOmksPage=1&omksPage=1&pageType=all&page=1';
-                            
+                            \Log::info($c_url);
                             $crawler_for_site = $browser->visit( $c_url )->crawler();
                             
                             $count_selector = "#cusomize_wrap > span";
