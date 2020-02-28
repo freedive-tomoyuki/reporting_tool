@@ -71,8 +71,8 @@ class ValuecommerceController extends DailyCrawlerController
                                                 ->type( $product_info->asp->login_key, $product_info->login_value )
                                                 ->type( $product_info->asp->password_key, $product_info->password_value )
                                                 ->click( $product_info->asp->login_selector )
-                                                ->visit( $product_info->asp->lp1_url )
                                                 ->visit('https://mer.valuecommerce.ne.jp/switch/'.$product_info->asp_sponsor_id.'/')
+                                                ->visit( $product_info->asp->lp1_url )
                                                 ->crawler();
                             //echo $crawler->html();
                             
