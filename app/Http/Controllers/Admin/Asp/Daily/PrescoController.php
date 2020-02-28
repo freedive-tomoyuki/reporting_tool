@@ -50,7 +50,7 @@ class PrescoController extends DailyCrawlerController
         /*
         案件の大本IDからASP別のプロダクトIDを取得
         */
-        $product_id = json_decode($this->dailySearchService->BasetoProduct( 14, $product_base_id ),true);
+        $products = json_decode($this->dailySearchService->BasetoProduct( 14, $product_base_id ),true);
         
         /*
         Chromeドライバーのインスタンス呼び出し
