@@ -180,6 +180,7 @@ class FelmatController extends DailyCrawlerController
                                     if(count($node->filter( $value ))){
                                         $data[$key] = intval(trim(preg_replace('/[^0-9]/', '', mb_substr($node->filter($value)->text(), 0, 7))));
                                     }else{
+                                        
                                         throw new \Exception($value.'要素が存在しません。');
                                     }
                                 }

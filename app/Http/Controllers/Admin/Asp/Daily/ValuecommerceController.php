@@ -44,7 +44,7 @@ class ValuecommerceController extends DailyCrawlerController
         
         // Chromeドライバーのインスタンス呼び出し
         $client = new Client( new Chrome( $options ) );
-        
+
         foreach($products as $p ){
             
             $product_id = $p['id'];
@@ -72,6 +72,7 @@ class ValuecommerceController extends DailyCrawlerController
                                                 ->type( $product_info->asp->password_key, $product_info->password_value )
                                                 ->click( $product_info->asp->login_selector )
                                                 ->visit( $product_info->asp->lp1_url )
+                                                ->visit('https://mer.valuecommerce.ne.jp/switch/'.$product_info->asp_sponsor_id.'/')
                                                 ->crawler();
                             //echo $crawler->html();
                             
@@ -139,7 +140,7 @@ class ValuecommerceController extends DailyCrawlerController
                             if(count($crawler_for_site->filter( $count_selector ))){
                                 $active         = explode( "/", $crawler_for_site->filter( $count_selector )->text() );
                             }else{
-                                throw new \Exception($value.'要素が存在しません。');
+                                throw new \Exception($count_selector.'要素が存在しません。');
                             }
                             if($active[ 1 ] <= 0){ throw new \Exception('アクティブパートナーが存在しませんでした。'); }
                             
