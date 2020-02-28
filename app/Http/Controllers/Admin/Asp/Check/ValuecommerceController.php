@@ -47,11 +47,11 @@ class ValuecommerceController extends Controller
                         ->type( $asp_info[0]['login_key'], $id )
                         ->type( $asp_info[0]['password_key'], $pass )
                         ->click( $asp_info[0]['login_selector'] )
-                        //->visit( $asp_info[0]['lp1_url'] )
+                        ->visit( 'https://mer.valuecommerce.ne.jp/report/simple_summary/' )
                         ->crawler()->getUri();
                         //echo $crawler ;
 
-                    if (strpos($crawler,'home') !== false ){
+                    if (strpos($crawler,'report') !== false ){
                         $result = 1;
                         //var_dump($result);
                     }else{
