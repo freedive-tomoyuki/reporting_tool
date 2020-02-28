@@ -197,7 +197,7 @@ class ValuecommerceController extends DailyCrawlerController
                                             'imp'       => '#all > div.tablerline > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(7)',
                                             'click'     => '#all > div.tablerline > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(8)',
                                             'cv'        => '#all > div.tablerline > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(19)',
-                                            'price' => '#all > div.tablerline > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(21)' 
+                                            'price'     => '#all > div.tablerline > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(21)' 
                                         );
                                         echo "point8";
                                         foreach ( $selector_for_site as $key => $value ) {
@@ -219,6 +219,9 @@ class ValuecommerceController extends DailyCrawlerController
                                         // $unit_price = $product_info->price;
                                         // $valuecommerce_site[ $count ][ 'price' ] = $unit_price * $valuecommerce_site[ $count ][ 'cv' ];
                                         echo "point9";
+                                        echo $valuecommerce_site[ $count ][ 'cv' ];
+                                        echo '<br>';
+                                        echo $valuecommerce_site[ $count ][ 'price' ];
                                         //CPAとASPフィーの考慮した数値を算出
                                         $calculated = json_decode(
                                                         json_encode(
