@@ -74,6 +74,7 @@ class ValuecommerceController extends MonthlyCrawlerController
                                                 ->type( $product_info->asp->login_key, $product_info->login_value )
                                                 ->type( $product_info->asp->password_key, $product_info->password_value )
                                                 ->click( $product_info->asp->login_selector ) 
+                                                ->visit('https://mer.valuecommerce.ne.jp/switch/'.$product_info->asp_sponsor_id.'/')
                             
                             //実装：初期ページ
                                                 ->visit( "https://mer.valuecommerce.ne.jp/report/sales_performance/" )
