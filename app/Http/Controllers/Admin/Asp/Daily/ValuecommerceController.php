@@ -132,10 +132,19 @@ class ValuecommerceController extends DailyCrawlerController
                             } );
                             //$crawler->closeAll();
 
-                            $c_url = 'https://mer.valuecommerce.ne.jp/affiliate_analysis/?condition%5BfromYear%5D=' . $s_Y . '&condition%5BfromMonth%5D=' . $s_M . '&condition%5BtoYear%5D=' . $s_Y . '&condition%5BtoMonth%5D=' . $s_M . '&condition%5BactiveFlag%5D=Y&allPage=1&notOmksPage=1&omksPage=1&pageType=all&page=1';
-                            \Log::info($c_url);
-                            $crawler_for_site = $browser->visit( $c_url )->crawler();
+                            $c_url = 'https://mer.valuecommerce.ne.jp/affiliate_analysis/';
+                            //?condition%5BfromYear%5D=' . $s_Y . '&condition%5BfromMonth%5D=' . $s_M . '&condition%5BtoYear%5D=' . $s_Y . '&condition%5BtoMonth%5D=' . $s_M . '&condition%5BactiveFlag%5D=Y&allPage=1&notOmksPage=1&omksPage=1&pageType=all&page=1';
                             
+                            \Log::info($c_url);
+                            $crawler_for_site = $browser
+                                    ->visit( $c_url )
+                                    ->select( '#condition_fromYear', $s_Y )
+                                    ->select( '#condition_fromMonth', $s_M )
+                                    ->select( '#condition_toYear', $e_Y )
+                                    ->select( '#condition_toMonth', $e_M )
+                                    ->click( '#show_statistics' )
+                                    ->crawler();
+                                                
                             $count_selector = "#cusomize_wrap > span";
                             if(count($crawler_for_site->filter( $count_selector ))){
                                 $active         = explode( "/", $crawler_for_site->filter( $count_selector )->text() );
@@ -156,8 +165,15 @@ class ValuecommerceController extends DailyCrawlerController
                                 
                                 $target_page = $page + 1;
                                 
-                                $crawler_for_site = $browser->visit( 'https://mer.valuecommerce.ne.jp/affiliate_analysis/?condition%5BfromYear%5D=' . $s_Y . '&condition%5BfromMonth%5D=' . $s_M . '&condition%5BtoYear%5D=' . $s_Y . '&condition%5BtoMonth%5D=' . $s_M . '&condition%5BactiveFlag%5D=Y&allPage=1&notOmksPage=1&omksPage=1&pageType=all&page=' . $target_page )->crawler();
-                                
+                                $crawler_for_site = $browser//->visit( 'https://mer.valuecommerce.ne.jp/affiliate_analysis/?condition%5BfromYear%5D=' . $s_Y . '&condition%5BfromMonth%5D=' . $s_M . '&condition%5BtoYear%5D=' . $s_Y . '&condition%5BtoMonth%5D=' . $s_M . '&condition%5BactiveFlag%5D=Y&allPage=1&notOmksPage=1&omksPage=1&pageType=all&page=' . $target_page )->crawler();
+                                                        ->visit( $c_url )
+                                                        ->select( '#condition_fromYear', $s_Y )
+                                                        ->select( '#condition_fromMonth', $s_M )
+                                                        ->select( '#condition_toYear', $e_Y )
+                                                        ->select( '#condition_toMonth', $e_M )
+                                                        ->click( '#show_statistics' )
+                                                        ->visit( 'https://mer.valuecommerce.ne.jp/affiliate_analysis/?condition%5BactiveFlag%5D=Y&allPage=1&notOmksPage=1&omksPage=1&pageType=all&page=' . $target_page )
+                                                        ->crawler();
                                 //最終ページのみ件数でカウント
                                 $crawler_count = ( $target_page == $count_page ) ? $active[ 1 ] - ( $page * 40 ) : 40;
                                 
