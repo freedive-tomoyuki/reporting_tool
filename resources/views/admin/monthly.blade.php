@@ -320,10 +320,10 @@
                           $t_ctr = (($t_click != 0 )&&($t_imp != 0 ))? ($t_click/$t_imp) * 100 : 0 ;
                           $t_cpa = (($t_cv != 0 )&&($t_cost != 0 ))? ($t_cost/$t_cv) : 0 ;
                         ?>
-                        <td>{{ number_format($t_cvr,2) }}</td>
+                        <td>{{ number_format($t_ctr,2) }}</td>
                         <td>{{ number_format($products_estimate_totals[0]['total_estimate_click']) }}</td>
 
-                        <td>{{ number_format($t_ctr,2) }}</td>
+                        <td>{{ number_format($t_cvr,2) }}</td>
                         <td>{{ number_format($products_estimate_totals[0]['total_estimate_cv']) }}</td>
                         <td>{{ number_format($products_estimate_totals[0]['total_estimate_cost'])}}</td>
                         <td>{{ number_format($t_cpa,2) }}</td>
