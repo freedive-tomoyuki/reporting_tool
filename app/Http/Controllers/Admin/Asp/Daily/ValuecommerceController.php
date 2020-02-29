@@ -165,7 +165,11 @@ class ValuecommerceController extends DailyCrawlerController
                             for ( $page = 0; $page < $count_page; $page++ ) {
                                 
                                 $target_page = (int)$page + 1;
-                                
+                                echo $s_Y ;
+                                echo $s_M ;
+                                echo $s_Y ;
+                                echo $s_M ;
+
                                 $crawler_for_site = $browser//->visit( 'https://mer.valuecommerce.ne.jp/affiliate_analysis/?condition%5BfromYear%5D=' . $s_Y . '&condition%5BfromMonth%5D=' . $s_M . '&condition%5BtoYear%5D=' . $s_Y . '&condition%5BtoMonth%5D=' . $s_M . '&condition%5BactiveFlag%5D=Y&allPage=1&notOmksPage=1&omksPage=1&pageType=all&page=' . $target_page )->crawler();
                                                         ->visit( $c_url )
                                                         ->select( '#condition_fromYear', $s_Y )
@@ -177,7 +181,8 @@ class ValuecommerceController extends DailyCrawlerController
                                                         ->crawler();
                                 //最終ページのみ件数でカウント
                                 $crawler_count = ( $target_page == $count_page ) ? (int)$active[ 1 ] - ( (int)$page * 40 ) : 40;
-                                
+                                echo 'カウント';
+                                echo $crawler_count;
                                 //echo $target_page."ページ目のcrawler_count＞＞".$crawler_count."</br>" ;
                                 
                                 echo "point7";
