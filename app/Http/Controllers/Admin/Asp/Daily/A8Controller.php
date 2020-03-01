@@ -49,10 +49,12 @@ class A8Controller extends DailyCrawlerController
         foreach($products as $p ){
             
             $product_id = $p['id'];
-        //Chromeドライバー実行
-        $client->browse( function( Browser $browser ) use (&$crawler, $product_id)
-        {
-            try{
+            $product_name = $p['product'];
+
+            //Chromeドライバー実行
+            $client->browse( function( Browser $browser ) use (&$crawler, $product_id, $product_name)
+            {
+                try{
                     $product_infos = \App\Product::all()->where( 'id', $product_id );
                     
                     //クロール実行が1日のとき
@@ -270,7 +272,7 @@ class A8Controller extends DailyCrawlerController
                     $sendData = [
                                 'message' => $e->getMessage(),
                                 'datetime' => date('Y-m-d H:i:s'),
-                                'product_id' => $product_id,
+                                'product_id' => $product_name,
                                 'asp' => 'A8',
                                 'type' => 'Daily',
                                 ];
