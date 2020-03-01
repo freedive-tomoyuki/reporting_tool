@@ -95,9 +95,9 @@ class AffiTownController extends DailyCrawlerController
                             $e_date = date( 'Ymd', strtotime( '-1 day' ) );
                         }
                         $ck_date = date( 'Ym', strtotime( '-1 day' ) );
-                        
+
                         echo 'show before product_infos loop';
-                        var_dump($product_info);
+                        var_dump($product_infos);
                         
                         foreach ( $product_infos as $product_info ) {
                             
