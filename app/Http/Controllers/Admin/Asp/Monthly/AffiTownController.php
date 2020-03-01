@@ -66,11 +66,11 @@ class AffiTownController extends MonthlyCrawlerController
                             
                             
                             $crawler = $browser->visit( $product_info->asp->login_url )
-                            ->type( $product_info->asp->login_key, $product_info->login_value )
-                            ->type( $product_info->asp->password_key, $product_info->password_value )
-                            ->click( $product_info->asp->login_selector )
-                            ->visit( "https://affi.town/adserver/report/mc/monthly.af?advertiseId=" . $product_info->asp_product_id . "&fromDate=" . $start . "&toDate=" . $end )
-                            ->crawler();
+                                        ->type( $product_info->asp->login_key, $product_info->login_value )
+                                        ->type( $product_info->asp->password_key, $product_info->password_value )
+                                        ->click( $product_info->asp->login_selector )
+                                        ->visit( "https://affi.town/adserver/report/mc/monthly.af?advertiseId=" . $product_info->asp_product_id . "&fromDate=" . $start . "&toDate=" . $end )
+                                        ->crawler();
                             //echo $crawler->html();
                             
                             //先月・今月のセレクタ
@@ -90,9 +90,6 @@ class AffiTownController extends MonthlyCrawlerController
                                 $data[ 'asp' ]     = $product_info->asp_id;
                                 $data[ 'product' ] = $product_info->id;
 
-                                // $unit_price = $product_info->price;
-
-                                
                                 $data[ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
 
                                 if(count($node->filter( $selector_this['approval'] ))){
@@ -128,9 +125,6 @@ class AffiTownController extends MonthlyCrawlerController
                                 return $data;
                                 
                             } );
-                            
-                            // var_dump( $affitown_data );
-                            
                             
                             // $x = 0：今月
                             // $x = 1：先月
