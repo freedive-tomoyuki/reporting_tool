@@ -119,6 +119,8 @@ class AffiTownController extends DailyCrawlerController
                                                 
                                                 $click_count = $check_before_crawler->filter('#all_display > table > tbody > tr > td:nth-child(2)')->text();
                                                 $cv_count = $check_before_crawler->filter('#all_display > table > tbody > tr > td:nth-child(3)')->text();
+                                                \Log::info($click_count);
+                                                \Log::info($cv_count);
 
                             if($click_count != 0 && $cv_count != 0){
                                                     
