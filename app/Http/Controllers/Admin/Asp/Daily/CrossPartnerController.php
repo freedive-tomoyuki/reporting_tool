@@ -48,12 +48,11 @@ class CrossPartnerController extends DailyCrawlerController
         });
         
         $options = [
-        '--window-size=1920,1080',
-        '--start-maximized',
-        '--headless',
-        '--disable-gpu',
-        '--no-sandbox'
-        
+            '--window-size=1920,1080',
+            '--start-maximized',
+            '--headless',
+            '--disable-gpu',
+            '--no-sandbox'
         ];
         
         //案件の大本IDからASP別のプロダクトIDを取得
@@ -65,8 +64,10 @@ class CrossPartnerController extends DailyCrawlerController
         foreach($products as $p ){
             
             $product_id = $p['id'];
+            $product_name = $p['product'];
+
             //Chromeドライバー実行
-            $client->browse( function( Browser $browser ) use (&$crawler, $product_id)
+            $client->browse( function( Browser $browser ) use (&$crawler, $product_id, $product_name)
             {
                 try{
                         //最後にログアウト
@@ -268,7 +269,7 @@ class CrossPartnerController extends DailyCrawlerController
                     $sendData = [
                                 'message' => $e->getMessage(),
                                 'datetime' => date('Y-m-d H:i:s'),
-                                'product_id' => $product_id,
+                                'product_id' => $product_name,
                                 'asp' => 'クロスパートナー',
                                 'type' => 'Daily',
                                 ];

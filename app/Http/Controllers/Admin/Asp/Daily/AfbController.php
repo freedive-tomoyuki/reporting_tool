@@ -59,7 +59,7 @@ class AfbController extends DailyCrawlerController
             
             $product_id = $p['id'];
             //Chromeドライバー実行
-            $client->browse( function( Browser $browser ) use($product_id)
+            $client->browse( function( Browser $browser ) use(&$crawler, $product_id, $product_name)
             {
                 try{
 
@@ -243,7 +243,7 @@ class AfbController extends DailyCrawlerController
                     $sendData = [
                                 'message' => $e->getMessage(),
                                 'datetime' => date('Y-m-d H:i:s'),
-                                'product_id' => $product_id,
+                                'product_id' => $product_name,
                                 'asp' => 'afb',
                                 'type' => 'Daily',
                                 ];
