@@ -52,9 +52,9 @@ class Product extends Model
      */
     function convertProduct($base_product)
     {
-        $converter = New Product;
-        $converter->where('product_base_id', $base_product);
+        $converter = Product::where('product_base_id', $base_product);
         $converter = $converter->get()->toArray();
+        // echo $converter;
         return $converter;
     }
 

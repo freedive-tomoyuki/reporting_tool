@@ -29,14 +29,20 @@ class DailyDataService
              * @param [type] $asp_id
              * @return array
              */
-            public function showList($id, $start, $end, $asp_id ): array
-            {
+            public function showList($asp_id, $id, $start, $end ): array
+            {//$asp_id , $id, $start , $end 
+                // echo "aa";
+                // echo "(1)".$asp_id;//end
+                // echo "(2)".$id;//asp
+                // echo "(3)".$start;//id
+                // echo "(4)".$end;//start
                 //日次データ一覧取得
-                $daily_data = $this->daily_repo->getList($id, $start, $end, $asp_id );
+                // asp , id ,  start , end
+                $daily_data = $this->daily_repo->getList($asp_id, $id, $start, $end );
 
-                $total = $this->daily_repo->getTotal($id, $start, $end, $asp_id );
+                $total = $this->daily_repo->getTotal($asp_id, $id, $start, $end );
 
-                $total_chart = $this->daily_repo->getChartDataTotalOfThreeItem($id, $start, $end, $asp_id );
+                $total_chart = $this->daily_repo->getChartDataTotalOfThreeItem($asp_id, $id, $start, $end );
                 
                 $data = array();
                 $i = 0;
@@ -52,7 +58,8 @@ class DailyDataService
 
                 $total_chart = json_encode($data);
                 //日次のグラフ用データの一覧を取得する。
-                $daily_ranking = $this->daily_repo->getRankingEachOfAsp($id, $start, $end, $asp_id );
+
+                $daily_ranking = $this->daily_repo->getRankingEachOfAsp($asp_id, $id, $start, $end );
                 //$this->dailyRankingAsp($id,$searchdate_start,$searchdate_end,$asp_id);
                 //var_dump($daily_ranking);
                 return [$daily_data  ,$daily_ranking , $total , $total_chart ];

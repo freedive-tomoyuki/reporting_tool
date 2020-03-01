@@ -88,8 +88,13 @@ class DailyController extends Controller
         $end =($request->searchdate_end != null)? $request->searchdate_end : date("Y-m-d",strtotime('-1 day'));
         
         $asp_id = ($request->asp_id != null)? $request->asp_id : "" ;
-        
+        // echo "aa";
+        // echo "(1)".$asp_id;
+        // echo "(2)".$id;
+        // echo "(3)".$start;
+        // echo "(4)".$end;
         [$daily_data ,$daily_ranking , $total , $total_chart ] = $this->dailyDataService->showList($asp_id , $id, $start , $end  );
+        // var_dump($daily_ranking);
 
         //VIEWを表示する。
         // if($daily_data->isEmpty() ){
