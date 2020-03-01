@@ -70,7 +70,19 @@ class AffiTownController extends DailyCrawlerController
             {
                 try{
                         $product_infos = \App\Product::all()->where( 'id', $product_id );
-                        
+
+                        $affitown_data[ 0 ][ 'active' ] = 0;
+                        $affitown_data[ 0 ][ 'partnership' ] = 0;
+                        $affitown_data[ 0 ][ 'imp' ] = 0;
+                        $affitown_data[ 0 ][ 'click' ] = 0;
+                        $affitown_data[ 0 ][ 'cv' ] = 0;
+                        $affitown_data[ 0 ][ 'price' ] = 0;
+                        $affitown_data[ 0 ][ 'asp' ]     = $product_info->asp_id;
+                        $affitown_data[ 0 ][ 'product' ] = $product_info->id;
+                        $affitown_data[ 0 ][ 'date' ]    = date( 'Y-m-d', strtotime( '-1 day' ) );
+                        $affitown_data[ 0 ][ 'cost' ] = 0;
+                        $affitown_data[ 0 ][ 'cpa' ] = 0;
+
                         /*
                         日付　取得
                         */
@@ -82,176 +94,194 @@ class AffiTownController extends DailyCrawlerController
                             $s_date = date( 'Ym01' );
                             $e_date = date( 'Ymd', strtotime( '-1 day' ) );
                         }
+                        $ck_date = date( 'Ym', strtotime( '-1 day' ) );
+                        
+                        echo 'show before product_infos loop';
+                        var_dump($product_info);
                         
                         foreach ( $product_infos as $product_info ) {
-                            // /var_dump($product_info->asp);
+                            
                             /*
                             クロール：ログイン＝＞[日別売上検索]より検索
                             */
-                            
                             \Log::info($product_info->asp_product_id);
                             \Log::info($s_date);
                             \Log::info($e_date);
-                            $crawler = $browser->visit( $product_info->asp->login_url )
+
+                            #all_display > table > tbody > tr > td:nth-child(2)
+
+                            $check_before_crawler = $browser->visit( $product_info->asp->login_url )
                                                 ->type( $product_info->asp->login_key, $product_info->login_value )
                                                 ->type( $product_info->asp->password_key, $product_info->password_value )
                                                 ->click( $product_info->asp->login_selector )
-                                                ->visit( "https://affi.town/adserver/merchant/report/dailysales.af" )
-                                                ->visit( "https://affi.town/adserver/merchant/report/dailysales.af?advertiseId=" . $product_info->asp_product_id . "&mediaId=&since=" . $s_date . "&until=" . $e_date )
-                                                ->type( '#all_display > p > input[type=search]', '合計' )
+                                                ->visit( "https://affi.town/adserver/report/mc/monthly.af?fromDate=" . $ck_date . "&toDate=" . $ck_date )
                                                 ->crawler();
-                            //echo $crawler->html();
+                                                
+                                                $click_count = $check_before_crawler->filter('#all_display > table > tbody > tr > td:nth-child(2)')->text();
+                                                $cv_count = $check_before_crawler->filter('#all_display > table > tbody > tr > td:nth-child(3)')->text();
 
-                            $crawler2 = $browser->visit( "https://affi.town/adserver/report/mc/impression.af" )
-                                                ->visit( "https://affi.town/adserver/report/mc/impression.af?advertiseId=" . $product_info->asp_product_id . "&mediaId=&fromDate=" . $s_date . "&toDate=" . $e_date )
-                                                ->type( '#all_display > p > input[type=search]', '合計' )
-                                                ->crawler();
-                            //echo $crawler2->html();
-                            //https://affi.town/adserver/report/mc/impression.af?advertiseId=4316&mediaId=&since=2019-07-01&until=2019-07-27
-                            /*
-                            selector 設定
-                            */
-                            $selector1 = array(
-                                'click' => '#all_display > table > tbody > tr.visible.striped > td:nth-child(5)',
-                                'cv' => '#all_display > table > tbody > tr.visible.striped > td:nth-child(6)',
-                                'price' => '#all_display > table > tbody > tr.visible.striped > td:nth-child(7)' 
-                            );
-                            
-                            /*
-                            selector Imp 設定
-                            */
-                            $selector2 = array(
-                                'imp' => '#all_display > table > tbody:nth-child(2) > tr.visible.striped > td:nth-child(5)',
-                            );
-                            
-                            /*
-                            $crawler　をフィルタリング
-                            */
-                            $affitown_data = $crawler->each( function( Crawler $node ) use ($selector1, $product_info)
-                            {
-                                
-                                $data              = array( );
-                                $data[ 'asp' ]     = $product_info->asp_id;
-                                $data[ 'product' ] = $product_info->id;
-                                //$data['imp'] = 0;
-                                $data[ 'date' ]    = date( 'Y-m-d', strtotime( '-1 day' ) );
-                                
-                                foreach ( $selector1 as $key => $value ) {
-                                    if(count($node->filter( $value ))){
-                                        $data[ $key ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
-                                    }else{
-                                        throw new \Exception($value.'要素が存在しません。');
-                                    }
-                                } //$selector1 as $key => $value
-                                return $data;
-                                
-                            } );
-                            //var_dump( $affitown_data );
+                            if($click_count != 0 && $cv_count != 0){
+                                                    
 
-                            /*
-                            $crawler(Imp)　をフィルタリング
-                            */
-                            $affitown_data_imp = $crawler2->each( function( Crawler $node ) use ($selector2, $product_info)
-                            {
-                                
-                                $data              = array( );
-                                
-                                foreach ( $selector2 as $key => $value ) {
-                                    if(count($node->filter( $value ))){
-                                        $data[ $key ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
-                                    }else{
-                                        throw new \Exception($value.'要素が存在しません。');
-                                    }
-                                } //$selector1 as $key => $value
-                                return $data;
-                                
-                            } );
-                            //var_dump( $affitown_data_imp );
-                            
-                            /*
-                            サイト抽出　
-                            */
-                            $crawler_for_count_site = $browser->visit( "https://affi.town/adserver/merchant/join.af?joinApprove=2" )->crawler();
-                            
-                            $site_count = 1;
-                            
-                            while ( $crawler_for_count_site->filter( '#form_link_approval > table > tbody > tr:nth-child(' . $site_count . ') > td:nth-child(2)' )->count() == 1 ) {
-                                $site_count++;
-                            }
-                            //echo 'サイト件数：'.$site_count;
-                            $site_count--;
-                            //echo "カウントここ" . $site_count . "カウントここ";
-                            
-                            $crawler_for_site = $browser->visit( "https://affi.town/adserver/report/mc/site.af?advertiseId=" . $product_info->asp_product_id . "&fromDate=" . $s_date . "&toDate=" . $e_date )->crawler();
-                                // ->type( '#all_display > p > input[type=search]', '合計' )->crawler();
-                            $i                = 1;
-                            //$selector_end = ;
-                            //echo $crawler_for_site->html();
-                            // #all_display > table > tbody > tr.last > td:nth-child(2) > a
+                                $crawler = $browser->visit( "https://affi.town/adserver/merchant/report/dailysales.af" )
+                                                    ->visit( "https://affi.town/adserver/merchant/report/dailysales.af?advertiseId=" . $product_info->asp_product_id . "&mediaId=&since=" . $s_date . "&until=" . $e_date )
+                                                    ->type( '#all_display > p > input[type=search]', '合計' )
+                                                    ->crawler();
+                                //echo $crawler->html();
 
-                            // サイト一覧の「合計」以外の前列を1列目から最終列まで一行一行スクレイピング
-                            while ( ($crawler_for_site->filter( '#all_display > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(1)' )->text()) !== '' ) {
-                                //echo $i;
-                                
-                                $affitown_site[ $i ][ 'product' ] = $product_info->id;
-                                $affitown_site[ $i ][ 'asp' ]   = $product_info->asp_id;
-                                $affitown_site[ $i ][ 'imp' ]     = 0;
-                                
-                                $selector_for_site = array(
-                                    'media_id'  => '#all_display > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(1)',
-                                    'site_name' => '#all_display > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(2) > a',
-                                    'click'     => '#all_display > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(4)',
-                                    'cv'        => '#all_display > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(5)',
-                                    'price'     => '#all_display > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(6)' 
+                                $crawler2 = $browser->visit( "https://affi.town/adserver/report/mc/impression.af" )
+                                                    ->visit( "https://affi.town/adserver/report/mc/impression.af?advertiseId=" . $product_info->asp_product_id . "&mediaId=&fromDate=" . $s_date . "&toDate=" . $e_date )
+                                                    ->type( '#all_display > p > input[type=search]', '合計' )
+                                                    ->crawler();
+                                //echo $crawler2->html();
+                                //https://affi.town/adserver/report/mc/impression.af?advertiseId=4316&mediaId=&since=2019-07-01&until=2019-07-27
+                                /*
+                                selector 設定
+                                */
+                                $selector1 = array(
+                                    'click' => '#all_display > table > tbody > tr.visible.striped > td:nth-child(5)',
+                                    'cv' => '#all_display > table > tbody > tr.visible.striped > td:nth-child(6)',
+                                    'price' => '#all_display > table > tbody > tr.visible.striped > td:nth-child(7)' 
                                 );
                                 
-                                foreach ( $selector_for_site as $key => $value ) {
-                                    if(count($crawler_for_site->filter( $value ))){
-                                        if ( $key == 'site_name' ) {
-                                            $affitown_site[ $i ][ $key ] = trim( $crawler_for_site->filter( $value )->text() );
+                                /*
+                                selector Imp 設定
+                                */
+                                $selector2 = array(
+                                    'imp' => '#all_display > table > tbody:nth-child(2) > tr.visible.striped > td:nth-child(5)',
+                                );
+                                
+                                /*
+                                $crawler　をフィルタリング
+                                */
+                                $affitown_data = $crawler->each( function( Crawler $node ) use ($selector1, $product_info)
+                                {
+                                    
+                                    $data              = array( );
+                                    // $data[ 'asp' ]     = $product_info->asp_id;
+                                    // $data[ 'product' ] = $product_info->id;
+                                    // $data[ 'date' ]    = date( 'Y-m-d', strtotime( '-1 day' ) );
+                                    
+                                    foreach ( $selector1 as $key => $value ) {
+                                        if(count($node->filter( $value ))){
+                                            $data[ $key ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
+                                        }else{
+                                            throw new \Exception($value.'要素が存在しません。');
                                         }
-                                        else {
-                                            $affitown_site[ $i ][ $key ] = trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) );
-                                        }
-                                    }else{
-                                        throw new \Exception($value.'要素が存在しません。');
-                                    }
-                                }
-                                // $unit_price = $product_info->price;
-                                // $affitown_site[ $i ][ 'price' ] = $unit_price * $affitown_site[ $i ][ 'cv' ];
+                                    } //$selector1 as $key => $value
+                                    return $data;
+                                    
+                                } );
+                                //var_dump( $affitown_data );
 
-                                $calculated                       = json_decode( 
+                                /*
+                                $crawler(Imp)　をフィルタリング
+                                */
+                                $affitown_data_imp = $crawler2->each( function( Crawler $node ) use ($selector2, $product_info)
+                                {
+                                    
+                                    $data              = array( );
+                                    
+                                    foreach ( $selector2 as $key => $value ) {
+                                        if(count($node->filter( $value ))){
+                                            $data[ $key ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
+                                        }else{
+                                            throw new \Exception($value.'要素が存在しません。');
+                                        }
+                                    } //$selector1 as $key => $value
+                                    return $data;
+                                    
+                                } );
+                                //var_dump( $affitown_data_imp );
+                                
+                                /*
+                                サイト抽出　
+                                */
+                                $crawler_for_count_site = $browser->visit( "https://affi.town/adserver/merchant/join.af?joinApprove=2" )->crawler();
+                                
+                                $site_count = 1;
+                                
+                                while ( $crawler_for_count_site->filter( '#form_link_approval > table > tbody > tr:nth-child(' . $site_count . ') > td:nth-child(2)' )->count() == 1 ) {
+                                    $site_count++;
+                                }
+                                //echo 'サイト件数：'.$site_count;
+                                $site_count--;
+                                //echo "カウントここ" . $site_count . "カウントここ";
+                                
+                                $crawler_for_site = $browser->visit( "https://affi.town/adserver/report/mc/site.af?advertiseId=" . $product_info->asp_product_id . "&fromDate=" . $s_date . "&toDate=" . $e_date )->crawler();
+                                    // ->type( '#all_display > p > input[type=search]', '合計' )->crawler();
+                                $i                = 1;
+                                //$selector_end = ;
+                                //echo $crawler_for_site->html();
+                                // #all_display > table > tbody > tr.last > td:nth-child(2) > a
+
+                                // サイト一覧の「合計」以外の前列を1列目から最終列まで一行一行スクレイピング
+                                while ( ($crawler_for_site->filter( '#all_display > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(1)' )->text()) !== '' ) {
+                                    //echo $i;
+                                    
+                                    $affitown_site[ $i ][ 'product' ] = $product_info->id;
+                                    $affitown_site[ $i ][ 'asp' ]   = $product_info->asp_id;
+                                    $affitown_site[ $i ][ 'imp' ]     = 0;
+                                    
+                                    $selector_for_site = array(
+                                        'media_id'  => '#all_display > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(1)',
+                                        'site_name' => '#all_display > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(2) > a',
+                                        'click'     => '#all_display > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(4)',
+                                        'cv'        => '#all_display > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(5)',
+                                        'price'     => '#all_display > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(6)' 
+                                    );
+                                    
+                                    foreach ( $selector_for_site as $key => $value ) {
+                                        if(count($crawler_for_site->filter( $value ))){
+                                            if ( $key == 'site_name' ) {
+                                                $affitown_site[ $i ][ $key ] = trim( $crawler_for_site->filter( $value )->text() );
+                                            }
+                                            else {
+                                                $affitown_site[ $i ][ $key ] = trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) );
+                                            }
+                                        }else{
+                                            throw new \Exception($value.'要素が存在しません。');
+                                        }
+                                    }
+                                    // $unit_price = $product_info->price;
+                                    // $affitown_site[ $i ][ 'price' ] = $unit_price * $affitown_site[ $i ][ 'cv' ];
+
+                                    $calculated                       = json_decode( 
+                                                                            json_encode( 
+                                                                                json_decode( 
+                                                                                    $this->dailySearchService
+                                                                                        ->cpa( $affitown_site[ $i ][ 'cv' ], $affitown_site[ $i ][ 'price' ], 7 ) 
+                                                                                ) 
+                                                                            ), True );
+                                    $affitown_site[ $i ][ 'cpa' ]  = $calculated[ 'cpa' ]; //CPA
+                                    $affitown_site[ $i ][ 'cost' ] = $calculated[ 'cost' ];
+                                    $affitown_site[ $i ][ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
+                                    
+                                    $i++;
+                                    
+                                }
+
+                                $affitown_data[ 0 ][ 'partnership' ] = $site_count;
+                                $affitown_data[ 0 ][ 'active' ] = $i; //一覧をクロールした行数をサイト数としてカウント
+                                $affitown_data[ 0 ][ 'imp' ] = $affitown_data_imp[ 0 ][ 'imp' ];
+
+                                $calculated                      = json_decode( 
                                                                         json_encode( 
                                                                             json_decode( 
                                                                                 $this->dailySearchService
-                                                                                    ->cpa( $affitown_site[ $i ][ 'cv' ], $affitown_site[ $i ][ 'price' ], 7 ) 
-                                                                            ) 
-                                                                        ), True );
-                                $affitown_site[ $i ][ 'cpa' ]  = $calculated[ 'cpa' ]; //CPA
-                                $affitown_site[ $i ][ 'cost' ] = $calculated[ 'cost' ];
-                                $affitown_site[ $i ][ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
-                                
-                                $i++;
-                                
-                            } 
-                            //var_dump($affitown_site);
-                            // $unit_price = $product_info->price;
-                            // $affitown_data[ 0 ][ 'price' ] = $affitown_data[ 0 ][ 'cv' ] * $unit_price;
+                                                                                    ->cpa( $affitown_data[ 0 ][ 'cv' ], $affitown_data[ 0 ][ 'price' ], 7 ) 
+                                                                                ) ), True );
+                                $affitown_data[ 0 ][ 'cpa' ]  = $calculated[ 'cpa' ]; //CPA
+                                $affitown_data[ 0 ][ 'cost' ] = $calculated[ 'cost' ];
+                            
+                                //日別のデータが０ではない時にサイトにレコードを挿入
+                                $this->dailySearchService->save_site( json_encode( $affitown_site ) );
+                            
+                            }
 
-                            $affitown_data[ 0 ][ 'partnership' ] = $site_count;
-                            $affitown_data[ 0 ][ 'active' ] = $i; //一覧をクロールした行数をサイト数としてカウント
-                            $affitown_data[ 0 ][ 'imp' ] = $affitown_data_imp[ 0 ][ 'imp' ];
-
-                            $calculated                      = json_decode( 
-                                                                    json_encode( 
-                                                                        json_decode( 
-                                                                            $this->dailySearchService
-                                                                                ->cpa( $affitown_data[ 0 ][ 'cv' ], $affitown_data[ 0 ][ 'price' ], 7 ) 
-                                                                            ) ), True );
-                            $affitown_data[ 0 ][ 'cpa' ]  = $calculated[ 'cpa' ]; //CPA
-                            $affitown_data[ 0 ][ 'cost' ] = $calculated[ 'cost' ];
-
-
+                            $this->dailySearchService->save_daily( json_encode( $affitown_data ) );
+                            
+                            
                             //echo "<pre>";
                             //var_dump( $affitown_data );
                             //var_dump( $affitown_site );
@@ -260,8 +290,7 @@ class AffiTownController extends DailyCrawlerController
                             /*
                             サイトデータ・日次データ保存
                             */
-                            $this->dailySearchService->save_site( json_encode( $affitown_site ) );
-                            $this->dailySearchService->save_daily( json_encode( $affitown_data ) );
+                            
                             
                             //var_dump($crawler_for_site);
                         } //$product_infos as $product_info
