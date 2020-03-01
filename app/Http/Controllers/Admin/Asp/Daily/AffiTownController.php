@@ -114,7 +114,7 @@ class AffiTownController extends DailyCrawlerController
 
                                                 
                             if($click_count == 0 && $cv_count == 0){
-                                                    
+                                \Log::info('全部０');         
                                 $affitown_data[ 0 ][ 'active' ] = 0;
                                 $affitown_data[ 0 ][ 'partnership' ] = 0;
                                 $affitown_data[ 0 ][ 'imp' ] = 0;
@@ -125,6 +125,7 @@ class AffiTownController extends DailyCrawlerController
                                 $affitown_data[ 0 ][ 'cpa' ] = 0;
 
                             }else{
+                                \Log::info('スクレイピング');         
 
                                 $crawler = $browser->visit( "https://affi.town/adserver/merchant/report/dailysales.af" )
                                                     ->visit( "https://affi.town/adserver/merchant/report/dailysales.af?advertiseId=" . $product_info->asp_product_id . "&mediaId=&since=" . $s_date . "&until=" . $e_date )
