@@ -95,20 +95,10 @@ class AffiTownController extends DailyCrawlerController
                             \Log::info($product_info->asp_product_id);
                             \Log::info($s_date);
                             \Log::info($e_date);
-                            
-                            $affitown_data[ 0 ][ 'active' ] = 0;
-                            $affitown_data[ 0 ][ 'partnership' ] = 0;
-                            $affitown_data[ 0 ][ 'imp' ] = 0;
-                            $affitown_data[ 0 ][ 'click' ] = 0;
-                            $affitown_data[ 0 ][ 'cv' ] = 0;
-                            $affitown_data[ 0 ][ 'price' ] = 0;
+                        
                             $affitown_data[ 0 ][ 'asp' ]     = $product_info->asp_id;
                             $affitown_data[ 0 ][ 'product' ] = $product_info->id;
                             $affitown_data[ 0 ][ 'date' ]    = date( 'Y-m-d', strtotime( '-1 day' ) );
-                            $affitown_data[ 0 ][ 'cost' ] = 0;
-                            $affitown_data[ 0 ][ 'cpa' ] = 0;
-
-                            #all_display > table > tbody > tr > td:nth-child(2)
 
                             $check_before_crawler = $browser->visit( $product_info->asp->login_url )
                                                 ->type( $product_info->asp->login_key, $product_info->login_value )
@@ -122,8 +112,19 @@ class AffiTownController extends DailyCrawlerController
                                                 \Log::info($click_count);
                                                 \Log::info($cv_count);
 
-                            if($click_count != 0 && $cv_count != 0){
+                                                
+                            if($click_count == 0 && $cv_count == 0){
                                                     
+                                $affitown_data[ 0 ][ 'active' ] = 0;
+                                $affitown_data[ 0 ][ 'partnership' ] = 0;
+                                $affitown_data[ 0 ][ 'imp' ] = 0;
+                                $affitown_data[ 0 ][ 'click' ] = 0;
+                                $affitown_data[ 0 ][ 'cv' ] = 0;
+                                $affitown_data[ 0 ][ 'price' ] = 0;
+                                $affitown_data[ 0 ][ 'cost' ] = 0;
+                                $affitown_data[ 0 ][ 'cpa' ] = 0;
+
+                            }else{
 
                                 $crawler = $browser->visit( "https://affi.town/adserver/merchant/report/dailysales.af" )
                                                     ->visit( "https://affi.town/adserver/merchant/report/dailysales.af?advertiseId=" . $product_info->asp_product_id . "&mediaId=&since=" . $s_date . "&until=" . $e_date )
