@@ -61,6 +61,8 @@ class SCANController extends DailyCrawlerController
         foreach($products as $p ){
             
             $product_id = $p['id'];
+            $product_name = $p['product'];
+
             /*
             Chromeドライバー実行
             　引数

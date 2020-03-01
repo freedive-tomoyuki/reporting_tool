@@ -58,6 +58,8 @@ class AfbController extends DailyCrawlerController
         foreach($products as $p ){
             
             $product_id = $p['id'];
+            $product_name = $p['product'];
+
             //Chromeドライバー実行
             $client->browse( function( Browser $browser ) use(&$crawler, $product_id, $product_name)
             {
