@@ -43,6 +43,16 @@ class CsvExportController extends Controller
         $this->dailySiteDataService = $dailySiteDataService;
         $this->monthlySiteDataService = $monthlySiteDataService;
     }
+    public function downloadTemplate (){
+        $data = array();
+        $csvHeader = ['日付','案件ID','ASPID','Imp','Click','CV','アクティブ','提携数','発生金額','承認件数','承認金額'];
+        return CSV::download($data, $csvHeader, 'template_daily.csv');
+    }
+    public function downloadTemplateSite(){
+        $data = array();
+        $csvHeader = ['日付','案件ID','ASPID','Imp', 'Click','CV','SiteID','Site名','発生金額','承認件数','承認金額'];
+        return CSV::download($data, $csvHeader, 'template_monthly_site.csv');    
+    }
     /**
      * デイリーレポートの一覧のCSV出力用の関数
      *
