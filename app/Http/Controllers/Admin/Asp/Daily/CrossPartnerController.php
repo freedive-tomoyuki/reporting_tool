@@ -149,7 +149,8 @@ class CrossPartnerController extends DailyCrawlerController
                                                 }
                                                 $y++ ;
                                             }else{
-                                                throw new \Exception($value.'要素が存在しません。');
+                                                $data[ $key ] = 0;
+                                                // throw new \Exception($value.'要素が存在しません。');
                                             }
                                             
                                         }
@@ -160,6 +161,7 @@ class CrossPartnerController extends DailyCrawlerController
                             echo "<pre>";
                             var_dump($crosspartner_data1);
                             echo "</pre>";
+
                             /*
                             $crawler　をフィルタリング
                             */
@@ -185,82 +187,85 @@ class CrossPartnerController extends DailyCrawlerController
                             //$count_last_page = $felmat_data2[0]['active'] % 20;
                             $count      = 0;
                             $iPlus       = 1;
-                            //for( $i = 1 ; $page >= $i ; $i++ ){
-
-                            $crawler_for_site = $browser->visit('http://crosspartners.net/master/result_reports/ajax_paging/is_partners:1/start:'.$ym.'/end:'.$ym.'/user_site_id:/ad_id:'.$product_info->asp_product_id.'?_=1563862637371')->crawler();
                             
-                            $crosspartner_site = array();
-                            
-                            if(trim( preg_replace( '/[\n\r\t ]+/', ' ', str_replace( "\xc2\xa0", " ", $crawler_for_site->filter( 'table.highlight > tbody > tr:nth-child('.$iPlus.') > td:nth-child(1)' )->count()) ) ) <= 0 ){  throw new \Exception('サイト情報を取得できませんした。'); };
+                            if($crosspartner_data1[0]["click"] != 0 && $crosspartner_data1[0]["click"] != 0 ){
 
-                            while ( trim( preg_replace( '/[\n\r\t ]+/', ' ', str_replace( "\xc2\xa0", " ", $crawler_for_site->filter( 'table.highlight > tbody > tr:nth-child('.$iPlus.') > td:nth-child(1)' )->count() ) ) ) ) {
+                                $crawler_for_site = $browser->visit('http://crosspartners.net/master/result_reports/ajax_paging/is_partners:1/start:'.$ym.'/end:'.$ym.'/user_site_id:/ad_id:'.$product_info->asp_product_id.'?_=1563862637371')->crawler();
                                 
-                                            $crosspartner_site[$count]['product'] = $product_info->id;
-                                            $crosspartner_site[$count][ 'asp' ]   = $product_info->asp_id;
+                                $crosspartner_site = array();
+                            
+                                if(trim( preg_replace( '/[\n\r\t ]+/', ' ', str_replace( "\xc2\xa0", " ", $crawler_for_site->filter( 'table.highlight > tbody > tr:nth-child('.$iPlus.') > td:nth-child(1)' )->count()) ) ) <= 0 ){  throw new \Exception('サイト情報を取得できませんした。'); };
 
-                                            \Log::debug($crosspartner_site);
-                                            
-                                            $selector_for_site = array(
-                                                'media_id'  =>'table.highlight > tbody > tr:nth-child('.$iPlus.')',
-                                                'site_name' =>'table.highlight > tbody > tr:nth-child('.$iPlus.') > td:nth-child(1)',
-                                                'imp'       =>'table.highlight > tbody > tr:nth-child('.$iPlus.') > td:nth-child(3)',
-                                                'click'     =>'table.highlight > tbody > tr:nth-child('.$iPlus.') > td:nth-child(4)',
-                                                'cv'        =>'table.highlight > tbody > tr:nth-child('.$iPlus.') > td:nth-child(6)',
-                                                'price'     =>'table.highlight > tbody > tr:nth-child('.$iPlus.') > td:nth-child(10)',
-                                            );
+                                while ( trim( preg_replace( '/[\n\r\t ]+/', ' ', str_replace( "\xc2\xa0", " ", $crawler_for_site->filter( 'table.highlight > tbody > tr:nth-child('.$iPlus.') > td:nth-child(1)' )->count() ) ) ) ) {
+                                    
+                                                $crosspartner_site[$count]['product'] = $product_info->id;
+                                                $crosspartner_site[$count][ 'asp' ]   = $product_info->asp_id;
 
-                                            foreach($selector_for_site as $key => $value){
-                                                if(count($crawler_for_site->filter( $value ))){
-                                                    if( $key == 'site_name' ){
-                                                        $crosspartner_site[$count][$key] = trim($crawler_for_site->filter($value)->text());
-                                                        //$crosspartner_site[$count]['media_id'] = $this->siteCreate(trim($crawler_for_site->filter($value)->text()),20);
-                                                    }elseif($key == 'media_id' ){
-                                                        $member_id_array = array( );
-                                                        $member_id_source = $crawler_for_site->filter($value)->each(function (Crawler $c) {
-                                                        return $c->attr('id');
-                                                        });
-                                                        preg_match( '/member_id:(\d+)/', $member_id_source[0], $member_id_array );
-                                                        $crosspartner_site[$count][$key] = $member_id_array[ 1 ];
+                                                \Log::debug($crosspartner_site);
+                                                
+                                                $selector_for_site = array(
+                                                    'media_id'  =>'table.highlight > tbody > tr:nth-child('.$iPlus.')',
+                                                    'site_name' =>'table.highlight > tbody > tr:nth-child('.$iPlus.') > td:nth-child(1)',
+                                                    'imp'       =>'table.highlight > tbody > tr:nth-child('.$iPlus.') > td:nth-child(3)',
+                                                    'click'     =>'table.highlight > tbody > tr:nth-child('.$iPlus.') > td:nth-child(4)',
+                                                    'cv'        =>'table.highlight > tbody > tr:nth-child('.$iPlus.') > td:nth-child(6)',
+                                                    'price'     =>'table.highlight > tbody > tr:nth-child('.$iPlus.') > td:nth-child(10)',
+                                                );
+
+                                                foreach($selector_for_site as $key => $value){
+                                                    if(count($crawler_for_site->filter( $value ))){
+                                                        if( $key == 'site_name' ){
+                                                            $crosspartner_site[$count][$key] = trim($crawler_for_site->filter($value)->text());
+                                                            //$crosspartner_site[$count]['media_id'] = $this->siteCreate(trim($crawler_for_site->filter($value)->text()),20);
+                                                        }elseif($key == 'media_id' ){
+                                                            $member_id_array = array( );
+                                                            $member_id_source = $crawler_for_site->filter($value)->each(function (Crawler $c) {
+                                                            return $c->attr('id');
+                                                            });
+                                                            preg_match( '/member_id:(\d+)/', $member_id_source[0], $member_id_array );
+                                                            $crosspartner_site[$count][$key] = $member_id_array[ 1 ];
+                                                        }else{
+                                                            $crosspartner_site[$count][$key] = trim(preg_replace('/[^0-9]/', '', $crawler_for_site->filter($value)->text()));
+                                                        }
                                                     }else{
-                                                        $crosspartner_site[$count][$key] = trim(preg_replace('/[^0-9]/', '', $crawler_for_site->filter($value)->text()));
+                                                        throw new \Exception($value.'要素が存在しません。');
                                                     }
-                                                }else{
-                                                    throw new \Exception($value.'要素が存在しません。');
                                                 }
-                                            }
-                                            // $unit_price = $product_info->price;
-                                            // $crosspartner_site[ $count ][ 'price' ] = $unit_price * $crosspartner_site[ $count ][ 'cv' ];
+                                                // $unit_price = $product_info->price;
+                                                // $crosspartner_site[ $count ][ 'price' ] = $unit_price * $crosspartner_site[ $count ][ 'cv' ];
 
-                                            $calculated = json_decode(
-                                                        json_encode(
-                                                        json_decode($this->dailySearchService->cpa($crosspartner_site[$count]['cv'] ,$crosspartner_site[$count]['price'] , 5))
-                                                        ), True
-                                                    );
-                                            $crosspartner_site[$count]['cpa']= $calculated['cpa']; //CPA
-                                            $crosspartner_site[$count]['cost']= $calculated['cost'];
-                                            $crosspartner_site[$count]['date'] = date('Y-m-d', strtotime('-1 day'));
-                                            
-                                            $count++;
-                                            $iPlus++;
-                                        //}
+                                                $calculated = json_decode(
+                                                            json_encode(
+                                                            json_decode($this->dailySearchService->cpa($crosspartner_site[$count]['cv'] ,$crosspartner_site[$count]['price'] , 5))
+                                                            ), True
+                                                        );
+                                                $crosspartner_site[$count]['cpa']= $calculated['cpa']; //CPA
+                                                $crosspartner_site[$count]['cost']= $calculated['cost'];
+                                                $crosspartner_site[$count]['date'] = date('Y-m-d', strtotime('-1 day'));
+                                                
+                                                $count++;
+                                                $iPlus++;
+                                            //}
+                                }
+                                // $unit_price = $product_info->price;
+                                // $crosspartner_data1[ 0 ][ 'price' ] = $crosspartner_data1[ 0 ][ 'cv' ] * $unit_price;
+                                                        
+                                $crosspartner_data1[0]['active'] = $iPlus ;
+                                $crosspartner_data1[0]['partnership'] = $crosspartner_data2[0]['partnership'];
+
+                                $calculated = json_decode(
+                                                json_encode(json_decode($this->dailySearchService->cpa($crosspartner_data1[0]['cv'] ,$crosspartner_data1[0]['price'] , 5))), True
+                                            );
+                                $crosspartner_data1[0]['cpa']= $calculated['cpa']; //CPA
+                                $crosspartner_data1[0]['cost']= $calculated['cost'];
+                            
+                                $this->dailySearchService->save_site( json_encode( $crosspartner_site ) );
+
                             }
-                            // $unit_price = $product_info->price;
-                            // $crosspartner_data1[ 0 ][ 'price' ] = $crosspartner_data1[ 0 ][ 'cv' ] * $unit_price;
-                                                    
-                            $crosspartner_data1[0]['active'] = $iPlus ;
-                            $crosspartner_data1[0]['partnership'] = $crosspartner_data2[0]['partnership'];
-
-                            $calculated = json_decode(
-                                            json_encode(json_decode($this->dailySearchService->cpa($crosspartner_data1[0]['cv'] ,$crosspartner_data1[0]['price'] , 5))), True
-                                        );
-                            $crosspartner_data1[0]['cpa']= $calculated['cpa']; //CPA
-                            $crosspartner_data1[0]['cost']= $calculated['cost'];
-
 
                             /*
                             サイトデータ・日次データ保存
                             */
-                            $this->dailySearchService->save_site( json_encode( $crosspartner_site ) );
                             $this->dailySearchService->save_daily( json_encode( $crosspartner_data1 ) );
                         
                         }
