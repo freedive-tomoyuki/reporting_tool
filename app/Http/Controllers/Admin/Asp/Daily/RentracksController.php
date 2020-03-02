@@ -205,12 +205,11 @@ class RentracksController extends DailyCrawlerController
                                 $active_partner =0 ;
                                 // throw new \Exception('#main > div.hitbox > em要素が存在しません。');
                             }
+                            $total_price = 0; //発生金額　合計
+                            $rentracks_site= array();
+
                             //echo $active_partner;
                             if($active_partner >=  1){
-                                $rentracks_site= array();
-                                //throw new \Exception('提携パートナーが存在しませんでした。'); }
-                            
-                                $total_price = 0; //発生金額　合計
 
                                 for ( $i = 1; $active_partner >= $i; $i++ ) {
                                     $rentracks_site[ $i ][ 'product' ] = $product_info->id;
