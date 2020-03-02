@@ -232,12 +232,23 @@ class FelmatController extends DailyCrawlerController
                                 
                                 //最後のページ
                                     if ($i > 1) {
-                                        $crawler_for_site = $browser->visit("https://www.felmat.net/advertiser/report/partnersite") ->type('#search > div > div:nth-child(2) > div.col-sm-4.form-inline > div > input:nth-child(1)', $first)->type('#search > div > div:nth-child(2) > div.col-sm-4.form-inline > div > input:nth-child(3)', $end)->click('#sel_promotion_id_chosen')->click($product_info->product_order)->click('#view > div > button.btn.btn-primary.btn-sm');
+                                        $crawler_for_site = $browser
+                                                        ->visit("https://www.felmat.net/advertiser/report/partnersite")
+                                                        ->type('#search > div > div:nth-child(2) > div.col-sm-4.form-inline > div > input:nth-child(1)', $first)
+                                                        ->type('#search > div > div:nth-child(2) > div.col-sm-4.form-inline > div > input:nth-child(3)', $end)
+                                                        ->click('#sel_promotion_id_chosen')
+                                                        ->click($product_info->product_order)
+                                                        ->click('#view > div > button.btn.btn-primary.btn-sm');
                                         $p = $i + 1;
-                                        
-                                        $crawler_for_site->click('div.wrapper > div.page-content.no-left-sidebar > div > div:nth-child(5) > div > div:nth-child(2) > div:nth-child(1) > div:nth-child(2) > div > ul > li:nth-child(' . $p . ') > a');
+                                        $browser->visit("https://www.felmat.net/advertiser/report/partnersite&pg=".$p);
+                                        // $crawler_for_site->click('div.wrapper > div.page-content.no-left-sidebar > div > div:nth-child(5) > div > div:nth-child(2) > div:nth-child(1) > div:nth-child(2) > div > ul > li:nth-child(' . $p . ') > a');
                                     }else{
-                                        $crawler_for_site = $browser->visit("https://www.felmat.net/advertiser/report/partnersite") ->type('#search > div > div:nth-child(2) > div.col-sm-4.form-inline > div > input:nth-child(1)', $first)->type('#search > div > div:nth-child(2) > div.col-sm-4.form-inline > div > input:nth-child(3)', $end)->click('#sel_promotion_id_chosen')->click($product_info->product_order)->click('#view > div > button.btn.btn-primary.btn-sm');
+                                        $crawler_for_site = $browser->visit("https://www.felmat.net/advertiser/report/partnersite")
+                                                                    ->type('#search > div > div:nth-child(2) > div.col-sm-4.form-inline > div > input:nth-child(1)', $first)
+                                                                    ->type('#search > div > div:nth-child(2) > div.col-sm-4.form-inline > div > input:nth-child(3)', $end)
+                                                                    ->click('#sel_promotion_id_chosen')
+                                                                    ->click($product_info->product_order)
+                                                                    ->click('#view > div > button.btn.btn-primary.btn-sm');
                                     }
 
                                 
@@ -246,13 +257,17 @@ class FelmatController extends DailyCrawlerController
                                 //var_dump($crawler_for_site->html());
                                 
                                 
+                                \Log::info('ページ数：'.$i);
                                 for ($x = 1; $crawlCountPerOne >= $x; $x++) {
                                     $felmat_site[$count]['product'] = $product_info->id;
                                     $felmat_site[$count][ 'asp' ]   = $product_info->asp_id;
                                     //echo "CountX:" . $x;
-                                    
+                                    \Log::info('全行数：'.$crawlCountPerOne );
+                                    \Log::info('現在行数：'.$x);
                                     
                                     //echo 'iPlus'.$iPlus;
+                                    #report > div > table > tbody > tr:nth-child(1) > td.left
+                                    #report > div > table > tbody > tr:nth-child(1) > td:nth-child(2)
                                     
                                     $selector_for_site = array(
                                         'site_name' => '#report > div > table > tbody > tr:nth-child(' . $x . ') > td.left',
