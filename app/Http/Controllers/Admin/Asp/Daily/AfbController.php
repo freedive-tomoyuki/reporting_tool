@@ -137,7 +137,8 @@ class AfbController extends DailyCrawlerController
                                     if(count($node->filter( $value ))){
                                         $data[ $key ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
                                     }else{
-                                        throw new \Exception($value.'要素が存在しません。');
+                                        $data[ $key ] = 0;
+                                        // throw new \Exception($value.'要素が存在しません。');
                                     }
                                     
                                 } //$selector_crawler as $key => $value
@@ -184,62 +185,62 @@ class AfbController extends DailyCrawlerController
 
                             $afb_site    = array( );
                             //echo $count_data;
-                            if($count_data <= 0){ throw new \Exception('アクティブパートナーが存在しませんでした。'); }
+                            if($count_data > 0){ //throw new \Exception('アクティブパートナーが存在しませんでした。'); }
                             
-                            for ( $i = 1; $count_data >= $i; $i++ ) {
-                                $afb_site[ $i ][ 'product' ] = $product_info->id;
-                                $afb_site[ $i ][ 'asp' ]   = $product_info->asp_id;
+                                for ( $i = 1; $count_data >= $i; $i++ ) {
+                                    $afb_site[ $i ][ 'product' ] = $product_info->id;
+                                    $afb_site[ $i ][ 'asp' ]   = $product_info->asp_id;
 
-                                $selector_for_site = array(
-                                    'media_id' => '#reportTable > tbody > tr:nth-child(' . $i . ') > td.maxw150',
-                                    'site_name' => '#reportTable > tbody > tr:nth-child(' . $i . ') > td.maxw150 > p > a',
-                                    'imp' => '#reportTable > tbody > tr:nth-child(' . $i . ') > td:nth-child(5) > p',
-                                    'click' => '#reportTable > tbody > tr:nth-child(' . $i . ') > td:nth-child(6) > p',
-                                    'cv' => '#reportTable > tbody > tr:nth-child(' . $i . ') > td:nth-child(9) > p',
-                                    'ctr' => '#reportTable > tbody > tr:nth-child(' . $i . ') > td:nth-child(7) > p',
-                                    'cvr' => '#reportTable > tbody > tr:nth-child(' . $i . ') > td:nth-child(10) > p',
-                                    'price' => '#reportTable > tbody > tr:nth-child(' . $i . ') > td:nth-child(12) > p' 
-                                );
-                                
-                                foreach ( $selector_for_site as $key => $value ) {
-                                    if(count($crawler3->filter( $value ))){
-                                        if ( $key == 'media_id' ) {
-                                            //$data = trim($node->filter($value)->attr('title'));
-                                            $media_id = array( );
-                                            $sid      = trim( $crawler3->filter( $value )->attr( 'title' ) );
-                                            preg_match( '/SID：(\d+)/', $sid, $media_id );
-                                            
-                                            $afb_site[ $i ][ $key ] = $media_id[ 1 ];
-                                            
-                                        } //$key == 'media_id'
-                                        elseif ( $key == 'site_name' ) {
-                                            
-                                            $afb_site[ $i ][ $key ] = trim( $crawler3->filter( $value )->text() );
-                                            
-                                        } //$key == 'site_name'
-                                        else {
-                                            
-                                            $afb_site[ $i ][ $key ] = trim( preg_replace( '/[^0-9]/', '', $crawler3->filter( $value )->text() ) );
-                                            
+                                    $selector_for_site = array(
+                                        'media_id' => '#reportTable > tbody > tr:nth-child(' . $i . ') > td.maxw150',
+                                        'site_name' => '#reportTable > tbody > tr:nth-child(' . $i . ') > td.maxw150 > p > a',
+                                        'imp' => '#reportTable > tbody > tr:nth-child(' . $i . ') > td:nth-child(5) > p',
+                                        'click' => '#reportTable > tbody > tr:nth-child(' . $i . ') > td:nth-child(6) > p',
+                                        'cv' => '#reportTable > tbody > tr:nth-child(' . $i . ') > td:nth-child(9) > p',
+                                        'ctr' => '#reportTable > tbody > tr:nth-child(' . $i . ') > td:nth-child(7) > p',
+                                        'cvr' => '#reportTable > tbody > tr:nth-child(' . $i . ') > td:nth-child(10) > p',
+                                        'price' => '#reportTable > tbody > tr:nth-child(' . $i . ') > td:nth-child(12) > p' 
+                                    );
+                                    
+                                    foreach ( $selector_for_site as $key => $value ) {
+                                        if(count($crawler3->filter( $value ))){
+                                            if ( $key == 'media_id' ) {
+                                                //$data = trim($node->filter($value)->attr('title'));
+                                                $media_id = array( );
+                                                $sid      = trim( $crawler3->filter( $value )->attr( 'title' ) );
+                                                preg_match( '/SID：(\d+)/', $sid, $media_id );
+                                                
+                                                $afb_site[ $i ][ $key ] = $media_id[ 1 ];
+                                                
+                                            } //$key == 'media_id'
+                                            elseif ( $key == 'site_name' ) {
+                                                
+                                                $afb_site[ $i ][ $key ] = trim( $crawler3->filter( $value )->text() );
+                                                
+                                            } //$key == 'site_name'
+                                            else {
+                                                
+                                                $afb_site[ $i ][ $key ] = trim( preg_replace( '/[^0-9]/', '', $crawler3->filter( $value )->text() ) );
+                                                
+                                            }
+                                        }else{
+                                            throw new \Exception($value.'要素が存在しません。');
                                         }
-                                    }else{
-                                        throw new \Exception($value.'要素が存在しません。');
                                     }
+                                    
+                                    // $unit_price = $product_info->price;
+                                    // $afb_site[ $i ][ 'price' ] = $unit_price * $afb_site[ $i ][ 'cv' ];
+
+                                    $calculated                 = json_decode( json_encode( json_decode( $this->dailySearchService->cpa( $afb_site[ $i ][ 'cv' ], $afb_site[ $i ][ 'price' ], 4 ) ) ), True );
+                                    $afb_site[ $i ][ 'cpa' ]  = $calculated[ 'cpa' ]; //CPA
+                                    $afb_site[ $i ][ 'cost' ] = $calculated[ 'cost' ]; //獲得単価
+                                    
+                                    $afb_site[ $i ][ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
                                 }
                                 
-                                // $unit_price = $product_info->price;
-                                // $afb_site[ $i ][ 'price' ] = $unit_price * $afb_site[ $i ][ 'cv' ];
-
-                                $calculated                 = json_decode( json_encode( json_decode( $this->dailySearchService->cpa( $afb_site[ $i ][ 'cv' ], $afb_site[ $i ][ 'price' ], 4 ) ) ), True );
-                                $afb_site[ $i ][ 'cpa' ]  = $calculated[ 'cpa' ]; //CPA
-                                $afb_site[ $i ][ 'cost' ] = $calculated[ 'cost' ]; //獲得単価
-                                
-                                $afb_site[ $i ][ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
+                                $this->dailySearchService->save_site( json_encode( $afb_site ) );
                             }
-                            
-                            
                             $this->dailySearchService->save_daily( json_encode( $afb_data ) );
-                            $this->dailySearchService->save_site( json_encode( $afb_site ) );
                             
                         }
                 }
