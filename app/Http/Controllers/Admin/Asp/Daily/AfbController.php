@@ -121,7 +121,7 @@ class AfbController extends DailyCrawlerController
                             );
                             
                             $selector_crawler3 = array(
-                                'active' => $product_info->asp->daily_active_selector 
+                                'active' => '#report_view > div > ul > li:nth-child(4)' 
                             );
                             
                             $afb_data = $crawler->each( function( Crawler $node ) use ($selector_crawler, $product_info)
@@ -151,34 +151,36 @@ class AfbController extends DailyCrawlerController
                                 return $data;
                                 
                             } );
-                            $partnership = $crawler2->each( function( Crawler $node ) use ($selector_crawler2)
-                            {
-                                foreach ( $selector_crawler2 as $key => $value ) {
-                                    if(count($node->filter( $value ))){
+                            // $partnership = $crawler2->each( function( Crawler $node ) use ($selector_crawler2)
+                            // {
+                            //     foreach ( $selector_crawler2 as $key => $value ) {
+                                    if(count($crawler2->filter('#main > div.wrap > div.section33 > div.section_inner.positionr.positionr > table > tbody > tr:nth-child(13) > td:nth-child(2)'))){
                                         $partnership = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
                                     }else {
-                                        throw new \Exception($value.'要素が存在しません。');
+                                        $partnership = 0;
+                                        // throw new \Exception($value.'要素が存在しません。');
                                     }
                                 
-                                } //$selector_crawler2 as $key => $value
-                                return $partnership;
+                                // } //$selector_crawler2 as $key => $value
+                                // return $partnership;
                                 //var_dump($data);
-                            } );
-                            $active = $crawler3->each( function( Crawler $node ) use ($selector_crawler3)
-                            {
-                                foreach ( $selector_crawler3 as $key => $value ) {
-                                    if(count($node->filter( $value ))){
+                            // } );
+                            // $active = $crawler3->each( function( Crawler $node ) use ($selector_crawler3)
+                            // {
+                            //     foreach ( $selector_crawler3 as $key => $value ) {
+                                    if(count($crawler3->filter( '#report_view > div > ul > li:nth-child(4)' ))){
                                         $active = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
                                     }else{
-                                        throw new \Exception($value.'要素が存在しません。');
+                                        $active = 0;
+                                        // throw new \Exception($value.'要素が存在しません。');
                                     }
-                                } //$selector_crawler3 as $key => $value
-                                return $active;
-                            } );
+                            //     } //$selector_crawler3 as $key => $value
+                            //     return $active;
+                            // } );
                             
-                            $count_data = $active[ 0 ];
+                            $count_data = $active;
                             $afb_data[ 0 ][ 'active' ]      = $count_data;
-                            $afb_data[ 0 ][ 'partnership' ] = $partnership[ 0 ];
+                            $afb_data[ 0 ][ 'partnership' ] = $partnership;
 
                             $afb_site    = array( );
                             //echo $count_data;
