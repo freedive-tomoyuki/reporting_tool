@@ -240,7 +240,7 @@ class FelmatController extends DailyCrawlerController
                                         //                 ->click($product_info->product_order)
                                         //                 ->click('#view > div > button.btn.btn-primary.btn-sm');
                                         // $p = $i + 1;
-                                        $crawler_for_site = $browser->visit("https://www.felmat.net/advertiser/report/partnersite&pg=".$i);
+                                        $crawler_for_site = $browser->visit("https://www.felmat.net/advertiser/report/partnersite?pg=".$i);
                                             \Log::info('1以降ページ数：'.$i);
                                         // $crawler_for_site->click('div.wrapper > div.page-content.no-left-sidebar > div > div:nth-child(5) > div > div:nth-child(2) > div:nth-child(1) > div:nth-child(2) > div > ul > li:nth-child(' . $p . ') > a');
                                     }else{
