@@ -155,7 +155,7 @@ class AfbController extends DailyCrawlerController
                             // {
                             //     foreach ( $selector_crawler2 as $key => $value ) {
                                     if(count($crawler2->filter('#main > div.wrap > div.section33 > div.section_inner.positionr.positionr > table > tbody > tr:nth-child(13) > td:nth-child(2)'))){
-                                        $partnership = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
+                                        $partnership = trim( preg_replace( '/[^0-9]/', '', $crawler2->filter( '#main > div.wrap > div.section33 > div.section_inner.positionr.positionr > table > tbody > tr:nth-child(13) > td:nth-child(2)' )->text() ) );
                                     }else {
                                         $partnership = 0;
                                         // throw new \Exception($value.'要素が存在しません。');
@@ -169,7 +169,7 @@ class AfbController extends DailyCrawlerController
                             // {
                             //     foreach ( $selector_crawler3 as $key => $value ) {
                                     if(count($crawler3->filter( '#report_view > div > ul > li:nth-child(4)' ))){
-                                        $active = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
+                                        $active = trim( preg_replace( '/[^0-9]/', '', $crawler3->filter('#report_view > div > ul > li:nth-child(4)' )->text() ) );
                                     }else{
                                         $active = 0;
                                         // throw new \Exception($value.'要素が存在しません。');
