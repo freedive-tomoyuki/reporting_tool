@@ -157,7 +157,7 @@ class CrossPartnerController extends DailyCrawlerController
 
                                     return $data;
                             });
-                            //var_dump($crosspartner_data1);
+                            var_dump($crosspartner_data1);
                             /*
                             $crawler　をフィルタリング
                             */
