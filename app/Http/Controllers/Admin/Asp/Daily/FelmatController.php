@@ -256,7 +256,7 @@ class FelmatController extends DailyCrawlerController
                                 
                                 $crawler_for_site = $crawler_for_site->crawler();
                                 
-                                //var_dump($crawler_for_site->html());
+                                var_dump($crawler_for_site->html());
                                 
                                 
                                 
