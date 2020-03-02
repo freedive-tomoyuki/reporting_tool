@@ -188,6 +188,7 @@
                       <tr>
                           <th class="th-sm">No</th>
                           <th class="th-sm">ASP</th>
+                          <th class="th-sm">案件</th>
                           <th class="th-sm">Date</th>
                           <th class="th-sm" style="max-width: 50px;" >Media ID</th>
                           <th class="th-sm">サイト名</th>
@@ -217,6 +218,7 @@
                     <tr>
                         <td><?php echo $i; ?></td>
                         <td>{{ $product->name }}</td>
+                        <td>{{ $product->product }}</td>
                         <td>{{ $product->date }}</td>
                         <td class="media-id-style">{{ $product->media_id }}</td>
                         <td>{{ $product->site_name }}</td>
