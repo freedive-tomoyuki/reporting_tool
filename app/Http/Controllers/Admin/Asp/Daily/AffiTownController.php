@@ -130,13 +130,13 @@ class AffiTownController extends DailyCrawlerController
 
                                 $crawler = $browser->visit( "https://affi.town/adserver/merchant/report/dailysales.af" )
                                                     ->visit( "https://affi.town/adserver/merchant/report/dailysales.af?advertiseId=" . $product_info->asp_product_id . "&mediaId=&since=" . $s_date . "&until=" . $e_date )
-                                                    ->type( '#all_display > p > input[type=search]', '合計' )
+                                                    // ->type( '#all_display > p > input[type=search]', '合計' )
                                                     ->crawler();
                                 //echo $crawler->html();
 
                                 $crawler2 = $browser->visit( "https://affi.town/adserver/report/mc/impression.af" )
                                                     ->visit( "https://affi.town/adserver/report/mc/impression.af?advertiseId=" . $product_info->asp_product_id . "&mediaId=&fromDate=" . $s_date . "&toDate=" . $e_date )
-                                                    ->type( '#all_display > p > input[type=search]', '合計' )
+                                                    //->type( '#all_display > p > input[type=search]', '合計' )
                                                     ->crawler();
                                 //echo $crawler2->html();
                                 //https://affi.town/adserver/report/mc/impression.af?advertiseId=4316&mediaId=&since=2019-07-01&until=2019-07-27
@@ -144,16 +144,16 @@ class AffiTownController extends DailyCrawlerController
                                 selector 設定
                                 */
                                 $selector1 = array(
-                                    'click' => '#all_display > table > tbody > tr.visible.striped > td:nth-child(5)',
-                                    'cv' => '#all_display > table > tbody > tr.visible.striped > td:nth-child(6)',
-                                    'price' => '#all_display > table > tbody > tr.visible.striped > td:nth-child(7)' 
+                                    'click' => '#all_display > table > tbody > tr:last-child > td:nth-child(5)',
+                                    'cv' => '#all_display > table > tbody > tr:last-child > td:nth-child(6)',
+                                    'price' => '#all_display > table > tbody > tr:last-child > td:nth-child(7)' 
                                 );
                                 
                                 /*
                                 selector Imp 設定
                                 */
                                 $selector2 = array(
-                                    'imp' => '#all_display > table > tbody:nth-child(2) > tr.visible.striped > td:nth-child(5)',
+                                    'imp' => '#all_display > table > tbody:nth-child(2) > tr:last-child > td:nth-child(5)',
                                 );
                                 
                                 /*
