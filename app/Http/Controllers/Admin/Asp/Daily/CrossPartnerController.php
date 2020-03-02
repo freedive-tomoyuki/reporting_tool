@@ -173,7 +173,8 @@ class CrossPartnerController extends DailyCrawlerController
                                         if(count($node->filter( $value ))){
                                             $data[$key] = intval(trim(preg_replace('/[^0-9]/', '', mb_substr($node->filter($value)->text(), 0, 8))));
                                         }else{
-                                            throw new \Exception($value.'要素が存在しません。');
+                                            $data[$key] = 0;
+                                            // throw new \Exception($value.'要素が存在しません。');
                                         }
                                     }
 
@@ -186,8 +187,8 @@ class CrossPartnerController extends DailyCrawlerController
                             //$page = ceil($felmat_data2[0]['active'] / 20 );
                             //$count_last_page = $felmat_data2[0]['active'] % 20;
                             $count      = 0;
-                            $iPlus       = 1;
-                            
+                            $iPlus      = 1;
+
                             if($crosspartner_data1[0]["click"] != 0 && $crosspartner_data1[0]["click"] != 0 ){
 
                                 $crawler_for_site = $browser->visit('http://crosspartners.net/master/result_reports/ajax_paging/is_partners:1/start:'.$ym.'/end:'.$ym.'/user_site_id:/ad_id:'.$product_info->asp_product_id.'?_=1563862637371')->crawler();
@@ -250,18 +251,20 @@ class CrossPartnerController extends DailyCrawlerController
                                 // $unit_price = $product_info->price;
                                 // $crosspartner_data1[ 0 ][ 'price' ] = $crosspartner_data1[ 0 ][ 'cv' ] * $unit_price;
                                                         
-                                $crosspartner_data1[0]['active'] = $iPlus ;
-                                $crosspartner_data1[0]['partnership'] = $crosspartner_data2[0]['partnership'];
-
-                                $calculated = json_decode(
-                                                json_encode(json_decode($this->dailySearchService->cpa($crosspartner_data1[0]['cv'] ,$crosspartner_data1[0]['price'] , 5))), True
-                                            );
-                                $crosspartner_data1[0]['cpa']= $calculated['cpa']; //CPA
-                                $crosspartner_data1[0]['cost']= $calculated['cost'];
+                               
                             
                                 $this->dailySearchService->save_site( json_encode( $crosspartner_site ) );
 
                             }
+
+                            $crosspartner_data1[0]['active'] = ($iPlus == 1 )? 0 : $iPlus ;
+                            $crosspartner_data1[0]['partnership'] = $crosspartner_data2[0]['partnership'];
+
+                            $calculated = json_decode(
+                                            json_encode(json_decode($this->dailySearchService->cpa($crosspartner_data1[0]['cv'] ,$crosspartner_data1[0]['price'] , 5))), True
+                                        );
+                            $crosspartner_data1[0]['cpa']= $calculated['cpa']; //CPA
+                            $crosspartner_data1[0]['cost']= $calculated['cost'];
 
                             /*
                             サイトデータ・日次データ保存
