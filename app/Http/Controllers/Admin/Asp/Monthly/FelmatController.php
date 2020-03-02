@@ -62,7 +62,7 @@ class FelmatController extends MonthlyCrawlerController
             $product_id = $p['id'];
                 
             //Chromeドライバー実行
-            $client->browse( function( Browser $browser ) use (&$crawler, $product_id)
+            $client->browse( function( Browser $browser ) use (&$crawler, $product_id, $product_name)
             {
                 try{
                         $product_infos = \App\Product::all()->where( 'id', $product_id );
@@ -269,7 +269,7 @@ class FelmatController extends MonthlyCrawlerController
                     $sendData = [
                                 'message' => $e->getMessage(),
                                 'datetime' => date('Y-m-d H:i:s'),
-                                'product_id' => $product_id,
+                                'product_id' => $product_name,
                                 'asp' => 'フェルマ',
                                 'type' => 'Monthly',
                                 ];

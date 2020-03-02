@@ -50,13 +50,14 @@ class AfbController extends MonthlyCrawlerController
         $client     = new Client( new Chrome( $options ) );
         foreach($products as $p ){
             
-            $product_id = $p['id'];   
+            $product_id = $p['id'];
+            $product_name = $p['product'];  
             /*
             Chromeドライバー実行
             　引数
             　　$product_id:案件ID
             */
-            $client->browse( function( Browser $browser ) use (&$crawler, $product_id)
+            $client->browse( function( Browser $browser ) use (&$crawler, $product_id, $product_name)
             {
                 try{
                         $product_infos = \App\Product::all()->where( 'id', $product_id );
@@ -265,7 +266,7 @@ class AfbController extends MonthlyCrawlerController
                     $sendData = [
                                 'message' => $e->getMessage(),
                                 'datetime' => date('Y-m-d H:i:s'),
-                                'product_id' => $product_id,
+                                'product_id' => $product_name,
                                 'asp' => 'Afb',
                                 'type' => 'Monthly',
                                 ];

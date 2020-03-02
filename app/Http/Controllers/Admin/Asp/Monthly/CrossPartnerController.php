@@ -47,9 +47,11 @@ class CrossPartnerController extends MonthlyCrawlerController
         $client = new Client( new Chrome( $options ) );
         foreach($products as $p ){
             
-            $product_id = $p['id'];   
+            $product_id = $p['id'];
+            $product_name = $p['product'];
+
             //Chromeドライバー実行
-            $client->browse( function( Browser $browser ) use (&$crawler, $product_id)
+            $client->browse( function( Browser $browser ) use (&$crawler, $product_id, $product_name)
             {
                 try{
                         //最後にログアウト
@@ -232,7 +234,7 @@ class CrossPartnerController extends MonthlyCrawlerController
                     $sendData = [
                                 'message' => $e->getMessage(),
                                 'datetime' => date('Y-m-d H:i:s'),
-                                'product_id' => $product_id,
+                                'product_id' => $product_name,
                                 'asp' => 'クロスパートナー',
                                 'type' => 'Monthly',
                                 ];

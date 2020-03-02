@@ -70,8 +70,8 @@ class MonthlySearchService
       *  A8の場合の算出
       */
       if( $asp == 1 ){
-        $asp_fee = ($approval_price*1.08)+($approval_price*1.08*0.3);//FDグロス
-        $total = $asp_fee * 1.08 * 1.2;
+        $asp_fee = ($approval_price*1.1)+($approval_price*1.1*0.3);//FDグロス
+        $total = $asp_fee * 1.1 * 1.2;
       }
       /**
       *  それ以外のASPの場合の算出

@@ -46,8 +46,9 @@ class A8Controller extends MonthlyCrawlerController
         foreach($products as $p ){
             
             $product_id = $p['id'];
-                
-            $client->browse( function( Browser $browser ) use (&$crawler, $product_id)
+            $product_name = $p['product'];
+
+            $client->browse( function( Browser $browser ) use (&$crawler, $product_id, $product_name)
             {
                 try{
                         $product_infos = \App\Product::all()->where( 'id', $product_id );
@@ -128,7 +129,7 @@ class A8Controller extends MonthlyCrawlerController
                     $sendData = [
                                 'message' => $e->getMessage(),
                                 'datetime' => date('Y-m-d H:i:s'),
-                                'product_id' => $product_id,
+                                'product_id' => $product_name,
                                 'asp' => 'A8',
                                 'type' => 'Monthly',
                                 ];
