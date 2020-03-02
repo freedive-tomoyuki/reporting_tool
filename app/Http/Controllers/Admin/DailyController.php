@@ -132,7 +132,9 @@ class DailyController extends Controller
         
         $daily = new DailyDiff;
                 
-        $daily->whereIn("product_id",$products);
+        $daily = $daily->whereIn("product_id",$array_product_id);
+        // var_dump($array_product_id);
+
         if($start){
             $daily = $daily->where('date', '>=' , $start);
         }
@@ -143,7 +145,8 @@ class DailyController extends Controller
             $daily = $daily->where('asp_id', '=' , $selected_asp);
         }
         $daily = $daily->where('killed_flag', '=' ,0)->orderBy('date', 'asc')->get();
-        
+        // echo $daily = $daily->where('killed_flag', '=' ,0)->orderBy('date', 'asc')->toSql();
+    
         return view('admin.daily.edit',compact('daily','user','asps','products','month','selected_asp'));
     }
     /**
