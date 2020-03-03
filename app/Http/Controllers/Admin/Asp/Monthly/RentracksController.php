@@ -228,68 +228,74 @@ class RentracksController extends MonthlyCrawlerController
 
                                     $active_partner = trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( '#main > div.hitbox > em' )->text() ) );
 
-                                }else{ throw new \Exception('#main > div.hitbox > em要素が存在しません。'); }
+                                }else{ $active_partner = 0;}//throw new \Exception('#main > div.hitbox > em要素が存在しません。'); }
                                 
-                                for ( $i = 1; $active_partner >= $i; $i++ ) {
-                                    
-                                    $rentrack_site[ $y ][ 'product' ] = $product_info->id;
-                                    //1周目
-                                    if ( $x == 0 ) {
-                                        $rentrack_site[ $y ][ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
-                                    } //$x == 0
-                                    else { //2周目
-                                        if ( date( 'Y/m/d' ) == date( 'Y/m/01' ) ) {
-                                            $rentrack_site[ $y ][ 'date' ] = date( 'Y-m-t', strtotime( '-2 month' ) );
-                                        } //date( 'Y/m/d' ) == date( 'Y/m/01' )
-                                        else {
-                                            $rentrack_site[ $y ][ 'date' ] = date( 'Y-m-d', strtotime( 'last day of previous month' ) );
-                                        }
-                                    }
-                                    
-                                    
-                                    //echo $rentrack_site[$y]['date'];
-                                    $iPlus                  = $i + 1;
-                                    //月内の場合は、「承認」先月のものに関しては、「請求済」からデータを取得
-                                    $approval_selector      = ( $x == 0 ) ? '#main > table > tbody > tr:nth-child(' . $iPlus . ') > td.c13' : '#main > table > tbody > tr:nth-child(' . $iPlus . ') > td.c14';
-                                    $approvalprice_selector = ( $x == 0 ) ? '#main > table > tbody > tr:nth-child(' . $iPlus . ') > td.c18' : '#main > table > tbody > tr:nth-child(' . $iPlus . ') > td.c19';
-                                    
-                                    $selector_for_site = array(
-                                        'media_id' => '#main > table > tbody > tr:nth-child(' . $iPlus . ') > td.c03',
-                                        'site_name' => '#main > table > tbody > tr:nth-child(' . $iPlus . ') > td.c04',
-                                        'approval' => $approval_selector,
-                                        'approval_price' => $approvalprice_selector 
-                                        
-                                    );
-                                    
-                                    foreach ( $selector_for_site as $key => $value ) {
-                                        if(count($crawler_for_site->filter( $value ))){
-                                            if ( $key == 'site_name' ) {
-                                                
-                                                $rentrack_site[ $y ][ $key ] = trim( $crawler_for_site->filter( $value )->text() );
-                                                
-                                            }
-                                            elseif ( $key == 'approval_price' ) {
-                                                
-                                                $rentrack_site[ $y ][ $key ] = $this->monthlySearchService->calc_approval_price( 
-                                                                                trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) )
-                                                                            ,5);
-                                            } 
-                                            else {
-                                                
-                                                $rentrack_site[ $y ][ $key ] = trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) );
-                                            }
-                                        }else{ throw new \Exception( $value.'要素が存在しません。'); }
-                                    }
-                                    // $rentrack_site[ $y ][ 'approval_price' ] = $rentrack_site[ $y ][ 'approval' ] * $product_info->price;
+                                if( $active_partner > 0 ){
 
-                                    $y++;
+                                    for ( $i = 1; $active_partner >= $i; $i++ ) {
+                                        
+                                        $rentrack_site[ $y ][ 'product' ] = $product_info->id;
+                                        //1周目
+                                        if ( $x == 0 ) {
+                                            $rentrack_site[ $y ][ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
+                                        } //$x == 0
+                                        else { //2周目
+                                            if ( date( 'Y/m/d' ) == date( 'Y/m/01' ) ) {
+                                                $rentrack_site[ $y ][ 'date' ] = date( 'Y-m-t', strtotime( '-2 month' ) );
+                                            } //date( 'Y/m/d' ) == date( 'Y/m/01' )
+                                            else {
+                                                $rentrack_site[ $y ][ 'date' ] = date( 'Y-m-d', strtotime( 'last day of previous month' ) );
+                                            }
+                                        }
+                                        
+                                        
+                                        //echo $rentrack_site[$y]['date'];
+                                        $iPlus                  = $i + 1;
+                                        //月内の場合は、「承認」先月のものに関しては、「請求済」からデータを取得
+                                        $approval_selector      = ( $x == 0 ) ? '#main > table > tbody > tr:nth-child(' . $iPlus . ') > td.c13' : '#main > table > tbody > tr:nth-child(' . $iPlus . ') > td.c14';
+                                        $approvalprice_selector = ( $x == 0 ) ? '#main > table > tbody > tr:nth-child(' . $iPlus . ') > td.c18' : '#main > table > tbody > tr:nth-child(' . $iPlus . ') > td.c19';
+                                        
+                                        $selector_for_site = array(
+                                            'media_id' => '#main > table > tbody > tr:nth-child(' . $iPlus . ') > td.c03',
+                                            'site_name' => '#main > table > tbody > tr:nth-child(' . $iPlus . ') > td.c04',
+                                            'approval' => $approval_selector,
+                                            'approval_price' => $approvalprice_selector 
+                                            
+                                        );
+                                        
+                                        foreach ( $selector_for_site as $key => $value ) {
+                                            if(count($crawler_for_site->filter( $value ))){
+                                                if ( $key == 'site_name' ) {
+                                                    
+                                                    $rentrack_site[ $y ][ $key ] = trim( $crawler_for_site->filter( $value )->text() );
+                                                    
+                                                }
+                                                elseif ( $key == 'approval_price' ) {
+                                                    
+                                                    $rentrack_site[ $y ][ $key ] = $this->monthlySearchService->calc_approval_price( 
+                                                                                    trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) )
+                                                                                ,5);
+                                                } 
+                                                else {
+                                                    
+                                                    $rentrack_site[ $y ][ $key ] = trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) );
+                                                }
+                                            }else{ throw new \Exception( $value.'要素が存在しません。'); }
+                                        }
+                                        // $rentrack_site[ $y ][ 'approval_price' ] = $rentrack_site[ $y ][ 'approval' ] * $product_info->price;
+
+                                        $y++;
+                                    }
+                                    if ( $x == 1 ) {
+                                        $this->monthlySearchService->save_site( json_encode( $rentrack_site ) );
+                                    }
+
                                 }
 
-                            } 
+                            }
                             /*
                             サイトデータ・月次データ保存
                             */
-                            $this->monthlySearchService->save_site( json_encode( $rentrack_site ) );
                             $this->monthlySearchService->save_monthly( json_encode( $rentrack_data ) );
                             
                             //var_dump($crawler_for_site);
