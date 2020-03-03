@@ -190,7 +190,8 @@ class ValuecommerceController extends MonthlyCrawlerController
                                 if(count($crawler_for_site->filter( "#cusomize_wrap > span" ))){
                                     $active = explode( "/", $crawler_for_site->filter( "#cusomize_wrap > span" )->text() );
                                 }else{
-                                    throw new \Exception('#cusomize_wrap > span要素が存在しません。');
+                                    $active = 0;
+                                    // throw new \Exception('#cusomize_wrap > span要素が存在しません。');
                                 }
                                 // echo "active件数→" . $active[ 1 ] . "←active件数";
                                 
@@ -198,87 +199,93 @@ class ValuecommerceController extends MonthlyCrawlerController
                                 $count_page = ( $active[ 1 ] > 40 ) ? ceil( $active[ 1 ] / 40 ) : 1;
                                 // echo "count_page件数→" . $count_page . "←count_page件数";
 
-                                
-                                /**
-                                 *      １ページ　クロール
-                                 */
-                                for ( $page = 0; $page < $count_page; $page++ ) {
-                                    
-                                    $target_page = $page + 1;
-                                    
-                                    $crawler_for_site = $browser->visit( 'https://mer.valuecommerce.ne.jp/affiliate_analysis/?condition%5BfromYear%5D=' . $y . '&condition%5BfromMonth%5D=' . $n . '&condition%5BtoYear%5D=' . $y . '&condition%5BtoMonth%5D=' . $n . '&condition%5BactiveFlag%5D=Y&allPage=1&notOmksPage=1&omksPage=1&pageType=all&page=' . $target_page )->crawler();
-                                    
-                                    //最終ページのみ件数でカウント
-                                    $crawler_count    = ( $target_page == $count_page ) ? $active[ 1 ] - ( $page * 40 ) : 40;
-                                    //echo $crawler_count;
-                                    
-                                    //echo $target_page . "ページ目のcrawler_count＞＞" . $crawler_count . "</br>";
+                                if( $active > 0 ){
                                     /**
-                                    *１行ごと　クロール
-                                    */
-                                    for ( $i = 1; $i <= $crawler_count; $i++ ) {
-                                        //1ページMAXの件数は４０件
-                                        $valuecommerce_site[ $count ][ 'product' ] = $product_info->id;
+                                     *      １ページ　クロール
+                                     */
+                                    for ( $page = 0; $page < $count_page; $page++ ) {
                                         
-                                        $selector_for_site = array(
-                                            'media_id'      => '#all > div.tablerline > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(2)',
-                                            'site_name'     => '#all > div.tablerline > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(3) > a',
-                                            'approval'      => '#all > div.tablerline > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(10)',
-                                            'approval_price' => '#all > div.tablerline > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(21)' 
-                                        );
+                                        $target_page = $page + 1;
                                         
-                                        foreach ( $selector_for_site as $key => $value ) {
+                                        $crawler_for_site = $browser->visit( 'https://mer.valuecommerce.ne.jp/affiliate_analysis/?condition%5BfromYear%5D=' . $y . '&condition%5BfromMonth%5D=' . $n . '&condition%5BtoYear%5D=' . $y . '&condition%5BtoMonth%5D=' . $n . '&condition%5BactiveFlag%5D=Y&allPage=1&notOmksPage=1&omksPage=1&pageType=all&page=' . $target_page )->crawler();
+                                        
+                                        //最終ページのみ件数でカウント
+                                        $crawler_count    = ( $target_page == $count_page ) ? $active[ 1 ] - ( $page * 40 ) : 40;
+                                        //echo $crawler_count;
+                                        
+                                        //echo $target_page . "ページ目のcrawler_count＞＞" . $crawler_count . "</br>";
+                                        /**
+                                        *１行ごと　クロール
+                                        */
+                                        for ( $i = 1; $i <= $crawler_count; $i++ ) {
+                                            //1ページMAXの件数は４０件
+                                            $valuecommerce_site[ $count ][ 'product' ] = $product_info->id;
                                             
-                                            if ( $x == 0 ) {
-                                                $valuecommerce_site[ $count ][ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
-                                            } //$x == 0
-                                            else {
-                                                if ( date( 'Y/m/d' ) == date( 'Y/m/01' ) ) {
-                                                    $valuecommerce_site[ $count ][ 'date' ] = date( 'Y-m-t', strtotime( '-2 month' ) );
-                                                } 
-                                                else {
-                                                    $valuecommerce_site[ $count ][ 'date' ] = date( 'Y-m-d', strtotime( 'last day of previous month' ) );
-                                                }
-                                            }
-                                            if(count($crawler_for_site->filter( $value ))){
-                                                if ( $key == 'site_name' ) {
-                                                    
-                                                    $valuecommerce_site[ $count ][ $key ] = trim( $crawler_for_site->filter( $value )->text() );
-                                                    
-                                                }
-                                                elseif ( $key == 'approval' ) {
-                                                    
-                                                    $approval_array = array();
-                                                    $approval       = trim( $crawler_for_site->filter( $value )->text() );
-                                                    preg_match( '/(\d+)/', $approval, $approval_array );
-                                                    $valuecommerce_site[ $count ][ $key ] = $approval_array[ 1 ];
-                                                    
-                                                } 
-                                                elseif ( $key == 'approval_price' ) {
+                                            $selector_for_site = array(
+                                                'media_id'      => '#all > div.tablerline > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(2)',
+                                                'site_name'     => '#all > div.tablerline > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(3) > a',
+                                                'approval'      => '#all > div.tablerline > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(10)',
+                                                'approval_price' => '#all > div.tablerline > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(21)' 
+                                            );
+                                            
+                                            foreach ( $selector_for_site as $key => $value ) {
                                                 
-                                                    $valuecommerce_site[ $count ][ $key ] = $this->monthlySearchService->calc_approval_price( 
-                                                                                    trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) )
-                                                                                ,3);
-                                                } 
+                                                if ( $x == 0 ) {
+                                                    $valuecommerce_site[ $count ][ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
+                                                } //$x == 0
                                                 else {
-                                                    
-                                                    $valuecommerce_site[ $count ][ $key ] = trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) );
-                                                    
+                                                    if ( date( 'Y/m/d' ) == date( 'Y/m/01' ) ) {
+                                                        $valuecommerce_site[ $count ][ 'date' ] = date( 'Y-m-t', strtotime( '-2 month' ) );
+                                                    } 
+                                                    else {
+                                                        $valuecommerce_site[ $count ][ 'date' ] = date( 'Y-m-d', strtotime( 'last day of previous month' ) );
+                                                    }
                                                 }
-                                            }else{
-                                                throw new \Exception($value.'要素が存在しません。');
-                                            }
-                                        } 
-                                        
-                                        // $valuecommerce_site[ $count ][ 'approval_price' ] = $valuecommerce_site[ $count ][ 'approval' ] * $product_info->price;
-                                        $count++;
-                                        
+                                                if(count($crawler_for_site->filter( $value ))){
+                                                    if ( $key == 'site_name' ) {
+                                                        
+                                                        $valuecommerce_site[ $count ][ $key ] = trim( $crawler_for_site->filter( $value )->text() );
+                                                        
+                                                    }
+                                                    elseif ( $key == 'approval' ) {
+                                                        
+                                                        $approval_array = array();
+                                                        $approval       = trim( $crawler_for_site->filter( $value )->text() );
+                                                        preg_match( '/(\d+)/', $approval, $approval_array );
+                                                        $valuecommerce_site[ $count ][ $key ] = $approval_array[ 1 ];
+                                                        
+                                                    } 
+                                                    elseif ( $key == 'approval_price' ) {
+                                                    
+                                                        $valuecommerce_site[ $count ][ $key ] = $this->monthlySearchService->calc_approval_price( 
+                                                                                        trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) )
+                                                                                    ,3);
+                                                    } 
+                                                    else {
+                                                        
+                                                        $valuecommerce_site[ $count ][ $key ] = trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) );
+                                                        
+                                                    }
+                                                }else{
+                                                    throw new \Exception($value.'要素が存在しません。');
+                                                }
+                                            } 
+                                            
+                                            // $valuecommerce_site[ $count ][ 'approval_price' ] = $valuecommerce_site[ $count ][ 'approval' ] * $product_info->price;
+                                            $count++;
+                                            
+                                        }
                                     }
-                                } 
+                                    if ( $x == 1 ) {
+                                        $this->monthlySearchService->save_site( json_encode( $valuecommerce_site ) );
+                                    }
+                                }
+
+
                             } 
 
                             $this->monthlySearchService->save_monthly( json_encode( $valuecommerce_data ) );
-                            $this->monthlySearchService->save_site( json_encode( $valuecommerce_site ) );
+                            
                             
                         } //$product_infos as $product_info
                 }

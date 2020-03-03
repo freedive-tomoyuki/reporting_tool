@@ -106,7 +106,8 @@ class ValuecommerceController extends DailyCrawlerController
                                     if(count($node->filter( $value ))){
                                         $data[ $key ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
                                     }else{
-                                        throw new \Exception($value.'要素が存在しません。');
+                                        $data[ $key ] = 0;
+                                        // throw new \Exception($value.'要素が存在しません。');
                                     }
                                 } 
                                 //$selector_crawler as $key => $value
@@ -151,7 +152,8 @@ class ValuecommerceController extends DailyCrawlerController
                             if(count($crawler_for_site->filter( $count_selector ))){
                                 $active         = explode( "/", $crawler_for_site->filter( $count_selector )->text() );
                             }else{
-                                throw new \Exception($count_selector.'要素が存在しません。');
+                                $active         = 0;
+                                // throw new \Exception($count_selector.'要素が存在しません。');
                             }
                             if((int)$active[ 1 ] <= 0){ throw new \Exception('アクティブパートナーが存在しませんでした。'); }
                             
@@ -187,71 +189,74 @@ class ValuecommerceController extends DailyCrawlerController
                                 //echo $target_page."ページ目のcrawler_count＞＞".$crawler_count."</br>" ;
                                 
                                 echo "point7";
-                                for ( $i = 1; $i <= $crawler_count; $i++ ) {
-                                    
-                                    $count = ( (int)$page * 40 ) + $i;
-                                    
-                                    $valuecommerce_site[ $count ][ 'product' ] = $product_info->id;
-                                    $valuecommerce_site[ $count ][ 'asp' ]     = $product_info->asp_id;
+                                if($crawler_count > 0){
+                                        for ( $i = 1; $i <= $crawler_count; $i++ ) {
+                                            
+                                            $count = ( (int)$page * 40 ) + $i;
+                                            
+                                            $valuecommerce_site[ $count ][ 'product' ] = $product_info->id;
+                                            $valuecommerce_site[ $count ][ 'asp' ]     = $product_info->asp_id;
 
-                                    if ( $crawler_for_site->filter( '#all > div.tablerline > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(2)' )->count() != 0 ) {
-                                        //echo $target_page."ページの i＞＞".$i."番目</br>" ;
-                                        
-                                        $selector_for_site = array(
-                                            'media_id'  => '#all > div.tablerline > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(2)',
-                                            'site_name' => '#all > div.tablerline > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(3) > a',
-                                            'imp'       => '#all > div.tablerline > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(7)',
-                                            'click'     => '#all > div.tablerline > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(8)',
-                                            'cv'        => '#all > div.tablerline > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(19)',
-                                            'price'     => '#all > div.tablerline > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(21)' 
-                                        );
-                                        echo "point8";
-                                        foreach ( $selector_for_site as $key => $value ) {
-                                            if(count($crawler_for_site->filter( $value ))){
-                                                if ( $key == 'media_id' || $key == 'site_name' ){
-                                                    
-                                                    $valuecommerce_site[ $count ][ $key ] = trim( $crawler_for_site->filter( $value )->text() );
-                                                    
-                                                } else {
-                                                    
-                                                    $valuecommerce_site[ $count ][ $key ] = trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) );
-                                                    
+                                            if ( $crawler_for_site->filter( '#all > div.tablerline > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(2)' )->count() != 0 ) {
+                                                //echo $target_page."ページの i＞＞".$i."番目</br>" ;
+                                                
+                                                $selector_for_site = array(
+                                                    'media_id'  => '#all > div.tablerline > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(2)',
+                                                    'site_name' => '#all > div.tablerline > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(3) > a',
+                                                    'imp'       => '#all > div.tablerline > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(7)',
+                                                    'click'     => '#all > div.tablerline > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(8)',
+                                                    'cv'        => '#all > div.tablerline > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(19)',
+                                                    'price'     => '#all > div.tablerline > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(21)' 
+                                                );
+                                                echo "point8";
+                                                foreach ( $selector_for_site as $key => $value ) {
+                                                    if(count($crawler_for_site->filter( $value ))){
+                                                        if ( $key == 'media_id' || $key == 'site_name' ){
+                                                            
+                                                            $valuecommerce_site[ $count ][ $key ] = trim( $crawler_for_site->filter( $value )->text() );
+                                                            
+                                                        } else {
+                                                            
+                                                            $valuecommerce_site[ $count ][ $key ] = trim( preg_replace( '/[^0-9]/', '', $crawler_for_site->filter( $value )->text() ) );
+                                                            
+                                                        }
+                                                    }else{
+                                                        throw new \Exception($value.'要素が存在しません。');
+                                                    }
                                                 }
-                                            }else{
-                                                throw new \Exception($value.'要素が存在しません。');
+                                                
+                                                // $unit_price = $product_info->price;
+                                                // $valuecommerce_site[ $count ][ 'price' ] = $unit_price * $valuecommerce_site[ $count ][ 'cv' ];
+                                                echo "point9";
+                                                echo $valuecommerce_site[ $count ][ 'cv' ];
+                                                echo '<br>';
+                                                echo $valuecommerce_site[ $count ][ 'price' ];
+                                                //CPAとASPフィーの考慮した数値を算出
+                                                $calculated = json_decode(
+                                                                json_encode(
+                                                                    json_decode(
+                                                                        $this->dailySearchService
+                                                                            ->cpa( $valuecommerce_site[ $count ][ 'cv' ], $valuecommerce_site[ $count ][ 'price' ], 3 )
+                                                                    )
+                                                                ), True );
+                                                
+                                                //各サイトのデータ保存
+                                                $valuecommerce_site[ $count ][ 'cpa' ]  = $calculated[ 'cpa' ]; //CPA
+                                                $valuecommerce_site[ $count ][ 'cost' ] = $calculated[ 'cost' ]; //獲得単価
+                                                $valuecommerce_site[ $count ][ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
+                                                
                                             }
-                                        }
-                                        
-                                        // $unit_price = $product_info->price;
-                                        // $valuecommerce_site[ $count ][ 'price' ] = $unit_price * $valuecommerce_site[ $count ][ 'cv' ];
-                                        echo "point9";
-                                        echo $valuecommerce_site[ $count ][ 'cv' ];
-                                        echo '<br>';
-                                        echo $valuecommerce_site[ $count ][ 'price' ];
-                                        //CPAとASPフィーの考慮した数値を算出
-                                        $calculated = json_decode(
-                                                        json_encode(
-                                                            json_decode(
-                                                                $this->dailySearchService
-                                                                    ->cpa( $valuecommerce_site[ $count ][ 'cv' ], $valuecommerce_site[ $count ][ 'price' ], 3 )
-                                                            )
-                                                        ), True );
-                                        
-                                        //各サイトのデータ保存
-                                        $valuecommerce_site[ $count ][ 'cpa' ]  = $calculated[ 'cpa' ]; //CPA
-                                        $valuecommerce_site[ $count ][ 'cost' ] = $calculated[ 'cost' ]; //獲得単価
-                                        $valuecommerce_site[ $count ][ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
-                                        
-                                    }
 
-                                } 
+                                        }
+                                        $this->dailySearchService->save_site( json_encode( $valuecommerce_site ) );
+                                }
 
                             } 
                             echo "point10";
                             //クロールデータの保存
                             //$client->quit();
                             $this->dailySearchService->save_daily( json_encode( $valuecommerce_data ) );
-                            $this->dailySearchService->save_site( json_encode( $valuecommerce_site ) );
+                            
                             
                         } 
                 }
