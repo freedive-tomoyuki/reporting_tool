@@ -144,6 +144,7 @@ class FelmatController extends MonthlyCrawlerController
                             $count           = 0;
 
                             for ( $y = 0; $y < 2; $y++ ) {
+
                                 if ( $y == 0 ) {
                                     $first = date( 'Y-m-01', strtotime( '-1 day' ) );
                                     $end = date( 'Y-m-d', strtotime( '-1 day' ) );
@@ -158,7 +159,8 @@ class FelmatController extends MonthlyCrawlerController
                                         $end = date( 'Y-m-t', strtotime( 'last day of previous month' ) );
                                     }
                                 }
-
+                                \Log::info($y.'first'.$first );
+                                \Log::info($y.'end'.$end );
                                 //アクティブ件数取得
                                 $crawler = $browser->visit("https://www.felmat.net/advertiser/report/partnersite") //->crawler();
                                                     ->type('#search > div > div:nth-child(2) > div.col-sm-4.form-inline > div > input:nth-child(1)', $first)
@@ -180,7 +182,7 @@ class FelmatController extends MonthlyCrawlerController
                                 
                                 $page            = ceil($active / 20);
                                 $count_last_page = $active % 20;
-                                \Log::info('active：'.$active );
+                                \Log::info($y.'active：'.$active );
 
                                 if( $active > 0 ){
                                     for ($i = 1; $page >= $i; $i++) {
