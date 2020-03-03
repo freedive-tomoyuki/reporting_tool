@@ -219,6 +219,7 @@ class FelmatController extends DailyCrawlerController
                             //echo "アクティブ数:".$felmat_data3[0]['active'];
                             //echo "パートナー数:".$felmat_data2[0]['partnership'];
                             $count_actice = $felmat_data2[0]['active'];
+                            \Log::info('count_actice'.$count_actice );
                             if($count_actice > 0){ //throw new \Exception('アクティブパートナーが存在しませんでした。'); }
 
                                     $page            = ceil($count_actice / 20);
