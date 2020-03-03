@@ -138,6 +138,7 @@ class PrescoController extends DailyCrawlerController
                                     if(count($node->filter( $value ))){
                                         $data[ $key ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
                                     }else{
+                                        $data[ $key ] = 0;
                                         throw new \Exception($value.'要素が存在しません。');
                                     }
                                 } //$selector1 as $key => $value
@@ -152,12 +153,14 @@ class PrescoController extends DailyCrawlerController
                             if(count($crawler2->filter( $active_partnership_selector ))){
                                 $presco_data[ 0 ][ 'active' ] = trim( preg_replace( '/[^0-9]/', '', $crawler2->filter( $active_partnership_selector )->text() ) );
                             }else{
-                                throw new \Exception('アクティブ数の要素が存在しません。');
+                                $presco_data[ 0 ][ 'active' ] = 0;
+                                // throw new \Exception('アクティブ数の要素が存在しません。');
                             }
                             if(count($crawler3->filter( $active_partnership_selector ))){
                                 $presco_data[ 0 ][ 'partnership' ] = trim( preg_replace( '/[^0-9]/', '', $crawler3->filter( $active_partnership_selector )->text() ) );
                             }else{
-                                throw new \Exception('提携数の要素が存在しません。');
+                                $presco_data[ 0 ][ 'partnership' ] = 0;
+                                // throw new \Exception('提携数の要素が存在しません。');
                             }
 
                             var_dump( $presco_data );
@@ -174,16 +177,17 @@ class PrescoController extends DailyCrawlerController
                             // $active_partnership_selector = '#reportTable_info > div > span';
                             // $presco_data[$count] = $crawler_for_count_site->filter( $active_partnership_selector )->text();
                             $i = 1;
-                            //サイトのスクレイピングは２回目以降
-                            $crowle_url_for_site = "https://presco.ai/merchant/report/search?searchPeriodType=2&searchDateType=2&searchDateTimeFrom=" . $s_date . "&searchDateTimeTo=" . $e_date . "&searchItemType=2&searchLargeGenreId=&searchMediumGenreId=&searchSmallGenreId=&searchProgramId=" . $product_info->asp_product_id . "&searchProgramUrlId=&searchPartnerSiteId=&searchPartnerSitePageId=&searchJoinType=1&_searchJoinType=on";
+                            if( $cnt_site > 0 ){
+                                //サイトのスクレイピングは２回目以降
+                                $crowle_url_for_site = "https://presco.ai/merchant/report/search?searchPeriodType=2&searchDateType=2&searchDateTimeFrom=" . $s_date . "&searchDateTimeTo=" . $e_date . "&searchItemType=2&searchLargeGenreId=&searchMediumGenreId=&searchSmallGenreId=&searchProgramId=" . $product_info->asp_product_id . "&searchProgramUrlId=&searchPartnerSiteId=&searchPartnerSitePageId=&searchJoinType=1&_searchJoinType=on";
                             
-                            if( $cnt_site > 10 ){
-                                $crawler_for_site = $browser->visit( $crowle_url_for_site )->select('reportTable_length', '100')->crawler();
-                            }else{
-                                $crawler_for_site = $browser->visit( $crowle_url_for_site )->crawler();
-                            }
+                                if( $cnt_site > 10 ){
+                                    $crawler_for_site = $browser->visit( $crowle_url_for_site )->select('reportTable_length', '100')->crawler();
+                                }else{
+                                    $crawler_for_site = $browser->visit( $crowle_url_for_site )->crawler();
+                                }
 
-                            // サイト一覧の「合計」以外の前列を1列目から最終列まで一行一行スクレイピング
+                                // サイト一覧の「合計」以外の前列を1列目から最終列まで一行一行スクレイピング
                                 while ( $crawler_for_site->filter( '#reportTable > tbody > tr:nth-child(' . $i . ') > td:nth-child(5) > div > div' )->count() > 0  ) {
                                     echo 'point'.$i;
                                     
@@ -230,7 +234,8 @@ class PrescoController extends DailyCrawlerController
                                     $i++;
                                     
                                 }
-
+                                $this->dailySearchService->save_site( json_encode( $presco_site ) );
+                            }
                             $calculated                      = json_decode(
                                                                     json_encode(
                                                                         json_decode(
@@ -249,7 +254,7 @@ class PrescoController extends DailyCrawlerController
                             /*
                             サイトデータ・日次データ保存
                             */
-                            $this->dailySearchService->save_site( json_encode( $presco_site ) );
+                            
                             $this->dailySearchService->save_daily( json_encode( $presco_data ) );
                             
                             //var_dump($crawler_for_site);

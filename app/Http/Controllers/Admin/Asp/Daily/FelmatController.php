@@ -162,7 +162,8 @@ class FelmatController extends DailyCrawlerController
                                     if(count($node->filter( $value ))){
                                         $data[$key] = trim(preg_replace('/[^0-9]/', '', $node->filter($value)->text()));
                                     }else{
-                                        throw new \Exception($value.'要素が存在しません。');
+                                        $data[$key] = 0;
+                                        // throw new \Exception($value.'要素が存在しません。');
                                     }
                                 }
                                 
@@ -181,8 +182,7 @@ class FelmatController extends DailyCrawlerController
                                     if(count($node->filter( $value ))){
                                         $data[$key] = intval(trim(preg_replace('/[^0-9]/', '', mb_substr($node->filter($value)->text(), 0, 7))));
                                     }else{
-                                        
-                                        throw new \Exception($value.'要素が存在しません。');
+                                        $data[$key] = 0;
                                     }
                                 }
                                 return $data;
@@ -203,7 +203,8 @@ class FelmatController extends DailyCrawlerController
                                         mb_substr($node->filter($value)->text(), 0, 7);
                                         $data[$key] = intval(trim(preg_replace('/[^0-9]/', '', mb_substr($node->filter($value)->text(), 0, 7))));
                                     }else{
-                                        throw new \Exception($value.'要素が存在しません。');
+                                        $data[$key] = 0;
+                                        // throw new \Exception($value.'要素が存在しません。');
                                     }
                                 }
                                 
@@ -218,101 +219,103 @@ class FelmatController extends DailyCrawlerController
                             //echo "アクティブ数:".$felmat_data3[0]['active'];
                             //echo "パートナー数:".$felmat_data2[0]['partnership'];
                             $count_actice = $felmat_data2[0]['active'];
-                            if($count_actice <= 0){ throw new \Exception('アクティブパートナーが存在しませんでした。'); }
+                            if($count_actice > 0){ //throw new \Exception('アクティブパートナーが存在しませんでした。'); }
 
-                            $page            = ceil($count_actice / 20);
-                            $count_last_page = $count_actice % 20;
-                            $count           = 0;
-                            $felmat_site = array( );
+                                    $page            = ceil($count_actice / 20);
+                                    $count_last_page = $count_actice % 20;
+                                    $count           = 0;
+                                    $felmat_site = array( );
 
-                            for ($i = 1; $page >= $i; $i++) {
-                                //echo "ページ数page:" . $page;
-                                //echo "ページ数i:" . $i;
-                                $crawlCountPerOne = ($page == $i) ? $count_last_page : 20;
-                                
-                                //最後のページ
-                                    if ($i > 1) {
-                                        // $crawler_for_site = $browser
-                                        //                 ->visit("https://www.felmat.net/advertiser/report/partnersite")
-                                        //                 ->type('#search > div > div:nth-child(2) > div.col-sm-4.form-inline > div > input:nth-child(1)', $first)
-                                        //                 ->type('#search > div > div:nth-child(2) > div.col-sm-4.form-inline > div > input:nth-child(3)', $end)
-                                        //                 ->click('#sel_promotion_id_chosen')
-                                        //                 ->click($product_info->product_order)
-                                        //                 ->click('#view > div > button.btn.btn-primary.btn-sm');
-                                        // $p = $i + 1;
-                                        $crawler_for_site = $browser->visit("https://www.felmat.net/advertiser/report/partnersite?pg=".$i);
-                                            \Log::info('1以降ページ数：'.$i);
-                                        // $crawler_for_site->click('div.wrapper > div.page-content.no-left-sidebar > div > div:nth-child(5) > div > div:nth-child(2) > div:nth-child(1) > div:nth-child(2) > div > ul > li:nth-child(' . $p . ') > a');
-                                    }else{
-                                        $crawler_for_site = $browser->visit("https://www.felmat.net/advertiser/report/partnersite")
-                                                                    ->type('#search > div > div:nth-child(2) > div.col-sm-4.form-inline > div > input:nth-child(1)', $first)
-                                                                    ->type('#search > div > div:nth-child(2) > div.col-sm-4.form-inline > div > input:nth-child(3)', $end)
-                                                                    ->click('#sel_promotion_id_chosen')
-                                                                    ->click($product_info->product_order)
-                                                                    ->click('#view > div > button.btn.btn-primary.btn-sm');
-                                                                    \Log::info('1ページ数：'.$i);
-                                    }
-
-                                
-                                $crawler_for_site = $crawler_for_site->crawler();
-                                
-                                // var_dump($crawler_for_site->html());
-                                
-                                
-                                for ($x = 1; $crawlCountPerOne >= $x; $x++) {
-                                    $felmat_site[$count]['product'] = $product_info->id;
-                                    $felmat_site[$count][ 'asp' ]   = $product_info->asp_id;
-                                    //echo "CountX:" . $x;
-                                    \Log::info('全行数：'.$crawlCountPerOne );
-                                    \Log::info('現在行数：'.$x);
-                                    
-                                    //echo 'iPlus'.$iPlus;
-                                    #report > div > table > tbody > tr:nth-child(1) > td.left
-                                    #report > div > table > tbody > tr:nth-child(1) > td:nth-child(2)
-                                    
-                                    $selector_for_site = array(
-                                        'site_name' => '#report > div > table > tbody > tr:nth-child(' . $x . ') > td.left',
-                                        'imp' => '#report > div > table > tbody > tr:nth-child(' . $x . ') > td:nth-child(2)',
-                                        'click' => '#report > div > table > tbody > tr:nth-child(' . $x . ') > td:nth-child(3)',
-                                        'cv' => '#report > div > table > tbody > tr:nth-child(' . $x . ') > td:nth-child(5)',
-                                        'price' => '#report > div > table > tbody > tr:nth-child(' . $x . ') > td:nth-child(6)'
-                                    );
-                                    
-                                    foreach ($selector_for_site as $key => $value) {
-                                        if(count($crawler_for_site->filter( $value ))){
-                                            if ($key == 'site_name') {
-                                                \Log::info(trim($crawler_for_site->filter($value)->text()));
-                                                $felmat_site[$count][$key] = trim($crawler_for_site->filter($value)->text());
-                                                $felmat_site[$count]['media_id'] = $this->siteCreate(trim($crawler_for_site->filter($value)->text()), 20);
-
-                                            } else {
-                                                
-                                                $felmat_site[$count][$key] = trim(preg_replace('/[^0-9]/', '', $crawler_for_site->filter($value)->text()));
+                                    for ($i = 1; $page >= $i; $i++) {
+                                        //echo "ページ数page:" . $page;
+                                        //echo "ページ数i:" . $i;
+                                        $crawlCountPerOne = ($page == $i) ? $count_last_page : 20;
+                                        
+                                        //最後のページ
+                                            if ($i > 1) {
+                                                // $crawler_for_site = $browser
+                                                //                 ->visit("https://www.felmat.net/advertiser/report/partnersite")
+                                                //                 ->type('#search > div > div:nth-child(2) > div.col-sm-4.form-inline > div > input:nth-child(1)', $first)
+                                                //                 ->type('#search > div > div:nth-child(2) > div.col-sm-4.form-inline > div > input:nth-child(3)', $end)
+                                                //                 ->click('#sel_promotion_id_chosen')
+                                                //                 ->click($product_info->product_order)
+                                                //                 ->click('#view > div > button.btn.btn-primary.btn-sm');
+                                                // $p = $i + 1;
+                                                $crawler_for_site = $browser->visit("https://www.felmat.net/advertiser/report/partnersite?pg=".$i);
+                                                    \Log::info('1以降ページ数：'.$i);
+                                                // $crawler_for_site->click('div.wrapper > div.page-content.no-left-sidebar > div > div:nth-child(5) > div > div:nth-child(2) > div:nth-child(1) > div:nth-child(2) > div > ul > li:nth-child(' . $p . ') > a');
+                                            }else{
+                                                $crawler_for_site = $browser->visit("https://www.felmat.net/advertiser/report/partnersite")
+                                                                            ->type('#search > div > div:nth-child(2) > div.col-sm-4.form-inline > div > input:nth-child(1)', $first)
+                                                                            ->type('#search > div > div:nth-child(2) > div.col-sm-4.form-inline > div > input:nth-child(3)', $end)
+                                                                            ->click('#sel_promotion_id_chosen')
+                                                                            ->click($product_info->product_order)
+                                                                            ->click('#view > div > button.btn.btn-primary.btn-sm');
+                                                                            \Log::info('1ページ数：'.$i);
                                             }
-                                        }else{
-                                            throw new \Exception($value.'要素が存在しません。');
+
+                                        
+                                        $crawler_for_site = $crawler_for_site->crawler();
+                                        
+                                        // var_dump($crawler_for_site->html());
+                                        
+                                        
+                                        for ($x = 1; $crawlCountPerOne >= $x; $x++) {
+                                            $felmat_site[$count]['product'] = $product_info->id;
+                                            $felmat_site[$count][ 'asp' ]   = $product_info->asp_id;
+                                            //echo "CountX:" . $x;
+                                            \Log::info('全行数：'.$crawlCountPerOne );
+                                            \Log::info('現在行数：'.$x);
+                                            
+                                            //echo 'iPlus'.$iPlus;
+                                            #report > div > table > tbody > tr:nth-child(1) > td.left
+                                            #report > div > table > tbody > tr:nth-child(1) > td:nth-child(2)
+                                            
+                                            $selector_for_site = array(
+                                                'site_name' => '#report > div > table > tbody > tr:nth-child(' . $x . ') > td.left',
+                                                'imp' => '#report > div > table > tbody > tr:nth-child(' . $x . ') > td:nth-child(2)',
+                                                'click' => '#report > div > table > tbody > tr:nth-child(' . $x . ') > td:nth-child(3)',
+                                                'cv' => '#report > div > table > tbody > tr:nth-child(' . $x . ') > td:nth-child(5)',
+                                                'price' => '#report > div > table > tbody > tr:nth-child(' . $x . ') > td:nth-child(6)'
+                                            );
+                                            
+                                            foreach ($selector_for_site as $key => $value) {
+                                                if(count($crawler_for_site->filter( $value ))){
+                                                    if ($key == 'site_name') {
+                                                        \Log::info(trim($crawler_for_site->filter($value)->text()));
+                                                        $felmat_site[$count][$key] = trim($crawler_for_site->filter($value)->text());
+                                                        $felmat_site[$count]['media_id'] = $this->siteCreate(trim($crawler_for_site->filter($value)->text()), 20);
+
+                                                    } else {
+                                                        
+                                                        $felmat_site[$count][$key] = trim(preg_replace('/[^0-9]/', '', $crawler_for_site->filter($value)->text()));
+                                                    }
+                                                }else{
+                                                    throw new \Exception($value.'要素が存在しません。');
+                                                }
+                                                
+                                            }
+                                            // $unit_price = $product_info->price;
+                                            // $felmat_site[ $count ][ 'price' ] = $unit_price * $felmat_site[ $count ][ 'cv' ];
+
+                                            $calculated                     = json_decode(
+                                                                                json_encode(
+                                                                                    json_decode(
+                                                                                        $this->dailySearchService
+                                                                                            ->cpa($felmat_site[$count]['cv'], $felmat_site[$count]['price'], 5)
+                                                                                    )
+                                                                                ), 
+                                                                            True);
+                                            $felmat_site[$count]['cpa']  = $calculated['cpa']; //CPA
+                                            $felmat_site[$count]['cost'] = $calculated['cost'];
+                                            $felmat_site[$count]['date'] = date('Y-m-d', strtotime('-1 day'));
+                                            $count++;
+                                            
                                         }
                                         
                                     }
-                                    // $unit_price = $product_info->price;
-                                    // $felmat_site[ $count ][ 'price' ] = $unit_price * $felmat_site[ $count ][ 'cv' ];
-
-                                    $calculated                     = json_decode(
-                                                                        json_encode(
-                                                                            json_decode(
-                                                                                $this->dailySearchService
-                                                                                    ->cpa($felmat_site[$count]['cv'], $felmat_site[$count]['price'], 5)
-                                                                            )
-                                                                        ), 
-                                                                    True);
-                                    $felmat_site[$count]['cpa']  = $calculated['cpa']; //CPA
-                                    $felmat_site[$count]['cost'] = $calculated['cost'];
-                                    $felmat_site[$count]['date'] = date('Y-m-d', strtotime('-1 day'));
-                                    $count++;
-                                    
-                                }
+                                    $this->dailySearchService->save_site(json_encode($felmat_site));
                             }
-                            
                             
                             //$felmat_data[0]['price'] = trim(preg_replace('/[^0-9]/', '', $crawler_for_site->filter('#main > table > tbody > tr.total > td:nth-child(15)')->text()));
                             // $unit_price = $product_info->price;
@@ -333,7 +336,7 @@ class FelmatController extends DailyCrawlerController
                             /*
                             サイトデータ・日次データ保存
                             */
-                            $this->dailySearchService->save_site(json_encode($felmat_site));
+                            
                             $this->dailySearchService->save_daily(json_encode($felmat_data));
                             
                             //var_dump($crawler_for_site);
