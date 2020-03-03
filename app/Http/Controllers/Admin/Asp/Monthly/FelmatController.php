@@ -166,7 +166,7 @@ class FelmatController extends MonthlyCrawlerController
                                                     ->type('#search > div > div:nth-child(2) > div.col-sm-4.form-inline > div > input:nth-child(1)', $first)
                                                     ->type('#search > div > div:nth-child(2) > div.col-sm-4.form-inline > div > input:nth-child(3)', $end)
                                                     ->click('#sel_promotion_id_chosen')
-                                                    ->click('#sel_promotion_id_chosen > div > ul > li:nth-child(2)')
+                                                    ->click($product_info->product_order)
                                                     ->click('#view > div > button.btn.btn-primary.btn-sm')
                                                     ->crawler();
 
