@@ -30,7 +30,7 @@ class Kernel extends ConsoleKernel
         //          ->hourly();
         $schedule->call('App\Http\Controllers\Admin\DailyCrawlerController@dailytimer')->dailyAt('9:50');
 
-        $schedule->call('App\Http\Controllers\Admin\MonthlyCrawlerController@monthlytimer')->dailyAt('19:54');
+        $schedule->call('App\Http\Controllers\Admin\MonthlyCrawlerController@monthlytimer')->dailyAt('19:03');
 
         // $schedule->call('App\Http\Controllers\Admin\MonthlyCrawlerController@calc_approval_rate_site')->dailyAt('11:30');
     }
