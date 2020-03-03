@@ -135,13 +135,13 @@ class RentracksController extends MonthlyCrawlerController
                                 $data[ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
                                 if(count($node->filter( $selector_this['approval'] ))){
                                     $data[ 'approval' ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $selector_this['approval'] )->text() ) );
-                                }else{ throw new \Exception( $selector_this['approval'].'要素が存在しません。'); }
+                                }else{ $data[ 'approval' ] = 0;}//throw new \Exception( $selector_this['approval'].'要素が存在しません。'); }
 
                                 if(count($node->filter( $selector_this['approval_price'] ))){
                                     $data[ 'approval_price' ] = $this->monthlySearchService->calc_approval_price( 
                                                                         trim( preg_replace( '/[^0-9]/', '', $node->filter(  $selector_this['approval_price'] )->text() ) )
                                                                     ,5);
-                                }else{ throw new \Exception($selector_this['approval_price'].'要素が存在しません。'); }
+                                }else{ $data[ 'approval_price' ] = 0;}// throw new \Exception($selector_this['approval_price'].'要素が存在しません。'); }
 
                                 // $data[ 'approval_price' ] = $data[ 'approval' ] * $unit_price;
                                 if ( date( 'Y/m/d' ) == date( 'Y/m/01' ) ) {
@@ -152,13 +152,13 @@ class RentracksController extends MonthlyCrawlerController
                                 }
                                 if(count($node->filter( $selector_before['approval'] ))){
                                     $data[ 'last_approval' ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $selector_before['approval']  )->text() ) );
-                                }else{ throw new \Exception( $selector_before['approval'].'要素が存在しません。'); }
+                                }else{ $data[ 'last_approval' ] = 0;}// throw new \Exception( $selector_before['approval'].'要素が存在しません。'); }
                                 
                                 if(count($node->filter( $selector_before['approval_price'] ))){
                                     $data[ 'last_approval_price' ] = $this->monthlySearchService->calc_approval_price( 
                                                                         trim( preg_replace( '/[^0-9]/', '', $node->filter(  $selector_before['approval_price'] )->text() ) )
                                                                     ,5);
-                                }else{ throw new \Exception($selector_before['approval_price'].'要素が存在しません。'); }
+                                }else{ $data[ 'last_approval_price' ] = 0;}// throw new \Exception($selector_before['approval_price'].'要素が存在しません。'); }
 
                                 // $data[ 'last_approval_price' ] = $data[ 'last_approval' ] * $unit_price;
 
