@@ -173,11 +173,14 @@ class FelmatController extends MonthlyCrawlerController
                                 //echo "アクティブ数";
 
                                 if(count($crawler->filter( $selector ))){
+                                
                                     $active = intval(trim(preg_replace('/[^0-9]/', '', mb_substr($crawler->filter($selector)->text(), 0, 7))));
+                                
                                 }else{ $active = 0;}//throw new \Exception($selector.'要素が存在しません。'); }
                                 
                                 $page            = ceil($active / 20);
                                 $count_last_page = $active % 20;
+                                \Log::info('active：'.$active );
 
                                 if( $active > 0 ){
                                     for ($i = 1; $page >= $i; $i++) {
@@ -187,16 +190,18 @@ class FelmatController extends MonthlyCrawlerController
                                         
                                         //最後のページ
                                         if ($i > 1) {
-                                            $crawler_for_site = $browser->visit("https://www.felmat.net/advertiser/report/partnersite")
-                                                                        ->type('#search > div > div:nth-child(2) > div.col-sm-4.form-inline > div > input:nth-child(1)', $first)
-                                                                        ->type('#search > div > div:nth-child(2) > div.col-sm-4.form-inline > div > input:nth-child(3)', $end)
-                                                                        ->click('#sel_promotion_id_chosen')
-                                                                        // ->click('#sel_promotion_id_chosen > div > ul > li:nth-child(2)')
-                                                                        ->click($product_info->product_order)
-                                                                        ->click('#view > div > button.btn.btn-primary.btn-sm');
-                                            $p = $i + 1;
+                                            $crawler_for_site = $browser->visit("https://www.felmat.net/advertiser/report/partnersite?pg=".$i);
+                                                \Log::info('1以降ページ数：'.$i);
+                                            // $crawler_for_site = $browser->visit("https://www.felmat.net/advertiser/report/partnersite")
+                                            //                             ->type('#search > div > div:nth-child(2) > div.col-sm-4.form-inline > div > input:nth-child(1)', $first)
+                                            //                             ->type('#search > div > div:nth-child(2) > div.col-sm-4.form-inline > div > input:nth-child(3)', $end)
+                                            //                             ->click('#sel_promotion_id_chosen')
+                                            //                             // ->click('#sel_promotion_id_chosen > div > ul > li:nth-child(2)')
+                                            //                             ->click($product_info->product_order)
+                                            //                             ->click('#view > div > button.btn.btn-primary.btn-sm');
+                                            // $p = $i + 1;
                                             
-                                            $crawler_for_site->click('div.wrapper > div.page-content.no-left-sidebar > div > div:nth-child(5) > div > div:nth-child(2) > div:nth-child(1) > div:nth-child(2) > div > ul > li:nth-child(' . $p . ') > a');
+                                            // $crawler_for_site->click('div.wrapper > div.page-content.no-left-sidebar > div > div:nth-child(5) > div > div:nth-child(2) > div:nth-child(1) > div:nth-child(2) > div > ul > li:nth-child(' . $p . ') > a');
                                         }else{
                                             $crawler_for_site = $browser->visit("https://www.felmat.net/advertiser/report/partnersite")
                                                                         ->type('#search > div > div:nth-child(2) > div.col-sm-4.form-inline > div > input:nth-child(1)', $first)
