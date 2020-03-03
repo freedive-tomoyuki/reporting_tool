@@ -111,13 +111,13 @@ class PrescoController extends MonthlyCrawlerController
                                 
                                 if(count($node->filter( $selector['approval'] ))){
                                     $data[ 'approval' ]   = trim( preg_replace( '/[^0-9]/', '', $node->filter( $selector['approval'] )->text() ) );
-                                }else{ throw new \Exception( $selector[ 'approval' ].'要素が存在しません。'); }
+                                }else{  $data[ 'approval' ] = 0;}//throw new \Exception( $selector[ 'approval' ].'要素が存在しません。'); }
                                 
                                 if(count($node->filter( $selector['approval_price'] ))){
                                     $data[ 'approval_price' ]   = $this->monthlySearchService->calc_approval_price(
                                                                         trim( preg_replace( '/[^0-9]/', '', $node->filter( $selector['approval_price'] )->text() ) ) ,14
                                                                     );
-                                }else{ throw new \Exception( $selector[ 'approval_price' ].'要素が存在しません。'); }
+                                }else{  $data[ 'approval_price' ] = 0;}//throw new \Exception( $selector[ 'approval_price' ].'要素が存在しません。'); }
                                 \Log::info($data[ 'approval' ] );
                                 \Log::info($data[ 'approval_price' ] );
                                 return $data;
@@ -139,13 +139,13 @@ class PrescoController extends MonthlyCrawlerController
 
                                 if(count($node->filter( $selector['approval'] ))){
                                     $data[ 'last_approval' ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $selector['approval'] )->text() ) );
-                                }else{ throw new \Exception( $selector['approval'].'要素が存在しません。'); }
+                                }else{  $data[ 'last_approval' ] = 0;}//throw new \Exception( $selector['approval'].'要素が存在しません。'); }
 
                                 if(count($node->filter( $selector['approval_price'] ))){
                                     $data[ 'last_approval_price' ]   = $this->monthlySearchService->calc_approval_price(
                                                                         trim( preg_replace( '/[^0-9]/', '', $node->filter( $selector['approval_price'] )->text() ) ) ,14
                                                                     );
-                                }else{ throw new \Exception( $selector[ 'approval_price' ].'要素が存在しません。'); }
+                                }else{  $data[ 'last_approval_price' ] = 0;}//throw new \Exception( $selector[ 'approval_price' ].'要素が存在しません。'); }
 
 
                                 return $data;
