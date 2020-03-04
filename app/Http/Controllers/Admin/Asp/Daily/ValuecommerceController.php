@@ -79,8 +79,8 @@ class ValuecommerceController extends DailyCrawlerController
                                                 ->visit('https://mer.valuecommerce.ne.jp/switch/'.$product_info->asp_sponsor_id.'/')->crawler();
                                                 
                             $crawler = $browser->visit( 'https://mer.valuecommerce.ne.jp/report/network_statistics' )
-                                                ->select( '#condition_fromDate', '2020/03/01')
-                                                ->select( '#condition_toDate', '2020/03/03' )
+                                                ->type( '#condition_fromDate', '2020/03/01')
+                                                ->type( '#condition_toDate', '2020/03/03' )
                                                 ->click( '#show_statistics' )
                                                 ->crawler();
 
