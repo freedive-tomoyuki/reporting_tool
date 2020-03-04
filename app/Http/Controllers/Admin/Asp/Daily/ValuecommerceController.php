@@ -60,14 +60,14 @@ class ValuecommerceController extends DailyCrawlerController
                         if ( date( 'Y/m/d' ) == date( 'Y/m/01' ) ) {
                             $s_year = date( 'Y', strtotime( '-1 day' ) );
                             $s_month = date( 'n', strtotime( '-1 day' ) );
-                            $s_date = date( 'Y-m-d', strtotime( 'first day of previous month' ) );
-                            $e_date = date( 'Y-m-d', strtotime( 'last day of previous month' ) );
+                            $s_date = date( 'Y/m/d', strtotime( 'first day of previous month' ) );
+                            $e_date = date( 'Y/m/d', strtotime( 'last day of previous month' ) );
                         } //date( 'Y/m/d' ) == date( 'Y/m/01' )
                         else {
                             $s_year = date( 'Y' );
                             $s_month = date( 'n' );
-                            $s_date = date( 'Y-m-01' );
-                            $e_date = date( 'Y-m-d', strtotime( '-1 day' ) );
+                            $s_date = date( 'Y/m/01' );
+                            $e_date = date( 'Y/m/d', strtotime( '-1 day' ) );
                         }
                         
                         foreach ( $product_infos as $product_info ) {
@@ -77,7 +77,7 @@ class ValuecommerceController extends DailyCrawlerController
                                                 ->type( $product_info->asp->password_key, $product_info->password_value )
                                                 ->click( $product_info->asp->login_selector )
                                                 ->visit('https://mer.valuecommerce.ne.jp/switch/'.$product_info->asp_sponsor_id.'/')->crawler();
-
+                                                
                             $crawler = $browser->visit( 'https://mer.valuecommerce.ne.jp/report/network_statistics' )
                                                 ->select( '#condition_fromDate', $s_date )
                                                 ->select( '#condition_toDate', $e_date )
@@ -93,7 +93,7 @@ class ValuecommerceController extends DailyCrawlerController
                                 );
                                 \Log::info($s_date);
                                 \Log::info($e_date);
-                                \Log::info($crawler->html());
+                                // \Log::info($crawler->html());
                             var_dump($crawler->html());
                             // echo "point1";
                             // if(date( 'Y/m/d' ) == date( 'Y/m/01' )){
@@ -138,7 +138,9 @@ class ValuecommerceController extends DailyCrawlerController
                                     $data[ $key ] = array( );
                                     if(count($node->filter( $value ))){
                                         if($key == 'cv'){
-                                            preg_match( '/\d+(/', trim( $node->filter( $value )->text()) , $cv_array );
+                                            \Log::info("x" .trim( $node->filter( $value )->text()));
+                                            // \Log::info("y" .trim( $node->filter( $value )->text()));
+                                            // preg_match( '/\d+/', trim( $node->filter( $value )->text()) , $cv_array );
                                             $data[ $key ] =  preg_replace( '/[^0-9]/', '', $cv_array[ 0 ]);
                                         }else{
                                             $data[ $key ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
