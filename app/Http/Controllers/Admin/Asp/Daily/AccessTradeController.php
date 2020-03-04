@@ -79,7 +79,7 @@ class AccesstradeController extends DailyCrawlerController
                                         );
                             $crawler2 = $browser->visit('https://merchant.accesstrade.net/mapi/program/'.$product_info->asp_product_id.'/report/daily/occurred?targetFrom='.$s_date.'&targetTo='.$e_date)->crawler();
                             
-
+                            echo $crawler2;
                         //X月1日のときのセレクタ変更
                             // if ( date( 'Y/m/d' ) == date( 'Y/m/01' ) ) {
                                 
@@ -163,7 +163,7 @@ class AccesstradeController extends DailyCrawlerController
                                 
                             $accesstrade_data[0][ 'cpa' ]  = $calculated[ 'cpa' ]; //CPA
                             $accesstrade_data[0][ 'cost' ] = $calculated[ 'cost' ]; //獲得単価
-
+                            var_dump($accesstrade_data);
                             //サイトデータ取得
                             
                             $array_site       = array( );
