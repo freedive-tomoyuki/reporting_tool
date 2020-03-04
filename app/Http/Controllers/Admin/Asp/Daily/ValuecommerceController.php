@@ -58,12 +58,16 @@ class ValuecommerceController extends DailyCrawlerController
                         
                         //クロール実行が1日のとき
                         if ( date( 'Y/m/d' ) == date( 'Y/m/01' ) ) {
-                            $s_Y = date( 'Y', strtotime( '-1 day' ) );
-                            $s_M = date( 'n', strtotime( '-1 day' ) );
+                            $s_year = date( 'Y', strtotime( '-1 day' ) );
+                            $s_month = date( 'n', strtotime( '-1 day' ) );
+                            $s_date = date( 'Y-m-d', strtotime( 'first day of previous month' ) );
+                            $e_date = date( 'Y-m-d', strtotime( 'last day of previous month' ) );
                         } //date( 'Y/m/d' ) == date( 'Y/m/01' )
                         else {
-                            $s_Y = date( 'Y' );
-                            $s_M = date( 'n' );
+                            $s_year = date( 'Y' );
+                            $s_month = date( 'n' );
+                            $s_date = date( 'Y-m-01' );
+                            $e_date = date( 'Y-m-d', strtotime( '-1 day' ) );
                         }
                         
                         foreach ( $product_infos as $product_info ) {
@@ -73,27 +77,49 @@ class ValuecommerceController extends DailyCrawlerController
                                                 ->type( $product_info->asp->password_key, $product_info->password_value )
                                                 ->click( $product_info->asp->login_selector )
                                                 ->visit('https://mer.valuecommerce.ne.jp/switch/'.$product_info->asp_sponsor_id.'/')
-                                                ->visit( $product_info->asp->lp1_url )
+                                                ->visit( 'https://mer.valuecommerce.ne.jp/report/network_statistics' )
+                                                ->select( '#condition_fromDate', $s_date )
+                                                ->select( '#condition_toDate', $e_date )
+                                                ->click( '#show_statistics' )
                                                 ->crawler();
+
+                                $selector_crawler = array(
+                                    'imp'       => '#report > tfoot > tr > td.impressions',
+                                    'click'     => '#report > tfoot > tr > td:nth-child(6)',
+                                    'cv'        => '#report > tfoot > tr > td:nth-child(9)',
+                                    'partnership' => '#report > tbody > tr:last-child > td:nth-child(2)',
+                                    // 'price'     => $product_info->asp->daily_price_selector,
+                                );
+
                             //echo $crawler->html();
-                            echo "point1";
-                            if(date( 'Y/m/d' ) == date( 'Y/m/01' )){
-                                $selector_crawler = array(
-                                    'imp'       => '#report > tbody > tr:nth-child(4) > td:nth-child(5)',
-                                    'click'     => '#report > tbody > tr:nth-child(4) > td:nth-child(8)',
-                                    'cv'        => '#report > tbody > tr:nth-child(4) > td:nth-child(11)',
-                                    'partnership' => '#report > tbody > tr:nth-child(4) > td:nth-child(2)',
-                                    'price'     => '#report > tbody > tr:nth-child(4) > td:nth-child(14)', 
-                                );
-                            }else{
-                                $selector_crawler = array(
-                                    'imp'       => $product_info->asp->daily_imp_selector,
-                                    'click'     => $product_info->asp->daily_click_selector,
-                                    'cv'        => $product_info->asp->daily_cv_selector,
-                                    'partnership' => $product_info->asp->daily_partnership_selector,
-                                    'price'     => $product_info->asp->daily_price_selector,
-                                );
-                            }
+                            // echo "point1";
+                            // if(date( 'Y/m/d' ) == date( 'Y/m/01' )){
+
+                            //     $crawler->visit( $product_info->asp->lp1_url )->crawler();
+
+                            //     $selector_crawler = array(
+                            //         'imp'       => '#report > tbody > tr:nth-child(4) > td:nth-child(5)',
+                            //         'click'     => '#report > tbody > tr:nth-child(4) > td:nth-child(8)',
+                            //         'cv'        => '#report > tbody > tr:nth-child(4) > td:nth-child(11)',
+                            //         'partnership' => '#report > tbody > tr:nth-child(4) > td:nth-child(2)',
+                            //         'price'     => '#report > tbody > tr:nth-child(4) > td:nth-child(14)', 
+                            //     );
+                            // }else{
+                            //     $crawler->visit( 'https://mer.valuecommerce.ne.jp/report/network_statistics' )
+                                                
+                            //                     ->select( '#condition_fromDate', $s_date )
+                            //                     ->select( '#condition_toDate', $e_date )
+                            //                     ->click( '#show_statistics' )
+                            //                     ->crawler();
+
+                            //     $selector_crawler = array(
+                            //         'imp'       => '#report > tfoot > tr > td.impressions',
+                            //         'click'     => '#report > tfoot > tr > td:nth-child(6)',
+                            //         'cv'        => '#report > tfoot > tr > td:nth-child(9)',
+                            //         'partnership' => '#report > tbody > tr:last-child > td:nth-child(2)',
+                            //         'price'     => $product_info->asp->daily_price_selector,
+                            //     );
+                            // }
                             
                             
                             echo "point2";
@@ -124,7 +150,7 @@ class ValuecommerceController extends DailyCrawlerController
                                                         ->cpa( $data[ 'cv' ], $data[ 'price' ], 3 ) 
                                                 ) 
                                             ), True );
-
+                                $data[ 'price' ] = 0;
                                 $data[ 'cpa' ]     = $calculated[ 'cpa' ]; //CPA
                                 $data[ 'cost' ]    = $calculated[ 'cost' ]; //獲得単価
                                 $data[ 'asp' ]     = $product_info->asp_id;
@@ -135,15 +161,15 @@ class ValuecommerceController extends DailyCrawlerController
                             //$crawler->closeAll();
                             echo "point4";
                             $c_url = 'https://mer.valuecommerce.ne.jp/affiliate_analysis/';
-                            //?condition%5BfromYear%5D=' . $s_Y . '&condition%5BfromMonth%5D=' . $s_M . '&condition%5BtoYear%5D=' . $s_Y . '&condition%5BtoMonth%5D=' . $s_M . '&condition%5BactiveFlag%5D=Y&allPage=1&notOmksPage=1&omksPage=1&pageType=all&page=1';
+                            //?condition%5BfromYear%5D=' . $s_year . '&condition%5BfromMonth%5D=' . $s_month . '&condition%5BtoYear%5D=' . $s_year . '&condition%5BtoMonth%5D=' . $s_month . '&condition%5BactiveFlag%5D=Y&allPage=1&notOmksPage=1&omksPage=1&pageType=all&page=1';
                             
                             \Log::info($c_url);
                             $crawler_for_site = $browser
                                     ->visit( $c_url )
-                                    ->select( '#condition_fromYear', $s_Y )
-                                    ->select( '#condition_fromMonth', $s_M )
-                                    ->select( '#condition_toYear', $s_Y )
-                                    ->select( '#condition_toMonth', $s_M )
+                                    ->select( '#condition_fromYear', $s_year )
+                                    ->select( '#condition_fromMonth', $s_month )
+                                    ->select( '#condition_toYear', $s_year )
+                                    ->select( '#condition_toMonth', $s_month )
                                     ->click( '#show_statistics' )
                                     ->crawler();
                                                 
@@ -168,17 +194,17 @@ class ValuecommerceController extends DailyCrawlerController
                             for ( $page = 0; $page < $count_page; $page++ ) {
                                 
                                 $target_page = (int)$page + 1;
-                                echo $s_Y ;
-                                echo $s_M ;
-                                echo $s_Y ;
-                                echo $s_M ;
+                                echo $s_year ;
+                                echo $s_month ;
+                                echo $s_year ;
+                                echo $s_month ;
 
-                                $crawler_for_site = $browser//->visit( 'https://mer.valuecommerce.ne.jp/affiliate_analysis/?condition%5BfromYear%5D=' . $s_Y . '&condition%5BfromMonth%5D=' . $s_M . '&condition%5BtoYear%5D=' . $s_Y . '&condition%5BtoMonth%5D=' . $s_M . '&condition%5BactiveFlag%5D=Y&allPage=1&notOmksPage=1&omksPage=1&pageType=all&page=' . $target_page )->crawler();
+                                $crawler_for_site = $browser//->visit( 'https://mer.valuecommerce.ne.jp/affiliate_analysis/?condition%5BfromYear%5D=' . $s_year . '&condition%5BfromMonth%5D=' . $s_month . '&condition%5BtoYear%5D=' . $s_year . '&condition%5BtoMonth%5D=' . $s_month . '&condition%5BactiveFlag%5D=Y&allPage=1&notOmksPage=1&omksPage=1&pageType=all&page=' . $target_page )->crawler();
                                                         ->visit( $c_url )
-                                                        ->select( '#condition_fromYear', $s_Y )
-                                                        ->select( '#condition_fromMonth', $s_M )
-                                                        ->select( '#condition_toYear', $s_Y )
-                                                        ->select( '#condition_toMonth', $s_M )
+                                                        ->select( '#condition_fromYear', $s_year )
+                                                        ->select( '#condition_fromMonth', $s_month )
+                                                        ->select( '#condition_toYear', $s_year )
+                                                        ->select( '#condition_toMonth', $s_month )
                                                         ->click( '#show_statistics' )
                                                         ->visit( 'https://mer.valuecommerce.ne.jp/affiliate_analysis/?condition%5BactiveFlag%5D=Y&allPage=1&notOmksPage=1&omksPage=1&pageType=all&page=' . $target_page )
                                                         ->crawler();
