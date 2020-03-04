@@ -126,6 +126,10 @@ class ValuecommerceController extends DailyCrawlerController
                             $valuecommerce_data = $crawler->each( function( Crawler $node ) use ($selector_crawler, $product_info)
                             {
                                 $data = array( );
+                                $data[ 'asp' ]     = $product_info->asp_id;
+                                $data[ 'product' ] = $product_info->id;
+                                $data[ 'date' ]    = date( 'Y-m-d', strtotime( '-1 day' ) );
+                                $data[ 'price' ] = 0;
                                 //echo $node->html();
                                 foreach ( $selector_crawler as $key => $value ) {
                                     $data[ $key ] = array( );
@@ -138,26 +142,37 @@ class ValuecommerceController extends DailyCrawlerController
                                 } 
                                 //$selector_crawler as $key => $value
                                 //$data['cpa']= $this->cpa($data['cv'] ,$data['price'] , 1);
-
+                                
+                                //承認された金額しか抽出できないため、0円
                                 // $unit_price = $product_info->price;
                                 // $data[ 'price' ] = $data[ 'cv' ] * $unit_price;
                                 echo "point3";
                                 //CPAとASPフィー込みの価格を計算
-                                $calculated = json_decode( 
-                                            json_encode( 
-                                                json_decode( 
-                                                    $this->dailySearchService
-                                                        ->cpa( $data[ 'cv' ], $data[ 'price' ], 3 ) 
-                                                ) 
-                                            ), True );
-                                $data[ 'price' ] = 0;
-                                $data[ 'cpa' ]     = $calculated[ 'cpa' ]; //CPA
-                                $data[ 'cost' ]    = $calculated[ 'cost' ]; //獲得単価
-                                $data[ 'asp' ]     = $product_info->asp_id;
-                                $data[ 'product' ] = $product_info->id;
-                                $data[ 'date' ]    = date( 'Y-m-d', strtotime( '-1 day' ) );
+                                // $calculated = json_decode( 
+                                //             json_encode( 
+                                //                 json_decode( 
+                                //                     $this->dailySearchService
+                                //                         ->cpa( $data[ 'cv' ], $data[ 'price' ], 3 ) 
+                                //                 ) 
+                                //             ), True );
+                                
+                                // $data[ 'cpa' ]     = $calculated[ 'cpa' ]; //CPA
+                                // $data[ 'cost' ]    = $calculated[ 'cost' ]; //獲得単価
+
                                 return $data;
                             } );
+                            
+                            $calculated = json_decode( 
+                                json_encode( 
+                                    json_decode( 
+                                        $this->dailySearchService
+                                            ->cpa( $valuecommerce_data[0][ 'cv' ], $valuecommerce_data[0][ 'price' ], 3 ) 
+                                    ) 
+                                ), True );
+                                
+                            $valuecommerce_data[0][ 'cpa' ]  = $calculated[ 'cpa' ]; //CPA
+                            $valuecommerce_data[0][ 'cost' ] = $calculated[ 'cost' ]; //獲得単価
+
                             //$crawler->closeAll();
                             echo "point4";
                             $c_url = 'https://mer.valuecommerce.ne.jp/affiliate_analysis/';
