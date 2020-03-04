@@ -67,39 +67,57 @@ class AccesstradeController extends DailyCrawlerController
                         
                         foreach ( $product_infos as $product_info ) {
                             // /var_dump($product_info->asp);
-                            $crawler = $browser->visit( $product_info->asp->login_url )->type( $product_info->asp->login_key, $product_info->login_value )->type( $product_info->asp->password_key, $product_info->password_value )->click( $product_info->asp->login_selector )->visit( $product_info->asp->lp1_url . $product_info->asp_product_id )->crawler();
+                            $crawler1 = $browser->visit( $product_info->asp->login_url )
+                                                ->type( $product_info->asp->login_key, $product_info->login_value )
+                                                ->type( $product_info->asp->password_key, $product_info->password_value )
+                                                ->click( $product_info->asp->login_selector )
+                                                ->visit( $product_info->asp->lp1_url . $product_info->asp_product_id )
+                                                ->crawler();
+                            $selector = array(
+                                        'partnership'   => $product_info->asp->daily_partnership_selector,
+                                        'active'        => $product_info->asp->daily_active_selector,
+                                        );
+                            $crawler2 = $browser->visit('https://merchant.accesstrade.net/mapi/program/'.$product_info->asp_product_id.'/report/daily/occurred?targetFrom='.$s_date.'&targetTo='.$e_date)->crawler();
                             
+
                         //X月1日のときのセレクタ変更
-                            if ( date( 'Y/m/d' ) == date( 'Y/m/01' ) ) {
-                                $selector = array(
-                                    'imp' => 'body > program-page > div > div > main > program-home > section:nth-child(2) > div > div > div > summary-report > div > table > tbody > tr:nth-child(2) > td:nth-child(2)',
-                                    'click' => 'body > program-page > div > div > main > program-home > section:nth-child(2) > div > div > div > summary-report > div > table > tbody > tr:nth-child(2) > td:nth-child(3)',
-                                    'cv' => 'body > program-page > div > div > main > program-home > section:nth-child(2) > div > div > div > summary-report > div > table > tbody > tr:nth-child(2) > td:nth-child(4)',
-                                    'partnership' => $product_info->asp->daily_partnership_selector,
-                                    'active' => $product_info->asp->daily_active_selector,
-                                    'price' => 'body > program-page > div > div > main > program-home > section:nth-child(2) > div > div > div > summary-report > div > table > tbody > tr:nth-child(2) > td:nth-child(9)' 
-                                );
-                            } //date( 'Y/m/d' ) == date( 'Y/m/01' )
-                            else {
-                                $selector = array(
-                                    'imp' => $product_info->asp->daily_imp_selector,
-                                    'click' => $product_info->asp->daily_click_selector,
-                                    'cv' => $product_info->asp->daily_cv_selector,
-                                    'partnership' => $product_info->asp->daily_partnership_selector,
-                                    'active' => $product_info->asp->daily_active_selector,
-                                    'price' => $product_info->asp->daily_price_selector 
-                                );
-                            }
+                            // if ( date( 'Y/m/d' ) == date( 'Y/m/01' ) ) {
+                                
+                            //     $crawler = $crawler->crawler();
+
+                            //     $selector = array(
+                            //         'imp' => 'body > program-page > div > div > main > program-home > section:nth-child(2) > div > div > div > summary-report > div > table > tbody > tr:nth-child(2) > td:nth-child(2)',
+                            //         'click' => 'body > program-page > div > div > main > program-home > section:nth-child(2) > div > div > div > summary-report > div > table > tbody > tr:nth-child(2) > td:nth-child(3)',
+                            //         'cv' => 'body > program-page > div > div > main > program-home > section:nth-child(2) > div > div > div > summary-report > div > table > tbody > tr:nth-child(2) > td:nth-child(4)',
+                            //         'partnership' => $product_info->asp->daily_partnership_selector,
+                            //         'active' => $product_info->asp->daily_active_selector,
+                            //         'price' => 'body > program-page > div > div > main > program-home > section:nth-child(2) > div > div > div > summary-report > div > table > tbody > tr:nth-child(2) > td:nth-child(9)' 
+                            //     );
+                            // } //date( 'Y/m/d' ) == date( 'Y/m/01' )
+                            // else {
+                                
+                            //     $crawler = $crawler->visit('https://merchant.accesstrade.net/mapi/program/'.$product_info->asp_product_id.'/report/daily/occurred?targetFrom='.$s_date.'&targetTo='.$e_date)->crawler();
+
+                            //     $selector = array(
+                            //         'imp' => $product_info->asp->daily_imp_selector,
+                            //         'click' => $product_info->asp->daily_click_selector,
+                            //         'cv' => $product_info->asp->daily_cv_selector,
+                            //         'partnership' => $product_info->asp->daily_partnership_selector,
+                            //         'active' => $product_info->asp->daily_active_selector,
+                            //         'price' => $product_info->asp->daily_price_selector 
+                            //     );
+                            // }
                             //var_dump( $crawler );
                             //$crawler->each(function (Crawler $node) use ( $selector ){
                             
-                            $accesstrade_data = $crawler->each( function( Crawler $node ) use ($selector, $product_info)
+                                
+                            $accesstrade_data = $crawler1->each( function( Crawler $node ) use ($selector, $product_info)
                             {
                                 // $unit_price = $product_info->price;
                                 $data              = array( );
-                                $data[ 'asp' ]     = $product_info->asp_id;
-                                $data[ 'product' ] = $product_info->id;
-                                $data[ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
+                                // $data[ 'asp' ]     = $product_info->asp_id;
+                                // $data[ 'product' ] = $product_info->id;
+                                // $data[ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
                                 
                                 foreach ( $selector as $key => $value ) {
                                     if(count($node->filter( $value ))){
@@ -108,35 +126,45 @@ class AccesstradeController extends DailyCrawlerController
                                             $data[ $key ] = trim( $active[ 0 ] );
                                             
                                         } //$key == 'active'
-                                        elseif ( $key == 'partnership' ) {
+                                        if ( $key == 'partnership' ) {
                                             
                                             $data[ $key ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
                                             
                                         } //$key == 'partnership'
-                                        else {
+                                        // else {
                                             
-                                            $data[ $key ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
+                                        //     $data[ $key ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
                                             
-                                        }
+                                        // }
                                     }else{
-                                        throw new \Exception($value.'要素が存在しません。');
+                                        $data[ $key ] = 0;
+                                        // throw new \Exception($value.'要素が存在しません。');
                                     }
 
-                                } //$selector as $key => $value
-                                //$data['cpa']= $this->cpa($data['cv'] ,$data['price'] , 2);
-                                
-                                // $data[ 'price' ] = $data['cv'] * $unit_price;
-
-                                $calculated = json_decode( json_encode( json_decode( $this->dailySearchService->cpa( $data[ 'cv' ], $data[ 'price' ], 2 ) ) ), True );
-                                
-                                $data[ 'cpa' ]  = $calculated[ 'cpa' ]; //CPA
-                                $data[ 'cost' ] = $calculated[ 'cost' ]; //獲得単価
-                                
-                                //var_dump($data);
+                                } 
                                 return $data;
                                 
                             } );
                             
+                            $array_data = json_decode( $crawler2->text(), true )[ "total" ];
+                            
+                            if(!empty($array_data)){ //throw new \Exception('アクティブパートナーが存在しませんでした。'); }
+
+                                // foreach ( $array_data as $site ) {
+                                    $accesstrade_data[ 0 ][ 'product' ]   = $product_info->id;
+                                    $accesstrade_data[ 0 ][ 'asp' ]       = $product_info->asp_id;
+                                    $accesstrade_data[ 0 ][ 'imp' ]       = $array_data[ "impressionCount" ];
+                                    $accesstrade_data[ 0 ][ 'click' ]     = $array_data[ "clickCount" ];
+                                    $accesstrade_data[ 0 ][ 'cv' ]        = $array_data[ "actionCount" ];
+                                    $accesstrade_data[ 0 ][ 'price' ]     = $array_data[ "occurredTotalReward" ];
+                                // }
+                            }
+                            $calculated = json_decode( json_encode( json_decode( $this->dailySearchService->cpa( $accesstrade_data[0][ 'cv' ], $accesstrade_data[0][ 'price' ], 2 ) ) ), True );
+                                
+                            $accesstrade_data[0][ 'cpa' ]  = $calculated[ 'cpa' ]; //CPA
+                            $accesstrade_data[0][ 'cost' ] = $calculated[ 'cost' ]; //獲得単価
+
+                            //サイトデータ取得
                             
                             $array_site       = array( );
                             $crawler_for_site = $browser->visit( "https://merchant.accesstrade.net/mapi/program/" . $product_info->asp_product_id . "/report/partner/monthly/occurred?targetFrom=" . $s_date . "&targetTo=" . $e_date . "&pointbackSiteFlagList=0,1" )->crawler();
@@ -149,42 +177,43 @@ class AccesstradeController extends DailyCrawlerController
                             
                             $x = 0;
                             
-                            if(empty($array_sites)){ throw new \Exception('アクティブパートナーが存在しませんでした。'); }
+                            if(!empty($array_sites)){ //throw new \Exception('アクティブパートナーが存在しませんでした。'); }
 
-                            foreach ( $array_sites as $site ) {
+                                foreach ( $array_sites as $site ) {
 
-                                $accesstrade_site[ $x ][ 'product' ]   = $product_info->id;
-                                $accesstrade_site[ $x ][ 'asp' ]       = $product_info->asp_id;
-                                $accesstrade_site[ $x ][ 'media_id' ]  = $site[ "partnerSiteId" ];
-                                $accesstrade_site[ $x ][ 'site_name' ] = $site[ "partnerSiteName" ];
-                                $accesstrade_site[ $x ][ 'imp' ]       = $site[ "impressionCount" ];
-                                $accesstrade_site[ $x ][ 'click' ]     = $site[ "clickCount" ];
-                                $accesstrade_site[ $x ][ 'cv' ]        = $site[ "actionCount" ];
-                                $accesstrade_site[ $x ][ 'price' ]     = $site[ "occurredTotalReward" ];
-                                
-                                // $unit_price = $product_info->price;
-                                // $accesstrade_site[ $x ][ 'price' ] = $unit_price * $accesstrade_site[ $x ][ 'cv' ];
+                                    $accesstrade_site[ $x ][ 'product' ]   = $product_info->id;
+                                    $accesstrade_site[ $x ][ 'asp' ]       = $product_info->asp_id;
+                                    $accesstrade_site[ $x ][ 'media_id' ]  = $site[ "partnerSiteId" ];
+                                    $accesstrade_site[ $x ][ 'site_name' ] = $site[ "partnerSiteName" ];
+                                    $accesstrade_site[ $x ][ 'imp' ]       = $site[ "impressionCount" ];
+                                    $accesstrade_site[ $x ][ 'click' ]     = $site[ "clickCount" ];
+                                    $accesstrade_site[ $x ][ 'cv' ]        = $site[ "actionCount" ];
+                                    $accesstrade_site[ $x ][ 'price' ]     = $site[ "occurredTotalReward" ];
+                                    
+                                    // $unit_price = $product_info->price;
+                                    // $accesstrade_site[ $x ][ 'price' ] = $unit_price * $accesstrade_site[ $x ][ 'cv' ];
 
-                                //$data[$x]['cpa']= $this->cpa($site['occurredTotalReward'] ,$site["actionCount"] , 1)
-                                $calculated              = json_decode( 
-                                                            json_encode( 
-                                                                json_decode( 
-                                                                    $this->dailySearchService
-                                                                        ->cpa( $site[ "actionCount" ], $accesstrade_site[ $x ][ "price" ], 1 ) 
-                                                                ) 
-                                                            ), True );
+                                    //$data[$x]['cpa']= $this->cpa($site['occurredTotalReward'] ,$site["actionCount"] , 1)
+                                    $calculated              = json_decode( 
+                                                                json_encode( 
+                                                                    json_decode( 
+                                                                        $this->dailySearchService
+                                                                            ->cpa( $site[ "actionCount" ], $accesstrade_site[ $x ][ "price" ], 1 ) 
+                                                                    ) 
+                                                                ), True );
 
-                                $accesstrade_site[ $x ][ 'cpa' ]  = $calculated[ 'cpa' ]; //CPA
-                                $accesstrade_site[ $x ][ 'cost' ] = $calculated[ 'cost' ]; //獲得単価
-                                
-                                $accesstrade_site[ $x ][ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
-                                
-                                $x++;
-                                
-                            } //$array_sites as $site
-                            //var_dump( $data );
-                            
-                            $this->dailySearchService->save_site( json_encode( $accesstrade_site ) );
+                                    $accesstrade_site[ $x ][ 'cpa' ]  = $calculated[ 'cpa' ]; //CPA
+                                    $accesstrade_site[ $x ][ 'cost' ] = $calculated[ 'cost' ]; //獲得単価
+                                    
+                                    $accesstrade_site[ $x ][ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
+                                    
+                                    $x++;
+                                    
+                                } //$array_sites as $site
+                                //var_dump( $data );
+                                $this->dailySearchService->save_site( json_encode( $accesstrade_site ) );
+                            }
+
                             $this->dailySearchService->save_daily( json_encode( $accesstrade_data ) );
                         } //$product_infos as $product_info
                     }
