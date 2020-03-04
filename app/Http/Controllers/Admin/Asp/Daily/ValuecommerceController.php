@@ -79,8 +79,8 @@ class ValuecommerceController extends DailyCrawlerController
                                                 ->visit('https://mer.valuecommerce.ne.jp/switch/'.$product_info->asp_sponsor_id.'/')->crawler();
                                                 
                             $crawler = $browser->visit( 'https://mer.valuecommerce.ne.jp/report/network_statistics' )
-                                                ->select( '#condition_fromDate', $s_date )
-                                                ->select( '#condition_toDate', $e_date )
+                                                ->select( '#condition_fromDate', '2020/03/01')
+                                                ->select( '#condition_toDate', '2020/03/03' )
                                                 ->click( '#show_statistics' )
                                                 ->crawler();
 
@@ -140,7 +140,7 @@ class ValuecommerceController extends DailyCrawlerController
                                         if($key == 'cv'){
                                             \Log::info("x" .trim( $node->filter( $value )->text()));
                                             // \Log::info("y" .trim( $node->filter( $value )->text()));
-                                            // preg_match( '/\d+/', trim( $node->filter( $value )->text()) , $cv_array );
+                                            preg_match( '/\d+\(/', trim( $node->filter( $value )->text()) , $cv_array );
                                             $data[ $key ] =  preg_replace( '/[^0-9]/', '', $cv_array[ 0 ]);
                                         }else{
                                             $data[ $key ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
@@ -198,7 +198,7 @@ class ValuecommerceController extends DailyCrawlerController
                                     ->select( '#condition_toMonth', $s_month )
                                     ->click( '#show_statistics' )
                                     ->crawler();
-                                                
+                                    var_dump($crawler_for_site->html()); 
                             $count_selector = "#cusomize_wrap > span";
                             echo "point5";
                             if(count($crawler_for_site->filter( $count_selector ))){
