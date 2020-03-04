@@ -90,8 +90,10 @@ class ValuecommerceController extends DailyCrawlerController
                                     'partnership' => '#report > tbody > tr:last-child > td:nth-child(2)',
                                     // 'price'     => $product_info->asp->daily_price_selector,
                                 );
-
-                            //echo $crawler->html();
+                                \Log::info($s_date);
+                                \Log::info($e_date);
+                                \Log::info($crawler->html());
+                            var_dump($crawler->html());
                             // echo "point1";
                             // if(date( 'Y/m/d' ) == date( 'Y/m/01' )){
 
