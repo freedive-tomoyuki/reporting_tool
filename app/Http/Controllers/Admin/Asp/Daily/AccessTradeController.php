@@ -79,7 +79,8 @@ class AccesstradeController extends DailyCrawlerController
                                         );
                             $crawler2 = $browser->visit('https://merchant.accesstrade.net/mapi/program/'.$product_info->asp_product_id.'/report/daily/occurred?targetFrom='.$s_date.'&targetTo='.$e_date)->crawler();
                             
-                            echo $crawler2;
+                            // echo $crawler2;
+                            \Log::info('https://merchant.accesstrade.net/mapi/program/'.$product_info->asp_product_id.'/report/daily/occurred?targetFrom='.$s_date.'&targetTo='.$e_date);
                         //X月1日のときのセレクタ変更
                             // if ( date( 'Y/m/d' ) == date( 'Y/m/01' ) ) {
                                 
@@ -153,10 +154,10 @@ class AccesstradeController extends DailyCrawlerController
                             $accesstrade_data[ 0 ][ 'date' ]      = date( 'Y-m-d', strtotime( '-1 day' ) );
 
                             // if(!empty($array_data)){ //throw new \Exception('アクティブパートナーが存在しませんでした。'); }
-                                    $accesstrade_data[ 0 ][ 'imp' ]       = (!empty($array_data))? $array_data[ "impressionCount" ] : 0;
-                                    $accesstrade_data[ 0 ][ 'click' ]     = (!empty($array_data))? $array_data[ "clickCount" ] : 0;
-                                    $accesstrade_data[ 0 ][ 'cv' ]        = (!empty($array_data))? $array_data[ "actionCount" ] : 0;
-                                    $accesstrade_data[ 0 ][ 'price' ]     = (!empty($array_data))? $array_data[ "occurredTotalReward" ] : 0;
+                            $accesstrade_data[ 0 ][ 'imp' ]       = (!empty($array_data))? $array_data[ "impressionCount" ] : 0;
+                            $accesstrade_data[ 0 ][ 'click' ]     = (!empty($array_data))? $array_data[ "clickCount" ] : 0;
+                            $accesstrade_data[ 0 ][ 'cv' ]        = (!empty($array_data))? $array_data[ "actionCount" ] : 0;
+                            $accesstrade_data[ 0 ][ 'price' ]     = (!empty($array_data))? $array_data[ "occurredTotalReward" ] : 0;
                                 // }
                             // }
                             $calculated = json_decode( json_encode( json_decode( $this->dailySearchService->cpa( $accesstrade_data[0][ 'cv' ], $accesstrade_data[0][ 'price' ], 2 ) ) ), True );
