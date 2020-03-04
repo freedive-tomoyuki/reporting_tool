@@ -136,7 +136,13 @@ class ValuecommerceController extends DailyCrawlerController
                                 foreach ( $selector_crawler as $key => $value ) {
                                     $data[ $key ] = array( );
                                     if(count($node->filter( $value ))){
-                                        $data[ $key ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
+                                        if($key == 'cv'){
+                                            preg_match( '/\d+(/', trim( $node->filter( $value )->text()) , $cv_array );
+                                            $data[ $key ] =  preg_replace( '/[^0-9]/', '', $cv_array[ 0 ]);
+                                        }else{
+                                            $data[ $key ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
+                                        }
+                                    
                                     }else{
                                         $data[ $key ] = 0;
                                         // throw new \Exception($value.'要素が存在しません。');
