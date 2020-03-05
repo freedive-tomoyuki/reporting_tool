@@ -143,18 +143,12 @@ class AfbController extends DailyCrawlerController
                                     
                                 } //$selector_crawler as $key => $value
 
-                                // $unit_price = $product_info->price;
-                                // $data[ 'price' ] = $data[ 'cv' ] * $unit_price;
-
                                 $calculated        = json_decode( json_encode( json_decode( $this->dailySearchService->cpa( $data[ 'cv' ], $data[ 'price' ], 4 ) ) ), True );
                                 $data[ 'cpa' ]  = $calculated[ 'cpa' ]; //CPA
                                 $data[ 'cost' ] = $calculated[ 'cost' ]; //獲得単価
                                 return $data;
                                 
                             } );
-                            // $partnership = $crawler2->each( function( Crawler $node ) use ($selector_crawler2)
-                            // {
-                            //     foreach ( $selector_crawler2 as $key => $value ) {
                                     if(count($crawler2->filter('#main > div.wrap > div.section33 > div.section_inner.positionr.positionr > table > tbody > tr:nth-child(13) > td:nth-child(2)'))){
                                         $partnership = trim( preg_replace( '/[^0-9]/', '', $crawler2->filter( '#main > div.wrap > div.section33 > div.section_inner.positionr.positionr > table > tbody > tr:nth-child(13) > td:nth-child(2)' )->text() ) );
                                     }else {
@@ -162,32 +156,23 @@ class AfbController extends DailyCrawlerController
                                         // throw new \Exception($value.'要素が存在しません。');
                                     }
                                 
-                                // } //$selector_crawler2 as $key => $value
-                                // return $partnership;
-                                //var_dump($data);
-                            // } );
-                            // $active = $crawler3->each( function( Crawler $node ) use ($selector_crawler3)
-                            // {
-                            //     foreach ( $selector_crawler3 as $key => $value ) {
                                     if(count($crawler3->filter( '#report_view > div > ul > li:nth-child(4)' ))){
                                         $active = trim( preg_replace( '/[^0-9]/', '', $crawler3->filter('#report_view > div > ul > li:nth-child(4)' )->text() ) );
                                     }else{
                                         $active = 0;
                                         // throw new \Exception($value.'要素が存在しません。');
                                     }
-                            //     } //$selector_crawler3 as $key => $value
-                            //     return $active;
-                            // } );
                             
                             $count_data = $active;
                             $afb_data[ 0 ][ 'active' ]      = $count_data;
                             $afb_data[ 0 ][ 'partnership' ] = $partnership;
 
                             $afb_site    = array( );
-                            //echo $count_data;
+                            \Log::info('AFBアクティブ数:'.$count_data);
                             if($count_data > 0){ //throw new \Exception('アクティブパートナーが存在しませんでした。'); }
                             
                                 for ( $i = 1; $count_data >= $i; $i++ ) {
+                                    \Log::info('AFBループ数:'.$i);
                                     $afb_site[ $i ][ 'product' ] = $product_info->id;
                                     $afb_site[ $i ][ 'asp' ]   = $product_info->asp_id;
 
