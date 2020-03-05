@@ -242,13 +242,13 @@
           <div class="panel panel-default">
             <div class="panel-heading">
               想定値
-                <button class="btn btn-success btn-md pull-right">
+                <!-- <button class="btn btn-success btn-md pull-right">
                 <i class='fas fa-file-download'></i>
-                <a href="{{ url('admin/csv_monthly_estimate/'.( old('product'))? old('product') :  3 ) }}">
+                <a href="{{ url('admin/csv_monthly_estimate/'.$product_base ) }}">
 
                     CSV
                   </a>
-                </button>
+                </button> -->
             </div>
           <div class="panel-body table-responsive">
           <table class="table table-striped table-bordered table-hover " cellspacing="0" width="100%">

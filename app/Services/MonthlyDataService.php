@@ -22,7 +22,7 @@ class MonthlyDataService
     public function showList($id,$month): array
     {
         //消化率
-        $ratio = (date("d")/date("t"));
+        $ratio = (date("d", strtotime('-1 day'))/date("t"));
         //今月
         if( $month == date("Y-m")){
             //昨日時点の月次データ取得のため
