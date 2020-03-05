@@ -139,7 +139,7 @@ class PrescoController extends DailyCrawlerController
                                         $data[ $key ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $value )->text() ) );
                                     }else{
                                         $data[ $key ] = 0;
-                                        throw new \Exception($value.'要素が存在しません。');
+                                        // throw new \Exception($value.'要素が存在しません。');
                                     }
                                 } //$selector1 as $key => $value
                                 return $data;
@@ -163,7 +163,7 @@ class PrescoController extends DailyCrawlerController
                                 // throw new \Exception('提携数の要素が存在しません。');
                             }
 
-                            var_dump( $presco_data );
+                            // var_dump( $presco_data );
                             \Log::info($presco_data);
                             /*
                             サイト抽出　
