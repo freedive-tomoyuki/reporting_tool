@@ -219,7 +219,7 @@
                         <td>合計</td>
                         <td> -- </td>
                         <td>{{ number_format($products_totals[0]['total_imp']) }}</td>
-                        <td>{!! calc_percent($products_totals[0]['total_cv'], $products_totals[0]['total_imp']) !!}</td>
+                        <td>{!! calc_percent($products_totals[0]['total_click'], $products_totals[0]['total_imp']) !!}</td>
                         <td>{{ number_format($products_totals[0]['total_click']) }}</td>
                         <td>{!! calc_percent($products_totals[0]['total_cv'], $products_totals[0]['total_click']) !!}</td>
                         <td>{{ number_format($products_totals[0]['total_cv']) }}</td>
@@ -309,10 +309,10 @@
                         <td>合計</td>
                         <td> -- </td>
                         <td>{{ number_format( $t_imp ) }}</td>
-                        <td>{!! calc_percent( $t_click, $t_imp) !!</td>
+                        <td>{!! calc_percent( $t_click, $t_imp) !!}</td>
                         <td>{{ number_format( $t_click ) }}</td>
 
-                        <td>{!! calc_percent($t_cv, $t_click) !!</td>
+                        <td>{!! calc_percent($t_cv, $t_click) !!}</td>
                         <td>{{ number_format($t_cv) }}</td>
                         <td>{{ number_format($t_cost)}}</td>
                         <td>{{ number_format($t_cpa,2) }}</td>
