@@ -223,9 +223,9 @@
                         <td class="media-id-style">{{ $product->media_id }}</td>
                         <td>{{ $product->site_name }}</td>
                         <td>{{ number_format($product->imp) }}</td>
-                        <td>{{ number_format($product->ctr) }}</td>
+                        <td>{!! calc_percent($product->click , $product->imp) !!}</td>
                         <td>{{ number_format($product->click) }}</td>
-                        <td>{{ number_format($product->cvr) }}</td>
+                        <td>{!! calc_percent($product->cv , $product->click) !!}</td>
                         <td>{{ number_format($product->cv) }}</td>
                         <td>{{ number_format($product->estimate_cv)  }}</td>
                         <td>{{ number_format($product->cost) }}</td>

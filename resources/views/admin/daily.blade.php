@@ -229,9 +229,9 @@
                         <td>{{ $d->product }}</td>
                         <td>{{ $d->date }}</td>
                         <td>{{ number_format($d->imp) }}</td>
-                        <td>{{ number_format($d->ctr) }}</td>
+                        <td>{!! calc_percent($d->click , $d->imp) !!}</td>
                         <td>{{ number_format($d->click) }}</td>
-                        <td>{{ number_format($d->cvr) }}</td>
+                        <td>{!! calc_percent($d->cv , $d->click) !!}</td>
                         <td>{{ number_format($d->cv) }}</td>
                         <td>{{ number_format($d->estimate_cv)  }}</td>
                         <td>{{ number_format($d->active) }}</td>
