@@ -170,8 +170,8 @@ class AfbController extends DailyCrawlerController
                             $afb_site    = array( );
                             \Log::info('AFBアクティブ数:'.$count_data);
                             if($count_data > 0){ //throw new \Exception('アクティブパートナーが存在しませんでした。'); }
-                            
-                                for ( $i = 1; $count_data >= $i; $i++ ) {
+                                while ( $crawler3->filter( '#reportTable > tbody > tr:nth-child(' . $i . ') > td.maxw150' )->count() > 0 ) { 
+                                // for ( $i = 1; $count_data >= $i; $i++ ) {
                                     \Log::info('AFBループ数:'.$i);
                                     $afb_site[ $i ][ 'product' ] = $product_info->id;
                                     $afb_site[ $i ][ 'asp' ]   = $product_info->asp_id;
