@@ -70,18 +70,18 @@ class CrossPartnerController extends MonthlyCrawlerController
                         }
                         
                         foreach ( $product_infos as $product_info ) {
-
+                            //ログイン〜1回目のデータ取得
                             $crawler = $browser
-                            ->visit( $product_info->asp->login_url )
-                            ->keys( $product_info->asp->login_key, $product_info->login_value )
-                            ->keys( $product_info->asp->password_key, $product_info->password_value )
-                            ->click( $product_info->asp->login_selector )
-                            ->visit( $product_info->asp->lp1_url )
-                            ->visit('http://crosspartners.net/agent/clients/su/'.$product_info->asp_sponsor_id)
-                            ->visit('http://crosspartners.net/master/result_reports/index/is_monthly:1')
-                            ->visit('http://crosspartners.net/master/result_reports/ajax_paging/is_monthly:1/start:'.$start.'/end:'.$end.'/ad_id:'.$product_info->asp_product_id.'/sort:start/direction:asc?_=1564540874455')
-                            ->crawler();
-
+                                ->visit( $product_info->asp->login_url )
+                                ->keys( $product_info->asp->login_key, $product_info->login_value )
+                                ->keys( $product_info->asp->password_key, $product_info->password_value )
+                                ->click( $product_info->asp->login_selector )
+                                ->visit( $product_info->asp->lp1_url )
+                                ->visit('http://crosspartners.net/agent/clients/su/'.$product_info->asp_sponsor_id)
+                                ->visit('http://crosspartners.net/master/result_reports/index/is_monthly:1')
+                                ->visit('http://crosspartners.net/master/result_reports/ajax_paging/is_monthly:1/start:'.$start.'/end:'.$end.'/ad_id:'.$product_info->asp_product_id.'/sort:start/direction:asc?_=1564540874455')
+                                ->crawler();
+                            //セレクター設定
                             $selector_this   = array(
                                     'approval' => 'table.highlight > tbody > tr:nth-child(2) > td:nth-child(11)',
                                     'approval_price' => 'table.highlight > tbody > tr:nth-child(2) > td:nth-child(12)'
@@ -137,11 +137,12 @@ class CrossPartnerController extends MonthlyCrawlerController
                                 return $data;
                             } );
 
-                            /*
-                            $crawler サイト用　をフィルタリング
-                            */
+                            //$crawler サイト用　をフィルタリング
                             $count      = 0;
                             
+                            //1回目で今月のデータ2回目のループで先月のデータを取得する。
+                            //→０：今月分のデータ取得　１：先月のデータ取得
+                            //一回のループで昨日付の承認件数・金額と先月末の承認件数・金額を取得する
                             for ( $i = 0; $i < 2; $i++ ) {
                                 $iPlus       = 1;
 
@@ -220,10 +221,6 @@ class CrossPartnerController extends MonthlyCrawlerController
                                 
                             }
 
-                        /* echo "<pre>";
-                            var_dump($crosspartner_data);
-                            var_dump($crosspartner_site);
-                            echo "</pre>";*/
                             /*
                             サイトデータ・日次データ保存
                             */

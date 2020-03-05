@@ -63,7 +63,6 @@ class MoshimoController extends DailyCrawlerController
         　引数
         　　$product_id:案件ID
         */
-        var_dump($products);
         foreach($products as $p ){
             
             $product_id = $p['id'];
@@ -88,9 +87,7 @@ class MoshimoController extends DailyCrawlerController
                         
                         foreach ( $product_infos as $product_info ) {
                             // /var_dump($product_info->asp);
-                            /*
-                            クロール：ログイン＝＞[日別売上検索]より検索
-                            */
+                            //クロール：ログイン＝＞[日別売上検索]より検索
                             
                             \Log::info($product_info->asp_product_id);
                             \Log::info($s_date);
@@ -101,8 +98,6 @@ class MoshimoController extends DailyCrawlerController
                                                 ->click( $product_info->asp->login_selector )
                                                 ->visit( "https://secure.moshimo.com/af/merchant/index" )
                                                 ->crawler();
-                            //echo $crawler->html();
-                            echo "クロールクリア";
         
                             $partner_url = "https://secure.moshimo.com/af/merchant/affiliate/search?apply_status=2&promotion_id=" . $product_info->asp_product_id;
                             $crawler2 = $browser->visit( $partner_url )->crawler();
@@ -111,28 +106,19 @@ class MoshimoController extends DailyCrawlerController
                             if(count($crawler2->filter( $selector ))){
                                 $site_count_source = trim( $crawler2->filter( $selector )->text() ) ;
 
-                                var_dump($site_count_source); 
                                 preg_match( '/\d+件中/', $site_count_source, $partnership_count_source_array );
-                                echo "提携数（";
-                                var_dump($partnership_count_source_array);
-                                echo ')';
+
                                 $moshimo_data[0]['partnership'] =  preg_replace( '/[^0-9]/', '', $partnership_count_source_array[ 0 ]);
-                                echo "提携数（";
-                                var_dump($moshimo_data[0]['partnership']);
-                                echo ')';
                             }else{
                                 throw new \Exception($value.'要素が存在しません。');
                             }
                             
                             
-                            /*
-                            *　１〜昨日付データ＋サイト抽出　
-                            */
+                            //１〜昨日付データ＋サイト抽出　
                             $i =  1;
                             $url = "https://secure.moshimo.com/af/merchant/report/kpi/site?promotion_id=" . $product_info->asp_product_id . "&from_date=" . $s_date . "&to_date=" . $e_date ;
                             $crawler = $browser->visit( $url )->crawler();
                             
-                            var_dump($crawler );
                             $moshimo_data[0][ 'asp' ]     = $product_info->asp_id;
                             $moshimo_data[0][ 'product' ] = $product_info->id;
                             $moshimo_data[0][ 'date' ]       = date( 'Y-m-d', strtotime( '-1 day' ) );
@@ -141,12 +127,9 @@ class MoshimoController extends DailyCrawlerController
                             $moshimo_data[0][ 'cv' ]    = 0;
                             $moshimo_data[0][ 'price' ] = 0;
 
-                            echo "２クロールクリア";
-
                             // サイト一覧の「合計」以外の前列を1列目から最終列まで一行一行スクレイピング
                             while ( $crawler->filter( '#report > div.result > table > tbody > tr:nth-child('.$i.') > td.value-name > div > p:nth-child(1) > a' )->count() > 0 ) {
                                 //echo $i;
-                                echo "ループクロール中(".$i.")";
                                 
                                 $moshimo_site[ $i ][ 'product' ] = $product_info->id;
                                 $moshimo_site[ $i ][ 'asp' ]   = $product_info->asp_id;
@@ -162,7 +145,6 @@ class MoshimoController extends DailyCrawlerController
                                 );
                                 
                                 foreach ( $selector_for_site as $key => $value ) {
-                                    echo "Filterループクロール中(".$key.")";
 
                                     if(count($crawler->filter( $value ))){
                                         if ( $key == 'site_name' ) {
@@ -170,9 +152,7 @@ class MoshimoController extends DailyCrawlerController
                                         }elseif($key == 'media_id' ){
                                             $member_id_array = array( );
                                             $member_id =  trim( $crawler->filter( $value )->text()) ;
-                                            echo "メディアID";
                                             preg_match( '/(\d+)/', $member_id, $member_id_array );
-                                            var_dump($member_id_array);
                                             $moshimo_site[$i][$key] = $member_id_array[ 1 ];
                                         }
                                         
@@ -194,7 +174,6 @@ class MoshimoController extends DailyCrawlerController
                                         throw new \Exception($value.'要素が存在しません。');
                                     }
                                 }
-                                echo "Filterループクロール済";
                                 $calculated                       = json_decode( 
                                                                         json_encode( 
                                                                             json_decode( 
@@ -209,13 +188,9 @@ class MoshimoController extends DailyCrawlerController
                                 $i++;
                                 
                             }
-                            //var_dump($affitown_site);
-                            
                             // $moshimo_data[ 0 ][ 'partnership' ] = $site_count;
-                            $moshimo_data[ 0 ][ 'active' ] = $i; //一覧をクロールした行数をサイト数としてカウント
-                            // var_dump( $moshimo_data );
-
-
+                            //一覧をクロールした行数をサイト数としてカウント
+                            $moshimo_data[ 0 ][ 'active' ] = $i; 
                             
                             $calculated                      = json_decode( 
                                                                     json_encode( 
@@ -228,13 +203,12 @@ class MoshimoController extends DailyCrawlerController
 
 
                             //echo "<pre>";
-                            var_dump( $moshimo_data );
-                            var_dump( $moshimo_site );
+                            // var_dump( $moshimo_data );
+                            // var_dump( $moshimo_site );
                             //echo "</pre>";
 
-                            /*
-                            サイトデータ・日次データ保存
-                            // */
+                            //サイトデータ・日次データ保存
+                            
                             $this->dailySearchService->save_site( json_encode( $moshimo_site ) );
                             $this->dailySearchService->save_daily( json_encode( $moshimo_data ) );
                             

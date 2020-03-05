@@ -71,13 +71,13 @@ class ValuecommerceController extends DailyCrawlerController
                         }
                         
                         foreach ( $product_infos as $product_info ) {
-                            
+                            //ログイン
                             $crawler = $browser->visit( $product_info->asp->login_url )
                                                 ->type( $product_info->asp->login_key, $product_info->login_value )
                                                 ->type( $product_info->asp->password_key, $product_info->password_value )
                                                 ->click( $product_info->asp->login_selector )
                                                 ->visit('https://mer.valuecommerce.ne.jp/switch/'.$product_info->asp_sponsor_id.'/')->crawler();
-                                                
+                            //1回目のデータ取得   
                             $crawler = $browser->visit( 'https://mer.valuecommerce.ne.jp/report/network_statistics' )
                                                 ->type( '#condition_fromDate', '2020/03/01')
                                                 ->type( '#condition_toDate', '2020/03/03' )
@@ -91,13 +91,8 @@ class ValuecommerceController extends DailyCrawlerController
                                     'partnership' => '#report > tbody > tr:last-child > td:nth-child(2)',
                                     // 'price'     => $product_info->asp->daily_price_selector,
                                 );
-                                \Log::info($s_date);
-                                \Log::info($e_date);
-                                // \Log::info($crawler->html());
-                            var_dump($crawler->html());
-                            // echo "point1";
-                            // if(date( 'Y/m/d' ) == date( 'Y/m/01' )){
 
+                            // if(date( 'Y/m/d' ) == date( 'Y/m/01' )){
                             //     $crawler->visit( $product_info->asp->lp1_url )->crawler();
 
                             //     $selector_crawler = array(
@@ -125,7 +120,6 @@ class ValuecommerceController extends DailyCrawlerController
                             // }
                             
                             
-                            echo "point2";
                             $valuecommerce_data = $crawler->each( function( Crawler $node ) use ($selector_crawler, $product_info)
                             {
                                 $data = array( );
@@ -138,7 +132,7 @@ class ValuecommerceController extends DailyCrawlerController
                                     $data[ $key ] = array( );
                                     if(count($node->filter( $value ))){
                                         if($key == 'cv'){
-                                            \Log::info("x" .trim( $node->filter( $value )->text()));
+                                            // \Log::info("x" .trim( $node->filter( $value )->text()));
                                             // \Log::info("y" .trim( $node->filter( $value )->text()));
                                             preg_match( '/\d+\(/', trim( $node->filter( $value )->text()) , $cv_array );
                                             $data[ $key ] =  preg_replace( '/[^0-9]/', '', $cv_array[ 0 ]);
@@ -151,24 +145,6 @@ class ValuecommerceController extends DailyCrawlerController
                                         // throw new \Exception($value.'要素が存在しません。');
                                     }
                                 } 
-                                //$selector_crawler as $key => $value
-                                //$data['cpa']= $this->cpa($data['cv'] ,$data['price'] , 1);
-                                
-                                //承認された金額しか抽出できないため、0円
-                                // $unit_price = $product_info->price;
-                                // $data[ 'price' ] = $data[ 'cv' ] * $unit_price;
-                                echo "point3";
-                                //CPAとASPフィー込みの価格を計算
-                                // $calculated = json_decode( 
-                                //             json_encode( 
-                                //                 json_decode( 
-                                //                     $this->dailySearchService
-                                //                         ->cpa( $data[ 'cv' ], $data[ 'price' ], 3 ) 
-                                //                 ) 
-                                //             ), True );
-                                
-                                // $data[ 'cpa' ]     = $calculated[ 'cpa' ]; //CPA
-                                // $data[ 'cost' ]    = $calculated[ 'cost' ]; //獲得単価
 
                                 return $data;
                             } );
@@ -184,8 +160,6 @@ class ValuecommerceController extends DailyCrawlerController
                             $valuecommerce_data[0][ 'cpa' ]  = $calculated[ 'cpa' ]; //CPA
                             $valuecommerce_data[0][ 'cost' ] = $calculated[ 'cost' ]; //獲得単価
 
-                            //$crawler->closeAll();
-                            echo "point4";
                             $c_url = 'https://mer.valuecommerce.ne.jp/affiliate_analysis/';
                             //?condition%5BfromYear%5D=' . $s_year . '&condition%5BfromMonth%5D=' . $s_month . '&condition%5BtoYear%5D=' . $s_year . '&condition%5BtoMonth%5D=' . $s_month . '&condition%5BactiveFlag%5D=Y&allPage=1&notOmksPage=1&omksPage=1&pageType=all&page=1';
                             
@@ -198,9 +172,8 @@ class ValuecommerceController extends DailyCrawlerController
                                     ->select( '#condition_toMonth', $s_month )
                                     ->click( '#show_statistics' )
                                     ->crawler();
-                                    var_dump($crawler_for_site->html()); 
+                                    
                             $count_selector = "#cusomize_wrap > span";
-                            echo "point5";
                             if(count($crawler_for_site->filter( $count_selector ))){
                                 $active         = explode( "/", $crawler_for_site->filter( $count_selector )->text() );
                             }else{
@@ -216,14 +189,9 @@ class ValuecommerceController extends DailyCrawlerController
                             
                             //echo "active件数→".$active[1]."←active件数";
                             
-                            echo "point6";
                             for ( $page = 0; $page < $count_page; $page++ ) {
                                 
                                 $target_page = (int)$page + 1;
-                                echo $s_year ;
-                                echo $s_month ;
-                                echo $s_year ;
-                                echo $s_month ;
 
                                 $crawler_for_site = $browser//->visit( 'https://mer.valuecommerce.ne.jp/affiliate_analysis/?condition%5BfromYear%5D=' . $s_year . '&condition%5BfromMonth%5D=' . $s_month . '&condition%5BtoYear%5D=' . $s_year . '&condition%5BtoMonth%5D=' . $s_month . '&condition%5BactiveFlag%5D=Y&allPage=1&notOmksPage=1&omksPage=1&pageType=all&page=' . $target_page )->crawler();
                                                         ->visit( $c_url )
@@ -236,11 +204,8 @@ class ValuecommerceController extends DailyCrawlerController
                                                         ->crawler();
                                 //最終ページのみ件数でカウント
                                 $crawler_count = ( $target_page == $count_page ) ? (int)$active[ 1 ] - ( (int)$page * 40 ) : 40;
-                                echo 'カウント';
-                                echo $crawler_count;
                                 //echo $target_page."ページ目のcrawler_count＞＞".$crawler_count."</br>" ;
                                 
-                                echo "point7";
                                 if($crawler_count > 0){
                                         for ( $i = 1; $i <= $crawler_count; $i++ ) {
                                             
@@ -260,7 +225,7 @@ class ValuecommerceController extends DailyCrawlerController
                                                     'cv'        => '#all > div.tablerline > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(19)',
                                                     'price'     => '#all > div.tablerline > table > tbody > tr:nth-child(' . $i . ') > td:nth-child(21)' 
                                                 );
-                                                echo "point8";
+
                                                 foreach ( $selector_for_site as $key => $value ) {
                                                     if(count($crawler_for_site->filter( $value ))){
                                                         if ( $key == 'media_id' || $key == 'site_name' ){
@@ -279,10 +244,7 @@ class ValuecommerceController extends DailyCrawlerController
                                                 
                                                 // $unit_price = $product_info->price;
                                                 // $valuecommerce_site[ $count ][ 'price' ] = $unit_price * $valuecommerce_site[ $count ][ 'cv' ];
-                                                echo "point9";
-                                                echo $valuecommerce_site[ $count ][ 'cv' ];
-                                                echo '<br>';
-                                                echo $valuecommerce_site[ $count ][ 'price' ];
+
                                                 //CPAとASPフィーの考慮した数値を算出
                                                 $calculated = json_decode(
                                                                 json_encode(
@@ -304,7 +266,6 @@ class ValuecommerceController extends DailyCrawlerController
                                 }
 
                             } 
-                            echo "point10";
                             //クロールデータの保存
                             //$client->quit();
                             $this->dailySearchService->save_daily( json_encode( $valuecommerce_data ) );

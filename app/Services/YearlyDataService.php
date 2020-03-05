@@ -12,16 +12,16 @@ use DB;
 class YearlyDataService
 {
       public function calChart($product){
-
+        //select date ,sum(case when monthlydatas.asp_id='3' then cv else 0 end) as 'Value commerce', sum(case when monthlydatas.asp_id='1' then cv else 0 end) as 'A8', sum(case when monthlydatas.asp_id='6' then cv else 0 end) as 'Felmat',SUM(cv) as "合計" ,sum(case when monthlydatas.asp_id='6' then cv else 0 end) as 'Felmat',SUM(cv) as "合計"  from `monthlydatas` inner join `products` on `monthlydatas`.`product_id` = `products`.`id` where `product_base_id` = 47 and `date` in ('2020-02-29', '2020-01-31') group by `date`
         $date = [];
         $yearly_chart = [];
 
-        $aspinfo = Product::Select('asp_id','asps.name')->join('asps','products.asp_id','=','asps.id')->where('product_base_id',$product)->get()->toArray();
+        $aspinfo = Product::Select('products.id','asp_id','asps.name')->join('asps','products.asp_id','=','asps.id')->where('product_base_id',$product)->get()->toArray();
         //var_dump($aspinfo);
         for ($i = 1 ; $i <= 12 ; $i++ ) {
             array_push($date, date('Y-m-t',strtotime('-'.$i.' month')) ); 
         }
-        //var_dump($date);
+        // var_dump($aspinfo);
         if(!empty($aspinfo)){
             $select = 'date ,';
             foreach( $aspinfo as $val){
@@ -29,7 +29,7 @@ class YearlyDataService
                 if($val !== end($aspinfo)) {
                     $select .= ', ';
                 }else{
-                    $select .= ',SUM(cv) as "合計"';
+                    $select .= ',SUM(cv) as "合計" ';
                     
                 }
             }
@@ -41,7 +41,7 @@ class YearlyDataService
             $yearly_chart->whereIn('date',$date);
             $yearly_chart->groupBy('date');
             $sql = $yearly_chart->toSql();
-            //var_dump($sql);
+            // var_dump($sql);
             $yearly_chart = $yearly_chart->get()->toArray();
             $i = 0;
         }

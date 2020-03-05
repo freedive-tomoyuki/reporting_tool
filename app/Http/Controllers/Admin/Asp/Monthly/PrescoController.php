@@ -151,20 +151,18 @@ class PrescoController extends MonthlyCrawlerController
                                 return $data;
                                 
                             } );
-                            // var_dump($presco_data);
-                            \Log::info($presco_data);
-                            // var_dump($presco_data2);
-                            // var_dump($presco_data + $presco_data2);
+
                             $presco_data[0] = $presco_data[0] + $presco_data2[0]; 
 
                             // $array_site = array( );
                             // $presco_site = array( );
-                            // $x = 0;
-                            // //1回目：今月分　2回目：先月分
-                            // \Log::info('1');
 
                             $cnt = 1;
-
+                            
+                            //1回目で今月のデータ2回目のループで先月のデータを取得する。
+                            //→０：今月分のデータ取得　１：先月のデータ取得
+                            //一回のループで昨日付の承認件数・金額と先月末の承認件数・金額を取得する
+                            
                             for ( $x = 0; $x < 2; $x++ ) {
                                 $i = 1;
                                 \Log::info('aaa'.$i);

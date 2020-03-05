@@ -44,6 +44,7 @@ class AccesstradeController extends MonthlyCrawlerController
         $products =  json_decode($this->monthlySearchService->BasetoProduct( 2, $product_base_id ),true);
         
         $client = new Client( new Chrome( $options ) );
+
         foreach($products as $p ){
             
             $product_id = $p['id'];   
@@ -57,12 +58,13 @@ class AccesstradeController extends MonthlyCrawlerController
                         foreach ( $product_infos as $product_info ) {
                             // /var_dump($product_info->asp);
                             $crawler = $browser
-                            ->visit( $product_info->asp->login_url )
-                            ->type( $product_info->asp->login_key, $product_info->login_value )
-                            ->type( $product_info->asp->password_key, $product_info->password_value )
-                            ->click( $product_info->asp->login_selector ) 
-                            //    承認ベース用のページに変更
-                            ->visit( 'https://merchant.accesstrade.net/matv3/program/report/monthly/approved.html?programId=' . $product_info->asp_product_id )->crawler();
+                                        ->visit( $product_info->asp->login_url )
+                                        ->type( $product_info->asp->login_key, $product_info->login_value )
+                                        ->type( $product_info->asp->password_key, $product_info->password_value )
+                                        ->click( $product_info->asp->login_selector ) 
+                                        // 承認ベース用のページに変更
+                                        ->visit( 'https://merchant.accesstrade.net/matv3/program/report/monthly/approved.html?programId=' . $product_info->asp_product_id )
+                                        ->crawler();
                             
                             // 今月用のデータ取得selector
                             if ( date( 'Y/m/d' ) == date( 'Y/m/01' ) ) {
@@ -80,9 +82,7 @@ class AccesstradeController extends MonthlyCrawlerController
                                 'approval' => 'body > report-page > div > div > main > ng-component > section > div > div > div > display > div > table > tbody > tr:nth-child(' . $row_before . ') > td:nth-child(4)',
                                 'approval_price' => 'body > report-page > div > div > main > ng-component > section > div > div > div > display > div > table > tbody > tr:nth-child(' . $row_before . ') > td:nth-child(7)'
                             );
-                            
-                            //var_dump( $crawler );
-                            //$crawler->each(function (Crawler $node) use ( $selector ){
+                                                        
                             //今月用のデータ取得selector
                             $accesstrade_data = $crawler->each( function( Crawler $node ) use ($selector_this, $selector_before, $product_info)
                             {
@@ -93,40 +93,43 @@ class AccesstradeController extends MonthlyCrawlerController
                                 // $unit_price = $product_info->price;
 
                                 $data[ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
-
-                                // $value = $selector_this[ 'approval' ];
                                 
                                 if(count($node->filter( $selector_this['approval'] ))){
                                     $data[ 'approval' ]   = trim( preg_replace( '/[^0-9]/', '', $node->filter( $selector_this['approval'] )->text() ) );
-                                }else{ $data[ 'approval' ] = 0; }//throw new \Exception( $selector_this[ 'approval' ].'要素が存在しません。'); }
+                                }else{ 
+                                    $data[ 'approval' ] = 0; 
+                                }//throw new \Exception( $selector_this[ 'approval' ].'要素が存在しません。'); }
                                 
                                 if(count($node->filter( $selector_this['approval_price'] ))){
                                     $data[ 'approval_price' ]   = $this->monthlySearchService->calc_approval_price(
                                                                         trim( preg_replace( '/[^0-9]/', '', $node->filter( $selector_this['approval_price'] )->text() ) ) ,2
                                                                     );
-                                }else{ $data[ 'approval_price' ] = 0; }//throw new \Exception( $selector_this[ 'approval_price' ].'要素が存在しません。'); }
+                                }else{ 
+                                    $data[ 'approval_price' ] = 0; 
+                                }//throw new \Exception( $selector_this[ 'approval_price' ].'要素が存在しません。'); }
 
                                 // $data[ 'approval_price' ] = $data[ 'approval' ] * $unit_price;
 
                                 if ( date( 'Y/m/d' ) == date( 'Y/m/01' ) ) {
                                     $data[ 'last_date' ] = date( 'Y-m-t', strtotime( '-2 month' ) );
-                                }
-                                else {
+                                }else {
                                     $data[ 'last_date' ] = date( 'Y-m-d', strtotime( 'last day of previous month' ) );
                                 }
-                                // $selector = $selector_before['approval'];
 
                                 if(count($node->filter( $selector_before['approval'] ))){
                                     $data[ 'last_approval' ] = trim( preg_replace( '/[^0-9]/', '', $node->filter( $selector_before['approval'] )->text() ) );
-                                }else{ $data[ 'last_approval' ] = 0; }//throw new \Exception( $selector_before['approval'].'要素が存在しません。'); }
-
+                                }else{ 
+                                    $data[ 'last_approval' ] = 0; 
+                                }
+                                //
                                 if(count($node->filter( $selector_before['approval_price'] ))){
                                     $data[ 'last_approval_price' ]   = $this->monthlySearchService->calc_approval_price(
                                                                         trim( preg_replace( '/[^0-9]/', '', $node->filter( $selector_this['approval_price'] )->text() ) ) ,2
                                                                     );
-                                }else{ $data[ 'last_approval_price' ] = 0; }//throw new \Exception( $selector_before[ 'approval_price' ].'要素が存在しません。'); }
+                                }else{ 
+                                    $data[ 'last_approval_price' ] = 0; 
+                                }//throw new \Exception( $selector_before[ 'approval_price' ].'要素が存在しません。'); }
 
-                                // $data[ 'last_approval_price' ] = $data[ 'last_approval' ] * $unit_price;
 
                                 return $data;
                                 
@@ -181,10 +184,8 @@ class AccesstradeController extends MonthlyCrawlerController
                                     
                                     $x++;
                                     
-                                } //$array_sites as $site
-                                
-                            } //$i = 0; $i < 2; $i++
-                            
+                                }
+                            } 
                             $this->monthlySearchService->save_site( json_encode( $accesstrade_site ) );
                             $this->monthlySearchService->save_monthly( json_encode( $accesstrade_data ) );
                         } //$product_infos as $product_info

@@ -157,7 +157,7 @@ class DailyRepository implements DailyRepositoryInterface
             $where = " where ";
             // echo $id;
             $product_list = $this->productModel->convertProduct($id);
-            var_dump($product_list);
+            // var_dump($product_list);
 
             $where .= " product_id in (";
             foreach ($product_list as $product) {
@@ -200,7 +200,6 @@ class DailyRepository implements DailyRepositoryInterface
         
         $ranking_asp = DB::select($sql);
         // var_dump($ranking_asp);
-        echo $sql;
         return json_encode($ranking_asp);
     }
     /**

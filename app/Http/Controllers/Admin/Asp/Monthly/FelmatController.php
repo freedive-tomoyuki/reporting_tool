@@ -103,14 +103,16 @@ class FelmatController extends MonthlyCrawlerController
                                     ->click('#view > div > button.btn.btn-primary.btn-sm')
                                     ->crawler();
 
-
+                                //セレクター設定
                                 $selector   = array(
                                     'approval' => '#report > div > table > tfoot > tr > th:nth-child(8)', 
                                     'approval_price' => '#report > div > table > tfoot > tr > th:nth-child(9)'
                                 );
 
 
-                                //今月・先月用のデータ取得selector
+                                //今月・先月用のデータ取得
+                                //$crawler_data[0]：今月分
+                                //$crawler_data[0]：先月分
                                 $crawler_data[$x] = $crawler->each( function( Crawler $node ) use ($selector, $product_info, $end){
                                     
                                     $data              = array( );
@@ -140,9 +142,14 @@ class FelmatController extends MonthlyCrawlerController
                             foreach ($crawler_data as $value){
                                 array_push($felmat_data , $value[0]);
                             }
+                            
                             // $crawler サイト用　をフィルタリング
                             $count           = 0;
-
+                            
+                            //1回目で今月のデータ2回目のループで先月のデータを取得する。
+                            //→０：今月分のデータ取得　１：先月のデータ取得
+                            //一回のループで昨日付の承認件数・金額と先月末の承認件数・金額を取得する
+                            
                             for ( $y = 0; $y < 2; $y++ ) {
 
                                 if ( $y == 0 ) {
@@ -172,8 +179,6 @@ class FelmatController extends MonthlyCrawlerController
 
                                 $selector ='body > div.wrapper > div.page-content.no-left-sidebar > div > div:nth-child(5) > div > div:nth-child(2) > div:nth-child(1) > div:nth-child(3) > div';
                                 
-                                //echo "アクティブ数";
-
                                 if(count($crawler->filter( $selector ))){
                                 
                                     $active = intval(trim(preg_replace('/[^0-9]/', '', mb_substr($crawler->filter($selector)->text(), 0, 7))));
@@ -182,6 +187,7 @@ class FelmatController extends MonthlyCrawlerController
                                 
                                 $page            = ceil($active / 20);
                                 $count_last_page = $active % 20;
+
                                 \Log::info($y.'active：'.$active );
 
                                 if( $active > 0 ){
@@ -193,17 +199,7 @@ class FelmatController extends MonthlyCrawlerController
                                         //最後のページ
                                         if ($i > 1) {
                                             $crawler_for_site = $browser->visit("https://www.felmat.net/advertiser/report/partnersite?pg=".$i);
-                                                \Log::info('1以降ページ数：'.$i);
-                                            // $crawler_for_site = $browser->visit("https://www.felmat.net/advertiser/report/partnersite")
-                                            //                             ->type('#search > div > div:nth-child(2) > div.col-sm-4.form-inline > div > input:nth-child(1)', $first)
-                                            //                             ->type('#search > div > div:nth-child(2) > div.col-sm-4.form-inline > div > input:nth-child(3)', $end)
-                                            //                             ->click('#sel_promotion_id_chosen')
-                                            //                             // ->click('#sel_promotion_id_chosen > div > ul > li:nth-child(2)')
-                                            //                             ->click($product_info->product_order)
-                                            //                             ->click('#view > div > button.btn.btn-primary.btn-sm');
-                                            // $p = $i + 1;
-                                            
-                                            // $crawler_for_site->click('div.wrapper > div.page-content.no-left-sidebar > div > div:nth-child(5) > div > div:nth-child(2) > div:nth-child(1) > div:nth-child(2) > div > ul > li:nth-child(' . $p . ') > a');
+                                        
                                         }else{
                                             $crawler_for_site = $browser->visit("https://www.felmat.net/advertiser/report/partnersite")
                                                                         ->type('#search > div > div:nth-child(2) > div.col-sm-4.form-inline > div > input:nth-child(1)', $first)
@@ -220,9 +216,6 @@ class FelmatController extends MonthlyCrawlerController
                                         
                                         for ($x = 1; $crawlCountPerOne >= $x; $x++) {
                                             $felmat_site[$count]['product'] = $product_info->id;
-                                            //echo "CountX:" . $x;
-                                            //$iPlus = $x ;
-                                            //echo 'iPlus'.$iPlus;
                                             
                                             $selector_for_site = array(
                                                 'site_name' => '#report > div > table > tbody > tr:nth-child(' . $x . ') > td.left',

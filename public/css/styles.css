@@ -1152,3 +1152,7 @@ p.back-link {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+.pdt-name{
+  font-size: 14px;
+}
