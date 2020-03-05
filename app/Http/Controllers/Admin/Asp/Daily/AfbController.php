@@ -149,26 +149,26 @@ class AfbController extends DailyCrawlerController
                                 return $data;
                                 
                             } );
-                                    if(count($crawler2->filter('#main > div.wrap > div.section33 > div.section_inner.positionr.positionr > table > tbody > tr:nth-child(13) > td:nth-child(2)'))){
-                                        $partnership = trim( preg_replace( '/[^0-9]/', '', $crawler2->filter( '#main > div.wrap > div.section33 > div.section_inner.positionr.positionr > table > tbody > tr:nth-child(13) > td:nth-child(2)' )->text() ) );
-                                    }else {
-                                        $partnership = 0;
-                                        // throw new \Exception($value.'要素が存在しません。');
-                                    }
-                                
-                                    if(count($crawler3->filter( '#report_view > div > ul > li:nth-child(4)' ))){
-                                        $active = trim( preg_replace( '/[^0-9]/', '', $crawler3->filter('#report_view > div > ul > li:nth-child(4)' )->text() ) );
-                                    }else{
-                                        $active = 0;
-                                        // throw new \Exception($value.'要素が存在しません。');
-                                    }
+                            if(count($crawler2->filter('#main > div.wrap > div.section33 > div.section_inner.positionr.positionr > table > tbody > tr:nth-child(13) > td:nth-child(2)'))){
+                                $partnership = trim( preg_replace( '/[^0-9]/', '', $crawler2->filter( '#main > div.wrap > div.section33 > div.section_inner.positionr.positionr > table > tbody > tr:nth-child(13) > td:nth-child(2)' )->text() ) );
+                            }else {
+                                $partnership = 0;
+                            }
+                            if(count($crawler3->filter( '#report_view > div > ul > li:nth-child(4)' ))){
+                                $active = trim( preg_replace( '/[^0-9]/', '', $crawler3->filter('#report_view > div > ul > li:nth-child(4)' )->text() ) );
+                            }else{
+                                $active = 0;
+                                // throw new \Exception($value.'要素が存在しません。');
+                            }
                             
                             $count_data = $active;
                             $afb_data[ 0 ][ 'active' ]      = $count_data;
                             $afb_data[ 0 ][ 'partnership' ] = $partnership;
-
+                            $i = 1;
                             $afb_site    = array( );
                             \Log::info('AFBアクティブ数:'.$count_data);
+                            
+
                             if($count_data > 0){ //throw new \Exception('アクティブパートナーが存在しませんでした。'); }
                                 while ( $crawler3->filter( '#reportTable > tbody > tr:nth-child(' . $i . ') > td.maxw150' )->count() > 0 ) { 
                                 // for ( $i = 1; $count_data >= $i; $i++ ) {
@@ -221,6 +221,7 @@ class AfbController extends DailyCrawlerController
                                     $afb_site[ $i ][ 'cost' ] = $calculated[ 'cost' ]; //獲得単価
                                     
                                     $afb_site[ $i ][ 'date' ] = date( 'Y-m-d', strtotime( '-1 day' ) );
+                                    $i++;
                                 }
                                 
                                 $this->dailySearchService->save_site( json_encode( $afb_site ) );
