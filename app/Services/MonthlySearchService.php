@@ -66,26 +66,21 @@ class MonthlySearchService
     */
     public function calc_approval_price($approval_price ,$asp){
       $calData = array();
-      /**
-      *  A8の場合の算出
-      */
+      //A8の場合の算出
       if( $asp == 1 ){
         $asp_fee = ($approval_price*1.1)+($approval_price*1.1*0.3);//FDグロス
         $total = $asp_fee * 1.1 * 1.2;
       }
-      /**
-      *  それ以外のASPの場合の算出
-      */
+      //それ以外のASPの場合の算出
       else{
         $total = $approval_price * 1.3;//FDグロス
       }
-      //$calData['cost'] = $total;
-
+      
       return $total;
     }
   /**
-  　承認率算出
-  */
+   * 承認率算出
+   */
     public function calc_approval_rate($product = null,$t_date = null){
 
         $before_one_months = date('Y-m-t', strtotime('last day of '.date('Y-m-01', strtotime('-1 month'))));
@@ -105,8 +100,8 @@ class MonthlySearchService
           
           $approval_rate = $approval_rate->groupby('product_id')->get()->toArray();
           //$approval_rate = json_decode(json_encode($approval_rate[0]), true);
-          echo '承認率変換前';
-          var_dump($approval_rate);
+          // echo '承認率変換前';
+          // var_dump($approval_rate);
 
           $rate = (empty($approval_rate[0]['rate']))? 0 : $approval_rate[0]['rate'];
 
@@ -115,9 +110,8 @@ class MonthlySearchService
 
     }
   /**
-  　承認率算出(サイト)
+  *　承認率算出(サイト)
   */
-
     public function calc_approval_rate_site($product_id = null, $t_date = null){
         if(date('Ym') != date('Ym',strtotime('-1 day'))){//１日のデータ取得の場合
           $monthlysites_table1 = date('Ym', strtotime('-1 day')).'_monthlysites';
@@ -205,7 +199,6 @@ class MonthlySearchService
           ]);
 
         $rate = $this->calc_approval_rate($data_array[0]['product'],$data_array[0]['date']);
-        //echo '承認率'.$rate ;
 
         DB::table('monthlydatas')
           ->where('product_id', $data_array[0]['product'])

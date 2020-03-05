@@ -47,7 +47,7 @@ class MonthlyDataService
         
         //今月の検索を行った際に、着地予想を表示
         if( $month == date("Y-m", strtotime('-1 day'))){
-            echo date("Y-m", strtotime('-1 day'));
+            // echo date("Y-m", strtotime('-1 day'));
             //当月の着地想定
             $estimates = $this->monthly_repo->getEstimate($id,$search_date ,$ratio);
             //当月の着地想定トータル

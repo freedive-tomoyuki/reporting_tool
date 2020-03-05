@@ -36,7 +36,7 @@ class YearlyController extends Controller
         $user = Auth::user();
 
         //$asps = Asp::where('killed_flag', '==', 0)->get();
-        $asps = Product::Select('asp_id', 'name')->join('asps', 'products.asp_id', '=', 'asps.id')->where('product_base_id', 3)->where('products.killed_flag', 0)->get()->toArray();
+        $asps = Product::Select('asp_id', 'name','product')->join('asps', 'products.asp_id', '=', 'asps.id')->where('product_base_id', 3)->where('products.killed_flag', 0)->get()->toArray();
         $this_month = date("Ym"); 
 
         $product_bases = ProductBase::where('killed_flag', '==' ,0 )->get();
@@ -63,7 +63,7 @@ class YearlyController extends Controller
         //$this_month = date("Ym"); 
         [$yearly_cvs,$yearly_clicks,$yearly_imps,$yearly_approvals,$yearly_cvrs,$yearly_ctrs,$yearly_cvs_asp,$yearly_clicks_asp,$yearly_imps_asp,$yearly_ctrs_asp,$yearly_cvrs_asp] = $this->yearDataService->showAllList($id);
         
-        $asps = Product::Select('asp_id', 'name')->join('asps', 'products.asp_id', '=', 'asps.id')->where('product_base_id', $id)->where('products.killed_flag', 0)->get()->toArray();
+        $asps = Product::Select('asp_id', 'name','product')->join('asps', 'products.asp_id', '=', 'asps.id')->where('product_base_id', $id)->where('products.killed_flag', 0)->get()->toArray();
         
         $yearly_chart = $this->yearDataService->calChart($id);
 

@@ -52,9 +52,7 @@ class AffiTownController extends MonthlyCrawlerController
             {
                 try{
                         $product_infos = \App\Product::all()->where( 'id', $product_id );
-                        /*
-                        日付　取得
-                        */
+                        //日付　取得
                         if ( date( 'Y/m/d' ) == date( 'Y/m/01' ) ) {
                             $start  = date( "Ym", strtotime( "-2 month" ) );
                             $end    = date( "Ym", strtotime( "-1 month" ) );
@@ -75,7 +73,7 @@ class AffiTownController extends MonthlyCrawlerController
                                         ->crawler();
                             //echo $crawler->html();
                             
-                            //先月・今月のセレクタ
+                            //セレクタ設定
                             $selector_this   = array(
                                 'approval' => '#all_display > table > tbody > tr:nth-child(2) > td:nth-child(5)',
                                 'approval_price' => '#all_display > table > tbody > tr.bg_gray > td:nth-child(6)' 
@@ -85,6 +83,7 @@ class AffiTownController extends MonthlyCrawlerController
                                 'approval_price' => '#all_display > table > tbody > tr:nth-child(1) > td:nth-child(6)' 
                             );
                             //Selectorから承認件数・承認金額を取得
+
                             //先月と今月分
                             $affitown_data = $crawler->each( function( Crawler $node ) use ($selector_this, $selector_before, $product_info)
                             {
@@ -128,10 +127,12 @@ class AffiTownController extends MonthlyCrawlerController
                                 
                             } );
                             
-                            // $x = 0：今月
-                            // $x = 1：先月
-                            
+
                             $active_count = 0;
+                            
+                            //1回目で今月のデータ2回目のループで先月のデータを取得する。
+                            //→０：今月分のデータ取得　１：先月のデータ取得
+                            //一回のループで昨日付の承認件数・金額と先月末の承認件数・金額を取得する
                             
                             for ( $x = 0; $x < 2; $x++ ) {
                                 

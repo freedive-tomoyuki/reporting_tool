@@ -60,7 +60,6 @@ class DailySiteController extends Controller
 
         $products =  $this->dailySiteDataService->showSiteList( $selected_asp, 3 , $start, $end, $selected_site_name);
         $site_ranking = $this->dailySiteDataService->dailyRankingSite( $selected_asp , 3 , $start, $end );
-        //var_dump($products);
         
         //VIEWを表示する。
         // if( !isset($products) ){

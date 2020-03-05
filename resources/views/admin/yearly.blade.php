@@ -197,7 +197,6 @@
         @if(!empty($asps))
         @foreach($asps as $asp)
         <?php $key = $asp["asp_id"];?>
-
           @if(isset( $yearly_imps_asp[$key] )
             && isset( $yearly_clicks_asp[$key] )
             && isset( $yearly_ctrs_asp[$key] )
@@ -206,7 +205,7 @@
         
           <div class="panel panel-success ">
                 <div class="panel-heading">
-                  <p>{{ $asp["name"] }}</p>
+                  <p>{{ $asp["name"] }}<span class="pdt-name">（{{ $asp["product"] }}）</span></p>
                   
                 </div>
                 <div class="panel-body table-responsive">

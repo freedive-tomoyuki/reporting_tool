@@ -30,14 +30,8 @@ class DailyDataService
              * @return array
              */
             public function showList($asp_id, $id, $start, $end ): array
-            {//$asp_id , $id, $start , $end 
-                // echo "aa";
-                // echo "(1)".$asp_id;//end
-                // echo "(2)".$id;//asp
-                // echo "(3)".$start;//id
-                // echo "(4)".$end;//start
-                //日次データ一覧取得
-                // asp , id ,  start , end
+            {
+               //日次データ一覧取得
                 $daily_data = $this->daily_repo->getList($asp_id, $id, $start, $end );
 
                 $total = $this->daily_repo->getTotal($asp_id, $id, $start, $end );

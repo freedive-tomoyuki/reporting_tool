@@ -42,7 +42,6 @@ class AFRoController extends DailyCrawlerController
         
         //案件の大本IDからASP別のプロダクトIDを取得
         $product_id = $this->BasetoProduct( 11, $product_base_id );
-        var_dump($product_id);
         // Chromeドライバーのインスタンス呼び出し
         $client = new Client( new Chrome( $options ) );
         
@@ -51,7 +50,6 @@ class AFRoController extends DailyCrawlerController
         {
             
             $product_infos = \App\Product::all()->where( 'id', $product_id );
-	        var_dump($product_infos);
 
             //クロール実行が1日のとき
             if ( date( 'Y/m/d' ) == date( 'Y/m/01' ) ) {

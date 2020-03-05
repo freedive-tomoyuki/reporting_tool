@@ -57,17 +57,35 @@ class MoshimoController extends MonthlyCrawlerController
 
                         foreach ( $product_infos as $product_info ) {
                             // $crawler サイト用　をフィルタリング
-                            
                             $count           = 0;
-                            //０：今月分のデータ取得　１：先月のデータ取得
+                            //初期値＋固定値設置（月次データ）
+                            $moshimo_data[0][ 'asp' ]     = $product_info->asp_id;
+                            $moshimo_data[0][ 'product' ] = $product_info->id;
+                            $moshimo_data[0][ 'date' ]       = date( 'Y/m/d', strtotime( '-1 day' ) );
+                            $moshimo_data[0][ 'approval' ]   = 0;
+                            $moshimo_data[0][ 'approval_price' ] = 0;
+                            $moshimo_data[0][ 'last_approval' ]    = 0;
+                            $moshimo_data[0][ 'last_approval_price' ] = 0;
                             
+                            if ( date( 'Y/m/d' ) == date( 'Y/m/01' ) ) {
+                                $moshimo_data[0][ 'last_date' ] = date( 'Y/m/t', strtotime( '-2 month' ) );
+                            }                            
+                            else {
+                                $moshimo_data[0][ 'last_date' ] = date( 'Y/m/d', strtotime( 'last day of previous month' ) );
+                            }
+                            //1回目で今月のデータ2回目のループで先月のデータを取得する。
+                            //→０：今月分のデータ取得　１：先月のデータ取得
+                            //一回のループで昨日付の承認件数・金額と先月末の承認件数・金額を取得する
                             for ( $y = 0; $y < 2; $y++ ) {
-                                //検索用の日付取得
+                                //検索用の日付を設定
+                                //今月分のデータ取得
                                 if ( $y == 0 ) {
                                     $s_date = date( 'Y/m/01', strtotime( '-1 day' ) );
                                     $e_date = date( 'Y/m/d', strtotime( '-1 day' ) );
                                 } 
+                                //先月のデータ取得
                                 else {
+                                //1日の場合先々月のデータ
                                     if ( date( 'Y/m/d' ) == date( 'Y/m/01' ) ) {
                                         $s_date = date( 'Y/m/01', strtotime( '-2 month' ) );
                                         $e_date = date( 'Y/m/t', strtotime( '-2 month' ) );
@@ -79,42 +97,25 @@ class MoshimoController extends MonthlyCrawlerController
                                 }
                                 //スクレイピング実施
                                 $i =  1; //行番号
+                                
                                 $url = "https://secure.moshimo.com/af/merchant/report/kpi/site?promotion_id=" . $product_info->asp_product_id . "&from_date=" . $s_date . "&to_date=" . $e_date ;
+                                //ログイン〜1回目のデータ取得
                                 $crawler = $browser->visit( $product_info->asp->login_url )
-                                            ->type( $product_info->asp->login_key, $product_info->login_value )
-                                            ->type( $product_info->asp->password_key, $product_info->password_value )
-                                            ->click( $product_info->asp->login_selector )
-                                            ->visit( $url )->crawler();
-                                echo "検索クロールクリア";
+                                                    ->type( $product_info->asp->login_key, $product_info->login_value )
+                                                    ->type( $product_info->asp->password_key, $product_info->password_value )
+                                                    ->click( $product_info->asp->login_selector )
+                                                    ->visit( $url )
+                                                    ->crawler();
 
-                                //初期値＋固定値設置（月次データ）
-                                $moshimo_data[0][ 'asp' ]     = $product_info->asp_id;
-                                $moshimo_data[0][ 'product' ] = $product_info->id;
-                                $moshimo_data[0][ 'date' ]       = date( 'Y/m/d', strtotime( '-1 day' ) );
-                                $moshimo_data[0][ 'approval' ]   = 0;
-                                $moshimo_data[0][ 'approval_price' ] = 0;
-                                $moshimo_data[0][ 'last_approval' ]    = 0;
-                                $moshimo_data[0][ 'last_approval_price' ] = 0;
 
-                                echo '<pre>';
-                                echo $url ;
-                                var_dump( $crawler);
-                                echo '</pre>';
-
-                                if ( date( 'Y/m/d' ) == date( 'Y/m/01' ) ) {
-                                    $moshimo_data[0][ 'last_date' ] = date( 'Y/m/t', strtotime( '-2 month' ) );
-                                }
-                                else {
-                                    $moshimo_data[0][ 'last_date' ] = date( 'Y/m/d', strtotime( 'last day of previous month' ) );
-                                }
 
                                 //切り口：サイト別の表をスクレイピング
                                 while ( $crawler->filter( '#report > div.result > table > tbody > tr:nth-child('.$i.') > td.value-approve > div > p:nth-child(1)' )->count() > 0 ) {
-                                    //echo $i;
-                                    echo "ループクロール中(".$i.")";
+
                                     
                                     $moshimo_site[ $count ][ 'product' ] = $product_info->id;
                                     $moshimo_site[ $count ][ 'asp' ]   = $product_info->asp_id;
+
                                     if ( $y == 0 ) {
                                         $moshimo_site[ $count ][ 'date' ] = date( 'Y/m/d', strtotime( '-1 day' ) );
                                     }
@@ -126,6 +127,7 @@ class MoshimoController extends MonthlyCrawlerController
                                             $moshimo_site[ $count ][ 'date' ] = date( 'Y/m/d', strtotime( 'last day of previous month' ) );
                                         }
                                     }
+                                    //セレクター設定
                                     $selector   = array(
                                         'approval'          => '#report > div.result > table > tbody > tr:nth-child('.$i.') > td.value-approve > div > p:nth-child(1)', 
                                         'approval_price'    => '#report > div.result > table > tbody > tr:nth-child('.$i.') > td.value-approve > div > p:nth-child(2)',
@@ -134,17 +136,14 @@ class MoshimoController extends MonthlyCrawlerController
                                     );
 
                                     foreach ( $selector as $key => $value ) {
-                                        echo "Filterループクロール中(".$key.")";
-        
+
                                         if(count($crawler->filter( $value ))){
                                             if ( $key == 'site_name' ) {
                                                 $moshimo_site[ $count ][ $key ] = trim( $crawler->filter( $value )->text() );
                                             }elseif($key == 'media_id' ){
                                                 $member_id_array = array( );
                                                 $member_id =  trim( $crawler->filter( $value )->text()) ;
-                                                echo "メディアID";
                                                 preg_match( '/(\d+)/', $member_id, $member_id_array );
-                                                var_dump($member_id_array);
                                                 $moshimo_site[$count][$key] = $member_id_array[ 1 ];
 
                                             }elseif($key == 'approval_price'){
@@ -176,10 +175,10 @@ class MoshimoController extends MonthlyCrawlerController
                                     $count++;
                                 }
                             }
-                            echo "<pre>";
-                            var_dump($moshimo_data);
-                            var_dump($moshimo_site);
-                            echo "</pre>";
+                            // echo "<pre>";
+                            // var_dump($moshimo_data);
+                            // var_dump($moshimo_site);
+                            // echo "</pre>";
                             /*
                             サイトデータ・日次データ保存
                             */

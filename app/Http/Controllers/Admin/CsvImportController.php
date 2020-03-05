@@ -160,8 +160,6 @@ class CsvImportController extends Controller
 	public function store_daily(CsvImportFormRequest $request)
 	{
 		$products = Product::all();
-		
-		
 
 	    // setlocaleを設定
 	    setlocale(LC_ALL, 'ja_JP.UTF-8');
@@ -383,8 +381,6 @@ class CsvImportController extends Controller
 				//承認率
 					//$d['approval_rate'] = ($d['cv'] == 0 || $d['approval'] == 0 )? 0 : ( $d['approval'] / $d['cv'] )* 100;
 					$d['approval_rate'] = ($tree_month_cv == 0 || $tree_month_approval == 0 )? 0 : ( $tree_month_approval / $tree_month_cv )* 100;
-					//echo "approval_rate=".$d['approval_rate'];
-					//echo "</pre>";
 
 					$date = DB::table('monthlydatas')
 				    ->updateOrInsert(
@@ -417,11 +413,6 @@ class CsvImportController extends Controller
 				    );
 			}
 
-			//日次データ
-			/*DailyDiff::insert(
-	            $array
-	        );
-	        */
 	    } else {
         
 	        //追加した配列が500以上なら、array_chunkで500ずつ分割する
@@ -434,13 +425,8 @@ class CsvImportController extends Controller
         	//分割した数の分だけインポートを繰り替えす
 	        for ($i = 0; $i <= $array_partial_count - 1; $i++){
 	            //CSVimport::insert($array_partial[$i]);
-	            /*echo "<pre>";
-	            var_dump($array_partial[$i]);
-	            echo "</pre>";*/
 				foreach( $array_partial[$i] as $d ){
-	            /*echo "<pre>D";
-	            var_dump($d);
-	            echo "</pre>";*/
+
 				//CVR
 					$d['cvr'] = ($d['click'] == 0 || $d['cv'] == 0 )? 0 : ($d['cv'] / $d['click']) * 100 ;
 
@@ -455,10 +441,6 @@ class CsvImportController extends Controller
 				        ['imp' => $d['imp'],'click' => $d['click'],'cv' => $d['cv'],'active' => $d['active'],'partnership' => $d['partnership'],'cost' => $d['cost'],'price' => $d['price'],'cvr' => $d['cvr'],'ctr' => $d['ctr'],'cpa' => $d['cpa'], 'created_at' =>  \Carbon\Carbon::now(),'updated_at' => \Carbon\Carbon::now()]
 					    );
 				}
-				//日毎の成果
-				/*DailyDiff::insert(
-	                $array_partial[$i]
-	            );*/
 			
 	        }
 	        
@@ -568,10 +550,7 @@ class CsvImportController extends Controller
 	    
 		}
 		//return redirect('admin/csv/import', 303);
-/*	    echo "test";
-	    echo "<pre>";
-	    var_dump($array);
-	    echo "</pre>";*/
+
 		\Log::debug("完了１");
 		$monthlysites_table = $month.'_monthlysites';
 	    //追加した配列の数を数える

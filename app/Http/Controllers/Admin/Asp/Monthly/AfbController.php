@@ -19,6 +19,10 @@ use App\Schedule;
 use App\Mail\Alert;
 use Mail;
 use DB;
+/**
+ * 
+ */
+
 
 class AfbController extends MonthlyCrawlerController
 {
@@ -40,30 +44,23 @@ class AfbController extends MonthlyCrawlerController
         '--disable-gpu',
         '--no-sandbox'
         ];
-        /*
-        案件の大本IDからASP別のプロダクトIDを取得
-        */
+        //案件の大本IDからASP別のプロダクトIDを取得
         $products =  json_decode($this->monthlySearchService->BasetoProduct( 4, $product_base_id ),true);
-        /*
-        Chromeドライバーのインスタンス呼び出し
-        */
+        //Chromeドライバーのインスタンス呼び出し
         $client     = new Client( new Chrome( $options ) );
         foreach($products as $p ){
             
             $product_id = $p['id'];
             $product_name = $p['product'];  
-            /*
-            Chromeドライバー実行
-            　引数
-            　　$product_id:案件ID
-            */
+            
+            //Chromeドライバー実行
             $client->browse( function( Browser $browser ) use (&$crawler, $product_id, $product_name)
             {
                 try{
+                        //広告主IDから
                         $product_infos = \App\Product::all()->where( 'id', $product_id );
-                        /*
-                        日付　取得
-                        */
+                        
+                        //日付　取得
                         //X月1日集計のとき、開始＝前月1日、終了＝前月末日
                         if ( date( 'Y/m/d' ) == date( 'Y/m/01' ) ) {
                             $start = date( "m", strtotime( "-2 month" ) );
@@ -76,7 +73,7 @@ class AfbController extends MonthlyCrawlerController
                         
                         foreach ( $product_infos as $product_info ) {
                             //実装：ログイン
-                            $crawler         = $browser->visit( "https://www.afi-b.com/" )
+                            $crawler = $browser->visit( "https://www.afi-b.com/" )
                                 ->type( $product_info->asp->login_key, $product_info->login_value )
                                 ->type( $product_info->asp->password_key, $product_info->password_value )
                                 ->click( $product_info->asp->login_selector )
@@ -90,8 +87,7 @@ class AfbController extends MonthlyCrawlerController
                                 ->click( '#report_form_1 > div > table > tbody > tr:nth-child(5) > td > p > label:nth-child(3)' )
                                 ->click( '#report_form_1 > div > div.btn_area.mt20 > ul.btn_list_01 > li > input' )
                                 ->crawler();
-                                //echo $crawler->html();
-                            //var_dump( $crawler);
+
                             //先月・今月のセレクタ
                             $selector_this   = array(
                                 'approval' => '#reportTable > tbody > tr:nth-child(2) > td:nth-child(10) > p',
@@ -178,22 +174,22 @@ class AfbController extends MonthlyCrawlerController
                                 }
                                 
                                 $crawler_for_site = $browser->visit( 'https://client.afi-b.com/client/b/cl/report/?r=site' )
-
-                                //レポート期間（今月）
-                                    ->type( '#report_form_4 > div > table > tbody > tr:nth-child(4) > td > ul > li:nth-child(1) > input', $start )
-                                    ->type( '#report_form_4 > div > table > tbody > tr:nth-child(4) > td > ul > li:nth-child(3) > input', $end )
-                                //案件選択
-                                    ->click( '#adv_id_pssite_chzn > a' )
-                                    ->click( '#adv_id_pssite_chzn_o_1' )
-                                //表示するデバイスを絞る
-                                    ->click( '#report_form_4 > div > table > tbody > tr:nth-child(6) > td > p > label:nth-child(1)' ) //表示するデバイスを絞る
-                                    ->click( '#report_form_4 > div > table > tbody > tr:nth-child(6) > td > p > label:nth-child(2)' ) //表示するデバイスを絞る
-                                    ->click( '#report_form_4 > div > table > tbody > tr:nth-child(6) > td > p > label:nth-child(3)' ) //表示するデバイスを絞る
-                                    ->click( '#report_form_4 > div > div.btn_area.mt20 > ul.btn_list_01 > li > input' )->crawler();
+                                                            //レポート期間（今月）
+                                                                ->type( '#report_form_4 > div > table > tbody > tr:nth-child(4) > td > ul > li:nth-child(1) > input', $start )
+                                                                ->type( '#report_form_4 > div > table > tbody > tr:nth-child(4) > td > ul > li:nth-child(3) > input', $end )
+                                                            //案件選択
+                                                                ->click( '#adv_id_pssite_chzn > a' )
+                                                                ->click( '#adv_id_pssite_chzn_o_1' )
+                                                            //表示するデバイスを絞る
+                                                                ->click( '#report_form_4 > div > table > tbody > tr:nth-child(6) > td > p > label:nth-child(1)' ) //表示するデバイスを絞る
+                                                                ->click( '#report_form_4 > div > table > tbody > tr:nth-child(6) > td > p > label:nth-child(2)' ) //表示するデバイスを絞る
+                                                                ->click( '#report_form_4 > div > table > tbody > tr:nth-child(6) > td > p > label:nth-child(3)' ) //表示するデバイスを絞る
+                                                                ->click( '#report_form_4 > div > div.btn_area.mt20 > ul.btn_list_01 > li > input' )->crawler();
                                 $crawler_for_site->html();
                                 
                                 //サイト一覧　１ページ分のクロール
                                 while ( $crawler_for_site->filter( '#reportTable > tbody > tr:nth-child(' . $i . ') > td.maxw150' )->count() > 0 ) {
+
                                     $afb_site[ $y ][ 'product' ] = $product_info->id;
                                     
                                     if ( $x == 0 ) {
@@ -248,14 +244,11 @@ class AfbController extends MonthlyCrawlerController
                                         }else{
                                             throw new \Exception($value.'要素が存在しません。');
                                         }
-                                    } // endforeach 
-                                    
-                                    // $afb_site[ $y ][ 'approval_price' ] = $afb_site[ $y ][ 'approval' ] * $product_info->price;
-
+                                    } 
                                     $y++;
                                     $i++;
-                                } // endfor
-                            } //$x = 0; $x < 2; $x++
+                                }
+                            }
                             
                             $this->monthlySearchService->save_monthly( json_encode( $afb_data ) );
                             $this->monthlySearchService->save_site( json_encode( $afb_site ) );
