@@ -212,14 +212,14 @@
                         <td class="media-id-style">{{ $product->media_id }}</td>
                         <td>{{ $product->site_name }}</td>
                         <td>{{ number_format($product->imp) }}</td>
-                        <td>{{ number_format($product->ctr) }}</td>
+                        <td>{!! calc_percent($product->click, $product->imp) !!}</td>
                         <td>{{ number_format($product->click) }}</td>
-                        <td>{{ number_format($product->cvr) }}</td>
+                        <td>{!! calc_percent($product->cv, $product->click) !!}</td>
                         <td>{{ number_format($product->cv) }}</td>
                         <td>{{ number_format($product->cost) }}</td>
                         <td>{{ number_format($product->approval) }}</td>
                         <td>{{ number_format($product->approval_price) }}</td>
-                        <td>{{ number_format($product->approval_rate) }}%</td>
+                        <td>{{ number_format($product->approval_rate,2) }}%</td>
                         <td><?php
                           echo $val;
                         ?></td>

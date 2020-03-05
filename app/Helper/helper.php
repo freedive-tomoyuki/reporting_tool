@@ -46,7 +46,19 @@ if (! function_exists('calc_percent')) {
         $ans = 0;
         if($x!=0 && $y!=0){
             $ans = number_format(
-                sprintf('%.2f',( $x / $y ) *100)
+                sprintf('%.2f',( $x / $y ) *100),2
+            );
+        }
+        return $ans;
+    }
+}
+if (! function_exists('calc_cpa')) {
+    function calc_cpa($x,$y)
+    {
+        $ans = 0;
+        if($x!=0 && $y!=0){
+            $ans = number_format(
+                sprintf('%.2f',( $x / $y ) ),2
             );
         }
         return $ans;
