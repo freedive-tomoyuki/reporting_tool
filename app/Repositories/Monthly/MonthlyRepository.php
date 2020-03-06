@@ -266,6 +266,10 @@ class MonthlyRepository implements MonthlyRepositoryInterface
 
     public function addData($month , $product_id , $imp, $ctr, $click, $cvr, $cv ,$cost, $price ,$asp ,$active ,$partner, $approval ,$approval_price ,$approval_rate)
     {
+
+        $ctr = ($click / $imp ) * 100;
+        $cvr = ($cv / $click ) * 100;
+
         return $this->monthlyModel->updateOrCreate(
             ['date' =>  $month , 'product_id' => $product_id ],
             [
@@ -301,11 +305,15 @@ class MonthlyRepository implements MonthlyRepositoryInterface
         foreach ($update as $p) {
             //var_dump($p) ;
             $update_monthly = $this->monthlyModel->find($p->id) ;
-            $key = hash('md5', $p->id);
+            $key = hash('md5', $p->id); 
+            
+            $ctr = ($all_post_data->click[$key] / $all_post_data->imp[$key] ) * 100;
+            $cvr = ($all_post_data->cv[$key] / $all_post_data->click[$key] ) * 100;
+            
             $update_monthly->imp = $all_post_data->imp[$key];
-            $update_monthly->ctr = $all_post_data->ctr[$key];
+            $update_monthly->ctr = $ctr;
             $update_monthly->click = $all_post_data->click[$key];
-            $update_monthly->cvr = $all_post_data->cvr[$key];
+            $update_monthly->cvr = $cvr;
             $update_monthly->cv = $all_post_data->cv[$key];
             $update_monthly->active = $all_post_data->active[$key];
             $update_monthly->partnership = $all_post_data->partner[$key];

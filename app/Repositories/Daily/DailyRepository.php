@@ -221,6 +221,9 @@ class DailyRepository implements DailyRepositoryInterface
      */
     public function addData($date , $product_id , $imp, $ctr, $click, $cvr, $cv ,$cost, $price ,$asp ,$active ,$partner)
     {
+        $ctr = ($click / $imp ) * 100;
+        $cvr = ($cv / $click ) * 100;
+        
         return $this->dailyModel->updateOrCreate(
                 ['date' => $date, 'product_id' => $product_id],
                 [
@@ -257,10 +260,14 @@ class DailyRepository implements DailyRepositoryInterface
 
                 $update_daily = $this->dailyModel->find($p->id) ;
                 $key = hash('md5', $p->id);
+
+                $ctr = ($all_post_data->click[$key] / $all_post_data->imp[$key] ) * 100;
+                $cvr = ($all_post_data->cv[$key] / $all_post_data->click[$key] ) * 100;
+
                 $update_daily->imp = $all_post_data->imp[$key];
-                $update_daily->ctr = $all_post_data->ctr[$key];
+                $update_daily->ctr = $ctr;
                 $update_daily->click = $all_post_data->click[$key];
-                $update_daily->cvr = $all_post_data->cvr[$key];
+                $update_daily->cvr = $cvr;
                 $update_daily->cv = $all_post_data->cv[$key];
                 $update_daily->active = $all_post_data->active[$key];
                 $update_daily->partnership = $all_post_data->partner[$key];

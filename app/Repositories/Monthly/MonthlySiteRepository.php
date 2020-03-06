@@ -71,6 +71,9 @@ class MonthlySiteRepository implements MonthlySiteRepositoryInterface
     {
         $month = date('Ym',strtotime($date));
         $monthly_site_table = $month.'_monthlysites';
+        
+        $ctr = ($click / $imp ) * 100;
+        $cvr = ($cv / $click ) * 100;
 
         return DB::table($monthly_site_table)
         ->updateOrInsert(
@@ -110,6 +113,9 @@ class MonthlySiteRepository implements MonthlySiteRepositoryInterface
             $key = hash('md5', $p->id);
             $killed_flag = ($all_post_data->delete[$key] == 'on')? 1 : 0 ;
 
+            $ctr = ($all_post_data->click[$key] / $all_post_data->imp[$key] ) * 100;
+            $cvr = ($all_post_data->cv[$key] / $all_post_data->click[$key] ) * 100;
+
             $monthly = DB::table($monthly_site_table)
             ->updateOrInsert(
                 [
@@ -119,9 +125,9 @@ class MonthlySiteRepository implements MonthlySiteRepositoryInterface
                     'media_id' => $all_post_data->media_id[$key] ,
                     'site_name' => $all_post_data->site_name[$key],
                     'imp' => $all_post_data->imp[$key],
-                    'ctr' => $all_post_data->ctr[$key],
+                    'ctr' => $ctr,
                     'click' => $all_post_data->click[$key],
-                    'cvr' => $all_post_data->cvr[$key],
+                    'cvr' => $cvr,
                     'cv' => $all_post_data->cv[$key],
                     'cost' => $all_post_data->cost[$key],
                     'price' => $all_post_data->price[$key],

@@ -56,9 +56,9 @@
 										<th>サイト名</th>
 										<th>メディアID</th>
 										<th>Imp</th>
-										<th>CTR</th>
+										<!-- <th>CTR</th> -->
 										<th>Click</th>
-										<th>CVR</th>
+										<!-- <th>CVR</th> -->
 										<th>Cv</th>
 										<th>ASP<br>グロス</th>
 										<th>FREEDiVE<br>グロス</th>
@@ -77,9 +77,9 @@
 											<td><input type="text" id="site_name0" name="site_name[0]" class="form-control" value="{{ old('site_name.0') }}" ></td>
 											<td><input type="text" id="media_id0" name="media_id[0]" class="form-control" value="{{ old('media_id.0') }}" ></td>
 											<td><input type="text" id="imp0" name="imp[0]" class="form-control" value="{{ old('imp.0') }}" ></td>
-											<td><input type="text" id="ctr0" name="ctr[0]" class="form-control" value="{{ old('ctr.0') }}" ></td>
+											<!-- <td><input type="text" id="ctr0" name="ctr[0]" class="form-control" value="{{ old('ctr.0') }}" ></td> -->
 											<td><input type="text" id="click0" name="click[0]" class="form-control" value="{{ old('click.0') }}" ></td>
-											<td><input type="text" id="cvr0" name="cvr[0]" class="form-control" value="{{ old('cvr.0') }}" ></td>
+											<!-- <td><input type="text" id="cvr0" name="cvr[0]" class="form-control" value="{{ old('cvr.0') }}" ></td> -->
 											<td><input type="text" id="cv0" name="cv[0]" class="form-control" value="{{ old('cv.0') }}" ></td>
 											<td><input type="text" id="cost0" name="cost[0]" class="form-control" value="{{ old('cost.0') }}" ></td>
 											<td><input type="text" id="price0" name="price[0]" class="form-control"  value="{{ old('price.0') }}"></td>
@@ -111,12 +111,13 @@
 							<table class="table table-striped table-bordered table-hover table-sm sp-wide-tabel">
 								<thead>
 									<th>日付</th>
+									<th>ASP</th>
 									<th>メディアID</th>
 									<th>サイト名</th>
 									<th>Imp</th>
-									<th>CTR</th>
+									<!-- <th>CTR</th> -->
 									<th>Click</th>
-									<th>CVR</th>
+									<!-- <th>CVR</th> -->
 									<th>Cv</th>
 									<th>ASP<br>グロス</th>
 									<th>FREEDiVE<br>グロス</th>
@@ -129,13 +130,14 @@
 										<tr>
 											@php $str = hash('md5', $s->mid) @endphp
 											<td><input type="hidden" id="date-{{ $str}}" name="date[{{ $str }}]" value="{{ $s->date }}" >{{ $s->date }}</td>
+											<td>{{ $s->id }}</td>
 											<td><input type="text" id="media_id-{{ $str}}" name="media_id[{{ $str }}]" class="form-control" value="{{ $s->media_id }}" ></td>
 											<td><input type="text" id="site_name-{{ $str}}" name="site_name[{{ $str }}]" class="form-control" value="{{ $s->site_name }}"></td>
 											
 											<td><input type="text" id="imp-{{ $str}}" name="imp[{{ $str }}]" class="form-control" value="{{ $s->imp }}" ></td>
-											<td><input type="text" id="ctr-{{ $str}}" name="ctr[{{ $str }}]" class="form-control" value="{{ $s->ctr }}"></td>
+											<!-- <td><input type="text" id="ctr-{{ $str}}" name="ctr[{{ $str }}]" class="form-control" value="{{ $s->ctr }}"></td> -->
 											<td><input type="text" id="click-{{ $str}}" name="click[{{ $str }}]" class="form-control" value="{{ $s->click }}"></td>
-											<td><input type="text" id="cvr-{{ $str}}" name="cvr[{{ $str }}]" class="form-control" value="{{ $s->cvr }}"></td>
+											<!-- <td><input type="text" id="cvr-{{ $str}}" name="cvr[{{ $str }}]" class="form-control" value="{{ $s->cvr }}"></td> -->
 											<td><input type="text" id="cv-{{ $str}}" name="cv[{{ $str }}]" class="form-control" value="{{ $s->cv }}"></td>
 											<td><input type="text" id="cost-{{ $str}}" name="cost[{{ $str }}]" class="form-control" value="{{ $s->cost }}"></td>
 											<td><input type="text" id="price-{{ $str}}" name="price[{{ $str }}]" class="form-control" value="{{ $s->price }}"></td>

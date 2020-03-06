@@ -51,9 +51,9 @@
 										<th>対象月</th>
 										<th>ASP名</th>
 										<th>Imp</th>
-										<th>CTR</th>
+										<!-- <th>CTR</th> -->
 										<th>Click</th>
-										<th>CVR</th>
+										<!-- <th>CVR</th> -->
 										<th>Cv</th>
 										<th>アクティブ数</th>
 										<th>提携数</th>
@@ -75,9 +75,9 @@
 												</select>
 											</td>
 											<td><input type="text" id="imp0" name="imp[0]" class="form-control" value="{{ old('imp.0') }}" ></td>
-											<td><input type="text" id="ctr0" name="ctr[0]" class="form-control" value="{{ old('ctr.0') }}" ></td>
+											<!-- <td><input type="text" id="ctr0" name="ctr[0]" class="form-control" value="{{ old('ctr.0') }}" ></td> -->
 											<td><input type="text" id="click0" name="click[0]" class="form-control" value="{{ old('click.0') }}" ></td>
-											<td><input type="text" id="cvr0" name="cvr[0]" class="form-control" value="{{ old('cvr.0') }}" ></td>
+											<!-- <td><input type="text" id="cvr0" name="cvr[0]" class="form-control" value="{{ old('cvr.0') }}" ></td> -->
 											<td><input type="text" id="cv0" name="cv[0]" class="form-control" value="{{ old('cv.0') }}" ></td>
 											<td><input type="text" id="active0" name="active[0]" class="form-control" value="{{ old('active.0') }}" ></td>
 											<td><input type="text" id="partner0" name="partner[0]" class="form-control" value="{{ old('partner.0') }}" ></td>
@@ -110,9 +110,9 @@
 									<th>対象月</th>
 									<th>ASP名</th>
 									<th>Imp</th>
-									<th>CTR</th>
+									<!-- <th>CTR</th> -->
 									<th>Click</th>
-									<th>CVR</th>
+									<!-- <th>CVR</th> -->
 									<th>Cv</th>
 									<th>アクティブ数</th>
 									<th>提携数</th>
@@ -131,9 +131,9 @@
 											<td>{{ date('Y年m月', strtotime($m->date)) }}</td>
 											<td>{{ $m->asp->name }}</td>
 											<td><input type="text" id="imp-{{ $str}}" name="imp[{{ $str }}]" class="form-control" value="{{ $m->imp }}" ></td>
-											<td><input type="text" id="ctr-{{ $str}}" name="ctr[{{ $str }}]" class="form-control" value="{{ $m->ctr }}"></td>
+											<!-- <td><input type="text" id="ctr-{{ $str}}" name="ctr[{{ $str }}]" class="form-control" value="{{ $m->ctr }}"></td> -->
 											<td><input type="text" id="click-{{ $str}}" name="click[{{ $str }}]" class="form-control" value="{{ $m->click }}"></td>
-											<td><input type="text" id="cvr-{{ $str}}" name="cvr[{{ $str }}]" class="form-control" value="{{ $m->cvr }}"></td>
+											<!-- <td><input type="text" id="cvr-{{ $str}}" name="cvr[{{ $str }}]" class="form-control" value="{{ $m->cvr }}"></td> -->
 											<td><input type="text" id="cv-{{ $str}}" name="cv[{{ $str }}]" class="form-control" value="{{ $m->cv }}"></td>
 											<td><input type="text" id="active-{{ $str}}" name="active[{{ $str }}]" class="form-control" value="{{ $m->active }}"></td>
 											<td><input type="text" id="partner-{{ $str}}" name="partner[{{ $str }}]" class="form-control" value="{{ $m->partnership }}"></td>

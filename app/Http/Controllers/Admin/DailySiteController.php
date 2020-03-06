@@ -150,7 +150,7 @@ class DailySiteController extends Controller
      */
     public function dailySiteAddition(DailySiteDiffRequest $request ){
         
-        $request->flash();
+        //$request->flash();
 
         $product_id = Product::where('product_base_id',$request->product[0])->where('asp_id',$request->asp[0])->get()->toArray();
         
@@ -164,7 +164,7 @@ class DailySiteController extends Controller
         $price = $request->price[0];
         $asp = $request->asp[0];
         $media_id = $request->media_id[0];
-        $site_name = $request->media_id[0];
+        $site_name = $request->site_name[0];
 
         //var_dump($product_id[0]["id"]);
         $this->dailySiteDataService->addSiteData( $date , $product_id[0]["id"] , $imp, $ctr, $click, $cvr, $cv ,$cost, $price ,$asp,$media_id,$site_name);
@@ -180,7 +180,7 @@ class DailySiteController extends Controller
 
         $this->dailySiteDataService->updateSiteData( $id , $all_post_data ); 
 
-        return redirect('admin/daily_result');
+        return redirect('admin/daily_result_site');
 
     }
 
