@@ -176,7 +176,7 @@ class ProductController extends Controller
             'product_order' => $product_order,
             'killed_flag' => '0',
         ]);
-        return redirect('/admin/product_list');
+        return redirect('/admin/product_detail/'.$id);
         
     }
 
@@ -187,25 +187,25 @@ class ProductController extends Controller
         ->update([
             'killed_flag' => '1',
         ]);
-        return redirect('/admin/product_list');
+        return redirect('/admin/product_detail/'.$product_base_id);
     }
 
     //各案件の編集画面
-    public function edit_product($asp_id,$product_base_id) {
+    // public function edit_product($asp_id,$product_base_id) {
  
-        $product_bases = ProductBase::where('killed_flag', '==' ,0 )->get();
-        $asps = Asp::where('killed_flag', '==' ,0 )->get();
-        $user = Auth::user();
+    //     $product_bases = ProductBase::where('killed_flag', '==' ,0 )->get();
+    //     $asps = Asp::where('killed_flag', '==' ,0 )->get();
+    //     $user = Auth::user();
 
-        $products = Product::where('asp_id',$asp_id)
-                            ->where('product_base_id',$product_base_id)
-                            ->get()
-                            ->toArray();
+    //     $products = Product::where('asp_id',$asp_id)
+    //                         ->where('product_base_id',$product_base_id)
+    //                         ->get()
+    //                         ->toArray();
 
-        //echo $products;
+    //     //echo $products;
         
-        return view('admin.product_edit',compact('product_bases','asps','products','user'));
-    }
+    //     return view('admin.product_edit',compact('product_bases','asps','products','user'));
+    // }
     /*
      必須項目取得
     */

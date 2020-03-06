@@ -92,6 +92,9 @@ class DailySiteRepository implements DailySiteRepositoryInterface
         $month = date('Ym',strtotime($date));
         $daily_site_diffs_table = $month.'_daily_site_diffs';
 
+        $ctr = ($click / $imp ) * 100;
+        $cvr = ($cv / $click ) * 100;
+
         return DB::table($daily_site_diffs_table)
         ->updateOrInsert(
             [
@@ -194,6 +197,9 @@ class DailySiteRepository implements DailySiteRepositoryInterface
             $key = hash('md5', $p->id);
             $killed_flag = ($all_post_data->delete[$key] == 'on')? 1 : 0 ;
 
+            $ctr = ($all_post_data->click[$key] / $all_post_data->imp[$key] ) * 100;
+            $cvr = ($all_post_data->cv[$key] / $all_post_data->click[$key] ) * 100;
+
             $daily = DB::table($daily_site_diffs_table)
             ->updateOrInsert(
                 [
@@ -204,9 +210,9 @@ class DailySiteRepository implements DailySiteRepositoryInterface
                     'media_id' => $all_post_data->media_id[$key] ,
                     'site_name' => $all_post_data->site_name[$key],
                     'imp' => $all_post_data->imp[$key],
-                    'ctr' => $all_post_data->ctr[$key],
+                    'ctr' => $ctr,
                     'click' => $all_post_data->click[$key],
-                    'cvr' => $all_post_data->cvr[$key],
+                    'cvr' => $cvr,
                     'cv' => $all_post_data->cv[$key],
                     'cost' => $all_post_data->cost[$key],
                     'price' => $all_post_data->price[$key],

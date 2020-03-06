@@ -264,7 +264,63 @@ class CsvImportController extends Controller
 	    	$row_count++;
 	    
 	    }
-		
+
+
+	    //追加した配列の数を数える
+	    $array_count = count($array);
+	    //もし配列の数が500未満なら
+	    if ($array_count < 200){
+	    	//var_dump($array);
+			foreach( $array as $d ){
+			//CVR
+				$d['cvr'] = ($d['click'] == 0 || $d['cv'] == 0 )? 0 : ($d['cv'] / $d['click']) * 100 ;
+
+			//CTR
+				$d['ctr'] =($d['click'] == 0 || $d['imp'] == 0 )? 0 : ($d['click'] / $d['imp']) * 100 ;
+
+			//CPA
+				$d['cpa'] = ($d['price'] == 0 || $d['cv'] == 0 )? 0 : $d['price'] / $d['cv'] ;
+
+				DB::table('daily_diffs')
+				    ->updateOrInsert(
+			        ['product_id' => $d['product_id'] , 'date' => $d['date'] ,'asp_id' => $d['asp_id']],
+			        ['imp' => $d['imp'],'click' => $d['click'],'cv' => $d['cv'],'active' => $d['active'],'partnership' => $d['partnership'],'cost' => $d['cost'],'price' => $d['price'],'cvr' => $d['cvr'],'ctr' => $d['ctr'], 'created_at' =>  \Carbon\Carbon::now(),'updated_at' => \Carbon\Carbon::now()]
+				    );
+			}
+
+	    } else {
+        
+	        //追加した配列が500以上なら、array_chunkで500ずつ分割する
+	        $array_partial = array_chunk($array, 200); //配列分割
+	   
+	        //分割した数を数えて
+	        $array_partial_count = count($array_partial); //配列の数
+	        $month_array = array();
+	           
+        	//分割した数の分だけインポートを繰り替えす
+	        for ($i = 0; $i <= $array_partial_count - 1; $i++){
+	            //CSVimport::insert($array_partial[$i]);
+	     		foreach( $array_partial[$i] as $d ){
+	     		//CVR
+					$d['cvr'] = ($d['click'] == 0 || $d['cv'] == 0 )? 0 : ($d['cv'] / $d['click']) * 100 ;
+
+				//CTR
+					$d['ctr'] =($d['click'] == 0 || $d['imp'] == 0 )? 0 : ($d['click'] / $d['imp']) * 100 ;
+
+				//CPA
+					$d['cpa'] = ($d['price'] == 0 || $d['cv'] == 0 )? 0 : $d['price'] / $d['cv'] ;
+
+					DB::table('daily_diffs')
+					    ->updateOrInsert(
+				        ['product_id' => $d['product_id'] , 'date' => $d['date'],'asp_id' => $d['asp_id'] ],
+				        ['imp' => $d['imp'],'click' => $d['click'],'cv' => $d['cv'],'active' => $d['active'],'partnership' => $d['partnership'],'cost' => $d['cost'],'price' => $d['price'],'cvr' => $d['cvr'],'ctr' => $d['ctr'],'cpa' => $d['cpa'],'killed_flag' => 0, 'created_at' =>  \Carbon\Carbon::now(),'updated_at' => \Carbon\Carbon::now()]
+					    );
+				}
+	        }
+	        
+	    }
+
+
 		//配列宣言
 	    	foreach ($array_monthly as $data) {
 	        	$date_key = $data['date'];
@@ -283,6 +339,9 @@ class CsvImportController extends Controller
 	        	$month_array[$date_array][$product_key]['approval'] = 0;
 	        	$month_array[$date_array][$product_key]['approval_price'] = 0;
 	    	}
+			// echo '<pre>';
+			// var_dump($month_array);
+			// echo '</pre>';
 
 	    	//配列をまるっとインポート(バルクインサート)
 	        foreach ($array_monthly as $data) {
@@ -365,81 +424,11 @@ class CsvImportController extends Controller
 					$date = DB::table('monthlydatas')
 				    ->updateOrInsert(
 				        ['product_id' => $d['product_id'] , 'date' => $d['date'],'asp_id' => $d['asp_id'] ],
-				        ['imp' => $d['imp'],'click' => $d['click'],'cv' => $d['cv'],'active' => $d['active'],'partnership' => $d['cost'],'cost' => $d['cost'],'price' => $d['price'],'approval_price' => $d['approval_price'],'approval' => $d['approval'],'approval_rate' => $d['approval_rate'],'cvr' => $d['cvr'],'ctr' => $d['ctr'],'cpa' => $d['cpa'], 'created_at' =>  \Carbon\Carbon::now(),'updated_at' => \Carbon\Carbon::now()]
+				        ['imp' => $d['imp'],'click' => $d['click'],'cv' => $d['cv'],'active' => $d['active'],'partnership' => $d['cost'],'cost' => $d['cost'],'price' => $d['price'],'approval_price' => $d['approval_price'],'approval' => $d['approval'],'approval_rate' => $d['approval_rate'],'cvr' => $d['cvr'],'ctr' => $d['ctr'],'cpa' => $d['cpa'],'killed_flag' => 0, 'created_at' =>  \Carbon\Carbon::now(),'updated_at' => \Carbon\Carbon::now()]
 				    );
 			    }
 			}
 
-
-	    //追加した配列の数を数える
-	    $array_count = count($array);
-	    //もし配列の数が500未満なら
-	    if ($array_count < 200){
-	    	//var_dump($array);
-			foreach( $array as $d ){
-			//CVR
-				$d['cvr'] = ($d['click'] == 0 || $d['cv'] == 0 )? 0 : ($d['cv'] / $d['click']) * 100 ;
-
-			//CTR
-				$d['ctr'] =($d['click'] == 0 || $d['imp'] == 0 )? 0 : ($d['click'] / $d['imp']) * 100 ;
-
-			//CPA
-				$d['cpa'] = ($d['price'] == 0 || $d['cv'] == 0 )? 0 : $d['price'] / $d['cv'] ;
-
-				DB::table('daily_diffs')
-				    ->updateOrInsert(
-			        ['product_id' => $d['product_id'] , 'date' => $d['date'] ,'asp_id' => $d['asp_id']],
-			        ['imp' => $d['imp'],'click' => $d['click'],'cv' => $d['cv'],'active' => $d['active'],'partnership' => $d['partnership'],'cost' => $d['cost'],'price' => $d['price'],'cvr' => $d['cvr'],'ctr' => $d['ctr'], 'created_at' =>  \Carbon\Carbon::now(),'updated_at' => \Carbon\Carbon::now()]
-				    );
-			}
-
-			//日次データ
-			/*DailyDiff::insert(
-	            $array
-	        );
-	        */
-	    } else {
-        
-	        //追加した配列が500以上なら、array_chunkで500ずつ分割する
-	        $array_partial = array_chunk($array, 200); //配列分割
-	   
-	        //分割した数を数えて
-	        $array_partial_count = count($array_partial); //配列の数
-	        $month_array = array();
-	           
-        	//分割した数の分だけインポートを繰り替えす
-	        for ($i = 0; $i <= $array_partial_count - 1; $i++){
-	            //CSVimport::insert($array_partial[$i]);
-	            /*echo "<pre>";
-	            var_dump($array_partial[$i]);
-	            echo "</pre>";*/
-				foreach( $array_partial[$i] as $d ){
-	            /*echo "<pre>D";
-	            var_dump($d);
-	            echo "</pre>";*/
-				//CVR
-					$d['cvr'] = ($d['click'] == 0 || $d['cv'] == 0 )? 0 : ($d['cv'] / $d['click']) * 100 ;
-
-				//CTR
-					$d['ctr'] =($d['click'] == 0 || $d['imp'] == 0 )? 0 : ($d['click'] / $d['imp']) * 100 ;
-
-				//CPA
-					$d['cpa'] = ($d['price'] == 0 || $d['cv'] == 0 )? 0 : $d['price'] / $d['cv'] ;
-
-					DB::table('daily_diffs')
-					    ->updateOrInsert(
-				        ['product_id' => $d['product_id'] , 'date' => $d['date'],'asp_id' => $d['asp_id'] ],
-				        ['imp' => $d['imp'],'click' => $d['click'],'cv' => $d['cv'],'active' => $d['active'],'partnership' => $d['partnership'],'cost' => $d['cost'],'price' => $d['price'],'cvr' => $d['cvr'],'ctr' => $d['ctr'],'cpa' => $d['cpa'], 'created_at' =>  \Carbon\Carbon::now(),'updated_at' => \Carbon\Carbon::now()]
-					    );
-				}
-				//日毎の成果
-				/*DailyDiff::insert(
-	                $array_partial[$i]
-	            );*/
-			
-	        }
-	        
-	    }
 
         return redirect('csv/import', 303);
 	    
